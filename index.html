@@ -83,7 +83,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .tip { font-size: .85rem; color: var(--warn); }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .video { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: var(--accent-ink); text-decoration: none; border-radius: 999px; padding: 9px 16px; font-weight: 600; }
-.ghost { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 8px 14px; }
+.ghost { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 8px 14px; color: var(--ink); text-decoration: none; }
 .pill { font-size: .72rem; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; color: var(--muted); white-space: nowrap; }
 
 .rest { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 20px; text-align: center; display: flex; flex-direction: column; gap: 6px; }
@@ -152,112 +152,112 @@ const PARTS = { upper: "علوي", lower: "سفلي", core: "بطن" };
 
 const EX = [
   // الصدر
-  { id:"db-bench", m:"chest", eq:"db", ar:"ضغط صدر بالدمبل", en:"Dumbbell Bench Press",
+  { id:"db-bench", yt:"Y_7aHqXeCfQ", m:"chest", eq:"db", ar:"ضغط صدر بالدمبل", en:"Dumbbell Bench Press",
     steps:["استلقي عالبنش والدمبلين عند صدرك، الكوعين بزاوية ٤٥ درجة تقريباً.","ادفعي لفوق لحتى تقرب إيديك من بعض بدون ما تقفلي الكوع.","نزّلي ببطء لمستوى الصدر."], tip:"خلي لوحي الكتف ملزوقين بالبنش وما ترفعي ظهرك." },
-  { id:"db-incline", m:"chest", eq:"db", ar:"ضغط صدر عالي بالدمبل", en:"Incline Dumbbell Press",
+  { id:"db-incline", yt:"hChjZQhX1Ls", m:"chest", eq:"db", ar:"ضغط صدر عالي بالدمبل", en:"Incline Dumbbell Press",
     steps:["ارفعي البنش لزاوية ٣٠ درجة.","ادفعي الدمبلين لفوق باتجاه أعلى الصدر.","نزّلي بتحكّم لحد ما تحسي بشد بالصدر."], tip:"زاوية عالية كتير بتحوّل الشغل عالكتف." },
-  { id:"db-fly", m:"chest", eq:"db", ar:"فتح صدر بالدمبل", en:"Dumbbell Chest Fly",
+  { id:"db-fly", yt:"UFASlayaWaE", m:"chest", eq:"db", ar:"فتح صدر بالدمبل", en:"Dumbbell Chest Fly",
     steps:["استلقي والدمبلين فوق صدرك، الكوع مثني شوي.","افتحي إيديك عالجنبين متل كأنك عم تحضني شجرة.","رجعي سكّري لفوق وأنتي عاصرة الصدر."], tip:"وزن خفيف، الحركة من الكتف مش من الكوع." },
-  { id:"m-chestpress", m:"chest", eq:"machine", ar:"جهاز ضغط الصدر", en:"Machine Chest Press",
+  { id:"m-chestpress", yt:"SMiaPFf9DyI", m:"chest", eq:"machine", ar:"جهاز ضغط الصدر", en:"Machine Chest Press",
     steps:["ظبطي الكرسي لتكون المسكات بمستوى نص الصدر.","ادفعي لقدام لحتى تفرد إيديك تقريباً.","رجعي ببطء بدون ما يلمس الوزن تحت."], tip:"ضهرك ملزوق بالمسند طول الوقت." },
-  { id:"m-pecdeck", m:"chest", eq:"machine", ar:"جهاز الفراشة", en:"Pec Deck Machine",
+  { id:"m-pecdeck", yt:"-DZXcuPi4vk", m:"chest", eq:"machine", ar:"جهاز الفراشة", en:"Pec Deck Machine",
     steps:["اقعدي وظبطي المسكات بمستوى الصدر.","سكّري إيديك لقدام وأنتي عاصرة الصدر.","افتحي ببطء لحد ما تحسي بشد خفيف."], tip:"ما ترجعي لورا أكتر من مستوى الكتف." },
-  { id:"m-crossover", m:"chest", eq:"machine", ar:"كروس أوفر بالكيبل", en:"Cable Crossover",
+  { id:"m-crossover", yt:"7UC_8lsE2w0", m:"chest", eq:"machine", ar:"كروس أوفر بالكيبل", en:"Cable Crossover",
     steps:["وقفي بالنص بين البكرتين، خطوة لقدام.","اسحبي المسكات لتحت ولقدام لحتى يلتقوا قدام صدرك.","رجعي ببطء."], tip:"ميلي جسمك لقدام شوي وثبتي الكوع." },
-  { id:"pushup", m:"chest", eq:"body", ar:"تمرين الضغط", en:"Push Up",
+  { id:"pushup", yt:"WDIpL0pjun0", m:"chest", eq:"body", ar:"تمرين الضغط", en:"Push Up",
     steps:["إيديك أعرض من كتافك شوي، جسمك خط مستقيم.","نزلي صدرك لقرب الأرض.","ادفعي لفوق."], tip:"إذا صعب، اعمليه عالركب أو عحفة بنش." },
   // الظهر
-  { id:"db-row", m:"back", eq:"db", ar:"سحب دمبل بإيد وحدة", en:"One Arm Dumbbell Row",
+  { id:"db-row", yt:"epSR-ma7BsY", m:"back", eq:"db", ar:"سحب دمبل بإيد وحدة", en:"One Arm Dumbbell Row",
     steps:["حطي ركبة وإيد عالبنش، ضهرك مستقيم.","اسحبي الدمبل باتجاه خصرك.","نزلي ببطء لحد ما تفرد الإيد."], tip:"فكري إنك عم تسحبي بالكوع مش بالإيد." },
-  { id:"db-chestrow", m:"back", eq:"db", ar:"سحب دمبل عالبنش المايل", en:"Chest Supported Dumbbell Row",
+  { id:"db-chestrow", yt:"h2Xafysr43E", m:"back", eq:"db", ar:"سحب دمبل عالبنش المايل", en:"Chest Supported Dumbbell Row",
     steps:["نامي عبطنك عبنش مايل ٣٠ درجة.","اسحبي الدمبلين لفوق وعصري لوحي الكتف.","نزلي بتحكم."], tip:"مريح للضهر لأنو الصدر مسنود." },
-  { id:"m-pulldown", m:"back", eq:"machine", ar:"سحب عالي (لات بول داون)", en:"Lat Pulldown",
+  { id:"m-pulldown", yt:"CAwf7n6Luuc", m:"back", eq:"machine", ar:"سحب عالي (لات بول داون)", en:"Lat Pulldown",
     steps:["امسكي البار أعرض من كتافك واقعدي ثابتة.","اسحبي البار لأعلى صدرك وصدرك لفوق.","رجعي ببطء لفوق."], tip:"ما تسحبي ورا راسك وما تتمرجحي." },
-  { id:"m-cablerow", m:"back", eq:"machine", ar:"سحب أرضي بالكيبل", en:"Seated Cable Row",
+  { id:"m-cablerow", yt:"OeLb503NZHk", m:"back", eq:"machine", ar:"سحب أرضي بالكيبل", en:"Seated Cable Row",
     steps:["اقعدي ورجليكي عالمسند، ضهرك مستقيم.","اسحبي المسكة لبطنك وعصري ضهرك.","رجعي ببطء وأنتي محافظة عوقفتك."], tip:"الجسم ثابت، الحركة من الإيدين والضهر." },
-  { id:"m-assistpull", m:"back", eq:"machine", ar:"عقلة بالمساعدة", en:"Assisted Pull Up Machine",
+  { id:"m-assistpull", yt:"THSFzwAqYgk", m:"back", eq:"machine", ar:"عقلة بالمساعدة", en:"Assisted Pull Up Machine",
     steps:["اختاري وزن مساعدة (كل ما زاد الوزن صار أسهل).","اطلعي لحتى يوصل دقنك فوق البار.","نزلي ببطء لآخر الحركة."], tip:"قللي المساعدة مع الوقت لتوصلي للعقلة العادية." },
-  { id:"m-straightarm", m:"back", eq:"machine", ar:"سحب بإيدين مفرودين", en:"Straight Arm Pulldown",
+  { id:"m-straightarm", yt:"lJsiuRq7Bts", m:"back", eq:"machine", ar:"سحب بإيدين مفرودين", en:"Straight Arm Pulldown",
     steps:["وقفي قدام الكيبل، إيديك مفرودين شبه كامل.","اسحبي البار لتحت لحد فخادك.","رجعي ببطء لفوق."], tip:"حسي الشغل تحت الإبط (اللاتس)." },
-  { id:"superman", m:"back", eq:"body", ar:"سوبرمان", en:"Superman Exercise",
+  { id:"superman", yt:"HPFQf4cubhE", m:"back", eq:"body", ar:"سوبرمان", en:"Superman Exercise",
     steps:["نامي عبطنك وإيديك لقدام.","ارفعي إيديك ورجليكي سوا عن الأرض.","اثبتي ثانيتين ونزلي."], tip:"ممتاز لأسفل الضهر، الحركة صغيرة." },
   // الأكتاف
-  { id:"db-shpress", m:"shoulders", eq:"db", ar:"ضغط كتف بالدمبل", en:"Dumbbell Shoulder Press",
+  { id:"db-shpress", yt:"qEwKCR5JCog", m:"shoulders", eq:"db", ar:"ضغط كتف بالدمبل", en:"Dumbbell Shoulder Press",
     steps:["اقعدي عبنش ضهرو واقف، الدمبلين بمستوى الكتف.","ادفعي لفوق راسك.","نزلي لمستوى الأذن."], tip:"ما تقوّسي ضهرك، شدي بطنك." },
-  { id:"db-lateral", m:"shoulders", eq:"db", ar:"رفرفة جانبي", en:"Dumbbell Lateral Raise",
+  { id:"db-lateral", yt:"3VcKaXpzqRo", m:"shoulders", eq:"db", ar:"رفرفة جانبي", en:"Dumbbell Lateral Raise",
     steps:["وقفي والدمبلين عجنبك.","ارفعي إيديك عالجنبين لمستوى الكتف.","نزلي ببطء."], tip:"وزن خفيف وكوع مثني شوي، بلا مرجحة." },
-  { id:"db-reardelt", m:"shoulders", eq:"db", ar:"رفرفة خلفي", en:"Dumbbell Rear Delt Fly",
+  { id:"db-reardelt", yt:"UO_v23hHAdM", m:"shoulders", eq:"db", ar:"رفرفة خلفي", en:"Dumbbell Rear Delt Fly",
     steps:["ميلي لقدام وضهرك مستقيم.","افتحي إيديك عالجنبين لفوق.","نزلي بتحكم."], tip:"للكتف الخلفي، بيحسّن الوقفة." },
-  { id:"m-shpress", m:"shoulders", eq:"machine", ar:"جهاز ضغط الكتف", en:"Machine Shoulder Press",
+  { id:"m-shpress", yt:"oAadscMCGLU", m:"shoulders", eq:"machine", ar:"جهاز ضغط الكتف", en:"Machine Shoulder Press",
     steps:["ظبطي الكرسي لتكون المسكات بمستوى الكتف.","ادفعي لفوق.","نزلي ببطء."], tip:"خيار آمن للمبتدئين." },
-  { id:"m-cablelateral", m:"shoulders", eq:"machine", ar:"رفرفة جانبي بالكيبل", en:"Cable Lateral Raise",
+  { id:"m-cablelateral", yt:"-CAGLnWUkWA", m:"shoulders", eq:"machine", ar:"رفرفة جانبي بالكيبل", en:"Cable Lateral Raise",
     steps:["وقفي جنب الكيبل وامسكي المسكة بالإيد البعيدة.","ارفعي إيدك عالجنب لمستوى الكتف.","نزلي ببطء وبدّلي الجهة."], tip:"الكيبل بيعطي شد ثابت طول الحركة." },
-  { id:"m-revpec", m:"shoulders", eq:"machine", ar:"فراشة عكسي", en:"Reverse Pec Deck",
+  { id:"m-revpec", yt:"hmtnyIGgR9A", m:"shoulders", eq:"machine", ar:"فراشة عكسي", en:"Reverse Pec Deck",
     steps:["اقعدي ووجّك عالجهاز.","افتحي إيديك لورا عالجنبين.","رجعي ببطء."], tip:"للكتف الخلفي وأعلى الضهر." },
   // الباي
-  { id:"db-curl", m:"biceps", eq:"db", ar:"تبادل دمبل باي", en:"Dumbbell Bicep Curl",
+  { id:"db-curl", yt:"ykJmrZ5v0Oo", m:"biceps", eq:"db", ar:"تبادل دمبل باي", en:"Dumbbell Bicep Curl",
     steps:["وقفي والكوع لازق بجنبك.","ارفعي الدمبل لكتفك ولفّي الكف لفوق.","نزلي ببطء لآخر الحركة."], tip:"الكوع ثابت، بلا مرجحة بالضهر." },
-  { id:"db-hammer", m:"biceps", eq:"db", ar:"هامر باي", en:"Hammer Curl",
+  { id:"db-hammer", yt:"8XLxfXROrTo", m:"biceps", eq:"db", ar:"هامر باي", en:"Hammer Curl",
     steps:["امسكي الدمبل والكف لجوا (متل المطرقة).","ارفعي لكتفك.","نزلي ببطء."], tip:"بيشتغل عالساعد كمان." },
-  { id:"m-cablecurl", m:"biceps", eq:"machine", ar:"باي بالكيبل", en:"Cable Bicep Curl",
+  { id:"m-cablecurl", yt:"d7friQusjF8", m:"biceps", eq:"machine", ar:"باي بالكيبل", en:"Cable Bicep Curl",
     steps:["وقفي قدام الكيبل والبار تحت.","ارفعي البار لصدرك.","نزلي ببطء."], tip:"شد ثابت طول الحركة." },
-  { id:"m-preacher", m:"biceps", eq:"machine", ar:"جهاز باي بريتشر", en:"Machine Preacher Curl",
+  { id:"m-preacher", yt:"jWDZIFhysNc", m:"biceps", eq:"machine", ar:"جهاز باي بريتشر", en:"Machine Preacher Curl",
     steps:["حطي إيديك عالمسند.","اسحبي لفوق وعصري الباي.","نزلي ببطء بدون ما تقفلي الكوع بقوة."], tip:"بيعزل الباي بدون غش." },
   // التراي
-  { id:"db-overhead", m:"triceps", eq:"db", ar:"تراي خلف الراس بالدمبل", en:"Overhead Dumbbell Triceps Extension",
+  { id:"db-overhead", yt:"bVfZIlxBMqU", m:"triceps", eq:"db", ar:"تراي خلف الراس بالدمبل", en:"Overhead Dumbbell Triceps Extension",
     steps:["امسكي دمبل بالإيدين فوق راسك.","نزلي الدمبل لورا راسك بثني الكوع.","افردي لفوق."], tip:"الكوعين لقدام ومش مفتوحين كتير." },
-  { id:"db-kickback", m:"triceps", eq:"db", ar:"كيك باك تراي", en:"Dumbbell Triceps Kickback",
+  { id:"db-kickback", yt:"xi806yP2EIE", m:"triceps", eq:"db", ar:"كيك باك تراي", en:"Dumbbell Triceps Kickback",
     steps:["ميلي لقدام والكوع لازق بجنبك.","افردي إيدك لورا.","رجعي ببطء."], tip:"الزند ثابت، بس الساعد بيتحرك." },
-  { id:"m-pushdown", m:"triceps", eq:"machine", ar:"تراي بالكيبل (بوش داون)", en:"Triceps Pushdown",
+  { id:"m-pushdown", yt:"ChbWX35gD44", m:"triceps", eq:"machine", ar:"تراي بالكيبل (بوش داون)", en:"Triceps Pushdown",
     steps:["وقفي قدام الكيبل والحبل أو البار فوق.","ادفعي لتحت لحد ما تفردي إيديك.","رجعي لمستوى الصدر."], tip:"الكوع لازق بجنبك طول الوقت." },
-  { id:"bench-dips", m:"triceps", eq:"body", ar:"غطس عالبنش", en:"Bench Dips",
+  { id:"bench-dips", yt:"iH16WFso6fo", m:"triceps", eq:"body", ar:"غطس عالبنش", en:"Bench Dips",
     steps:["إيديك عحفة البنش ورجليكي لقدام.","نزلي جسمك بثني الكوع.","ادفعي لفوق."], tip:"ثني الركب بيسهّلو." },
   // الفخذ الأمامي
-  { id:"goblet", m:"quads", eq:"db", ar:"سكوات بالدمبل (غوبلت)", en:"Goblet Squat",
+  { id:"goblet", yt:"MeIiIdhvXT4", m:"quads", eq:"db", ar:"سكوات بالدمبل (غوبلت)", en:"Goblet Squat",
     steps:["امسكي دمبل قدام صدرك ورجليكي بعرض الكتف.","انزلي متل كأنك قاعدة عكرسي.","اطلعي وادفعي بكعب رجلك."], tip:"الركبة بنفس اتجاه أصابع رجلك." },
-  { id:"db-lunge", m:"quads", eq:"db", ar:"طعنات بالدمبل", en:"Dumbbell Lunges",
+  { id:"db-lunge", yt:"pT7K8D8SLk4", m:"quads", eq:"db", ar:"طعنات بالدمبل", en:"Dumbbell Lunges",
     steps:["امسكي دمبلين وخدي خطوة لقدام.","انزلي لحد ما الركبتين يصيروا ٩٠ درجة.","ادفعي ورجعي وبدّلي الرجل."], tip:"جسمك مستقيم، ما تميلي لقدام." },
-  { id:"db-stepup", m:"quads", eq:"db", ar:"طلوع عالبوكس", en:"Dumbbell Step Up",
+  { id:"db-stepup", yt:"9ZknEYboBOQ", m:"quads", eq:"db", ar:"طلوع عالبوكس", en:"Dumbbell Step Up",
     steps:["امسكي دمبلين قدام بوكس أو بنش.","اطلعي برجل وحدة وادفعي فيها.","انزلي بتحكّم وبدّلي."], tip:"ادفعي بالرجل اللي فوق مش اللي تحت." },
-  { id:"m-legpress", m:"quads", eq:"machine", ar:"جهاز دفع الرجلين", en:"Leg Press",
+  { id:"m-legpress", yt:"cDGOn-yfKJA", m:"quads", eq:"machine", ar:"جهاز دفع الرجلين", en:"Leg Press",
     steps:["حطي رجليكي عاللوح بعرض الكتف.","نزلي لحد ٩٠ درجة تقريباً.","ادفعي بدون ما تقفلي الركبة."], tip:"أسفل ضهرك ما يرتفع عن المسند." },
-  { id:"m-legext", m:"quads", eq:"machine", ar:"جهاز رفرفة رجل أمامي", en:"Leg Extension",
+  { id:"m-legext", yt:"3zWKiW9BBpo", m:"quads", eq:"machine", ar:"جهاز رفرفة رجل أمامي", en:"Leg Extension",
     steps:["اقعدي والمسند فوق الكاحل.","افردي رجليكي لقدام.","نزلي ببطء."], tip:"اثبتي ثانية فوق." },
-  { id:"bw-squat", m:"quads", eq:"body", ar:"سكوات بوزن الجسم", en:"Bodyweight Squat",
+  { id:"bw-squat", yt:"07qa56fS2TE", m:"quads", eq:"body", ar:"سكوات بوزن الجسم", en:"Bodyweight Squat",
     steps:["رجليكي بعرض الكتف وإيديك لقدام.","انزلي لورا ولتحت.","اطلعي."], tip:"بداية ممتازة لتتعلمي الحركة." },
   // الفخذ الخلفي
-  { id:"db-rdl", m:"hamstrings", eq:"db", ar:"رفعة رومانية بالدمبل", en:"Dumbbell Romanian Deadlift",
+  { id:"db-rdl", yt:"hQgFixeXdZo", m:"hamstrings", eq:"db", ar:"رفعة رومانية بالدمبل", en:"Dumbbell Romanian Deadlift",
     steps:["وقفي والدمبلين قدام فخادك.","ارجعي بوركك لورا ونزّلي الدمبل عطول رجليكي.","اطلعي وعصري الأرداف."], tip:"ضهرك مستقيم دايماً وركبة مثنية شوي." },
-  { id:"m-lyingcurl", m:"hamstrings", eq:"machine", ar:"جهاز رجل خلفي نايم", en:"Lying Leg Curl",
+  { id:"m-lyingcurl", yt:"NlZeAGZ_YJw", m:"hamstrings", eq:"machine", ar:"جهاز رجل خلفي نايم", en:"Lying Leg Curl",
     steps:["نامي عبطنك والمسند فوق الكاحل.","اثني رجليكي لورا.","نزلي ببطء."], tip:"الورك لازق بالمسند." },
-  { id:"m-seatedcurl", m:"hamstrings", eq:"machine", ar:"جهاز رجل خلفي قاعد", en:"Seated Leg Curl",
+  { id:"m-seatedcurl", yt:"Z5pRnXaCjpM", m:"hamstrings", eq:"machine", ar:"جهاز رجل خلفي قاعد", en:"Seated Leg Curl",
     steps:["اقعدي والمسند تحت الكاحل.","اسحبي لتحت ولورا.","رجعي ببطء."], tip:"ثبّتي فخادك تحت المسند." },
   // الأرداف
-  { id:"db-hipthrust", m:"glutes", eq:"db", ar:"هيب ثرست بالدمبل", en:"Dumbbell Hip Thrust",
+  { id:"db-hipthrust", yt:"29OfN4ztW_g", m:"glutes", eq:"db", ar:"هيب ثرست بالدمبل", en:"Dumbbell Hip Thrust",
     steps:["سنّدي ضهرك عالبنش والدمبل عوركك.","ارفعي وركك لحتى يصير جسمك خط مستقيم.","نزلي ببطء."], tip:"عصري الأرداف فوق وما تقوّسي ضهرك." },
-  { id:"glute-bridge", m:"glutes", eq:"body", ar:"جسر الأرداف", en:"Glute Bridge",
+  { id:"glute-bridge", yt:"KI6fjDqGZh4", m:"glutes", eq:"body", ar:"جسر الأرداف", en:"Glute Bridge",
     steps:["نامي عضهرك وركبك مثنية.","ارفعي وركك لفوق.","اثبتي ثانيتين ونزلي."], tip:"ادفعي بكعب رجلك." },
-  { id:"m-kickback", m:"glutes", eq:"machine", ar:"ركلة خلفية بالكيبل", en:"Cable Glute Kickback",
+  { id:"m-kickback", yt:"5jJNfIlKTmg", m:"glutes", eq:"machine", ar:"ركلة خلفية بالكيبل", en:"Cable Glute Kickback",
     steps:["ربطي الحزام بكاحلك وواجهي الجهاز.","ادفعي رجلك لورا ولفوق.","رجعي ببطء وبدّلي."], tip:"الجسم ثابت، الحركة من الورك." },
-  { id:"m-abduction", m:"glutes", eq:"machine", ar:"جهاز فتح الرجلين", en:"Hip Abduction Machine",
+  { id:"m-abduction", yt:"cja4D-SoPjE", m:"glutes", eq:"machine", ar:"جهاز فتح الرجلين", en:"Hip Abduction Machine",
     steps:["اقعدي والمساند عبرّا الركب.","افتحي رجليكي لبرّا.","سكّري ببطء."], tip:"لجنب الأرداف." },
   // السمانة
-  { id:"db-calf", m:"calves", eq:"db", ar:"رفع سمانة بالدمبل", en:"Dumbbell Calf Raise",
+  { id:"db-calf", yt:"hPA98_r-6e4", m:"calves", eq:"db", ar:"رفع سمانة بالدمبل", en:"Dumbbell Calf Raise",
     steps:["وقفي عحفة درجة والدمبل بإيدك.","ارفعي كعبك لفوق لآخر شي.","نزلي لتحت الدرجة شوي."], tip:"حركة بطيئة وكاملة." },
-  { id:"m-calf", m:"calves", eq:"machine", ar:"جهاز سمانة قاعد", en:"Seated Calf Raise",
+  { id:"m-calf", yt:"smyXy_dhXo8", m:"calves", eq:"machine", ar:"جهاز سمانة قاعد", en:"Seated Calf Raise",
     steps:["اقعدي والمسند فوق ركبك.","ارفعي كعبك لفوق.","نزلي ببطء."], tip:"اثبتي ثانية فوق." },
   // البطن
-  { id:"plank", m:"abs", eq:"body", ar:"بلانك", en:"Plank",
+  { id:"plank", yt:"mwlp75MS6Rg", m:"abs", eq:"body", ar:"بلانك", en:"Plank",
     steps:["سنّدي عكوعك وأصابع رجليكي.","جسمك خط مستقيم من راسك لكعبك.","اثبتي ٢٠–٤٠ ثانية."], tip:"شدي بطنك وما تنزّلي وركك." },
-  { id:"crunch", m:"abs", eq:"body", ar:"كرنش", en:"Crunch",
+  { id:"crunch", yt:"M6yAoJJQvGY", m:"abs", eq:"body", ar:"كرنش", en:"Crunch",
     steps:["نامي عضهرك وركبك مثنية.","ارفعي كتافك عن الأرض بعصر البطن.","نزلي ببطء."], tip:"ما تشدي رقبتك بإيديك." },
-  { id:"deadbug", m:"abs", eq:"body", ar:"ديد باغ", en:"Dead Bug",
+  { id:"deadbug", yt:"bxn9FBrt4-A", m:"abs", eq:"body", ar:"ديد باغ", en:"Dead Bug",
     steps:["نامي عضهرك وإيديك ورجليكي لفوق.","مدّي إيد ورجل معاكسين ببطء.","رجعي وبدّلي."], tip:"أسفل الضهر لازق بالأرض." },
-  { id:"legraise", m:"abs", eq:"body", ar:"رفع رجلين", en:"Lying Leg Raise",
+  { id:"legraise", yt:"sY2ZgV2Sj_s", m:"abs", eq:"body", ar:"رفع رجلين", en:"Lying Leg Raise",
     steps:["نامي عضهرك وإيديك تحت وركك.","ارفعي رجليكي لفوق.","نزلي ببطء بدون ما يلمسوا الأرض."], tip:"إذا صعب، اثني ركبك." },
-  { id:"db-twist", m:"abs", eq:"db", ar:"تويست روسي بالدمبل", en:"Russian Twist",
+  { id:"db-twist", yt:"JX9DIgTvaIo", m:"abs", eq:"db", ar:"تويست روسي بالدمبل", en:"Russian Twist",
     steps:["اقعدي وميلي لورا شوي، الدمبل بإيديك.","لفّي يمين ويسار.","حافظي عضهر مستقيم."], tip:"رجليكي عالأرض إذا مبتدئة." },
-  { id:"m-cablecrunch", m:"abs", eq:"machine", ar:"كرنش بالكيبل", en:"Cable Crunch",
+  { id:"m-cablecrunch", yt:"0KEP6A1deBE", m:"abs", eq:"machine", ar:"كرنش بالكيبل", en:"Cable Crunch",
     steps:["اركعي قدام الكيبل والحبل جنب راسك.","انثني لتحت بعصر البطن.","رجعي ببطء."], tip:"الحركة من البطن مش من الإيدين." },
 ];
 
@@ -328,7 +328,8 @@ function buildDay(day) {
   return { title: t.ar, eq, items };
 }
 const norm = (s) => s.toLowerCase().replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").replace(/[ًٌٍَُِّْ]/g,"").trim();
-const video = (ex) => "https://www.youtube.com/results?search_query=" + encodeURIComponent(ex.en + " proper form");
+const video = (ex) => ex.yt ? "https://www.youtube.com/watch?v=" + ex.yt : search(ex);
+const search = (ex) => "https://www.youtube.com/results?search_query=" + encodeURIComponent(ex.en + " proper form");
 const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
 
 /* ===================== الواجهة ===================== */
@@ -347,7 +348,8 @@ function exRow(ex, idx, setsTxt, key, swapKey) {
       <ol>${ex.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol>
       <p class="tip">نصيحة: ${esc(ex.tip)}</p>
       <div class="actions">
-        <a class="video" href="${video(ex)}" target="_blank" rel="noopener">▶ شوفي الفيديو</a>
+        <a class="video" href="${video(ex)}" target="_blank" rel="noopener">▶ فيديو الشرح</a>
+        <a class="ghost link" href="${search(ex)}" target="_blank" rel="noopener">فيديوهات تانية</a>
         ${swapKey ? `<button class="ghost" data-swap="${swapKey}">بدّلي التمرين</button>` : ""}
       </div>
     </div>` : ""}
