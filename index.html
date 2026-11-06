@@ -310,7 +310,10 @@ body.playing { overflow: hidden; }
 .sd-list li { padding: 2px 0; }
 .sd-list li::marker { color: var(--muted); }
 .sd-list li span { display: inline-block; max-width: 70%; }
-.sd-list bdi { float: inline-end; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sd-list li .sd-r { float: inline-end; display: inline-flex; gap: 10px; align-items: baseline; max-width: none; }
+.sd-r .sugg { min-width: 44px; text-align: end; }
+.sd-r bdi { color: var(--muted); font-variant-numeric: tabular-nums; }
+.sd-r .sugg { font-size: .84rem; }
 .sd-go { align-self: flex-start; font-size: .85rem; }
 @media print {
   .tabs, .startbar, #play, .sd-go, [data-print], .acct .save, .banner, .card { display: none !important; }
@@ -342,6 +345,32 @@ body.playing { overflow: hidden; }
 .alt { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 6px 10px; text-align: start; color: var(--ink); min-height: 48px; }
 .alt span { display: flex; flex-direction: column; line-height: 1.3; }
 .alt small { font-size: .75rem; }
+/* برنامج بيتطوّر */
+.sugg { color: var(--accent); font-weight: 600; white-space: nowrap; }
+.sugg-box { background: var(--soft); color: var(--ink); border-radius: 10px; padding: 8px 10px; font-size: .86rem; }
+.sugg-box b { color: var(--accent); }
+.phase-line { margin-top: 8px; font-size: .84rem; color: var(--muted); background: var(--soft); border-radius: 12px; padding: 8px 12px; text-align: start; }
+.phase-line b { color: var(--accent); }
+.progcard { background: linear-gradient(135deg, #FFF 0%, var(--soft) 100%); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow); }
+:root[data-theme="dark"] .progcard { background: var(--surface); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .progcard { background: var(--surface); } }
+.progcard .card-h b { font-family: var(--display); font-size: 1.1rem; }
+.phases { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.ph { border-radius: 12px; padding: 8px 4px; text-align: center; background: var(--bg); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 2px; }
+.ph b { font-family: var(--display); font-size: 1rem; }
+.ph small { font-size: .7rem; color: var(--muted); line-height: 1.3; }
+.ph.past { opacity: .6; }
+.ph.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.ph.on small { color: inherit; }
+.waves { width: 110px; height: 36px; align-self: center; fill: none; stroke: #5B8FB9; stroke-width: 3; stroke-linecap: round; margin: 6px auto 0; display: block; }
+.swimday { background: linear-gradient(180deg, var(--surface), color-mix(in srgb, #5B8FB9 10%, var(--surface))); }
+.sd.swim-d { border-color: color-mix(in srgb, #5B8FB9 45%, var(--line)); }
+.sd.swim-d.full { border-color: var(--accent); }
+.dtypes { display: flex; flex-direction: column; gap: 8px; }
+.dtype { display: grid; grid-template-columns: 90px 1fr; align-items: center; gap: 10px; }
+.dtype b { font-size: .9rem; }
+.pl-ask { position: fixed; inset-inline: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 3; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px; box-shadow: 0 10px 40px rgb(0 0 0 / .25); display: flex; flex-direction: column; gap: 12px; max-width: 528px; margin-inline: auto; }
+.pl-ask .pl-row > * { flex: 1; }
 .rest { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 20px; text-align: center; display: flex; flex-direction: column; gap: 6px; }
 
 .search { width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
@@ -778,21 +807,44 @@ function splitFor(n) {
   if (n === 5) return ["upper", "lower", "full", "upper", "lower"];
   return ["upper", "lower", "upper", "lower", "upper", "lower"];
 }
+// برنامج بيتطوّر: دورة ٤ أسابيع وبتعيد بأوزان أعلى
+const PHASES = {
+  1: { ar: "تأسيس", en: "Foundation", tipAr: "ابدئي بالوزن المقترح وركّزي عالحركة الصحيحة.", tipEn: "Start with the suggested weight and focus on good form." },
+  2: { ar: "زيدي تكرار", en: "More reps", tipAr: "نفس الوزن، وحاولي توصلي لآخر رقم بالتكرار بكل مجموعة.", tipEn: "Same weight; aim for the top of the rep range in every set." },
+  3: { ar: "زيدي وزن", en: "Add weight", tipAr: "زيدي شوي: ١ كغ عالدمبل، ٢٫٥ كغ عالماشين (٢ أو ٥ كغ لتمارين الرجلين الكبيرة).", tipEn: "Go up a little: 1 kg on dumbbells, 2.5 kg on machines (2 or 5 kg on big leg moves)." },
+  4: { ar: "أسبوع خفيف", en: "Light week", tipAr: "خففي ١٠٪ ومجموعة أقل ليرتاح جسمك. الأسبوع الجاي بتبلّشي دورة جديدة أقوى.", tipEn: "Drop 10% and one set so your body recovers. Next week a stronger cycle begins." },
+};
+// وزن البداية (كغ) لمبتدئة وزنها ٦٠ كغ. بيتظبط حسب مستواكِ ووزنك وهدفك.
+const W_START = {
+  "db-bench": 4, "db-incline": 4, "db-fly": 3, "db-row": 5, "db-chestrow": 4, "db-pullover": 5, "db-shpress": 4, "db-arnold": 3, "db-lateral": 2, "db-front": 2, "db-reardelt": 2,
+  "db-curl": 3, "db-hammer": 3, "db-concentration": 3, "db-overhead": 4, "db-kickback": 2, "db-skull": 3,
+  "goblet": 8, "db-lunge": 4, "db-stepup": 4, "db-rdl": 6, "db-slrdl": 4, "db-hamcurl": 3, "db-hipthrust": 12, "db-bulgarian": 4, "db-sumo": 8, "db-revlunge": 4, "db-curtsy": 4,
+  "db-calf": 6, "db-slcalf": 4, "db-seatedcalf": 8, "db-twist": 3, "db-sidebend": 6, "db-woodchop": 3,
+  "m-chestpress": 15, "m-pecdeck": 10, "m-crossover": 5, "m-pulldown": 20, "m-cablerow": 15, "m-straightarm": 10, "m-shpress": 10, "m-cablelateral": 2.5, "m-revpec": 10, "m-facepull": 10,
+  "m-cablecurl": 7.5, "m-preacher": 10, "m-pushdown": 10, "m-overheadext": 7.5, "m-legpress": 40, "m-legext": 15, "m-hack": 20, "m-lyingcurl": 15, "m-seatedcurl": 15,
+  "m-kickback": 5, "m-abduction": 25, "m-pullthrough": 15, "m-hipthrust": 20, "m-glutekick": 15, "m-calf": 15, "m-standingcalf": 25, "m-legpresscalf": 30,
+  "m-cablecrunch": 15, "m-woodchop": 7.5, "m-pallof": 7.5, "m-abcrunch": 15,
+};
+// اقتراح أيام موزّعة عالأسبوع (السبت = 0)
+const SUGGEST_DAYS = { 1: [0], 2: [0, 3], 3: [0, 2, 4], 4: [0, 1, 3, 4], 5: [0, 1, 2, 4, 5], 6: [0, 1, 2, 3, 4, 5] };
 const ACTS = { swim: { ar: "سباحة", en: "Swimming" }, walk: { ar: "مشي", en: "Walking" }, run: { ar: "ركض", en: "Running" }, cycle: { ar: "دراجة", en: "Cycling" }, yoga: { ar: "يوغا / بيلاتس", en: "Yoga / Pilates" } };
 
 /* ===================== الحالة ===================== */
-const DEFAULT = { age: 25, weight: 60, goal: "muscle", level: "beginner", days: [0,2,4], eq: "both", saved: false };
+const DEFAULT = { age: 25, weight: 60, goal: "muscle", level: "beginner", days: [0,2,4], swim: [], eq: "both", saved: false };
 const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
 };
 let profile = store.get("tamrini.profile", DEFAULT);
+profile.swim = (profile.swim || []).filter(d => profile.days.includes(d));
+const gymDays = () => profile.days.filter(d => !profile.swim.includes(d)).sort((x, y) => x - y);
+const isSwimDay = (d) => profile.swim.includes(d);
 let log = store.get("tamrini.log", {});          // { "YYYY-MM-DD": { exId: { done, w } } }
 let dayEq = store.get("tamrini.dayEq", {});     // معدات كل يوم
 let pkgSel = store.get("tamrini.pkgSel", {});   // { رقم التمرين بالأسبوع: id الباقة }
 let picks = store.get("tamrini.picks", {});     // { "pkg-slot": exId } التمرين اللي اخترتيه بكل خانة
 let acts = store.get("tamrini.acts", {});       // { "YYYY-MM-DD": [{ t: "swim", min: 30 }] }
-let actOpen = false, actDraft = { t: "swim", min: 30, shift: true }, altOpen = null, planMsg = "";
+let postWarn = false, actOpen = false, actDraft = { t: "swim", min: 30, shift: true }, altOpen = null, planMsg = "";
 const todayIdx = (new Date().getDay() + 1) % 7; // السبت = 0
 let selDay = todayIdx;
 let open = null;
@@ -866,34 +918,43 @@ function candidates(muscle, eq) {
 }
 /* أسبوعي: أي تمرين بأي يوم (بيتغيّر لمّا تأجّلي أو تقدّمي) */
 const weekKey = () => ymd(dateOfDay(0));
-const weekSig = () => profile.days.slice().sort((x, y) => x - y).join(",");
-function defaultAssign() { const a = Array(7).fill(null); profile.days.slice().sort((x, y) => x - y).forEach((d, k) => { a[d] = k; }); return a; }
+const weekSig = () => gymDays().join(",") + "|" + profile.swim.slice().sort().join(",");
+function defaultAssign() { const a = Array(7).fill(null); gymDays().forEach((d, k) => { a[d] = k; }); return a; }
 let wk = store.get("tamrini.week", null);
 function freshWeek() { wk = { start: weekKey(), sig: weekSig(), assign: defaultAssign() }; store.set("tamrini.week", wk); }
+if (!profile.start) { profile.start = weekKey(); store.set("tamrini.profile", profile); }
+const progWeek = () => Math.max(1, Math.round((new Date(weekKey()) - new Date(profile.start)) / (7 * 864e5)) + 1);
+const phaseOf = () => ((progWeek() - 1) % 4) + 1;
+const cycleOf = () => Math.floor((progWeek() - 1) / 4);
+const phaseName = () => L(PHASES[phaseOf()].ar, PHASES[phaseOf()].en), phaseTip = () => L(PHASES[phaseOf()].tipAr, PHASES[phaseOf()].tipEn);
+const swimMin = () => Math.min(60, (profile.level === "inter" ? 30 : 20) + 5 * cycleOf() + { 1: 0, 2: 5, 3: 10, 4: -5 }[phaseOf()]);
+const swimTip = () => L({ 1: "سباحة مريحة: ٥ د إحماء، ركّزي عالتنفّس، و٥ د تهدئة.", 2: "زيدي ٥ دقايق عالأسبوع الماضي بنفس الإيقاع المريح.", 3: "فترات: كرّري (٣ د أسرع + ١ د مريح)، والباقي مريح.", 4: "أسبوع خفيف: سباحة هادية وممتعة." }[phaseOf()],
+  { 1: "Easy swim: 5 min warm-up, focus on breathing, 5 min cool-down.", 2: "Add 5 minutes to last week at the same easy pace.", 3: "Intervals: repeat (3 min faster + 1 min easy), rest of the time easy.", 4: "Light week: a calm, enjoyable swim." }[phaseOf()]);
 if (!wk || wk.start !== weekKey() || wk.sig !== weekSig() || !Array.isArray(wk.assign)) freshWeek();
 const saveWk = () => store.set("tamrini.week", wk);
 const isMovedWeek = () => wk.assign.join() !== defaultAssign().join();
 function postpone(d) {            // التمرين بيترحّل لليوم اللي بعدو، واللي بعدو كمان إذا لزم
   let carry = wk.assign[d]; wk.assign[d] = null;
-  for (let i = d + 1; carry != null && i < 7; i++) { const nx = wk.assign[i]; wk.assign[i] = carry; carry = nx; }
+  for (let i = d + 1; carry != null && i < 7; i++) { if (isSwimDay(i) && wk.assign[i] == null) continue; const nx = wk.assign[i]; wk.assign[i] = carry; carry = nx; }
   saveWk(); return carry;         // إذا رجع رقم، يعني ما في محل هالأسبوع
 }
-const roomAfter = (d) => wk.assign.slice(d + 1).some(x => x == null);
+const roomAfter = (d) => wk.assign.some((x, i) => i > d && x == null && !isSwimDay(i));
 const nextWorkoutDay = (d) => { for (let i = d + 1; i < 7; i++) if (wk.assign[i] != null) return i; return -1; };
 // تمرين فات وما انعمل (لتقدري تعوّضيه اليوم)
 const missedDay = (d) => { for (let i = d - 1; i >= 0; i--) { const w = wk.assign[i]; if (w != null && !dayStatus(i)) return i; } return -1; };
+const WAVES = `<svg class="waves" viewBox="0 0 120 40" aria-hidden="true"><path d="M4 14q9-8 18 0t18 0 18 0 18 0 18 0 18 0"/><path d="M4 26q9-8 18 0t18 0 18 0 18 0 18 0 18 0" opacity=".6"/></svg>`;
 const pullFrom = (d) => { const j = nextWorkoutDay(d); return j >= 0 ? j : missedDay(d); };
 function pullTo(d) { const j = pullFrom(d); if (j < 0) return false; wk.assign[d] = wk.assign[j]; wk.assign[j] = null; saveWk(); return true; }
 
 function pkgFor(k) {
-  const type = splitFor(profile.days.length)[k], list = PKGS[type];
+  const type = splitFor(gymDays().length)[k], list = PKGS[type];
   const chosen = PKG_BY_ID[pkgSel[k]];
   if (chosen && list.includes(chosen)) return chosen;
-  const occ = splitFor(profile.days.length).slice(0, k).filter(t => t === type).length, gym = list.filter(p => !p.eq);
+  const occ = splitFor(gymDays().length).slice(0, k).filter(t => t === type).length, gym = list.filter(p => !p.eq);
   return gym[occ % gym.length];
 }
 function buildWorkout(k, day) {
-  const type = splitFor(profile.days.length)[k], pk = pkgFor(k);
+  const type = splitFor(gymDays().length)[k], pk = pkgFor(k);
   const eq = pk.eq || dayEq[day] || profile.eq;
   let slots = pk.slots.slice();
   if (profile.level === "beginner") {                       // شيلي آخر حركة مش كور
@@ -950,16 +1011,17 @@ function exInfo(ex) {
 }
 function logBox(ex, e, date, canLog) {
   if (!canLog) return `<p class="note">${L(`بتقدري تعلّمي عهالتمرين وتسجّلي وزنك يوم ${DAYS[selDay]}.`, `You can mark this and log your weight on ${DAYS_EN[selDay]}.`)}</p>`;
-  const prev = lastBefore(ex.id, date), best = bestOf(ex.id, date);
+  const prev = lastBefore(ex.id, date), best = bestOf(ex.id, date), sw = suggestW(ex);
   const step = ex.eq === "machine" ? 2.5 : 1;
   const w = ex.eq === "body" ? "" : `<div class="field">
         <label for="w-${ex.id}">${L("الوزن اللي رفعتيه", "Weight lifted")}</label>
         <div class="stepper">
           <button type="button" data-wstep="${-step}" data-wid="${ex.id}" aria-label="${L(`نقّصي ${step} كغ`, `Minus ${step} kg`)}">−</button>
-          <span class="wbox"><input id="w-${ex.id}" class="num" data-w="${ex.id}" type="number" inputmode="decimal" step="0.5" min="0" placeholder="${prev ?? "0"}" value="${e.w ?? ""}"><span class="unit">${L("كغ", "kg")}</span></span>
+          <span class="wbox"><input id="w-${ex.id}" class="num" data-w="${ex.id}" type="number" inputmode="decimal" step="0.5" min="0" placeholder="${sw ?? prev ?? "0"}" value="${e.w ?? ""}"><span class="unit">${L("كغ", "kg")}</span></span>
           <button type="button" data-wstep="${step}" data-wid="${ex.id}" aria-label="${L(`زيدي ${step} كغ`, `Plus ${step} kg`)}">+</button>
         </div>
-        <span class="small muted">${prev ? `${L("المرة الماضية", "Last time")}: ${fmtW(prev)}` : L("أول مرة؟ ابدئي بوزن خفيف وركّزي عالحركة.", "First time? Start light and focus on form.")}${best ? ` · ${L("أحسن وزن", "Best")}: ${fmtW(best)}` : ""}</span>
+        ${sw ? `<span class="sugg-box">${L(`المقترح هالأسبوع: <b>${fmtW(sw)}</b>`, `Suggested this week: <b>${fmtW(sw)}</b>`)} · ${phaseName()}</span>` : ""}
+        <span class="small muted">${prev ? `${L("المرة الماضية", "Last time")}: ${fmtW(prev)}` : L("أول مرة؟ ابدئي بالوزن المقترح وركّزي عالحركة.", "First time? Start with the suggested weight and focus on form.")}${best ? ` · ${L("أحسن وزن", "Best")}: ${fmtW(best)}` : ""}</span>
       </div>`;
   return `<div class="logbox">${w}
       <button type="button" class="done-btn" data-done="${ex.id}" aria-pressed="${!!e.done}">${e.done ? L("✓ تمّ! (اضغطي للتراجع)", "✓ Done! (tap to undo)") : L("✓ خلّصت التمرين", "✓ Mark as done")}</button>
@@ -1023,9 +1085,27 @@ let adj = store.get("tamrini.adj", {});            // { "day-exId": { sets, hold
 const REST_SEC = { fat: 50, muscle: 75, strength: 150, fit: 60 };
 function baseSets() { const [a, b] = GOALS[profile.goal].sets.split("–").map(Number); return profile.level === "inter" && b ? b : a; }
 const routineOf = (key) => typeof key === "string" && key.startsWith("r-") ? ROUTINES.find(r => `r-${r.id}` === key) : null;
-const setsFor = (day, ex) => (adj[`${day}-${ex.id}`] || {}).sets ?? routineOf(day)?.sets ?? baseSets();
+const setsFor = (day, ex) => (adj[`${day}-${ex.id}`] || {}).sets ?? routineOf(day)?.sets ?? Math.max(1, baseSets() - (isPlanKey(day) && phaseOf() === 4 ? 1 : 0));
 const restFor = (key) => routineOf(key)?.rest ?? REST_SEC[profile.goal];
-const holdFor = (day, ex) => (adj[`${day}-${ex.id}`] || {}).hold ?? 30;
+const holdFor = (day, ex) => (adj[`${day}-${ex.id}`] || {}).hold ?? (isPlanKey(day) ? Math.min(60, 30 + 5 * cycleOf() + { 1: 0, 2: 5, 3: 10, 4: -5 }[phaseOf()]) : 30);
+const roundW = (ex, w) => { const st = ex.eq === "machine" ? 2.5 : (w < 4 ? 0.5 : 1); return Math.max(st, Math.round(w / st) * st); };
+function startW(ex) {
+  const b = W_START[ex.id]; if (b == null) return null;
+  const f = (profile.level === "inter" ? 1.5 : 1) * Math.min(1.25, Math.max(0.85, profile.weight / 60)) * ({ strength: 1.15, muscle: 1, fat: .9, fit: .9 }[profile.goal] || 1);
+  return roundW(ex, b * f);
+}
+const wInc = (ex) => ex.eq === "machine" ? ((W_START[ex.id] || 0) >= 30 ? 5 : 2.5) : ((W_START[ex.id] || 0) >= 8 ? 2 : 1);
+// الوزن المقترح لهالأسبوع: من آخر أوزانك (أو وزن البداية) + مرحلة الأسبوع
+function suggestW(ex) {
+  const s0 = startW(ex); if (s0 == null) return null;
+  const ph = phaseOf(), inc = wInc(ex), from = ymd(dateOfDay(0, -3)), to = ymd(dateOfDay(0));
+  const recent = weightsOf(ex.id).filter(x => x.d >= from && x.d < to);
+  let ref = recent.length ? Math.max(...recent.map(x => x.w)) : s0 + inc * cycleOf();
+  if (ph === 3) ref += inc;
+  if (ph === 4) ref *= 0.9;
+  return roundW(ex, ref);
+}
+const isPlanKey = (day) => /^\d$/.test(String(day));
 const mmss = (s) => `${Math.floor(s / 60)}:${pad(Math.round(s % 60))}`;
 function estMin(day, items) {
   let s = 0;
@@ -1053,7 +1133,7 @@ function planRow(it, idx, key, swapKey, date, canLog) {
     <div class="ex-row">
       ${avatar(ex, { done, attrs: `data-done="${ex.id}" aria-pressed="${done}" ${canLog ? "" : "disabled"} aria-label="${done ? L("شيلي علامة الإنجاز عن", "Unmark") : L("علّمي إنك خلّصتي", "Mark done:")} ${esc(exN(ex))}"${justDone === ex.id && done ? ' data-pop="1"' : ""}` })}
       <button class="ex-head" data-open="${key}" aria-expanded="${isOpen}">
-        <span class="ex-main"><b>${esc(exN(ex))}</b><span class="ex-meta">${mN(ex.m)} · ${eqN(ex.eq)}${UNI.has(ex.id) ? L(" · لكل جهة", " · each side") : ""}${e.w ? ` · <span class="wtag">${fmtW(e.w)}</span>` : ""}</span></span>
+        <span class="ex-main"><b>${esc(exN(ex))}</b><span class="ex-meta">${mN(ex.m)} · ${eqN(ex.eq)}${UNI.has(ex.id) ? L(" · لكل جهة", " · each side") : ""}${e.w ? ` · <span class="wtag">${fmtW(e.w)}</span>` : suggestW(ex) ? ` · <span class="sugg">${L("هالأسبوع", "This week")} ${fmtW(suggestW(ex))}</span>` : ""}</span></span>
       </button>
       ${rowStepper(it, selDay)}
     </div>
@@ -1072,7 +1152,8 @@ function planRow(it, idx, key, swapKey, date, canLog) {
   </div>`;
 }
 function dayStatus(i) {
-  const day = buildDay(i); if (!day) return "";
+  const day = buildDay(i);
+  if (!day) return isSwimDay(i) && actsOf(ymd(dateOfDay(i))).some(a => a.t === "swim") ? "full" : "";
   const d = ymd(dateOfDay(i));
   const n = day.items.filter(it => (entry(d, it.ex.id) || {}).done).length;
   return n === 0 ? "" : n >= day.items.length ? "full" : "part";
@@ -1101,17 +1182,17 @@ function renderPlan() {
         <p>${quote()}</p>
       </div>
     </section>`;
-  const shown = [...Array(7).keys()].filter(i => wk.assign[i] != null || i === todayIdx || actsOf(ymd(dateOfDay(i))).length);
+  const shown = [...Array(7).keys()].filter(i => wk.assign[i] != null || i === todayIdx || isSwimDay(i) || actsOf(ymd(dateOfDay(i))).length);
   html += `<section class="group">
       <div class="card-h"><h3 class="sec">${L("تمارين هالأسبوع", "This week")}</h3>${isMovedWeek() ? `<button class="ghost" data-plan="reset">${L("رجّعي الجدول الأصلي", "Reset week")}</button>` : ""}</div>
       <div class="carousel" id="days">${shown.map(i => {
-        const d = buildDay(i), st = dayStatus(i), at = actsTxt(ymd(dateOfDay(i)));
+        const d = buildDay(i), st = dayStatus(i), at = actsTxt(ymd(dateOfDay(i))), sw = !d && isSwimDay(i);
         return `<button class="rcard ${i === selDay ? "sel" : ""} ${d ? "" : "restc"}" data-day="${i}" aria-pressed="${i === selDay}">
-          <span class="eyebrow">${dayN(i)}${i === todayIdx ? L(" · اليوم", " · Today") : ""}${d ? ` · ${estMin(i, d.items)} ${L("دقيقة", "min")}` : ""}</span>
-          <b class="rc-t">${d ? d.typeName : L("راحة", "Rest")}</b>${d ? `<small>${d.pkgName} + ${L("كور", "core")}</small>` : ""}
+          <span class="eyebrow">${dayN(i)}${i === todayIdx ? L(" · اليوم", " · Today") : ""}${d ? ` · ${estMin(i, d.items)} ${L("دقيقة", "min")}` : sw ? ` · ${swimMin()} ${L("دقيقة", "min")}` : ""}</span>
+          <b class="rc-t">${d ? d.typeName : sw ? L("سباحة", "Swim") : L("راحة", "Rest")}</b>${sw ? `<small>${phaseName()}</small>` : ""}${d ? `<small>${d.pkgName} + ${L("كور", "core")}</small>` : ""}
           ${at ? `<small class="act-tag">${at}</small>` : ""}
           ${st === "full" ? `<span class="rc-badge">${L("✓ خلّصتيه", "✓ Done")}</span>` : st === "part" ? `<span class="rc-badge part">${L("بلّشتي", "Started")}</span>` : ""}
-          ${d ? bubbles(d.items) : `<p class="muted small">${L("العضل بيكبر وقت الراحة", "Muscles grow while you rest")}</p>`}
+          ${d ? bubbles(d.items) : sw ? WAVES : `<p class="muted small">${L("العضل بيكبر وقت الراحة", "Muscles grow while you rest")}</p>`}
         </button>`;
       }).join("")}</div>
     </section>`;
@@ -1125,7 +1206,18 @@ function renderPlan() {
       <button class="save" data-act-save="1">${L("سجّلي النشاط", "Log activity")}</button>
     </div>`;
   const actList = dayActs.length ? `<div class="act-list">${dayActs.map((a, j) => `<span class="pill act">${L(ACTS[a.t].ar, ACTS[a.t].en)} · ${a.min} ${L("د", "min")}<button class="x" data-act-del="${j}" aria-label="${L("امسحي", "Remove")}">×</button></span>`).join("")}</div>` : "";
-  if (!day) {
+  if (!day && isSwimDay(selDay)) {
+    const swum = dayActs.some(a => a.t === "swim");
+    html += `<section class="checkin swimday">
+        <span class="eyebrow">${L(`يوم سباحة · الأسبوع ${progWeek()} · ${phaseName()}`, `Swim day · Week ${progWeek()} · ${phaseName()}`)}</span>
+        <h2>${dayN(selDay)}: ${L(`سباحة ${swimMin()} دقيقة`, `Swim ${swimMin()} min`)}</h2>
+        ${WAVES}
+        <p class="muted small">${swimTip()}</p>
+        ${swum ? `<div class="banner ok"><span>${L("✓ برافو! سجّلتي سباحة هاليوم.", "✓ Great! Swim logged for today.")}</span></div>` : canLog ? `<button class="save" data-plan="swim">${L("✓ سبحت، سجّليها", "✓ I swam, log it")}</button>` : `<p class="note">${L(`بتسجّليها يوم ${DAYS[selDay]}.`, `You can log it on ${DAYS_EN[selDay]}.`)}</p>`}
+        ${actList}
+        ${actOpen ? actForm() : ""}
+      </section>`;
+  } else if (!day) {
     const nx = pullFrom(selDay);
     html += `<section class="checkin">
         <h2>${dayN(selDay)}: ${L("يوم راحة", "Rest day")}</h2>
@@ -1157,6 +1249,7 @@ function renderPlan() {
         <h2>${dayN(selDay)}: ${day.title}</h2>
         <p class="small muted">${L(`${day.items.length} تمارين · راحة ${rng(g.rest)} بين المجموعات`, `${day.items.length} exercises · ${rng(g.restEn)} rest between sets`)}</p>
         <p class="cover">${[...new Set(day.items.map(it => it.ex.m))].map(m => `<span class="pill">${shortM(m)}</span>`).join("")}</p>
+        <p class="phase-line"><b>${L(`الأسبوع ${progWeek()} · ${phaseName()}`, `Week ${progWeek()} · ${phaseName()}`)}</b> ${phaseTip()}</p>
       </div>
       <div class="field"><span class="lbl">${L(TYPES[day.type].pickAr, `Choose your ${TYPES[day.type].en.toLowerCase()} package`)}</span>
         <div class="carousel pkgs">${PKGS[day.type].map(pk => {
@@ -1277,18 +1370,26 @@ function scheduleBlock() {
     const day = buildDay(i), today = i === todayIdx;
     const head = `<div class="sd-h"><b>${dayN(i)}</b>${today ? `<span class="pill now">${L("اليوم", "Today")}</span>` : ""}`;
     const at = actsTxt(ymd(dateOfDay(i)));
+    if (!day && isSwimDay(i)) return `<div class="sd swim-d ${dayStatus(i)}">${head}<span class="sd-t">${L(`سباحة ${swimMin()} دقيقة`, `Swim ${swimMin()} min`)}</span>${dayStatus(i) ? `<span class="muted small">✓</span>` : ""}</div><span class="small muted">${swimTip()}</span>${at ? `<span class="act-tag small">${at}</span>` : ""}</div>`;
     if (!day) return `<div class="sd rest-d">${head}<span class="muted small">${at || L("راحة · مشي خفيف أو تمطيط", "Rest · light walk or stretching")}</span></div></div>`;
     const st = dayStatus(i);
     return `<div class="sd ${st}">
         ${head}<span class="sd-t">${day.title}</span><span class="muted small">${estMin(i, day.items)} ${L("د", "min")}${st === "full" ? " · ✓" : ""}</span></div>
         ${at ? `<span class="act-tag small">${at}</span>` : ""}
-        <ol class="sd-list">${day.items.map(it => `<li><span>${esc(exN(it.ex))}</span><bdi dir="ltr">${it.isTime ? `${setsFor(i, it.ex)} × ${mmss(holdFor(i, it.ex))}` : `${setsFor(i, it.ex)} × ${g.reps}`}</bdi></li>`).join("")}</ol>
+        <ol class="sd-list">${day.items.map(it => `<li><span>${esc(exN(it.ex))}</span><span class="sd-r"><bdi dir="ltr">${it.isTime ? `${setsFor(i, it.ex)} × ${mmss(holdFor(i, it.ex))}` : `${setsFor(i, it.ex)} × ${g.reps}`}</bdi>${suggestW(it.ex) ? `<b class="sugg">${fmtW(suggestW(it.ex))}</b>` : ""}</span></li>`).join("")}</ol>
         <button class="ghost sd-go" data-goday="${i}">${L("افتحي هاليوم ←", "Open this day →")}</button>
       </div>`;
   }).join("");
-  return `<section class="group" id="schedule">
+  const ph = phaseOf();
+  const progCard = `<section class="progcard">
+      <div class="card-h"><b>${L(`الأسبوع ${progWeek()} من برنامجك`, `Week ${progWeek()} of your program`)}</b><span class="pill now">${phaseName()}</span></div>
+      <div class="phases">${[1, 2, 3, 4].map(i => `<span class="ph ${i === ph ? "on" : i < ph ? "past" : ""}"><b>${i}</b><small>${L(PHASES[i].ar, PHASES[i].en)}</small></span>`).join("")}</div>
+      <p>${phaseTip()}</p>
+      <p class="small muted">${L("كل ٤ أسابيع بتعيدي الدورة بأوزان أعلى. الأوزان بالجدول مقترحة لهالأسبوع حسب آخر شي سجّلتيه؛ إذا كانت تقيلة كتير أو خفيفة، غيّريها عالبرنامج والجدول بيتعلّم منك.", "Every 4 weeks the cycle repeats with heavier weights. The weights shown are this week's suggestions based on what you last logged; if one feels too heavy or light, change it and the plan learns from you.")}</p>
+    </section>`;
+  return `${progCard}<section class="group" id="schedule">
       <div class="card-h"><h2>${L("جدولي الأسبوعي", "My weekly schedule")}</h2><button class="ghost" data-print="1">${L("اطبعي / PDF", "Print / PDF")}</button></div>
-      <p class="small muted">${L(`${order.length} أيام بالأسبوع · ${gN(g)} · ${rng(g.sets)} مجموعات × ${rng(g.reps)} تكرار · راحة ${rng(g.rest)}`, `${order.length} days a week · ${gN(g)} · ${rng(g.sets)} sets × ${rng(g.reps)} reps · ${rng(g.restEn)} rest`)}</p>
+      <p class="small muted">${L(`${order.length} أيام بالأسبوع${profile.swim.length ? ` (منها ${profile.swim.length} سباحة)` : ""} · ${gN(g)} · ${rng(g.sets)} مجموعات × ${rng(g.reps)} تكرار · راحة ${rng(g.rest)}`, `${order.length} days a week${profile.swim.length ? ` (${profile.swim.length} swim)` : ""} · ${gN(g)} · ${rng(g.sets)} sets × ${rng(g.reps)} reps · ${rng(g.restEn)} rest`)}</p>
       <div class="sched">${rows}</div>
     </section>`;
 }
@@ -1327,8 +1428,13 @@ function renderMe() {
       <div class="opts">${Object.entries(GOALS).map(([k,g]) => `<button type="button" class="opt" data-goal="${k}" aria-pressed="${d.goal===k}"><b>${gN(g)}</b><small>${gSub(g)}</small></button>`).join("")}</div></div>
     <div class="field"><span class="lbl">${L("مستواكِ", "Your level")}</span>
       <div class="seg">${[["beginner",L("مبتدئة","Beginner")],["inter",L("متوسطة","Intermediate")]].map(([k,l]) => `<button type="button" data-level="${k}" aria-pressed="${d.level===k}">${l}</button>`).join("")}</div></div>
-    <div class="field"><span class="lbl">${L("أيام التمرين", "Training days")} <span class="muted small">(${d.days.length} ${L("من ٦", "of 6")})</span></span>
+    <div class="field"><span class="lbl">${L("كم يوم بدّك تتمرّني بالأسبوع؟", "How many days a week?")}</span>
+      <div class="seg">${[1, 2, 3, 4, 5, 6].map(n => `<button type="button" data-fcount="${n}" aria-pressed="${d.days.length === n}">${n}</button>`).join("")}</div>
+      <span class="note">${L("اقترحنالك الأيام تحت، موزّعة عالأسبوع. فيكِ تغيّريها.", "We suggested days below, spread across the week. Change them if you like.")}</span></div>
+    <div class="field"><span class="lbl">${L("أيامك", "Your days")} <span class="muted small">(${d.days.length})</span></span>
       <div class="chips">${L(DAYS, DAYS_EN).map((n,i) => `<button type="button" class="chip" data-fday="${i}" aria-pressed="${d.days.includes(i)}">${n}</button>`).join("")}</div></div>
+    ${d.days.length ? `<div class="field"><span class="lbl">${L("كل يوم شو؟", "What on each day?")}</span>
+      <div class="dtypes">${d.days.slice().sort((x, y) => x - y).map(i => `<div class="dtype"><b>${dayN(i)}</b><div class="seg">${[["gym", L("تمرين", "Workout")], ["swim", L("سباحة", "Swim")]].map(([k, l]) => `<button type="button" data-ftype="${i}:${k}" aria-pressed="${(d.swim || []).includes(i) === (k === "swim")}">${l}</button>`).join("")}</div></div>`).join("")}</div></div>` : ""}
     <div class="field"><span class="lbl">${L("المعدات الأساسية", "Main equipment")}</span>
       <div class="seg">${[["db",L("دمبل","Dumbbells")],["machine",L("ماشين","Machines")],["both",L("التنين","Both")]].map(([k,l]) => `<button type="button" data-feq="${k}" aria-pressed="${d.eq===k}">${l}</button>`).join("")}</div>
       <span class="note">${L("فيكِ تغيّريها لكل يوم لحال من «برنامجي».", "You can change it per day from “My Plan”.")}</span></div>
@@ -1554,15 +1660,16 @@ function bigRing(frac, txt, sub) {
 }
 function plWeight(ex) {
   if (ex.eq === "body") return "";
-  const e = entry(ses.date, ex.id) || {}, prev = lastBefore(ex.id, ses.date), best = bestOf(ex.id, ses.date), step = ex.eq === "machine" ? 2.5 : 1;
+  const e = entry(ses.date, ex.id) || {}, prev = lastBefore(ex.id, ses.date), best = bestOf(ex.id, ses.date), step = ex.eq === "machine" ? 2.5 : 1, sw = suggestW(ex);
   return `<div class="pl-w">
       <span class="lbl">${L("الوزن", "Weight")}</span>
       <div class="stepper">
         <button type="button" data-pwstep="${-step}" aria-label="${L(`نقّصي ${step} كغ`, `Minus ${step} kg`)}">−</button>
-        <span class="wbox"><input class="num" data-pw="${ex.id}" type="number" inputmode="decimal" step="0.5" min="0" placeholder="${prev ?? "0"}" value="${e.w ?? ""}" aria-label="${L("الوزن بالكيلو", "Weight in kg")}"><span class="unit">${L("كغ", "kg")}</span></span>
+        <span class="wbox"><input class="num" data-pw="${ex.id}" type="number" inputmode="decimal" step="0.5" min="0" placeholder="${sw ?? prev ?? "0"}" value="${e.w ?? ""}" aria-label="${L("الوزن بالكيلو", "Weight in kg")}"><span class="unit">${L("كغ", "kg")}</span></span>
         <button type="button" data-pwstep="${step}" aria-label="${L(`زيدي ${step} كغ`, `Plus ${step} kg`)}">+</button>
       </div>
-      <span class="small muted">${prev ? `${L("المرة الماضية", "Last time")} ${fmtW(prev)}` : L("أول مرة؟ ابدئي خفيف", "First time? Start light")}${best ? ` · ${L("أحسن وزن", "Best")} ${fmtW(best)}` : ""}</span>
+      ${sw ? `<span class="sugg-box">${L(`المقترح: <b>${fmtW(sw)}</b>`, `Suggested: <b>${fmtW(sw)}</b>`)} · ${phaseName()}</span>` : ""}
+      <span class="small muted">${prev ? `${L("المرة الماضية", "Last time")} ${fmtW(prev)}` : L("أول مرة؟ ابدئي بالمقترح", "First time? Start with the suggestion")}${best ? ` · ${L("أحسن وزن", "Best")} ${fmtW(best)}` : ""}</span>
     </div>`;
 }
 
@@ -1628,6 +1735,8 @@ function renderPlay() {
         </div>`;
     }
   }
+  if (ses.askClose && ses.phase !== "done") body += `<div class="pl-ask" role="alertdialog"><p>${L("بدّك توقفي التمرين؟ اللي خلّصتيه محفوظ.", "Stop the workout? What you finished is saved.")}</p>
+      <div class="pl-row"><button class="ghost wide" data-pl="stay">${L("كمّلي", "Keep going")}</button><button class="start" data-pl="stop">${L("وقّفي", "Stop")}</button></div></div>`;
   $play.innerHTML = `<div class="pl">
       <header class="pl-top">
         <button class="pl-x" data-pl="close" aria-label="${L("سكّري وضع التمرين", "Close workout")}">✕</button>
@@ -1654,7 +1763,7 @@ $play.addEventListener("click", (e) => {
   if (t.tagName === "SUMMARY") { ses.showHow = !t.parentElement.open; saveSes(); return; }
   const a = t.dataset.pl, step = t.dataset.pwstep;
   if (step) {
-    const id = sesItems()[ses.idx].ex.id, cur = (entry(ses.date, id) || {}).w ?? lastBefore(id, ses.date) ?? 0;
+    const ex0 = sesItems()[ses.idx].ex, id = ex0.id, cur = (entry(ses.date, id) || {}).w ?? suggestW(ex0) ?? lastBefore(id, ses.date) ?? 0;
     setEntry(ses.date, id, { w: Math.max(0, Math.round((cur + +step) * 10) / 10) }); renderPlay(); return;
   }
   if (a === "set") finishSet();
@@ -1668,8 +1777,11 @@ $play.addEventListener("click", (e) => {
   }
   else if (a === "prog") { tab = "prog"; endSession(); window.scrollTo(0, 0); }
   else if (a === "close") {
-    if (ses.phase !== "done" && !confirm(L("بدّك توقفي التمرين؟ اللي خلّصتيه محفوظ.", "Stop the workout? What you finished is saved."))) return;
+    if (ses.phase !== "done" && !ses.askClose) { ses.askClose = true; renderPlay(); return; }
     endSession();
+  }
+  else if (a === "stop") endSession();
+  else if (a === "stay") { ses.askClose = false; renderPlay();
   }
 });
 $play.addEventListener("input", (e) => {
@@ -1701,7 +1813,7 @@ document.addEventListener("click", (e) => {
   }
   if (ds.wstep) {
     const date = ymd(dateOfDay(selDay)), id = ds.wid;
-    const cur = (entry(date, id) || {}).w ?? lastBefore(id, date) ?? 0;
+    const ex0 = EX.find(x => x.id === id), cur = (entry(date, id) || {}).w ?? suggestW(ex0) ?? lastBefore(id, date) ?? 0;
     setEntry(date, id, { w: Math.max(0, Math.round((cur + +ds.wstep) * 10) / 10) });
     render(); return;
   }
@@ -1724,7 +1836,7 @@ document.addEventListener("click", (e) => {
   if (ds.themeSet) { theme = ds.themeSet; store.set("tamrini.theme", theme); applyTheme(); render(); return; }
   if (ds.prog) { progOpen = progOpen === ds.prog ? "" : ds.prog; render(); return; }
   if (ds.open) { open = open === ds.open ? null : ds.open; render(); return; }
-  if (ds.day) { selDay = +ds.day; open = null; altOpen = null; actOpen = false; render(); return; }
+  if (ds.day) { selDay = +ds.day; open = null; altOpen = null; actOpen = false; postWarn = false; render(); return; }
   if (ds.eq) { dayEq[selDay] = ds.eq; store.set("tamrini.dayEq", dayEq); open = null; render(); return; }
   if (ds.alt) { altOpen = altOpen === ds.alt ? null : ds.alt; render(); return; }
   if (ds.pick) { picks[ds.pslot] = ds.pick; store.set("tamrini.picks", picks); altOpen = null; render(); return; }
@@ -1732,9 +1844,11 @@ document.addEventListener("click", (e) => {
   if (ds.plan) {
     const p = ds.plan;
     if (p === "act") { actOpen = !actOpen; render(); return; }
+    if (p === "swim") { actDraft = { t: "swim", min: swimMin(), shift: false }; actOpen = true; render(); return; }
     if (p === "post") {
       const d = buildDay(selDay), name = d ? d.title : "";
-      if (!roomAfter(selDay) && !confirm(L("ما في يوم فاضي بعد هاليوم بهالأسبوع، فآخر تمرين رح يتشال. أكيد؟", "There's no free day left this week, so the last workout will be dropped. Continue?"))) return;
+      if (!roomAfter(selDay) && !postWarn) { postWarn = true; planMsg = L("ما في يوم فاضي بعد هاليوم بهالأسبوع، فآخر تمرين رح يتشال. اضغطي «مش اليوم» كمان مرة لتأكدي.", "No free day left this week, so the last workout will be dropped. Tap “Not today” again to confirm."); render(); return; }
+      postWarn = false;
       const dropped = postpone(selDay);
       const nx = nextWorkoutDay(selDay);
       planMsg = dropped != null ? L("تأجّل التمرين، وآخر تمرين بالأسبوع انشال.", "Workout moved; the last one of the week was dropped.")
@@ -1768,7 +1882,13 @@ document.addEventListener("click", (e) => {
   if (ds.fday) {
     const i = +ds.fday, s = new Set(draft.days);
     if (s.has(i)) s.delete(i); else if (s.size < 6) s.add(i);
-    draft.days = [...s].sort((a,b) => a-b); render(); return;
+    draft.days = [...s].sort((a,b) => a-b); draft.swim = (draft.swim || []).filter(x => draft.days.includes(x)); render(); return;
+  }
+  if (ds.fcount) { draft.days = SUGGEST_DAYS[+ds.fcount].slice(); draft.swim = (draft.swim || []).filter(x => draft.days.includes(x)); render(); return; }
+  if (ds.ftype) {
+    const [i, k] = ds.ftype.split(":"), set = new Set(draft.swim || []);
+    if (k === "swim") set.add(+i); else set.delete(+i);
+    draft.swim = [...set].sort((a, b) => a - b); render(); return;
   }
 });
 document.addEventListener("input", (e) => {
@@ -1794,7 +1914,7 @@ document.addEventListener("submit", (e) => {
     : !(draft.weight >= 30 && draft.weight <= 250) ? L("اكتبي وزن بين ٣٠ و٢٥٠ كغ.", "Enter a weight between 30 and 250 kg.")
     : !draft.days.length ? L("اختاري يوم تمرين واحد عالأقل.", "Pick at least one training day.") : "";
   if (bad) { err.textContent = bad; err.hidden = false; return; }
-  profile = { ...draft, saved: true };
+  profile = { ...draft, swim: (draft.swim || []).filter(x => draft.days.includes(x)), saved: true, start: profile.start || weekKey() };
   store.set("tamrini.profile", profile);
   dayEq = {}; adj = {}; pkgSel = {}; store.set("tamrini.dayEq", dayEq); store.set("tamrini.adj", adj); store.set("tamrini.pkgSel", pkgSel); freshWeek();
   selDay = todayIdx;
