@@ -174,8 +174,8 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .av-done svg { width: 26px; height: 26px; stroke: var(--accent-ink); stroke-width: 3; }
 .av-uni { position: absolute; top: -3px; inset-inline-end: -4px; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); color: var(--ink); font-size: .72rem; line-height: 1; display: grid; place-items: center; box-shadow: 0 0 0 2px var(--surface), 0 1px 4px rgb(0 0 0 / .25); }
 .av:disabled { opacity: .7; cursor: default; }
-.av.big { width: 112px; height: 112px; }
-.av.big svg { width: 52px; height: 52px; }
+.av.big { width: 96px; height: 96px; }
+.av.big svg { width: 46px; height: 46px; }
 .ex-row > .av { margin-inline-start: 14px; }
 .ex-head .av { width: 44px; height: 44px; }
 .ex-head .av svg { width: 22px; height: 22px; }
@@ -203,6 +203,51 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .start.soft { background: var(--soft); color: var(--accent); }
 .start:disabled { background: var(--line); color: var(--muted); box-shadow: none; }
 body.has-start .app { padding-bottom: calc(190px + env(safe-area-inset-bottom, 0px)); }
+
+/* وضع التمرين */
+#play { position: fixed; inset: 0; z-index: 30; background: var(--bg); overflow-y: auto; display: flex; justify-content: center; overscroll-behavior: contain; }
+#play[hidden] { display: none; }
+body.playing { overflow: hidden; }
+.pl { width: 100%; max-width: 560px; min-height: 100%; height: max-content; display: flex; flex-direction: column; gap: 14px;
+  padding: max(12px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.pl-top { display: flex; align-items: center; justify-content: space-between; font-family: var(--display); font-weight: 500; }
+.pl-x { width: 44px; height: 44px; border: 0; background: none; font-size: 1.4rem; color: var(--ink); display: grid; place-items: center; }
+.pl-segs { display: flex; gap: 4px; }
+.pl-segs i { flex: 1; height: 5px; border-radius: 999px; background: var(--line); }
+.pl-segs i.f { background: var(--accent); }
+.pl-segs i.c { background: var(--accent); opacity: .45; }
+.pl-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; padding-block: 8px; }
+.pl-head { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.pl-name { font-size: 1.5rem; }
+.pl-pill { background: var(--soft); color: var(--accent); font-weight: 600; font-size: .85rem; border-radius: 999px; padding: 4px 14px; }
+.pl-target { display: flex; flex-direction: column; align-items: center; line-height: 1.1; }
+.pl-target b { font-family: var(--display); font-size: 3rem; font-variant-numeric: tabular-nums; }
+.pl-target span { color: var(--muted); }
+.pl-w { width: 100%; max-width: 360px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 8px; text-align: start; }
+.pl-w .lbl { font-weight: 600; font-size: .9rem; }
+.pl-how { width: 100%; max-width: 420px; text-align: start; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 4px 14px; }
+.pl-how summary { cursor: pointer; padding: 10px 0; font-weight: 600; color: var(--accent); }
+.pl-how[open] { padding-bottom: 14px; display: flex; flex-direction: column; gap: 10px; }
+.pl-how ol { margin: 0; padding-inline-start: 20px; }
+.pl-how .video { align-self: flex-start; }
+.pl-ring { position: relative; width: min(240px, 66vw); aspect-ratio: 1; display: grid; place-items: center; }
+.pl-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.pl-ring circle { fill: none; stroke-width: 12; }
+.pl-ring .track { stroke: var(--soft); }
+.pl-ring .val { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset .25s linear; }
+.pl-ring div { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.pl-time { font-family: var(--display); font-size: 3.4rem; line-height: 1; font-variant-numeric: tabular-nums; direction: ltr; }
+.pl-ring span { color: var(--muted); font-size: .85rem; max-width: 150px; }
+.pl-next { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 10px 14px; text-align: start; width: 100%; max-width: 380px; }
+.pl-next span { display: flex; flex-direction: column; }
+.pl-actions { display: flex; flex-direction: column; gap: 10px; position: sticky; bottom: 0; z-index: 1; margin-inline: -16px; padding: 12px 16px calc(4px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(to top, var(--bg) 75%, transparent); }
+.pl-row { display: flex; gap: 10px; }
+.ghost.wide { flex: 1; justify-content: center; min-height: 50px; font-weight: 600; }
+.pl-end .tiles { width: 100%; text-align: start; }
+.pl-trophy { width: 96px; height: 96px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; }
+.pl-trophy svg { width: 52px; height: 52px; fill: none; stroke: var(--accent-ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+@media (prefers-reduced-motion: no-preference) { .pl-trophy { animation: pop .5s ease-out; } }
+@media (max-height: 640px) { .av.big { width: 84px; height: 84px; } .av.big svg { width: 40px; height: 40px; } .pl-target b { font-size: 2.4rem; } .pl-main { gap: 10px; } }
 
 .rest { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 20px; text-align: center; display: flex; flex-direction: column; gap: 6px; }
 
@@ -543,7 +588,7 @@ function setEntry(date, id, patch) {
 }
 const weightsOf = (id) => Object.keys(log).sort().filter(d => log[d][id] && log[d][id].w > 0).map(d => ({ d, w: log[d][id].w }));
 const lastBefore = (id, date) => { const h = weightsOf(id).filter(x => x.d < date); return h.length ? h[h.length - 1].w : null; };
-const bestOf = (id) => { const h = weightsOf(id); return h.length ? Math.max(...h.map(x => x.w)) : null; };
+const bestOf = (id, before) => { const h = weightsOf(id).filter(x => !before || x.d < before); return h.length ? Math.max(...h.map(x => x.w)) : null; };
 const daysWord = (n) => n === 1 ? "يوم واحد" : n === 2 ? "يومين" : `${n} أيام`;
 const rng = (t) => String(t).replace(/(\d+–\d+)/g, '<bdi dir="ltr">$1</bdi>');
 const fmtW = (w) => `${Math.round(w * 10) / 10} كغ`;
@@ -629,7 +674,7 @@ function exInfo(ex) {
 }
 function logBox(ex, e, date, canLog) {
   if (!canLog) return `<p class="note">بتقدري تعلّمي عهالتمرين وتسجّلي وزنك يوم ${DAYS[selDay]}.</p>`;
-  const prev = lastBefore(ex.id, date), best = bestOf(ex.id);
+  const prev = lastBefore(ex.id, date), best = bestOf(ex.id, date);
   const step = ex.eq === "machine" ? 2.5 : 1;
   const w = ex.eq === "body" ? "" : `<div class="field">
         <label for="w-${ex.id}">الوزن اللي رفعتيه</label>
@@ -971,6 +1016,198 @@ document.addEventListener("pointerover", (e) => { const el = e.target.closest?.(
 document.addEventListener("focusin", (e) => { const el = e.target.closest?.("[data-tip]"); el ? showTip(el) : hideTip(); });
 window.addEventListener("scroll", hideTip, { passive: true });
 
+/* ===================== وضع التمرين خطوة بخطوة ===================== */
+let ses = store.get("tamrini.session", null);   // { day, date, idx, set, phase: work|hold|rest|done, until, started, sets, prs, showHow }
+if (ses && (Date.now() - ses.started > 12 * 3600e3 || !buildDay(ses.day))) ses = null;   // جلسة قديمة
+const $play = document.createElement("div");
+$play.id = "play"; $play.dir = "rtl"; $play.lang = "ar"; $play.hidden = true;
+$play.setAttribute("role", "dialog"); $play.setAttribute("aria-modal", "true"); $play.setAttribute("aria-label", "وضع التمرين");
+document.body.appendChild($play);
+const saveSes = () => store.set("tamrini.session", ses);
+
+let audio = null, wake = null;
+function beep() {
+  try { navigator.vibrate?.([180, 90, 180]); } catch {}
+  try {
+    audio ||= new (window.AudioContext || window.webkitAudioContext)();
+    [0, 0.22].forEach(t => {
+      const o = audio.createOscillator(), g = audio.createGain();
+      o.frequency.value = 880; o.connect(g); g.connect(audio.destination);
+      g.gain.setValueAtTime(0.0001, audio.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(0.25, audio.currentTime + t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + t + 0.16);
+      o.start(audio.currentTime + t); o.stop(audio.currentTime + t + 0.18);
+    });
+  } catch {}
+}
+async function lockScreen() { try { if (ses && navigator.wakeLock && document.visibilityState === "visible") wake = await navigator.wakeLock.request("screen"); } catch {} }
+document.addEventListener("visibilitychange", () => { if (ses && ses.phase !== "done") lockScreen(); });
+
+function sesItems() { return buildDay(ses.day).items; }
+function nextUndone(from) {
+  const items = sesItems();
+  for (let k = 1; k <= items.length; k++) {
+    const i = (from + k) % items.length;
+    if (!(entry(ses.date, items[i].ex.id) || {}).done) return i;
+  }
+  return -1;
+}
+function startSession() {
+  try { audio ||= new (window.AudioContext || window.webkitAudioContext)(); audio.resume?.(); } catch {}
+  const date = ymd(dateOfDay(selDay)), items = buildDay(selDay).items;
+  const first = items.findIndex(it => !(entry(date, it.ex.id) || {}).done);
+  ses = { day: selDay, date, idx: Math.max(0, first), set: 1, phase: "work", until: 0, started: Date.now(), sets: 0, prs: 0, showHow: false };
+  saveSes(); lockScreen(); renderPlay();
+}
+function endSession() { ses = null; saveSes(); try { wake?.release(); } catch {} wake = null; renderPlay(); render(); }
+
+function finishSet() {
+  const items = sesItems(), it = items[ses.idx], n = setsFor(ses.day, it.ex);
+  ses.sets++;
+  if (ses.set < n) { ses.set++; ses.phase = "rest"; ses.until = Date.now() + REST_SEC[profile.goal] * 1000; }
+  else {
+    const e = entry(ses.date, it.ex.id) || {}, before = Math.max(0, ...weightsOf(it.ex.id).filter(x => x.d < ses.date).map(x => x.w));
+    if (e.w && before && e.w > before) ses.prs++;
+    setEntry(ses.date, it.ex.id, { done: true });
+    const nx = nextUndone(ses.idx);
+    if (nx < 0) { ses.phase = "done"; try { wake?.release(); } catch {} }
+    else { ses.idx = nx; ses.set = 1; ses.phase = "rest"; ses.until = Date.now() + REST_SEC[profile.goal] * 1000; ses.showHow = false; }
+  }
+  saveSes(); renderPlay();
+}
+function afterRest() { ses.phase = "work"; ses.until = 0; saveSes(); renderPlay(); }
+
+function bigRing(frac, txt, sub) {
+  const r = 96, c = 2 * Math.PI * r;
+  return `<div class="pl-ring"><svg viewBox="0 0 220 220" aria-hidden="true"><circle class="track" cx="110" cy="110" r="${r}"/><circle class="val" cx="110" cy="110" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c * (1 - frac)).toFixed(1)}"/></svg>
+    <div><b class="pl-time" aria-live="off">${txt}</b><span>${sub}</span></div></div>`;
+}
+function plWeight(ex) {
+  if (ex.eq === "body") return "";
+  const e = entry(ses.date, ex.id) || {}, prev = lastBefore(ex.id, ses.date), best = bestOf(ex.id, ses.date), step = ex.eq === "machine" ? 2.5 : 1;
+  return `<div class="pl-w">
+      <span class="lbl">الوزن</span>
+      <div class="stepper">
+        <button type="button" data-pwstep="${-step}" aria-label="نقّصي ${step} كغ">−</button>
+        <span class="wbox"><input class="num" data-pw="${ex.id}" type="number" inputmode="decimal" step="0.5" min="0" placeholder="${prev ?? "0"}" value="${e.w ?? ""}" aria-label="الوزن بالكيلو"><span class="unit">كغ</span></span>
+        <button type="button" data-pwstep="${step}" aria-label="زيدي ${step} كغ">+</button>
+      </div>
+      <span class="small muted">${prev ? `المرة الماضية ${fmtW(prev)}` : "أول مرة؟ ابدئي خفيف"}${best ? ` · أحسن وزن ${fmtW(best)}` : ""}</span>
+    </div>`;
+}
+
+function renderPlay() {
+  if (!ses) { $play.hidden = true; $play.innerHTML = ""; document.body.classList.remove("playing"); return; }
+  $play.hidden = false; document.body.classList.add("playing");
+  const items = sesItems(), g = GOALS[profile.goal];
+  const segs = `<div class="pl-segs" aria-hidden="true">${items.map((it, i) => `<i class="${(entry(ses.date, it.ex.id) || {}).done ? "f" : i === ses.idx && ses.phase !== "done" ? "c" : ""}"></i>`).join("")}</div>`;
+  const doneN = items.filter(it => (entry(ses.date, it.ex.id) || {}).done).length;
+  let body;
+  if (ses.phase === "done") {
+    const mins = Math.max(1, Math.round((Date.now() - ses.started) / 60000));
+    body = `<div class="pl-main pl-end">
+        <div class="pl-trophy">${CHECK}</div>
+        <h1>برافو! خلّصتي تمرين اليوم 🎉</h1>
+        <p class="muted">${quote()}</p>
+        <div class="tiles">
+          <div class="tile"><span>الوقت</span><b>${mins}<em> د</em></b></div>
+          <div class="tile"><span>تمارين</span><b>${doneN}<em>/${items.length}</em></b></div>
+          <div class="tile"><span>مجموعات</span><b>${ses.sets}</b></div>
+          <div class="tile"><span>أوزان جديدة</span><b>${ses.prs}</b><small>${ses.prs ? "رقم قياسي جديد! 💪" : "المرة الجاية زيدي شوي"}</small></div>
+        </div>
+      </div>
+      <div class="pl-actions">
+        <button class="start" data-pl="prog">شوفي تقدّمك</button>
+        <button class="ghost wide" data-pl="close">رجعي عالبرنامج</button>
+      </div>`;
+  } else {
+    const it = items[ses.idx], ex = it.ex, n = setsFor(ses.day, ex), hold = holdFor(ses.day, ex), uni = UNI.has(ex.id);
+    if (ses.phase === "rest") {
+      const left = Math.max(0, (ses.until - Date.now()) / 1000), tot = REST_SEC[profile.goal];
+      const nextTxt = ses.set === 1 ? `التمرين الجايي: ${esc(ex.ar)}` : `الجاية: المجموعة ${ses.set} من ${n}`;
+      body = `<div class="pl-main">
+          <span class="pl-pill">راحة</span>
+          ${bigRing(Math.min(1, left / tot), mmss(Math.ceil(left)), "خدي نفس واشربي مي")}
+          <div class="pl-next">${avatar(ex)}<span><b>${nextTxt}</b><small class="muted">${it.isTime ? `${mmss(hold)} ثبات` : `${rng(g.reps)} تكرار`}${uni ? " · لكل جهة" : ""}</small></span></div>
+        </div>
+        <div class="pl-actions">
+          <div class="pl-row"><button class="ghost wide" data-pl="more">+15 ث</button><button class="ghost wide" data-pl="next">تخطّي الراحة</button></div>
+        </div>`;
+    } else if (ses.phase === "hold") {
+      const left = Math.max(0, (ses.until - Date.now()) / 1000);
+      body = `<div class="pl-main">
+          <span class="pl-pill">المجموعة ${ses.set} من ${n}</span>
+          <h2 class="pl-name">${esc(ex.ar)}</h2>
+          ${bigRing(Math.min(1, left / hold), mmss(Math.ceil(left)), uni ? "اثبتي · وبعدين بدّلي الجهة" : "اثبتي، فيكِ!")}
+        </div>
+        <div class="pl-actions"><button class="start" data-pl="set">✓ خلّصت</button></div>`;
+    } else {
+      body = `<div class="pl-main">
+          ${avatar(ex, { big: true })}
+          <div class="pl-head">
+            <h2 class="pl-name">${esc(ex.ar)}</h2>
+            <span class="pl-pill">المجموعة ${ses.set} من ${n}</span>
+          </div>
+          <div class="pl-target"><b>${it.isTime ? mmss(hold) : rng(g.reps)}</b><span>${it.isTime ? "ثبات" : "تكرار"}${uni ? " · لكل جهة" : ""}</span></div>
+          ${plWeight(ex)}
+          <details class="pl-how" ${ses.showHow ? "open" : ""}><summary>شو الحركة؟</summary>${exInfo(ex)}<a class="video" href="${video(ex)}" target="_blank" rel="noopener">▶ فيديو الشرح</a></details>
+        </div>
+        <div class="pl-actions">
+          ${it.isTime ? `<button class="start" data-pl="hold">▶ ابدئي ${mmss(hold)}</button>` : `<button class="start" data-pl="set">✓ خلّصت المجموعة</button>`}
+          <button class="ghost wide" data-pl="skip">تخطّي هالتمرين</button>
+        </div>`;
+    }
+  }
+  $play.innerHTML = `<div class="pl">
+      <header class="pl-top">
+        <button class="pl-x" data-pl="close" aria-label="سكّري وضع التمرين">✕</button>
+        <span>${ses.phase === "done" ? "خلصنا!" : `تمرين ${ses.idx + 1} من ${items.length}`}</span>
+        <span class="pl-x" aria-hidden="true"></span>
+      </header>
+      ${segs}
+      ${body}
+    </div>`;
+}
+
+// عدّاد الوقت: بيحدّث الرقم والدائرة بس، بلا ما يعيد رسم كل شي
+setInterval(() => {
+  if (!ses || (ses.phase !== "rest" && ses.phase !== "hold")) return;
+  const left = (ses.until - Date.now()) / 1000;
+  if (left <= 0) { beep(); ses.phase === "rest" ? afterRest() : finishSet(); return; }
+  const tot = ses.phase === "rest" ? REST_SEC[profile.goal] : holdFor(ses.day, sesItems()[ses.idx].ex);
+  const t = $play.querySelector(".pl-time"); if (t) t.textContent = mmss(Math.ceil(left));
+  const v = $play.querySelector(".pl-ring .val"); if (v) { const c = 2 * Math.PI * 96; v.setAttribute("stroke-dashoffset", (c * (1 - Math.min(1, left / tot))).toFixed(1)); }
+}, 250);
+
+$play.addEventListener("click", (e) => {
+  const t = e.target.closest("button, summary"); if (!t || !ses) return;
+  if (t.tagName === "SUMMARY") { ses.showHow = !t.parentElement.open; saveSes(); return; }
+  const a = t.dataset.pl, step = t.dataset.pwstep;
+  if (step) {
+    const id = sesItems()[ses.idx].ex.id, cur = (entry(ses.date, id) || {}).w ?? lastBefore(id, ses.date) ?? 0;
+    setEntry(ses.date, id, { w: Math.max(0, Math.round((cur + +step) * 10) / 10) }); renderPlay(); return;
+  }
+  if (a === "set") finishSet();
+  else if (a === "hold") { ses.phase = "hold"; ses.until = Date.now() + holdFor(ses.day, sesItems()[ses.idx].ex) * 1000; saveSes(); renderPlay(); }
+  else if (a === "next") afterRest();
+  else if (a === "more") { ses.until += 15000; saveSes(); renderPlay(); }
+  else if (a === "skip") {
+    const nx = nextUndone(ses.idx);
+    if (nx < 0 || nx === ses.idx) { ses.phase = "done"; } else { ses.idx = nx; ses.set = 1; ses.phase = "work"; ses.showHow = false; }
+    saveSes(); renderPlay();
+  }
+  else if (a === "prog") { tab = "prog"; endSession(); window.scrollTo(0, 0); }
+  else if (a === "close") {
+    if (ses.phase !== "done" && !confirm("بدّك توقفي التمرين؟ اللي خلّصتيه محفوظ.")) return;
+    endSession();
+  }
+});
+$play.addEventListener("input", (e) => {
+  if (!e.target.dataset.pw || !ses) return;
+  const v = parseFloat(e.target.value);
+  setEntry(ses.date, e.target.dataset.pw, { w: v > 0 && v < 1000 ? v : undefined });
+});
+
 /* ===================== الأحداث ===================== */
 document.addEventListener("click", (e) => {
   const tipEl = e.target.closest("[data-tip]");
@@ -999,6 +1236,7 @@ document.addEventListener("click", (e) => {
     render(); return;
   }
   if (ds.tab) { tab = ds.tab; open = null; if (tab === "me") draft = null; render(); window.scrollTo(0,0); return; }
+  if (ds.start) { startSession(); return; }
   if (ds.adj) {
     const ex = EX.find(x => x.id === ds.aid), k = `${selDay}-${ds.aid}`, dir = +ds.dir;
     const v = ds.adj === "sets" ? Math.min(8, Math.max(1, setsFor(selDay, ex) + dir)) : Math.min(180, Math.max(10, holdFor(selDay, ex) + dir * 5));
@@ -1050,4 +1288,5 @@ document.addEventListener("submit", (e) => {
 });
 
 render();
+if (ses) { renderPlay(); lockScreen(); }
 </script>
