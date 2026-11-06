@@ -1,40 +1,44 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#2B7A57">
+<meta name="theme-color" content="#FBF6F4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>تمريني</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Readex+Pro:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=El+Messiri:wght@500;600;700&display=swap">
 <style>
 /* Layout: one narrow column, app-style — bottom tab bar, week strip, expandable exercise rows */
 :root {
-  --bg: #F2F3F0;
+  --bg: #FBF6F4;
   --surface: #FFFFFF;
-  --ink: #1A1E1C;
-  --muted: #5D6660;
-  --line: #DCE0DB;
-  --accent: #2B7A57;
+  --ink: #2A1F24;
+  --muted: #7A6770;
+  --line: #EEDFE2;
+  --accent: #B83A6B;
   --accent-ink: #FFFFFF;
-  --accent-2: #3F9C73;
-  --chart: #1F8A5B;
-  --soft: #E2EEE7;
-  --warn: #9A5B12;
-  --display: "Readex Pro", "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --accent-2: #7E2D5A;
+  --chart: #C2457A;
+  --soft: #FBE7EE;
+  --warn: #A35A1F;
+  --av-ink: #3B2433;
+  --shadow: 0 1px 2px rgb(90 30 60 / .04), 0 6px 18px rgb(90 30 60 / .06);
+  --display: "El Messiri", "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
   --body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0A0D0B; --surface: #151A17; --ink: #EEF1EE; --muted: #9AA59F;
-    --line: #252D29; --accent: #5CC092; --accent-ink: #0D1310; --accent-2: #3E9F75; --chart: #5CC092; --soft: #1D3128; --warn: #E0A35C;
+    --bg: #150E12; --surface: #211920; --ink: #F6EDF0; --muted: #B4A2AA;
+    --line: #34272F; --accent: #F08BB0; --accent-ink: #2A0F1C; --accent-2: #9C3D6A; --chart: #F08BB0; --soft: #3A2030; --warn: #E8A86A;
+    --shadow: none;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0A0D0B; --surface: #151A17; --ink: #EEF1EE; --muted: #9AA59F;
-  --line: #252D29; --accent: #5CC092; --accent-ink: #0D1310; --accent-2: #3E9F75; --chart: #5CC092; --soft: #1D3128; --warn: #E0A35C;
+  --bg: #150E12; --surface: #211920; --ink: #F6EDF0; --muted: #B4A2AA;
+  --line: #34272F; --accent: #F08BB0; --accent-ink: #2A0F1C; --accent-2: #9C3D6A; --chart: #F08BB0; --soft: #3A2030; --warn: #E8A86A;
+  --shadow: none;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -50,8 +54,8 @@ button, a, summary, input { touch-action: manipulation; }
   display: flex; flex-direction: column; gap: 18px;
 }
 h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; }
-h1 { font-size: 1.7rem; }
-h2 { font-size: 1.2rem; }
+h1 { font-size: 1.85rem; font-weight: 700; letter-spacing: 0; }
+h2 { font-size: 1.22rem; font-weight: 600; }
 h3 { font-size: 1rem; font-weight: 500; }
 p { margin: 0; }
 .muted { color: var(--muted); }
@@ -79,7 +83,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .seg button { flex: 1; border: 0; background: transparent; border-radius: 999px; padding: 7px 4px; min-height: 40px; font-size: .88rem; }
 .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
 
-.list { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.list { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden;  box-shadow: var(--shadow);}
 .ex { border-top: 1px solid var(--line); }
 .ex:first-child { border-top: 0; }
 .ex-head { width: 100%; display: flex; align-items: center; gap: 12px; padding: 14px; background: none; border: 0; text-align: start; }
@@ -96,7 +100,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .pill { font-size: .72rem; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; color: var(--muted); white-space: nowrap; }
 
 /* بطاقة الأسبوع */
-.hero { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: var(--accent-ink); border-radius: 20px; padding: 16px 18px; display: flex; gap: 16px; align-items: center; }
+.hero { background: linear-gradient(135deg, #C24A78 0%, #8E2F60 100%); color: #FFFFFF; box-shadow: 0 10px 26px rgb(142 47 96 / .22); border-radius: 20px; padding: 16px 18px; display: flex; gap: 16px; align-items: center; }
 .ring { flex: none; width: 76px; height: 76px; position: relative; display: grid; place-items: center; }
 .ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
 .ring circle { fill: none; stroke-width: 7; stroke: currentColor; }
@@ -138,13 +142,13 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 
 /* صفحة التقدّم */
 .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0;  box-shadow: var(--shadow);}
 .tile span { font-size: .8rem; color: var(--muted); }
 .tile b { font-family: var(--display); font-size: 1.6rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
 .tile b em { font-style: normal; font-size: 1rem; color: var(--muted); }
 .tile small { font-size: .75rem; color: var(--muted); }
 .up { color: var(--accent); font-weight: 600; }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px;  box-shadow: var(--shadow);}
 .card-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .chart { width: 100%; height: auto; display: block; overflow: visible; font-family: var(--body); }
 .c-grid { stroke: var(--line); stroke-width: 1; }
@@ -167,8 +171,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .tbl th { color: var(--muted); font-weight: 500; }
 
 /* دوائر التمارين */
-.av { flex: none; position: relative; width: 52px; height: 52px; border-radius: 50%; background: var(--c); border: 0; padding: 0; display: grid; place-items: center; color: #fff; }
-.av.lt { color: #1A1E1C; }
+.av { flex: none; position: relative; width: 52px; height: 52px; border-radius: 50%; background: var(--c); border: 0; padding: 0; display: grid; place-items: center; color: var(--av-ink); }
 .av svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .av-done { position: absolute; inset: 0; border-radius: 50%; background: var(--accent); display: grid; place-items: center; box-shadow: 0 0 0 3px var(--surface) inset; }
 .av-done svg { width: 26px; height: 26px; stroke: var(--accent-ink); stroke-width: 3; }
@@ -250,7 +253,7 @@ body.playing { overflow: hidden; }
 @media (max-height: 640px) { .av.big { width: 84px; height: 84px; } .av.big svg { width: 40px; height: 40px; } .pl-target b { font-size: 2.4rem; } .pl-main { gap: 10px; } }
 
 /* أيقونة الجسم */
-.av .bd { opacity: .5; }
+.av .bd { opacity: .42; }
 .av .zn { stroke-width: 3.2; }
 .av .zn .f { fill: currentColor; stroke: none; }
 .av.lt .bd { opacity: .45; }
@@ -263,8 +266,8 @@ body.playing { overflow: hidden; }
 /* كروت الروتين (متل الصفحة الرئيسية) */
 .carousel { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: -16px; padding: 2px 16px 6px; scrollbar-width: none; overscroll-behavior-x: contain; }
 .carousel::-webkit-scrollbar { display: none; }
-.rcard { flex: 0 0 84%; scroll-snap-align: center; position: relative; text-align: start; border: 1px solid var(--line); background: var(--surface); border-radius: 28px; padding: 20px 18px 18px; display: flex; flex-direction: column; gap: 2px; color: var(--ink); }
-.rcard.sel { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.rcard { flex: 0 0 84%; scroll-snap-align: center; position: relative; text-align: start; border: 1px solid var(--line); background: var(--surface); border-radius: 28px; padding: 20px 18px 18px; display: flex; flex-direction: column; gap: 2px; color: var(--ink);  box-shadow: var(--shadow);}
+.rcard.sel { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent), var(--shadow); }
 .rcard .eyebrow { font-weight: 600; letter-spacing: .03em; }
 .rc-t { font-family: var(--display); font-size: 1.7rem; line-height: 1.25; }
 .rcard small { color: var(--muted); font-size: .82rem; }
@@ -276,7 +279,7 @@ body.playing { overflow: hidden; }
 .bubbles { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
 .sec { font-family: var(--display); font-size: .82rem; font-weight: 600; letter-spacing: .05em; color: var(--muted); }
 .areas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.area { border: 1px solid var(--line); background: var(--surface); border-radius: 18px; padding: 14px 6px 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; }
+.area { border: 1px solid var(--line); background: var(--surface); border-radius: 18px; padding: 14px 6px 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0;  box-shadow: var(--shadow);}
 .area b { font-size: .88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .area small { font-size: .72rem; color: var(--muted); margin-top: -4px; }
 .back { align-self: flex-start; border: 0; background: none; color: var(--accent); font-weight: 600; padding: 8px 0; min-height: 40px; }
@@ -599,7 +602,7 @@ let theme = store.get("tamrini.theme", "auto");
 function applyTheme() {
   if (theme === "auto") delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = theme;
   const dark = theme === "dark" || (theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
-  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#0A0D0B" : "#2B7A57");
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#150E12" : "#FBF6F4");
 }
 applyTheme();
 let lib = { q: "", part: "all", eq: "all", area: null, routine: null };
@@ -723,8 +726,8 @@ function logBox(ex, e, date, canLog) {
     </div>`;
 }
 /* ===================== شكل الروتين: دوائر، عدّادات، مدة ===================== */
-const MCOL = { chest: "#E76F51", back: "#2A9D8F", shoulders: "#F4A261", biceps: "#8E7DBE", triceps: "#B565A7", quads: "#457B9D", hamstrings: "#3D5A80", glutes: "#D9668A", calves: "#6A994E", abs: "#E9C46A" };
-const MLIGHT = new Set(["shoulders", "abs"]);                    // ألوان فاتحة → أيقونة غامقة
+const MCOL = { chest: "#F4C7C3", back: "#CFE3DA", shoulders: "#F6D9B8", biceps: "#D9CCF0", triceps: "#E8C6E4", quads: "#C9D8EE", hamstrings: "#D6D2E9", glutes: "#F5BFD3", calves: "#D8E6C8", abs: "#F4E2B8" };
+const MLIGHT = new Set();
 const ICON = {
   db: '<path d="M6.5 8v8M17.5 8v8M3.5 10v4M20.5 10v4M6.5 12h11"/>',
   machine: '<circle cx="12" cy="4.5" r="1.6"/><path d="M12 6.2V11"/><rect x="7.5" y="11" width="9" height="9" rx="1.6"/><path d="M7.5 14h9M7.5 17h9"/>',
@@ -841,7 +844,7 @@ function renderPlan() {
     </header>`;
   if (!profile.saved) html += `<div class="banner"><span>هيدا برنامج مثال. عبّي عمرك ووزنك وهدفك ليتظبط إلك.</span><button data-tab="me">عبّي بياناتي</button></div>`;
   const ws = weekStats(), goalDays = profile.days.length;
-  const heroTitle = ws.days >= goalDays ? "حققتي هدف الأسبوع! برافو 👏" : ws.days ? `باقي ${daysWord(goalDays - ws.days)} لتكمّلي أسبوعك` : "يلا نبلّش الأسبوع";
+  const heroTitle = ws.days >= goalDays ? "حققتي هدف الأسبوع، برافو!" : ws.days ? `باقي ${daysWord(goalDays - ws.days)} لتكمّلي أسبوعك` : "يلا نبلّش الأسبوع";
   html += `<section class="hero">
       ${ring(ws.days / goalDays, `تمرّنتي ${ws.days} من ${goalDays} أيام هالأسبوع`)}
       <div class="hero-txt">
@@ -852,7 +855,7 @@ function renderPlan() {
     </section>`;
   const order = profile.days.slice().sort((x, y) => x - y);
   html += `<section class="group">
-      <h3 class="sec">تمارين هالأسبوع${profile.days.includes(todayIdx) ? "" : " · اليوم راحة 🌿"}</h3>
+      <h3 class="sec">تمارين هالأسبوع${profile.days.includes(todayIdx) ? "" : " · اليوم يوم راحة"}</h3>
       <div class="carousel" id="days">${order.map(i => {
         const d = buildDay(i), st = dayStatus(i);
         return `<button class="rcard ${i === selDay ? "sel" : ""}" data-day="${i}" aria-pressed="${i === selDay}">
@@ -879,7 +882,7 @@ function renderPlan() {
         ${[["db","دمبل"],["machine","ماشين"],["both","التنين"]].map(([k,l]) => `<button data-eq="${k}" aria-pressed="${day.eq === k}">${l}</button>`).join("")}
       </div>
       <div class="daybar ${all ? "all" : ""}" aria-live="polite">
-        <div class="daybar-top"><span>${all ? "خلّصتي تمرين اليوم كلّو! 🎉" : nDone ? "كمّلي، عم تمشي منيح" : canLog ? "اضغطي عالدائرة لتعلّمي ✓، أو ابدئي التمرين" : "هيدا يوم جايي"}</span><b>${nDone}/${day.items.length}</b></div>
+        <div class="daybar-top"><span>${all ? "خلّصتي تمرين اليوم كلّو!" : nDone ? "كمّلي، عم تمشي منيح" : canLog ? "اضغطي عالدائرة لتعلّمي ✓، أو ابدئي التمرين" : "هيدا يوم جايي"}</span><b>${nDone}/${day.items.length}</b></div>
         <div class="bar"><i style="width:${(nDone / day.items.length * 100).toFixed(0)}%"></i></div>
       </div>
       <div class="list">${day.items.map((it, i) => planRow(it, i + 1, `p-${selDay}-${i}`, `${selDay}-${i}-${day.eq}`, dStr, canLog)).join("")}</div>
@@ -1238,13 +1241,13 @@ function renderPlay() {
     const mins = Math.max(1, Math.round((Date.now() - ses.started) / 60000));
     body = `<div class="pl-main pl-end">
         <div class="pl-trophy">${CHECK}</div>
-        <h1>برافو! خلّصتي تمرين اليوم 🎉</h1>
+        <h1>برافو! خلّصتي تمرين اليوم</h1>
         <p class="muted">${quote()}</p>
         <div class="tiles">
           <div class="tile"><span>الوقت</span><b>${mins}<em> د</em></b></div>
           <div class="tile"><span>تمارين</span><b>${doneN}<em>/${items.length}</em></b></div>
           <div class="tile"><span>مجموعات</span><b>${ses.sets}</b></div>
-          <div class="tile"><span>أوزان جديدة</span><b>${ses.prs}</b><small>${ses.prs ? "رقم قياسي جديد! 💪" : "المرة الجاية زيدي شوي"}</small></div>
+          <div class="tile"><span>أوزان جديدة</span><b>${ses.prs}</b><small>${ses.prs ? "رقم قياسي جديد!" : "المرة الجاية زيدي شوي"}</small></div>
         </div>
       </div>
       <div class="pl-actions">
