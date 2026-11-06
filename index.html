@@ -234,7 +234,7 @@ body.playing { overflow: hidden; }
 .pl-how ol { margin: 0; padding-inline-start: 20px; }
 .pl-how .video { align-self: flex-start; }
 .pl-ring { position: relative; width: min(240px, 66vw); aspect-ratio: 1; display: grid; place-items: center; }
-.pl-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.pl-ring > svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
 .pl-ring circle { fill: none; stroke-width: 12; }
 .pl-ring .track { stroke: var(--soft); }
 .pl-ring .val { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset .25s linear; }
@@ -371,6 +371,28 @@ body.playing { overflow: hidden; }
 .dtype b { font-size: .9rem; }
 .pl-ask { position: fixed; inset-inline: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 3; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px; box-shadow: 0 10px 40px rgb(0 0 0 / .25); display: flex; flex-direction: column; gap: 12px; max-width: 528px; margin-inline: auto; }
 .pl-ask .pl-row > * { flex: 1; }
+/* رسمة الحركة والفيديو */
+.demo-c { position: relative; border-radius: 50%; background: var(--c); overflow: hidden; aspect-ratio: 1; width: 132px; flex: none; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .04); }
+.demo-c.big { width: min(260px, 66vw); }
+.demo-c .demo { width: 100%; height: 100%; display: block; }
+.ex-demo { display: flex; flex-direction: column; align-items: center; gap: 6px; padding-top: 4px; }
+.pl-ring.with-demo { width: min(270px, 72vw); }
+.pl-ring.with-demo .demo-c { position: absolute; inset: 9%; width: auto; }
+.pl-under { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: -4px; }
+.pl-under span { color: var(--muted); font-size: .85rem; }
+.d-skin, .d-skin2 { stroke: #E6A989; stroke-linecap: round; fill: none; }
+.d-skin2 { stroke: #C98A6C; }
+.d-skin-f { fill: #E6A989; }
+.d-leg { stroke: #3B2433; stroke-linecap: round; }
+.d-leg2 { stroke: #26161F; stroke-linecap: round; }
+.d-top { stroke: #B83A6B; stroke-linecap: round; }
+.d-hair { fill: #4A2A22; }
+.d-mat { fill: #7E2D5A; opacity: .45; }
+.d-floor { fill: #000; opacity: .05; }
+.d-prop { fill: #CDB7C0; } .d-prop2 { fill: #B9A1AB; } .d-db, .d-bar { fill: #4B4B55; } .d-cable { stroke: #8D7A83; stroke-width: .8; }
+.vbox { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: #000; }
+.vbox iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+button.video { border: 0; font: inherit; font-weight: 600; cursor: pointer; }
 .rest { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 20px; text-align: center; display: flex; flex-direction: column; gap: 6px; }
 
 .search { width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
@@ -1001,8 +1023,9 @@ function exRow(ex, idx, setsTxt, key, swapKey) {
     </button>
     ${isOpen ? `<div class="ex-body">
       ${exInfo(ex)}
+      ${vidBox(ex)}
       <div class="actions">
-        <a class="video" href="${video(ex)}" target="_blank" rel="noopener">▶ ${L("فيديو الشرح", "Watch video")}</a>
+        ${vidBtn(ex)}
         <a class="ghost link" href="${search(ex)}" target="_blank" rel="noopener">${L("فيديوهات تانية", "More videos")}</a>
         ${swapKey ? `<button class="ghost" data-swap="${swapKey}">${L("بدّلي التمرين", "Swap exercise")}</button>` : ""}
       </div>
@@ -1010,8 +1033,9 @@ function exRow(ex, idx, setsTxt, key, swapKey) {
   </div>`;
 }
 
-function exInfo(ex) {
-  return `<span class="small muted" dir="${L("ltr", "rtl")}" style="text-align:start">${esc(L(ex.en, ex.ar))}</span>
+function exInfo(ex, noDemo = false) {
+  return `${noDemo ? "" : `<div class="ex-demo">${demoCircle(ex)}<span class="small muted">${L("هيك بتنعمل الحركة", "How the movement looks")}</span></div>`}
+      <span class="small muted" dir="${L("ltr", "rtl")}" style="text-align:start">${esc(L(ex.en, ex.ar))}</span>
       <ol>${exSteps(ex).map(s => `<li>${esc(s)}</li>`).join("")}</ol>
       <p class="tip">${L("نصيحة", "Tip")}: ${esc(exTip(ex))}</p>`;
 }
@@ -1146,8 +1170,9 @@ function planRow(it, idx, key, swapKey, date, canLog) {
     ${isOpen ? `<div class="ex-body">
       ${exInfo(ex)}
       ${logBox(ex, e, date, canLog)}
+      ${vidBox(ex)}
       <div class="actions">
-        <a class="video" href="${video(ex)}" target="_blank" rel="noopener">▶ ${L("فيديو الشرح", "Watch video")}</a>
+        ${vidBtn(ex)}
         <a class="ghost link" href="${search(ex)}" target="_blank" rel="noopener">${L("فيديوهات تانية", "More videos")}</a>
         <button class="ghost" data-alt="${key}" aria-expanded="${altOpen === key}">${L("غيّري التمرين", "Change exercise")}</button>
       </div>
@@ -1313,7 +1338,7 @@ function renderRoutine(r) {
             <button class="ex-head" data-open="${k}" aria-expanded="${isOpen}"><span class="ex-main"><b>${esc(exN(it.ex))}</b><span class="ex-meta">${mN(it.ex.m)} · ${eqN(it.ex.eq)}${UNI.has(it.ex.id) ? L(" · لكل جهة", " · each side") : ""}</span></span></button>
             ${rowStepper(it, key)}
           </div>
-          ${isOpen ? `<div class="ex-body">${exInfo(it.ex)}<div class="actions"><a class="video" href="${video(it.ex)}" target="_blank" rel="noopener">▶ ${L("فيديو الشرح", "Watch video")}</a><a class="ghost link" href="${search(it.ex)}" target="_blank" rel="noopener">${L("فيديوهات تانية", "More videos")}</a></div></div>` : ""}
+          ${isOpen ? `<div class="ex-body">${exInfo(it.ex)}${vidBox(it.ex)}<div class="actions">${vidBtn(it.ex)}<a class="ghost link" href="${search(it.ex)}" target="_blank" rel="noopener">${L("فيديوهات تانية", "More videos")}</a></div></div>` : ""}
         </div>`;
       }).join("")}</div>
       <p class="note">${L("اضغطي عاسم أي تمرين لتشوفي الشرح. التمارين اللي بتخلّصيها بتنحسب بتقدّمك.", "Tap an exercise for steps. Everything you finish counts toward your progress.")}</p>
@@ -1659,10 +1684,11 @@ function finishSet() {
 }
 function afterRest() { ses.phase = "work"; ses.until = 0; saveSes(); renderPlay(); }
 
-function bigRing(frac, txt, sub) {
-  const r = 96, c = 2 * Math.PI * r;
-  return `<div class="pl-ring"><svg viewBox="0 0 220 220" aria-hidden="true"><circle class="track" cx="110" cy="110" r="${r}"/><circle class="val" cx="110" cy="110" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c * (1 - frac)).toFixed(1)}"/></svg>
-    <div><b class="pl-time" aria-live="off">${txt}</b><span>${sub}</span></div></div>`;
+function bigRing(frac, txt, sub, inner = "") {
+  const r = 104, c = 2 * Math.PI * r;
+  const ring = `<svg viewBox="0 0 220 220" aria-hidden="true"><circle class="track" cx="110" cy="110" r="${r}"/><circle class="val" cx="110" cy="110" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c * (1 - frac)).toFixed(1)}"/></svg>`;
+  if (inner) return `<div class="pl-ring with-demo">${ring}${inner}</div><div class="pl-under"><b class="pl-time" aria-live="off">${txt}</b><span>${sub}</span></div>`;
+  return `<div class="pl-ring">${ring}<div><b class="pl-time" aria-live="off">${txt}</b><span>${sub}</span></div></div>`;
 }
 function plWeight(ex) {
   if (ex.eq === "body") return "";
@@ -1721,19 +1747,19 @@ function renderPlay() {
       body = `<div class="pl-main">
           <span class="pl-pill">${L(`المجموعة ${ses.set} من ${n}`, `Set ${ses.set} of ${n}`)}</span>
           <h2 class="pl-name">${esc(exN(ex))}</h2>
-          ${bigRing(Math.min(1, left / hold), mmss(Math.ceil(left)), uni ? L("اثبتي · وبعدين بدّلي الجهة", "Hold · then switch sides") : L("اثبتي، فيكِ!", "Hold it, you've got this!"))}
+          ${bigRing(Math.min(1, left / hold), mmss(Math.ceil(left)), uni ? L("اثبتي · وبعدين بدّلي الجهة", "Hold · then switch sides") : L("اثبتي، فيكِ!", "Hold it, you've got this!"), demoCircle(ex, "in-ring"))}
         </div>
         <div class="pl-actions"><button class="start" data-pl="set">${L("✓ خلّصت", "✓ Done")}</button></div>`;
     } else {
       body = `<div class="pl-main">
-          ${avatar(ex, { big: true })}
+          ${demoCircle(ex, "big")}
           <div class="pl-head">
             <h2 class="pl-name">${esc(exN(ex))}</h2>
             <span class="pl-pill">${L(`المجموعة ${ses.set} من ${n}`, `Set ${ses.set} of ${n}`)}</span>
           </div>
           <div class="pl-target"><b>${it.isTime ? mmss(hold) : rng(g.reps)}</b><span>${it.isTime ? L("ثبات", "hold") : L("تكرار", "reps")}${uni ? L(" · لكل جهة", " · each side") : ""}</span></div>
           ${plWeight(ex)}
-          <details class="pl-how" ${ses.showHow ? "open" : ""}><summary>${L("شو الحركة؟", "How to do it")}</summary>${exInfo(ex)}<a class="video" href="${video(ex)}" target="_blank" rel="noopener">▶ ${L("فيديو الشرح", "Watch video")}</a></details>
+          <details class="pl-how" ${ses.showHow ? "open" : ""}><summary>${L("شو الحركة؟", "How to do it")}</summary>${exInfo(ex, true)}${vidBox(ex)}${vidBtn(ex)}</details>
         </div>
         <div class="pl-actions">
           ${it.isTime ? `<button class="start" data-pl="hold">▶ ${L("ابدئي", "Start")} ${mmss(hold)}</button>` : `<button class="start" data-pl="set">${L("✓ خلّصت المجموعة", "✓ Set done")}</button>`}
@@ -1761,12 +1787,13 @@ setInterval(() => {
   if (left <= 0) { beep(); ses.phase === "rest" ? afterRest() : finishSet(); return; }
   const tot = ses.phase === "rest" ? restFor(ses.key) : holdFor(ses.key, sesItems()[ses.idx].ex);
   const t = $play.querySelector(".pl-time"); if (t) t.textContent = mmss(Math.ceil(left));
-  const v = $play.querySelector(".pl-ring .val"); if (v) { const c = 2 * Math.PI * 96; v.setAttribute("stroke-dashoffset", (c * (1 - Math.min(1, left / tot))).toFixed(1)); }
+  const v = $play.querySelector(".pl-ring .val"); if (v) { const c = 2 * Math.PI * 104; v.setAttribute("stroke-dashoffset", (c * (1 - Math.min(1, left / tot))).toFixed(1)); }
 }, 250);
 
 $play.addEventListener("click", (e) => {
   const t = e.target.closest("button, summary"); if (!t || !ses) return;
   if (t.tagName === "SUMMARY") { ses.showHow = !t.parentElement.open; saveSes(); return; }
+  if (t.dataset.vid) { vidOpen = vidOpen === t.dataset.vid ? null : t.dataset.vid; ses.showHow = true; renderPlay(); return; }
   const a = t.dataset.pl, step = t.dataset.pwstep;
   if (step) {
     const ex0 = sesItems()[ses.idx].ex, id = ex0.id, cur = (entry(ses.date, id) || {}).w ?? suggestW(ex0) ?? lastBefore(id, ses.date) ?? 0;
@@ -1795,6 +1822,143 @@ $play.addEventListener("input", (e) => {
   const v = parseFloat(e.target.value);
   setEntry(ses.date, e.target.dataset.pw, { w: v > 0 && v < 1000 ? v : undefined });
 });
+
+/* ===================== رسمة متحرّكة للحركة (Demo) ===================== */
+// جسم من جنب (وجّو لليمين) بمفاصل؛ كل حركة إلها وضعيتين A و B ومنتحرّك بيناتهن.
+// viewBox 0 0 100 100، الأرض y = 88.
+const DM = { thigh: 18, shin: 18, torso: 22, ua: 13, fa: 12, neck: 2.6, head: 5.4 };
+const DEMO = {
+  squat:   { A: { hip: [48, 51], t: 4, ank: [50, 86], hand: [57, 35], eb: 1 }, B: { hip: [39, 67], t: 36, ank: [50, 86], hand: [60, 54], eb: 1 }, prop: "db1" },
+  lunge:   { A: { hip: [47, 51], t: 0, ank: [52, 86], ank2: [44, 86], hand: [47, 64], eb: -1 }, B: { hip: [43, 65], t: 2, ank: [58, 86], ank2: [26, 85], toe2: [22, 88], hand: [43, 78], eb: -1 }, prop: "db2" },
+  hinge:   { A: { hip: [47, 51], t: 2, ank: [50, 86], hand: [48, 64], eb: -1 }, B: { hip: [38, 54], t: 80, ank: [50, 86], hand: [60, 76], eb: -1 }, prop: "db2" },
+  bridge:  { A: { hip: [46, 84], t: -96, ank: [64, 86], kb: 1, hand: [36, 87], eb: 1 }, B: { hip: [48, 70], t: -118, ank: [64, 86], kb: 1, hand: [36, 87], eb: 1 }, mat: 1 },
+  thrust:  { A: { hip: [45, 82], t: -72, ank: [66, 86], kb: 1, hand: [44, 80], eb: -1 }, B: { hip: [48, 72], t: -94, ank: [66, 86], kb: 1, hand: [47, 70], eb: -1 }, prop: "bench-l", lie: 1 },
+  kick:    { A: { hip: [38, 66], t: 82, ank: [22, 86], ank2: [23, 86], toe: [17, 88], kb: 1, hand: [60, 86], eb: -1 }, B: { hip: [38, 65], t: 82, ank: [18, 45], ank2: [23, 86], toe: [22, 41], kb: 1, hand: [60, 86], eb: -1 }, mat: 1 },
+  side:    { A: { hip: [38, 66], t: 82, ank: [22, 86], ank2: [23, 86], toe: [17, 88], kb: 1, hand: [60, 86], eb: -1 }, B: { hip: [38, 64], t: 82, ank: [27, 66], ank2: [23, 86], toe: [24, 62], kb: -1, hand: [60, 86], eb: -1 }, mat: 1 },
+  calf:    { A: { hip: [50, 51], t: 0, ank: [50, 86], toe: [56, 88], hand: [50, 64], eb: -1 }, B: { hip: [50, 46], t: 0, ank: [51, 81], toe: [56, 88], hand: [50, 59], eb: -1 }, prop: "db2" },
+  crunch:  { A: { hip: [54, 83], t: -92, ank: [70, 86], kb: 1, hand: "head", eb: 1 }, B: { hip: [54, 83], t: -62, ank: [70, 86], kb: 1, hand: "head", eb: 1 }, mat: 1 },
+  legraise:{ A: { hip: [54, 84], t: -90, ank: [88, 84], kb: 1, hand: [44, 87], eb: 1 }, B: { hip: [54, 84], t: -90, ank: [62, 50], kb: 1, hand: [44, 87], eb: 1 }, mat: 1 },
+  plank:   { A: { hip: [42, 76], t: 71, ank: [8, 86], toe: [10, 88], kb: 1, hand: [74, 86], eb: -1 }, B: { hip: [42, 74.5], t: 72, ank: [8, 86], toe: [10, 88], kb: 1, hand: [74, 86], eb: -1 }, mat: 1, hold: 1 },
+  climber: { A: { hip: [40, 66], t: 72, ank: [10, 86], ank2: [12, 86], toe: [12, 88], kb: 1, hand: [62, 86], eb: 1 }, B: { hip: [41, 64], t: 70, ank: [44, 78], ank2: [12, 86], toe: [48, 80], kb: 1, hand: [62, 86], eb: 1 }, mat: 1, speed: 1.8 },
+  pushup:  { A: { hip: [40, 67], t: 72, ank: [8, 86], toe: [10, 88], kb: 1, hand: [62, 86], eb: -1 }, B: { hip: [40, 78], t: 79, ank: [8, 86], toe: [10, 88], kb: 1, hand: [62, 86], eb: -1 }, mat: 1 },
+  row:     { A: { hip: [40, 56], t: 70, ank: [50, 86], hand: [61, 74], eb: -1 }, B: { hip: [40, 56], t: 70, ank: [50, 86], hand: [50, 58], eb: -1 }, prop: "db1" },
+  pull:    { A: { hip: [44, 70], t: -6, ank: [62, 86], kb: 1, hand: [48, 23], eb: -1 }, B: { hip: [44, 70], t: -10, ank: [62, 86], kb: 1, hand: [47, 46], eb: -1 }, prop: "bar", seat: 1 },
+  press:   { A: { hip: [48, 51], t: 0, ank: [50, 86], hand: [55, 28], eb: -1 }, B: { hip: [48, 51], t: 0, ank: [50, 86], hand: [51, 4], eb: -1 }, prop: "db1" },
+  raise:   { A: { hip: [48, 51], t: 0, ank: [50, 86], hand: [50, 54], eb: -1 }, B: { hip: [48, 51], t: 0, ank: [50, 86], hand: [73, 29], eb: -1 }, prop: "db1" },
+  curl:    { A: { hip: [48, 51], t: 0, ank: [50, 86], hand: [51, 54], eb: -1 }, B: { hip: [48, 51], t: 0, ank: [50, 86], hand: [56, 32], eb: -1 }, prop: "db1" },
+  tri:     { A: { hip: [48, 51], t: 0, ank: [50, 86], hand: [43, 18], eb: 1 }, B: { hip: [48, 51], t: 0, ank: [50, 86], hand: [50, 4], eb: 1 }, prop: "db1" },
+  pushdown:{ A: { hip: [48, 51], t: 6, ank: [50, 86], hand: [60, 38], eb: -1 }, B: { hip: [48, 51], t: 6, ank: [50, 86], hand: [55, 54], eb: -1 }, prop: "rope" },
+  bench:   { A: { hip: [56, 70], t: -90, ank: [72, 86], kb: 1, hand: [37, 63], eb: 1 }, B: { hip: [56, 70], t: -90, ank: [72, 86], kb: 1, hand: [35, 45], eb: 1 }, prop: "bench", lie: 1 },
+  legext:  { A: { hip: [40, 66], t: -6, ank: [57, 85], kb: 1, hand: [42, 70], eb: -1 }, B: { hip: [40, 66], t: -6, ank: [76, 63], toe: [80, 58], kb: 1, hand: [42, 70], eb: -1 }, seat: 1 },
+  legcurl: { A: { hip: [46, 76], t: 90, ank: [12, 77], toe: [9, 80], kb: -1, hand: [74, 82], eb: -1 }, B: { hip: [46, 76], t: 90, ank: [22, 56], toe: [18, 54], kb: -1, hand: [74, 82], eb: -1 }, prop: "pad" },
+  twist:   { A: { hip: [46, 80], t: -32, ank: [66, 76], toe: [70, 74], kb: 1, hand: [44, 66], eb: 1 }, B: { hip: [46, 80], t: -28, ank: [66, 76], toe: [70, 74], kb: 1, hand: [62, 66], eb: 1 }, mat: 1 },
+  chop:    { A: { hip: [48, 51], t: 0, ank: [50, 86], ank2: [44, 86], hand: [62, 12], eb: -1 }, B: { hip: [46, 56], t: 20, ank: [50, 86], ank2: [44, 86], hand: [40, 72], eb: -1 }, prop: "db1" },
+  wallsit: { A: { hip: [36, 66], t: -2, ank: [54, 86], kb: 1, hand: [44, 66], eb: -1 }, B: { hip: [36, 65.5], t: -2, ank: [54, 86], kb: 1, hand: [44, 65.5], eb: -1 }, hold: 1, wall: 1 },
+};
+// كل تمرين → نوع الحركة
+const DEMO_OF = {
+  "db-bench": "bench", "db-incline": "bench", "db-fly": "bench", "m-chestpress": "bench", "m-pecdeck": "bench", "m-crossover": "pushdown", "pushup": "pushup", "incline-pushup": "pushup",
+  "db-row": "row", "db-chestrow": "row", "m-pulldown": "pull", "m-cablerow": "row", "m-assistpull": "pull", "m-straightarm": "pushdown", "superman": "legraise", "db-pullover": "bench",
+  "db-shpress": "press", "db-lateral": "raise", "db-reardelt": "row", "m-shpress": "press", "m-cablelateral": "raise", "m-revpec": "row", "db-arnold": "press", "db-front": "raise", "m-facepull": "row",
+  "db-curl": "curl", "db-hammer": "curl", "m-cablecurl": "curl", "m-preacher": "curl", "db-concentration": "curl",
+  "db-overhead": "tri", "db-kickback": "row", "m-pushdown": "pushdown", "bench-dips": "pushup", "db-skull": "bench", "m-overheadext": "tri",
+  "goblet": "squat", "db-lunge": "lunge", "db-stepup": "lunge", "m-legpress": "squat", "m-legext": "legext", "bw-squat": "squat", "m-hack": "squat", "wallsit": "wallsit",
+  "db-rdl": "hinge", "m-lyingcurl": "legcurl", "m-seatedcurl": "legext", "db-slrdl": "hinge", "db-hamcurl": "legcurl",
+  "db-hipthrust": "thrust", "glute-bridge": "bridge", "m-kickback": "kick", "m-abduction": "side", "db-bulgarian": "lunge", "db-sumo": "squat", "db-revlunge": "lunge", "db-curtsy": "lunge",
+  "m-pullthrough": "hinge", "m-hipthrust": "thrust", "m-glutekick": "kick", "donkey-kick": "kick", "fire-hydrant": "side", "sl-bridge": "bridge", "frog-pump": "bridge", "clamshell": "side",
+  "db-calf": "calf", "m-calf": "calf", "bw-calf": "calf", "db-slcalf": "calf", "db-seatedcalf": "calf", "m-standingcalf": "calf", "m-legpresscalf": "calf",
+  "plank": "plank", "crunch": "crunch", "deadbug": "legraise", "legraise": "legraise", "db-twist": "twist", "m-cablecrunch": "crunch", "bicycle": "crunch", "mountain": "climber",
+  "side-plank": "plank", "rev-crunch": "legraise", "hollow": "plank", "heel-taps": "crunch", "flutter": "legraise", "db-sidebend": "chop", "db-woodchop": "chop", "m-woodchop": "chop",
+  "m-pallof": "pushdown", "m-captain": "legraise", "m-abcrunch": "crunch",
+};
+
+const lerp = (a, b, k) => a + (b - a) * k;
+const lerpP = (a, b, k) => [lerp(a[0], b[0], k), lerp(a[1], b[1], k)];
+function ik(o, tgt, l1, l2, sign) {               // مفصل بين نقطتين (ركبة / كوع)
+  let dx = tgt[0] - o[0], dy = tgt[1] - o[1], d = Math.hypot(dx, dy) || 0.001;
+  const max = l1 + l2 - 0.05; if (d > max) { dx *= max / d; dy *= max / d; d = max; }
+  const a = (l1 * l1 - l2 * l2 + d * d) / (2 * d), h = Math.sqrt(Math.max(0, l1 * l1 - a * a));
+  const ux = dx / d, uy = dy / d, nx = uy * sign, ny = -ux * sign;
+  return [[o[0] + ux * a + nx * h, o[1] + uy * a + ny * h], [o[0] + dx, o[1] + dy]];
+}
+function poseAt(P, k) {
+  const A = P.A, B = P.B, g = (key, def) => A[key] === undefined ? def : (typeof A[key] === "string" ? A[key] : (Array.isArray(A[key]) ? lerpP(A[key], B[key] ?? A[key], k) : lerp(A[key], B[key] ?? A[key], k)));
+  const hip = g("hip"), t = g("t") * Math.PI / 180;
+  const up = [Math.sin(t), -Math.cos(t)];
+  const sh = [hip[0] + up[0] * DM.torso, hip[1] + up[1] * DM.torso];
+  const hc = [sh[0] + up[0] * (DM.neck + DM.head) + 0.6, sh[1] + up[1] * (DM.neck + DM.head)];
+  const ank = g("ank"), ank2 = A.ank2 ? g("ank2") : [ank[0] - 1.6, ank[1]];
+  const kb = A.kb ?? 1, eb = A.eb ?? -1;
+  const [knee] = ik(hip, ank, DM.thigh, DM.shin, kb), [knee2] = ik(hip, ank2, DM.thigh, DM.shin, A.ank2 ? kb : kb);
+  let hand = A.hand === "head" ? [hc[0] - 2, hc[1] + 2] : g("hand");
+  const [elb, hand1] = ik(sh, hand, DM.ua, DM.fa, eb);
+  const toe = A.toe ? g("toe") : [ank[0] + 6, ank[1] + 1.6], toe2 = A.toe2 ? g("toe2") : A.ank2 ? [ank2[0] + 6, ank2[1] + 1.6] : [ank2[0] + 6, ank2[1] + 1.6];
+  return { hip, sh, hc, knee, ank: ik(hip, ank, DM.thigh, DM.shin, kb)[1], toe, knee2, ank2: ik(hip, ank2, DM.thigh, DM.shin, kb)[1], toe2, elb, hand: hand1, up };
+}
+const L2 = (a, b, cls, w) => `<line class="${cls}" x1="${a[0].toFixed(2)}" y1="${a[1].toFixed(2)}" x2="${b[0].toFixed(2)}" y2="${b[1].toFixed(2)}" stroke-width="${w}"/>`;
+function demoFrame(P, k, eq) {
+  const p = poseAt(P, k);
+  const back = [p.hc[0] - p.up[0] * 0 - 4.4 * Math.cos(Math.atan2(p.up[1], p.up[0]) + Math.PI / 2) * 0, p.hc[1]];
+  let props = "";
+  if (P.prop === "bench" || P.prop === "bench-l") props += `<rect class="d-prop" x="${P.prop === "bench" ? 18 : 10}" y="${P.prop === "bench" ? 72 : 74}" width="${P.prop === "bench" ? 52 : 22}" height="5" rx="2"/><rect class="d-prop2" x="${P.prop === "bench" ? 24 : 16}" y="77" width="3" height="11"/><rect class="d-prop2" x="${P.prop === "bench" ? 60 : 26}" y="77" width="3" height="11"/>`;
+  if (P.seat) props += `<rect class="d-prop" x="30" y="68" width="18" height="4.5" rx="2"/><rect class="d-prop2" x="37" y="72" width="3" height="16"/>`;
+  if (P.prop === "pad") props += `<rect class="d-prop" x="14" y="79" width="70" height="4" rx="2"/>`;
+  if (P.wall) props += `<rect class="d-prop2" x="22" y="10" width="4" height="78" rx="1"/>`;
+  if (P.prop === "bar") props += `<line class="d-cable" x1="${p.hand[0]}" y1="${p.hand[1]}" x2="${p.hand[0]}" y2="-5"/><rect class="d-bar" x="${p.hand[0] - 9}" y="${p.hand[1] - 1.2}" width="18" height="2.4" rx="1.2"/>`;
+  if (P.prop === "rope") props += `<line class="d-cable" x1="${p.hand[0]}" y1="${p.hand[1]}" x2="${p.hand[0] + 6}" y2="-5"/>`;
+  const db = (h) => `<rect class="d-db" x="${(h[0] - 3.2).toFixed(2)}" y="${(h[1] - 1.4).toFixed(2)}" width="6.4" height="2.8" rx="1.2"/><rect class="d-db" x="${(h[0] - 3.8).toFixed(2)}" y="${(h[1] - 2.4).toFixed(2)}" width="1.8" height="4.8" rx=".7"/><rect class="d-db" x="${(h[0] + 2).toFixed(2)}" y="${(h[1] - 2.4).toFixed(2)}" width="1.8" height="4.8" rx=".7"/>`;
+  const hold = eq !== "body" && (P.prop === "db1" || P.prop === "db2") ? db(p.hand) : "";
+  const hair = `<circle class="d-hair" cx="${p.hc[0].toFixed(2)}" cy="${(p.hc[1] - 0.6).toFixed(2)}" r="${DM.head + 0.35}"/><ellipse class="d-hair" cx="${(p.hc[0] - 5.6 * Math.cos(Math.atan2(p.up[0], -p.up[1]))).toFixed(2)}" cy="${(p.hc[1] + 1.6 + 5.6 * Math.sin(Math.atan2(p.up[0], -p.up[1])) * 0.2).toFixed(2)}" rx="2.6" ry="4.2" transform="rotate(${(Math.atan2(p.up[0], -p.up[1]) * 180 / Math.PI + 18).toFixed(1)} ${(p.hc[0] - 5.6 * Math.cos(Math.atan2(p.up[0], -p.up[1]))).toFixed(2)} ${(p.hc[1] + 1.6).toFixed(2)})"/>`;
+  return `<rect class="d-floor" x="-60" y="88.6" width="220" height="80"/><rect class="d-mat" x="${P.mat || P.lie ? -2 : 26}" y="87" width="${P.mat || P.lie ? 104 : 48}" height="3.2" rx="1.6"/>${props}
+    ${L2(p.sh, p.elb, "d-skin2", 4)}${L2(p.elb, p.hand, "d-skin2", 3.6)}
+    ${L2(p.hip, p.knee2, "d-leg2", 6.4)}${L2(p.knee2, p.ank2, "d-leg2", 5.2)}${L2(p.ank2, p.toe2, "d-skin2", 3)}
+    ${L2(p.hip, p.knee, "d-leg", 6.6)}${L2(p.knee, p.ank, "d-leg", 5.4)}${L2(p.ank, p.toe, "d-skin", 3.2)}
+    ${L2([p.hip[0] + p.up[0] * 2, p.hip[1] + p.up[1] * 2], [p.sh[0] - p.up[0] * 1.5, p.sh[1] - p.up[1] * 1.5], "d-top", 9)}
+    ${L2(p.sh, [p.sh[0] + p.up[0] * (DM.neck + 1), p.sh[1] + p.up[1] * (DM.neck + 1)], "d-skin", 3.4)}
+    ${hair}<circle class="d-skin-f" cx="${(p.hc[0] + 0.8 * Math.cos(Math.atan2(p.up[0], -p.up[1]))).toFixed(2)}" cy="${(p.hc[1] + 0.4).toFixed(2)}" r="${DM.head - 0.6}"/>
+    ${L2(p.sh, p.elb, "d-skin", 4.2)}${L2(p.elb, p.hand, "d-skin", 3.8)}${hold}`;
+}
+const DEMO_VB = {};
+function demoVB(pat) {                      // مربّع على قدّ الحركة، لتطلع الرسمة كبيرة بالدائرة
+  if (DEMO_VB[pat]) return DEMO_VB[pat];
+  const P = DEMO[pat]; let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  for (const k of [0, 0.5, 1]) {
+    const p = poseAt(P, k);
+    [p.hip, p.sh, p.knee, p.ank, p.toe, p.knee2, p.ank2, p.toe2, p.elb, p.hand, [p.hc[0] - 7, p.hc[1] - 7], [p.hc[0] + 7, p.hc[1] + 7]].forEach(([x, y]) => { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); });
+  }
+  y1 = Math.max(y1, 90);
+  const size = Math.max(x1 - x0, y1 - y0) * 1.28 + 6, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2 + 2;
+  return (DEMO_VB[pat] = [cx - size / 2, cy - size / 2, size, size]);
+}
+function demoSVG(exId, eq, cls = "") {
+  const pat = DEMO_OF[exId] || "squat", P = DEMO[pat], vb = demoVB(pat);
+  return `<svg class="demo ${cls}" viewBox="${vb.map(v => v.toFixed(1)).join(" ")}" data-pat="${pat}" data-eq="${eq}" aria-hidden="true">${demoFrame(P, 0.5, eq)}</svg>`;
+}
+let demoRAF = 0;
+function demoTick(now) {
+  const els = document.querySelectorAll("svg.demo");
+  if (els.length) {
+    els.forEach(el => {
+      const P = DEMO[el.dataset.pat]; if (!P) return;
+      const per = (P.hold ? 4200 : 2800) / (P.speed || 1);
+      const k = 0.5 - 0.5 * Math.cos((now % per) / per * Math.PI * 2);
+      el.innerHTML = demoFrame(P, k, el.dataset.eq);
+    });
+  }
+  demoRAF = requestAnimationFrame(demoTick);
+}
+if (typeof matchMedia === "function" && !matchMedia("(prefers-reduced-motion: reduce)").matches) demoRAF = requestAnimationFrame(demoTick);
+
+const demoCircle = (ex, cls = "") => `<div class="demo-c ${cls}" style="--c:${MCOL[ex.m]}">${demoSVG(ex.id, ex.eq)}</div>`;
+
+/* فيديو الشرح جوّا التطبيق (إذا مسموح)، وإلّا بيفتح عاليوتيوب */
+let vidOpen = null;
+const canEmbed = () => /^https?:$/.test(location.protocol) && !(window.claude && typeof window.claude.use === "function") && !/claude|anthropic/i.test(location.hostname);
+function vidBtn(ex) {
+  if (ex.yt && canEmbed()) return `<button class="video" data-vid="${ex.id}" aria-expanded="${vidOpen === ex.id}">▶ ${vidOpen === ex.id ? L("سكّري الفيديو", "Close video") : L("فيديو الشرح", "Watch video")}</button>`;
+  return `<a class="video" href="${video(ex)}" target="_blank" rel="noopener">▶ ${L("فيديو الشرح (يوتيوب)", "Watch on YouTube")}</a>`;
+}
+const vidBox = (ex) => vidOpen === ex.id && ex.yt && canEmbed() ? `<div class="vbox"><iframe src="https://www.youtube-nocookie.com/embed/${ex.yt}?autoplay=1&playsinline=1&rel=0&modestbranding=1" title="${esc(exN(ex))}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>` : "";
 
 /* ===================== الأحداث ===================== */
 document.addEventListener("click", (e) => {
@@ -1840,9 +2004,10 @@ document.addEventListener("click", (e) => {
   if (ds.lang) { lang = ds.lang; store.set("tamrini.lang", lang); applyLang(); render(); if (ses) renderPlay(); return; }
   if (ds.themeSet) { theme = ds.themeSet; store.set("tamrini.theme", theme); applyTheme(); render(); return; }
   if (ds.prog) { progOpen = progOpen === ds.prog ? "" : ds.prog; render(); return; }
-  if (ds.open) { open = open === ds.open ? null : ds.open; render(); return; }
+  if (ds.open) { open = open === ds.open ? null : ds.open; vidOpen = null; render(); return; }
   if (ds.day) { selDay = +ds.day; open = null; altOpen = null; actOpen = false; postWarn = false; render(); return; }
   if (ds.eq) { dayEq[selDay] = ds.eq; store.set("tamrini.dayEq", dayEq); open = null; render(); return; }
+  if (ds.vid) { vidOpen = vidOpen === ds.vid ? null : ds.vid; render(); return; }
   if (ds.alt) { altOpen = altOpen === ds.alt ? null : ds.alt; render(); return; }
   if (ds.pick) { picks[ds.pslot] = ds.pick; store.set("tamrini.picks", picks); altOpen = null; render(); return; }
   if (ds.pkg) { const d = buildDay(selDay); if (d) { pkgSel[d.k] = ds.pkg; store.set("tamrini.pkgSel", pkgSel); } open = null; altOpen = null; render(); return; }
