@@ -53,7 +53,7 @@ button, a, summary, input { touch-action: manipulation; }
   padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
   display: flex; flex-direction: column; gap: 18px;
 }
-h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; }
+h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; line-height: 1.35; }
 h1 { font-size: 1.85rem; font-weight: 700; letter-spacing: 0; }
 h2 { font-size: 1.22rem; font-weight: 600; }
 h3 { font-size: 1rem; font-weight: 500; }
@@ -164,7 +164,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .c-hit { fill: transparent; cursor: pointer; outline: none; }
 .c-hit.on, .c-hit:focus-visible { fill: var(--ink); fill-opacity: .06; }
 .spark { flex: none; width: 72px; height: 28px; overflow: visible; }
-.tooltip { position: fixed; z-index: 20; background: var(--ink); color: var(--bg); font-size: .82rem; padding: 6px 10px; border-radius: 8px; pointer-events: none; white-space: nowrap; direction: rtl; box-shadow: 0 4px 14px rgb(0 0 0 / .18); }
+.tooltip { position: fixed; z-index: 20; background: var(--ink); color: var(--bg); font-size: .82rem; padding: 6px 10px; border-radius: 8px; pointer-events: none; white-space: nowrap; box-shadow: 0 4px 14px rgb(0 0 0 / .18); }
 .tbl summary { font-size: .82rem; color: var(--muted); cursor: pointer; padding: 10px 0; }
 .tbl table { width: 100%; border-collapse: collapse; font-size: .85rem; margin-top: 6px; }
 .tbl th, .tbl td { text-align: start; padding: 6px 4px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
@@ -286,6 +286,10 @@ body.playing { overflow: hidden; }
 .pl-title { display: flex; flex-direction: column; align-items: center; line-height: 1.3; }
 .pl-title small { font-family: var(--body); color: var(--muted); font-size: .8rem; }
 
+.lang-btn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 14px; min-height: 40px; font-weight: 600; font-size: .85rem; }
+.hdr { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.hdr > div { display: flex; flex-direction: column; gap: 4px; }
+.cover { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-top: 6px; }
 .rest { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 20px; text-align: center; display: flex; flex-direction: column; gap: 6px; }
 
 .search { width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
@@ -340,28 +344,33 @@ form { display: flex; flex-direction: column; gap: 18px; }
 
 <nav class="tabs" dir="rtl">
   <div class="tabs-in">
-    <button id="tab-plan" data-tab="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>برنامجي</button>
-    <button id="tab-prog" data-tab="prog"><svg viewBox="0 0 24 24"><path d="M4 20h16M7 16v-5M12 16V6M17 16v-8"/></svg>تقدّمي</button>
-    <button id="tab-lib" data-tab="lib"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>التمارين</button>
-    <button id="tab-me" data-tab="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>ملفي</button>
+    <button id="tab-plan" data-tab="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span data-ar="برنامجي" data-en="Plan">برنامجي</span></button>
+    <button id="tab-prog" data-tab="prog"><svg viewBox="0 0 24 24"><path d="M4 20h16M7 16v-5M12 16V6M17 16v-8"/></svg><span data-ar="تقدّمي" data-en="Progress">تقدّمي</span></button>
+    <button id="tab-lib" data-tab="lib"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span data-ar="التمارين" data-en="Exercises">التمارين</span></button>
+    <button id="tab-me" data-tab="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span data-ar="ملفي" data-en="Profile">ملفي</span></button>
   </div>
 </nav>
 
 <script>
 /* ===================== البيانات ===================== */
+let lang = (() => { try { return JSON.parse(localStorage.getItem("tamrini.lang")) || "ar"; } catch { return "ar"; } })();
+const L = (ar, en) => lang === "en" ? en : ar;
 const MUSCLES = {
-  chest:     { ar: "الصدر",          part: "upper", kw: "صدر بنش" },
-  back:      { ar: "الظهر",          part: "upper", kw: "ظهر لاتس" },
-  shoulders: { ar: "الأكتاف",        part: "upper", kw: "كتف اكتاف كتوف" },
-  biceps:    { ar: "الباي (أمامي)",  part: "upper", kw: "باي بايسبس ايد يد زند ذراع" },
-  triceps:   { ar: "التراي (خلفي)",  part: "upper", kw: "تراي ترايسبس ايد يد زند ذراع" },
-  quads:     { ar: "الفخذ الأمامي",  part: "lower", kw: "فخد فخذ رجل رجلين ارجل سكوات امامي" },
-  hamstrings:{ ar: "الفخذ الخلفي",   part: "lower", kw: "فخد فخذ رجل رجلين ارجل خلفي هامسترنج" },
-  glutes:    { ar: "الأرداف",        part: "lower", kw: "ارداف مؤخره طيز جلوتس ورك رجل هيب" },
-  calves:    { ar: "السمانة",        part: "lower", kw: "سمانه بطه ساق رجل" },
-  abs:       { ar: "البطن",          part: "core",  kw: "بطن معده كور خصر خواصر جذع سكس باك" },
+  chest:     { ar: "الصدر",          part: "upper", en: "Chest", kwEn: "chest pecs", kw: "صدر بنش" },
+  back:      { ar: "الظهر",          part: "upper", en: "Back", kwEn: "back lats", kw: "ظهر لاتس" },
+  shoulders: { ar: "الأكتاف",        part: "upper", en: "Shoulders", kwEn: "shoulders delts", kw: "كتف اكتاف كتوف" },
+  biceps:    { ar: "الباي (أمامي)",  part: "upper", en: "Biceps", kwEn: "biceps arms", kw: "باي بايسبس ايد يد زند ذراع" },
+  triceps:   { ar: "التراي (خلفي)",  part: "upper", en: "Triceps", kwEn: "triceps arms", kw: "تراي ترايسبس ايد يد زند ذراع" },
+  quads:     { ar: "الفخذ الأمامي",  part: "lower", en: "Quads", kwEn: "quads thighs legs", kw: "فخد فخذ رجل رجلين ارجل سكوات امامي" },
+  hamstrings:{ ar: "الفخذ الخلفي",   part: "lower", en: "Hamstrings", kwEn: "hamstrings legs", kw: "فخد فخذ رجل رجلين ارجل خلفي هامسترنج" },
+  glutes:    { ar: "الأرداف",        part: "lower", en: "Glutes", kwEn: "glutes butt booty hips", kw: "ارداف مؤخره طيز جلوتس ورك رجل هيب" },
+  calves:    { ar: "السمانة",        part: "lower", en: "Calves", kwEn: "calves legs", kw: "سمانه بطه ساق رجل" },
+  abs:       { ar: "البطن",          part: "core",  en: "Abs & Core", kwEn: "abs core waist obliques", kw: "بطن معده كور خصر خواصر جذع سكس باك" },
 };
 const EQ = { db: "دمبل", machine: "ماشين", body: "وزن الجسم" };
+const EQ_EN = { db: "Dumbbell", machine: "Machine", body: "Bodyweight" };
+const eqN = (e) => L(EQ[e], EQ_EN[e]);
+const mN = (m) => L(MUSCLES[m].ar, MUSCLES[m].en);
 const PARTS = { upper: "علوي", lower: "سفلي", core: "بطن" };
 
 const EX = [
@@ -558,15 +567,115 @@ const EX = [
   { id:"m-abcrunch", yt:"tE-X4SZtAio", m:"abs", eq:"machine", ar:"جهاز البطن", en:"Machine Ab Crunch",
     steps:["ظبطي الكرسي وامسكي المسكات.","انثني لقدام بعصر البطن.","رجعي ببطء."], tip:"الحركة من البطن مش من الإيدين." },
 ];
+// English steps & tips for each exercise
+const EX_EN = {
+  "db-bench": [["Lie on the bench with the dumbbells at your chest, elbows at about 45°.", "Press up until your hands come close together without locking your elbows.", "Lower slowly to chest level."], "Keep your shoulder blades pinned to the bench and don't arch your back."],
+  "db-incline": [["Set the bench to about 30°.", "Press the dumbbells up toward your upper chest.", "Lower with control until you feel a stretch in your chest."], "Too steep an angle shifts the work to your shoulders."],
+  "db-fly": [["Lie down with the dumbbells above your chest, elbows slightly bent.", "Open your arms out to the sides as if hugging a tree.", "Bring them back up, squeezing your chest."], "Light weight; the movement comes from the shoulder, not the elbow."],
+  "m-chestpress": [["Adjust the seat so the handles are at mid-chest.", "Push forward until your arms are almost straight.", "Return slowly without letting the weight touch down."], "Keep your back against the pad the whole time."],
+  "m-pecdeck": [["Sit and set the handles at chest height.", "Bring your arms together in front, squeezing your chest.", "Open slowly until you feel a light stretch."], "Don't go further back than shoulder level."],
+  "m-crossover": [["Stand between the two pulleys, one step forward.", "Pull the handles down and forward until they meet in front of your chest.", "Return slowly."], "Lean forward slightly and keep your elbows fixed."],
+  "pushup": [["Hands slightly wider than shoulders, body in a straight line.", "Lower your chest close to the floor.", "Push back up."], "If it's hard, do it on your knees or on a bench edge."],
+  "incline-pushup": [["Hands on the edge of a bench, a bit wider than your shoulders.", "Keep your body straight and lower your chest toward the bench.", "Push back up."], "Easier than a regular push-up; the lower the surface, the harder it gets."],
+  "db-row": [["Put one knee and hand on the bench, back flat.", "Pull the dumbbell toward your hip.", "Lower slowly until your arm is straight."], "Think of pulling with your elbow, not your hand."],
+  "db-chestrow": [["Lie face down on a bench set to 30°.", "Row the dumbbells up and squeeze your shoulder blades.", "Lower with control."], "Easy on the lower back because your chest is supported."],
+  "m-pulldown": [["Grip the bar wider than your shoulders and sit tight.", "Pull the bar to your upper chest, chest up.", "Let it go back up slowly."], "Don't pull behind your head and don't swing."],
+  "m-cablerow": [["Sit with your feet on the platform, back straight.", "Pull the handle to your stomach and squeeze your back.", "Return slowly, keeping your posture."], "Your torso stays still; the work is in your arms and back."],
+  "m-assistpull": [["Choose an assistance weight (more weight = easier).", "Pull up until your chin is over the bar.", "Lower slowly all the way."], "Reduce the assistance over time to reach a full pull-up."],
+  "m-straightarm": [["Stand facing the cable with your arms almost straight.", "Pull the bar down to your thighs.", "Let it rise slowly."], "Feel it under your armpits (the lats)."],
+  "superman": [["Lie face down with your arms forward.", "Lift your arms and legs off the floor together.", "Hold for two seconds and lower."], "Great for the lower back; it's a small movement."],
+  "db-pullover": [["Lie on the bench holding one dumbbell with both hands over your chest.", "Lower it behind your head with a slight bend in the elbows.", "Bring it back over your chest."], "Light weight; feel the stretch in your back and chest."],
+  "db-shpress": [["Sit on an upright bench, dumbbells at shoulder height.", "Press them overhead.", "Lower to ear level."], "Don't arch your back; brace your core."],
+  "db-lateral": [["Stand with the dumbbells at your sides.", "Raise your arms out to shoulder height.", "Lower slowly."], "Light weight, slightly bent elbows, no swinging."],
+  "db-reardelt": [["Hinge forward with a flat back.", "Raise your arms out to the sides.", "Lower with control."], "Works the rear shoulders and improves posture."],
+  "m-shpress": [["Adjust the seat so the handles are at shoulder height.", "Press up.", "Lower slowly."], "A safe option for beginners."],
+  "m-cablelateral": [["Stand beside the cable and hold the handle with your far hand.", "Raise your arm out to shoulder height.", "Lower slowly and switch sides."], "The cable keeps tension through the whole movement."],
+  "m-revpec": [["Sit facing the machine.", "Open your arms back and out to the sides.", "Return slowly."], "For the rear shoulders and upper back."],
+  "db-arnold": [["Sit with the dumbbells in front of your face, palms facing you.", "Press up while rotating your palms forward.", "Lower and rotate back to the start."], "Move slowly and don't arch your back."],
+  "db-front": [["Stand with the dumbbells in front of your thighs.", "Raise your arms forward to shoulder height.", "Lower slowly."], "No swinging; keep a slight bend in your elbows."],
+  "m-facepull": [["Set the cable at face height and grab the rope.", "Pull the rope toward your face, elbows out wide.", "Return slowly."], "Great for the rear shoulders and posture."],
+  "db-curl": [["Stand with your elbows tucked at your sides.", "Curl the dumbbell to your shoulder, turning your palm up.", "Lower slowly all the way."], "Elbows stay still; don't swing your back."],
+  "db-hammer": [["Hold the dumbbells with palms facing in (like a hammer).", "Curl up to your shoulders.", "Lower slowly."], "Also works the forearms."],
+  "m-cablecurl": [["Stand facing the cable with the bar low.", "Curl the bar to your chest.", "Lower slowly."], "Constant tension through the movement."],
+  "m-preacher": [["Rest your arms on the pad.", "Curl up and squeeze your biceps.", "Lower slowly without snapping your elbows straight."], "Isolates the biceps with no cheating."],
+  "db-concentration": [["Sit and rest your elbow against your inner thigh.", "Curl the dumbbell to your shoulder.", "Lower slowly all the way."], "Upper arm stays on your thigh; no swinging."],
+  "db-overhead": [["Hold one dumbbell overhead with both hands.", "Lower it behind your head by bending your elbows.", "Extend back up."], "Elbows point forward and don't flare out too much."],
+  "db-kickback": [["Hinge forward with your elbow tucked at your side.", "Extend your arm straight back.", "Return slowly."], "Upper arm stays still; only the forearm moves."],
+  "m-pushdown": [["Stand facing the cable with the rope or bar high.", "Push down until your arms are straight.", "Let it rise back to chest level."], "Keep your elbows pinned to your sides."],
+  "bench-dips": [["Hands on the bench edge, legs out in front.", "Lower your body by bending your elbows.", "Push back up."], "Bending your knees makes it easier."],
+  "db-skull": [["Lie on the bench with the dumbbells above your chest.", "Bend your elbows and lower the dumbbells beside your head.", "Extend back up."], "Elbows stay fixed and pointing up; only the forearms move."],
+  "m-overheadext": [["Grab the rope, face away from the machine and step forward.", "Extend your arms overhead.", "Return slowly behind your head."], "Keep your elbows close to your head."],
+  "goblet": [["Hold a dumbbell at your chest, feet shoulder-width apart.", "Sit down as if onto a chair.", "Stand up, driving through your heels."], "Knees track in line with your toes."],
+  "db-lunge": [["Hold two dumbbells and take a step forward.", "Lower until both knees are at 90°.", "Push back and switch legs."], "Keep your torso upright; don't lean forward."],
+  "db-stepup": [["Hold two dumbbells in front of a box or bench.", "Step up with one leg and drive through it.", "Step down with control and switch."], "Push with the top leg, not the bottom one."],
+  "m-legpress": [["Place your feet on the platform shoulder-width apart.", "Lower to about 90°.", "Press up without locking your knees."], "Your lower back stays on the pad."],
+  "m-legext": [["Sit with the pad on your ankles.", "Extend your legs forward.", "Lower slowly."], "Pause for a second at the top."],
+  "bw-squat": [["Feet shoulder-width apart, arms forward.", "Sit back and down.", "Stand up."], "A great start for learning the movement."],
+  "m-hack": [["Back and shoulders on the pad, feet on the platform shoulder-width apart.", "Release the lock and lower slowly until your thighs are about parallel to the platform.", "Press up through your whole foot without locking your knees."], "Start light to get used to the machine; keep your heels down."],
+  "wallsit": [["Lean your back against a wall with your feet slightly forward.", "Slide down until your knees are at 90°, like sitting on a chair.", "Hold for 20–45 seconds."], "Knees stay above your ankles, not past them."],
+  "db-rdl": [["Stand with the dumbbells in front of your thighs.", "Push your hips back and lower the dumbbells along your legs.", "Stand up and squeeze your glutes."], "Back always flat, knees slightly bent."],
+  "m-lyingcurl": [["Lie face down with the pad above your ankles.", "Curl your legs back.", "Lower slowly."], "Keep your hips pressed into the pad."],
+  "m-seatedcurl": [["Sit with the pad under your ankles.", "Pull down and back.", "Return slowly."], "Lock your thighs under the pad."],
+  "db-slrdl": [["Stand on one leg, dumbbell in the opposite hand.", "Hinge forward from the hip as your other leg lifts behind you.", "Stand back up and squeeze your glutes."], "Keep your hips square; hold a wall if needed."],
+  "db-hamcurl": [["Lie face down on a bench with a dumbbell between your feet.", "Bend your knees and bring the dumbbell toward your glutes.", "Lower slowly."], "Go light at first and make sure the dumbbell is secure."],
+  "db-hipthrust": [["Rest your upper back on a bench with the dumbbell on your hips.", "Drive your hips up until your body is in a straight line.", "Lower slowly."], "Squeeze your glutes at the top and don't arch your back."],
+  "glute-bridge": [["Lie on your back with your knees bent.", "Lift your hips up.", "Hold for two seconds and lower."], "Push through your heels."],
+  "m-kickback": [["Strap the cuff to your ankle and face the machine.", "Kick your leg back and up.", "Return slowly and switch."], "Body still; the movement comes from the hip."],
+  "m-abduction": [["Sit with the pads on the outside of your knees.", "Push your legs outward.", "Close slowly."], "Works the side of the glutes."],
+  "db-bulgarian": [["Put the top of your back foot on a bench and hold two dumbbells.", "Lower until your back knee nears the floor.", "Drive through your front heel to stand."], "A slight forward lean works the glutes more."],
+  "db-sumo": [["Stand with feet wider than shoulders, toes out.", "Hold one dumbbell between your legs.", "Squat down with your chest up, then stand and squeeze your glutes."], "Knees follow your toes; also works the inner thighs."],
+  "db-revlunge": [["Stand with the dumbbells at your sides.", "Step one leg back and lower until both knees are at 90°.", "Push through the front heel and return."], "Easier on the knees than forward lunges."],
+  "db-curtsy": [["Stand with feet hip-width apart, a dumbbell at your chest or no weight.", "Step one leg back and across, like a curtsy.", "Lower, return and switch."], "Great for the side of the glutes. Start without weight."],
+  "m-pullthrough": [["Attach the rope to the low pulley and face away from the machine.", "Hold the rope between your legs and push your hips back.", "Drive your hips forward, stand and squeeze your glutes."], "Move from the hips; don't pull with your arms or back."],
+  "m-hipthrust": [["Rest the bottom of your shoulder blades on the bench with the bar padded on your hips.", "Drive through your heels until your body is straight.", "Pause at the top and lower slowly."], "Chin tucked; don't arch your back."],
+  "m-glutekick": [["Set up the machine and place your foot on the pad.", "Push back and up until you squeeze your glutes.", "Return slowly and switch."], "Don't arch your back to go higher."],
+  "donkey-kick": [["Get on your hands and knees, back flat.", "Lift one leg back and up with the knee bent at 90°.", "Lower slowly and switch."], "Push your heel toward the ceiling."],
+  "fire-hydrant": [["Get on your hands and knees.", "Lift one bent knee out to the side.", "Lower slowly and switch."], "Keep your hips steady; don't lean to the other side."],
+  "sl-bridge": [["Lie on your back, one knee bent and the other leg straight up.", "Push through the planted heel and lift your hips.", "Lower slowly and switch."], "Keep your hips level."],
+  "frog-pump": [["Lie on your back, soles of your feet together, knees out.", "Lift your hips by squeezing your glutes.", "Lower and repeat at a steady pace."], "A great warm-up before hip thrusts."],
+  "clamshell": [["Lie on your side, knees bent, heels together.", "Open your top knee without separating your heels.", "Close slowly and switch."], "Don't roll your hips back; small movement from the glutes."],
+  "db-calf": [["Stand on the edge of a step holding a dumbbell.", "Raise your heels as high as you can.", "Lower a little below the step."], "Slow and full range."],
+  "m-calf": [["Sit with the pad on your knees.", "Raise your heels.", "Lower slowly."], "Pause for a second at the top."],
+  "bw-calf": [["Stand with feet hip-width apart, a hand on the wall.", "Raise your heels as high as you can.", "Lower slowly."], "Do it on a step for more range."],
+  "db-slcalf": [["Stand on a step edge on one leg, dumbbell in the opposite hand.", "Lower your heel a little below the step.", "Rise as high as you can and pause."], "Hold the wall with your free hand for balance."],
+  "db-seatedcalf": [["Sit with the dumbbells resting on your knees.", "Raise your heels.", "Lower slowly."], "Put the balls of your feet on a book or step for more range."],
+  "m-standingcalf": [["Shoulders under the pads, balls of your feet on the edge.", "Raise your heels as high as you can.", "Lower until you feel a stretch in your calves."], "Knees straight but not locked."],
+  "m-legpresscalf": [["Sit on the leg press with only the balls of your feet on the platform.", "Push the platform with your toes.", "Return slowly."], "Keep the safety lock on and your knees straight."],
+  "plank": [["Rest on your forearms and toes.", "Body in a straight line from head to heels.", "Hold for 20–40 seconds."], "Brace your core and don't let your hips sag."],
+  "crunch": [["Lie on your back with your knees bent.", "Lift your shoulders off the floor by squeezing your abs.", "Lower slowly."], "Don't pull on your neck with your hands."],
+  "deadbug": [["Lie on your back with arms and legs up.", "Slowly extend the opposite arm and leg.", "Return and switch."], "Lower back stays pressed to the floor."],
+  "legraise": [["Lie on your back with your hands under your hips.", "Raise your legs up.", "Lower slowly without touching the floor."], "If it's hard, bend your knees."],
+  "db-twist": [["Sit and lean back slightly, holding the dumbbell.", "Rotate right and left.", "Keep your back straight."], "Keep your feet on the floor if you're a beginner."],
+  "m-cablecrunch": [["Kneel facing the cable with the rope beside your head.", "Crunch down by squeezing your abs.", "Return slowly."], "The movement comes from your abs, not your arms."],
+  "bicycle": [["Lie on your back, hands behind your head.", "Bring one elbow toward the opposite knee as the other leg extends.", "Switch sides slowly."], "Slow beats fast; don't pull on your neck."],
+  "mountain": [["Get into a push-up position, hands under your shoulders.", "Drive one knee to your chest and back.", "Switch legs quickly."], "Keep your hips down and body straight."],
+  "side-plank": [["Lie on your side and rest on your elbow under your shoulder.", "Lift your hips until your body is straight.", "Hold and switch sides."], "If it's hard, rest on your knees."],
+  "rev-crunch": [["Lie on your back with your knees bent up.", "Lift your hips off the floor and bring your knees toward your chest.", "Lower slowly."], "No swinging; the movement comes from the lower abs."],
+  "hollow": [["Lie on your back with your lower back pressed to the floor.", "Lift your shoulders and legs slightly off the floor.", "Hold for 15–30 seconds."], "If it's hard, bend your knees."],
+  "heel-taps": [["Lie on your back with your knees bent.", "Lift your shoulders slightly off the floor.", "Reach right and left to touch your heels."], "For the obliques; keep your neck relaxed."],
+  "flutter": [["Lie on your back with your hands under your hips.", "Lift your legs slightly off the floor.", "Kick your legs up and down alternately."], "If your lower back lifts, raise your legs higher."],
+  "db-sidebend": [["Stand holding a dumbbell in one hand.", "Bend slowly to the side.", "Come back up by squeezing your obliques and switch."], "Bend sideways only, not forward or back."],
+  "db-woodchop": [["Hold a dumbbell with both hands above one shoulder.", "Bring it down diagonally to the opposite knee.", "Return up with control and switch."], "Rotate from your torso and pivot your foot with it."],
+  "m-woodchop": [["Set the pulley high and stand beside the machine.", "Pull the handle diagonally down to your opposite hip.", "Return slowly."], "Arms almost straight; the rotation comes from your core."],
+  "m-pallof": [["Stand beside the cable with the handle at chest height.", "Press the handle forward and resist the cable turning you.", "Hold for two seconds and return."], "An anti-rotation exercise, great for a strong waist."],
+  "m-captain": [["Rest your back and forearms on the machine.", "Raise your knees to your chest.", "Lower slowly."], "No swinging; keep your shoulders down."],
+  "m-abcrunch": [["Adjust the seat and grab the handles.", "Crunch forward by squeezing your abs.", "Return slowly."], "The movement comes from your abs, not your arms."],
+};
+const exN = (ex) => L(ex.ar, ex.en);
+const exSteps = (ex) => lang === "en" && EX_EN[ex.id] ? EX_EN[ex.id][0] : ex.steps;
+const exTip = (ex) => lang === "en" && EX_EN[ex.id] ? EX_EN[ex.id][1] : ex.tip;
 
 const GOALS = {
-  fat:      { ar: "خسارة دهون",  sub: "حرق وشد",         sets: "3",   reps: "12–15", rest: "45–60 ث" },
-  muscle:   { ar: "بناء عضل",    sub: "تضخيم وشكل",      sets: "3–4", reps: "8–12",  rest: "60–90 ث" },
-  strength: { ar: "قوة",         sub: "أوزان أثقل",       sets: "4",   reps: "5–6",   rest: "2–3 د" },
-  fit:      { ar: "لياقة عامة",  sub: "صحة ونشاط",       sets: "2–3", reps: "10–12", rest: "60 ث" },
+  fat:      { ar: "خسارة دهون",  en: "Fat loss", subEn: "Burn & tone", restEn: "45–60 s", sub: "حرق وشد",         sets: "3",   reps: "12–15", rest: "45–60 ث" },
+  muscle:   { ar: "بناء عضل",    en: "Build muscle", subEn: "Shape & size", restEn: "60–90 s", sub: "تضخيم وشكل",      sets: "3–4", reps: "8–12",  rest: "60–90 ث" },
+  strength: { ar: "قوة",         en: "Strength", subEn: "Heavier weights", restEn: "2–3 min", sub: "أوزان أثقل",       sets: "4",   reps: "5–6",   rest: "2–3 د" },
+  fit:      { ar: "لياقة عامة",  en: "General fitness", subEn: "Health & energy", restEn: "60 s", sub: "صحة ونشاط",       sets: "2–3", reps: "10–12", rest: "60 ث" },
 };
 const DAYS = ["السبت","الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة"];
 const DAYS_SHORT = ["سبت","أحد","إثنين","ثلاثاء","أربعاء","خميس","جمعة"];
+const DAYS_EN = ["Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"];
+const dayN = (i) => L(DAYS[i], DAYS_EN[i]);
+const gN = (g) => L(g.ar, g.en), gSub = (g) => L(g.sub, g.subEn), gRest = (g) => L(g.rest, g.restEn);
 
 // نوع الحركة جوّا كل عضلة، ليكون اليوم منوّع (ضغط + فتح، سحب عامودي + أفقي، كور ثبات + حركة…)
 const PAT = {
@@ -642,9 +751,9 @@ function setEntry(date, id, patch) {
 const weightsOf = (id) => Object.keys(log).sort().filter(d => log[d][id] && log[d][id].w > 0).map(d => ({ d, w: log[d][id].w }));
 const lastBefore = (id, date) => { const h = weightsOf(id).filter(x => x.d < date); return h.length ? h[h.length - 1].w : null; };
 const bestOf = (id, before) => { const h = weightsOf(id).filter(x => !before || x.d < before); return h.length ? Math.max(...h.map(x => x.w)) : null; };
-const daysWord = (n) => n === 1 ? "يوم واحد" : n === 2 ? "يومين" : `${n} أيام`;
+const daysWord = (n) => lang === "en" ? (n === 1 ? "1 day" : `${n} days`) : n === 1 ? "يوم واحد" : n === 2 ? "يومين" : `${n} أيام`;
 const rng = (t) => String(t).replace(/(\d+–\d+)/g, '<bdi dir="ltr">$1</bdi>');
-const fmtW = (w) => `${Math.round(w * 10) / 10} كغ`;
+const fmtW = (w) => `${Math.round(w * 10) / 10} ${L("كغ", "kg")}`;
 function weekStats(offset = 0) {
   let days = 0, ex = 0;
   for (let i = 0; i < 7; i++) {
@@ -663,7 +772,16 @@ const QUOTES = [
   "اليوم الصعب هو اللي بيعمل الفرق.",
   "قارني حالك بحالك من شهر، مش بغيرك.",
 ];
-const quote = () => QUOTES[Math.floor(TODAY / 864e5) % QUOTES.length];
+const QUOTES_EN = [
+  "Consistency beats perfection.",
+  "Every workout brings you a step closer to your goal.",
+  "A little every week beats a lot once.",
+  "No workout is wasted. Every set counts.",
+  "Your body can do it; convince your mind.",
+  "The hard days are the ones that make the difference.",
+  "Compare yourself to you a month ago, not to others.",
+];
+const quote = () => L(QUOTES, QUOTES_EN)[Math.floor(TODAY / 864e5) % QUOTES.length];
 const CHECK = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>`;
 
 /* ===================== المنطق ===================== */
@@ -696,7 +814,7 @@ function buildDay(day) {
     used.add(ex.id);
     return { ex, slot: i, isTime: !!ex.time };
   });
-  return { title: t.ar, titleEn: t.en, key: tKey, eq, items };
+  return { title: L(t.ar, t.en), titleAr: t.ar, titleEn: t.en, key: tKey, eq, items };
 }
 const norm = (s) => s.toLowerCase().replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").replace(/[ًٌٍَُِّْ]/g,"").trim();
 const video = (ex) => ex.yt ? "https://www.youtube.com/watch?v=" + ex.yt : search(ex);
@@ -711,40 +829,40 @@ function exRow(ex, idx, setsTxt, key, swapKey) {
   return `<div class="ex">
     <button class="ex-head" data-open="${key}" aria-expanded="${isOpen}">
       ${avatar(ex)}
-      <span class="ex-main"><b>${esc(ex.ar)}</b><span class="ex-meta">${MUSCLES[ex.m].ar}${UNI.has(ex.id) ? " · لكل جهة" : ""}</span></span>
-      <span class="pill">${EQ[ex.eq]}</span>
+      <span class="ex-main"><b>${esc(exN(ex))}</b><span class="ex-meta">${mN(ex.m)}${UNI.has(ex.id) ? L(" · لكل جهة", " · each side") : ""}</span></span>
+      <span class="pill">${eqN(ex.eq)}</span>
     </button>
     ${isOpen ? `<div class="ex-body">
       ${exInfo(ex)}
       <div class="actions">
-        <a class="video" href="${video(ex)}" target="_blank" rel="noopener">▶ فيديو الشرح</a>
-        <a class="ghost link" href="${search(ex)}" target="_blank" rel="noopener">فيديوهات تانية</a>
-        ${swapKey ? `<button class="ghost" data-swap="${swapKey}">بدّلي التمرين</button>` : ""}
+        <a class="video" href="${video(ex)}" target="_blank" rel="noopener">▶ ${L("فيديو الشرح", "Watch video")}</a>
+        <a class="ghost link" href="${search(ex)}" target="_blank" rel="noopener">${L("فيديوهات تانية", "More videos")}</a>
+        ${swapKey ? `<button class="ghost" data-swap="${swapKey}">${L("بدّلي التمرين", "Swap exercise")}</button>` : ""}
       </div>
     </div>` : ""}
   </div>`;
 }
 
 function exInfo(ex) {
-  return `<span class="small muted" dir="ltr" style="text-align:right">${esc(ex.en)}</span>
-      <ol>${ex.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol>
-      <p class="tip">نصيحة: ${esc(ex.tip)}</p>`;
+  return `<span class="small muted" dir="${L("ltr", "rtl")}" style="text-align:start">${esc(L(ex.en, ex.ar))}</span>
+      <ol>${exSteps(ex).map(s => `<li>${esc(s)}</li>`).join("")}</ol>
+      <p class="tip">${L("نصيحة", "Tip")}: ${esc(exTip(ex))}</p>`;
 }
 function logBox(ex, e, date, canLog) {
-  if (!canLog) return `<p class="note">بتقدري تعلّمي عهالتمرين وتسجّلي وزنك يوم ${DAYS[selDay]}.</p>`;
+  if (!canLog) return `<p class="note">${L(`بتقدري تعلّمي عهالتمرين وتسجّلي وزنك يوم ${DAYS[selDay]}.`, `You can mark this and log your weight on ${DAYS_EN[selDay]}.`)}</p>`;
   const prev = lastBefore(ex.id, date), best = bestOf(ex.id, date);
   const step = ex.eq === "machine" ? 2.5 : 1;
   const w = ex.eq === "body" ? "" : `<div class="field">
-        <label for="w-${ex.id}">الوزن اللي رفعتيه</label>
+        <label for="w-${ex.id}">${L("الوزن اللي رفعتيه", "Weight lifted")}</label>
         <div class="stepper">
-          <button type="button" data-wstep="${-step}" data-wid="${ex.id}" aria-label="نقّصي ${step} كغ">−</button>
-          <span class="wbox"><input id="w-${ex.id}" class="num" data-w="${ex.id}" type="number" inputmode="decimal" step="0.5" min="0" placeholder="${prev ?? "0"}" value="${e.w ?? ""}"><span class="unit">كغ</span></span>
-          <button type="button" data-wstep="${step}" data-wid="${ex.id}" aria-label="زيدي ${step} كغ">+</button>
+          <button type="button" data-wstep="${-step}" data-wid="${ex.id}" aria-label="${L(`نقّصي ${step} كغ`, `Minus ${step} kg`)}">−</button>
+          <span class="wbox"><input id="w-${ex.id}" class="num" data-w="${ex.id}" type="number" inputmode="decimal" step="0.5" min="0" placeholder="${prev ?? "0"}" value="${e.w ?? ""}"><span class="unit">${L("كغ", "kg")}</span></span>
+          <button type="button" data-wstep="${step}" data-wid="${ex.id}" aria-label="${L(`زيدي ${step} كغ`, `Plus ${step} kg`)}">+</button>
         </div>
-        <span class="small muted">${prev ? `المرة الماضية: ${fmtW(prev)}` : "أول مرة؟ ابدئي بوزن خفيف وركّزي عالحركة."}${best ? ` · أحسن وزن: ${fmtW(best)}` : ""}</span>
+        <span class="small muted">${prev ? `${L("المرة الماضية", "Last time")}: ${fmtW(prev)}` : L("أول مرة؟ ابدئي بوزن خفيف وركّزي عالحركة.", "First time? Start light and focus on form.")}${best ? ` · ${L("أحسن وزن", "Best")}: ${fmtW(best)}` : ""}</span>
       </div>`;
   return `<div class="logbox">${w}
-      <button type="button" class="done-btn" data-done="${ex.id}" aria-pressed="${!!e.done}">${e.done ? "✓ تمّ! (اضغطي للتراجع)" : "✓ خلّصت التمرين"}</button>
+      <button type="button" class="done-btn" data-done="${ex.id}" aria-pressed="${!!e.done}">${e.done ? L("✓ تمّ! (اضغطي للتراجع)", "✓ Done! (tap to undo)") : L("✓ خلّصت التمرين", "✓ Mark as done")}</button>
     </div>`;
 }
 /* ===================== شكل الروتين: دوائر، عدّادات، مدة ===================== */
@@ -784,15 +902,16 @@ function avatar(ex, opts = {}) {
 }
 
 const ROUTINES = [
-  { id: "glutes-gym",  ar: "أرداف بالجيم",      sub: "هيب ثرست، بلغاري، وأجهزة", list: ["db-hipthrust", "db-bulgarian", "m-pullthrough", "m-abduction", "m-glutekick", "frog-pump"] },
-  { id: "glutes-home", ar: "أرداف بالبيت",      sub: "بلا أي معدات",            rest: 45, list: ["glute-bridge", "bw-squat", "sl-bridge", "donkey-kick", "fire-hydrant", "clamshell", "frog-pump"] },
-  { id: "abs-quick",   ar: "بطن سريع",          sub: "عالأرض، بلا معدات",       rest: 30, sets: 2, list: ["crunch", "bicycle", "rev-crunch", "heel-taps", "plank", "side-plank"] },
-  { id: "abs-gym",     ar: "بطن وخصر بالجيم",   sub: "كيبل وأجهزة",             rest: 45, list: ["m-cablecrunch", "m-captain", "m-pallof", "m-woodchop", "hollow"] },
-  { id: "calves-legs", ar: "سمانة ورجلين",      sub: "دمبل وأجهزة",             list: ["goblet", "db-lunge", "db-calf", "db-slcalf", "m-standingcalf", "m-calf"] },
-  { id: "legs-gym",    ar: "رجلين بالجيم",      sub: "أجهزة الرجلين",           list: ["m-legpress", "m-hack", "m-legext", "m-lyingcurl", "db-rdl", "m-standingcalf"] },
-  { id: "upper-db",    ar: "علوي بالدمبل",      sub: "صدر، ظهر، كتاف، إيدين",   list: ["db-bench", "db-row", "db-shpress", "db-lateral", "db-curl", "db-overhead"] },
-  { id: "full-home",   ar: "جسم كامل بالبيت",   sub: "بلا معدات",               rest: 45, list: ["bw-squat", "incline-pushup", "glute-bridge", "superman", "bench-dips", "mountain", "plank"] },
+  { id: "glutes-gym", en: "Glutes at the Gym", subEn: "Hip thrusts, Bulgarians & machines",  ar: "أرداف بالجيم",      sub: "هيب ثرست، بلغاري، وأجهزة", list: ["db-hipthrust", "db-bulgarian", "m-pullthrough", "m-abduction", "m-glutekick", "frog-pump"] },
+  { id: "glutes-home", en: "Glutes at Home", subEn: "No equipment", ar: "أرداف بالبيت",      sub: "بلا أي معدات",            rest: 45, list: ["glute-bridge", "bw-squat", "sl-bridge", "donkey-kick", "fire-hydrant", "clamshell", "frog-pump"] },
+  { id: "abs-quick", en: "Quick Abs", subEn: "On the floor, no equipment",   ar: "بطن سريع",          sub: "عالأرض، بلا معدات",       rest: 30, sets: 2, list: ["crunch", "bicycle", "rev-crunch", "heel-taps", "plank", "side-plank"] },
+  { id: "abs-gym", en: "Abs & Waist at the Gym", subEn: "Cables & machines",     ar: "بطن وخصر بالجيم",   sub: "كيبل وأجهزة",             rest: 45, list: ["m-cablecrunch", "m-captain", "m-pallof", "m-woodchop", "hollow"] },
+  { id: "calves-legs", en: "Calves & Legs", subEn: "Dumbbells & machines", ar: "سمانة ورجلين",      sub: "دمبل وأجهزة",             list: ["goblet", "db-lunge", "db-calf", "db-slcalf", "m-standingcalf", "m-calf"] },
+  { id: "legs-gym", en: "Legs at the Gym", subEn: "Leg machines",    ar: "رجلين بالجيم",      sub: "أجهزة الرجلين",           list: ["m-legpress", "m-hack", "m-legext", "m-lyingcurl", "db-rdl", "m-standingcalf"] },
+  { id: "upper-db", en: "Upper Body with Dumbbells", subEn: "Chest, back, shoulders, arms",    ar: "علوي بالدمبل",      sub: "صدر، ظهر، كتاف، إيدين",   list: ["db-bench", "db-row", "db-shpress", "db-lateral", "db-curl", "db-overhead"] },
+  { id: "full-home", en: "Full Body at Home", subEn: "No equipment",   ar: "جسم كامل بالبيت",   sub: "بلا معدات",               rest: 45, list: ["bw-squat", "incline-pushup", "glute-bridge", "superman", "bench-dips", "mountain", "plank"] },
 ];
+const rN = (r) => L(r.ar, r.en), rSub = (r) => L(r.sub, r.subEn);
 const routineItems = (r) => r.list.map(id => EX.find(e => e.id === id)).filter(Boolean).map(ex => ({ ex, isTime: !!ex.time }));
 const BUB = [58, 44, 66, 40, 54, 46, 62, 42];
 const bubbles = (items, n = 8, k = 1) => `<div class="bubbles" aria-hidden="true">${items.slice(0, n).map((it, i) => avatar(it.ex, { size: Math.round(BUB[i % BUB.length] * k) })).join("")}</div>`;
@@ -816,12 +935,12 @@ function estMin(day, items) {
 function rowStepper(it, day) {  // day = رقم اليوم أو "r-<id>"
   const ex = it.ex, n = setsFor(day, ex), g = GOALS[profile.goal];
   const [kind, val, sub, lbl] = it.isTime
-    ? ["hold", mmss(holdFor(day, ex)), `× ${n}`, "ثواني الثبات"]
-    : ["sets", n, `× ${rng(g.reps)}`, "عدد المجموعات"];
-  return `<div class="rstep" role="group" aria-label="${lbl}: ${esc(ex.ar)}">
-      <button type="button" data-adj="${kind}" data-akey="${day}" data-aid="${ex.id}" data-dir="-1" aria-label="أقل">−</button>
+    ? ["hold", mmss(holdFor(day, ex)), `× ${n}`, L("ثواني الثبات", "Hold seconds")]
+    : ["sets", n, `× ${rng(g.reps)}`, L("عدد المجموعات", "Sets")];
+  return `<div class="rstep" role="group" aria-label="${lbl}: ${esc(exN(ex))}">
+      <button type="button" data-adj="${kind}" data-akey="${day}" data-aid="${ex.id}" data-dir="-1" aria-label="${L("أقل", "Fewer")}">−</button>
       <span class="rv"><b>${val}</b><small>${sub}</small></span>
-      <button type="button" data-adj="${kind}" data-akey="${day}" data-aid="${ex.id}" data-dir="1" aria-label="أكتر">+</button>
+      <button type="button" data-adj="${kind}" data-akey="${day}" data-aid="${ex.id}" data-dir="1" aria-label="${L("أكتر", "More")}">+</button>
     </div>`;
 }
 
@@ -829,9 +948,9 @@ function planRow(it, idx, key, swapKey, date, canLog) {
   const ex = it.ex, isOpen = open === key, e = entry(date, ex.id) || {}, done = !!e.done;
   return `<div class="ex ${done ? "is-done" : ""}">
     <div class="ex-row">
-      ${avatar(ex, { done, attrs: `data-done="${ex.id}" aria-pressed="${done}" ${canLog ? "" : "disabled"} aria-label="${done ? "شيلي علامة الإنجاز عن" : "علّمي إنك خلّصتي"} ${esc(ex.ar)}"${justDone === ex.id && done ? ' data-pop="1"' : ""}` })}
+      ${avatar(ex, { done, attrs: `data-done="${ex.id}" aria-pressed="${done}" ${canLog ? "" : "disabled"} aria-label="${done ? L("شيلي علامة الإنجاز عن", "Unmark") : L("علّمي إنك خلّصتي", "Mark done:")} ${esc(exN(ex))}"${justDone === ex.id && done ? ' data-pop="1"' : ""}` })}
       <button class="ex-head" data-open="${key}" aria-expanded="${isOpen}">
-        <span class="ex-main"><b>${esc(ex.ar)}</b><span class="ex-meta">${MUSCLES[ex.m].ar} · ${EQ[ex.eq]}${UNI.has(ex.id) ? " · لكل جهة" : ""}${e.w ? ` · <span class="wtag">${fmtW(e.w)}</span>` : ""}</span></span>
+        <span class="ex-main"><b>${esc(exN(ex))}</b><span class="ex-meta">${mN(ex.m)} · ${eqN(ex.eq)}${UNI.has(ex.id) ? L(" · لكل جهة", " · each side") : ""}${e.w ? ` · <span class="wtag">${fmtW(e.w)}</span>` : ""}</span></span>
       </button>
       ${rowStepper(it, selDay)}
     </div>
@@ -839,9 +958,9 @@ function planRow(it, idx, key, swapKey, date, canLog) {
       ${exInfo(ex)}
       ${logBox(ex, e, date, canLog)}
       <div class="actions">
-        <a class="video" href="${video(ex)}" target="_blank" rel="noopener">▶ فيديو الشرح</a>
-        <a class="ghost link" href="${search(ex)}" target="_blank" rel="noopener">فيديوهات تانية</a>
-        <button class="ghost" data-swap="${swapKey}">بدّلي التمرين</button>
+        <a class="video" href="${video(ex)}" target="_blank" rel="noopener">▶ ${L("فيديو الشرح", "Watch video")}</a>
+        <a class="ghost link" href="${search(ex)}" target="_blank" rel="noopener">${L("فيديوهات تانية", "More videos")}</a>
+        <button class="ghost" data-swap="${swapKey}">${L("بدّلي التمرين", "Swap exercise")}</button>
       </div>
     </div>` : ""}
   </div>`;
@@ -860,118 +979,120 @@ function ring(frac, label) {
 function renderPlan() {
   const g = GOALS[profile.goal];
   const day = buildDay(selDay);
-  let html = `<header style="display:flex;flex-direction:column;gap:4px">
-      <span class="eyebrow">${DAYS[todayIdx]} · هدفك: ${g.ar}</span>
-      <h1>برنامجي</h1>
+  let html = `<header class="hdr"><div>
+      <span class="eyebrow">${dayN(todayIdx)} · ${L("هدفك", "Goal")}: ${gN(g)}</span>
+      <h1>${L("برنامجي", "My Plan")}</h1></div>
+      <button class="lang-btn" data-lang="${L("en", "ar")}" lang="${L("en", "ar")}">${L("English", "العربية")}</button>
     </header>`;
-  if (!profile.saved) html += `<div class="banner"><span>هيدا برنامج مثال. عبّي عمرك ووزنك وهدفك ليتظبط إلك.</span><button data-tab="me">عبّي بياناتي</button></div>`;
+  if (!profile.saved) html += `<div class="banner"><span>${L("هيدا برنامج مثال. عبّي عمرك ووزنك وهدفك ليتظبط إلك.", "This is a sample plan. Add your age, weight and goal to tailor it.")}</span><button data-tab="me">${L("عبّي بياناتي", "Set up profile")}</button></div>`;
   const ws = weekStats(), goalDays = profile.days.length;
-  const heroTitle = ws.days >= goalDays ? "حققتي هدف الأسبوع، برافو!" : ws.days ? `باقي ${daysWord(goalDays - ws.days)} لتكمّلي أسبوعك` : "يلا نبلّش الأسبوع";
+  const heroTitle = ws.days >= goalDays ? L("حققتي هدف الأسبوع، برافو!", "Weekly goal reached. Well done!") : ws.days ? L(`باقي ${daysWord(goalDays - ws.days)} لتكمّلي أسبوعك`, `${daysWord(goalDays - ws.days)} left this week`) : L("يلا نبلّش الأسبوع", "Let's start the week");
   html += `<section class="hero">
-      ${ring(ws.days / goalDays, `تمرّنتي ${ws.days} من ${goalDays} أيام هالأسبوع`)}
+      ${ring(ws.days / goalDays, L(`تمرّنتي ${ws.days} من ${goalDays} أيام هالأسبوع`, `${ws.days} of ${goalDays} days this week`))}
       <div class="hero-txt">
-        <span class="eyebrow">هالأسبوع: ${ws.days} من ${goalDays} أيام · ${ws.ex} تمرين</span>
+        <span class="eyebrow">${L(`هالأسبوع: ${ws.days} من ${goalDays} أيام · ${ws.ex} تمرين`, `This week: ${ws.days} of ${goalDays} days · ${ws.ex} exercises`)}</span>
         <h2>${heroTitle}</h2>
         <p>${quote()}</p>
       </div>
     </section>`;
   const order = profile.days.slice().sort((x, y) => x - y);
   html += `<section class="group">
-      <h3 class="sec">تمارين هالأسبوع${profile.days.includes(todayIdx) ? "" : " · اليوم يوم راحة"}</h3>
+      <h3 class="sec">${L("تمارين هالأسبوع", "This week")}${profile.days.includes(todayIdx) ? "" : L(" · اليوم يوم راحة", " · Rest day today")}</h3>
       <div class="carousel" id="days">${order.map(i => {
         const d = buildDay(i), st = dayStatus(i);
         return `<button class="rcard ${i === selDay ? "sel" : ""}" data-day="${i}" aria-pressed="${i === selDay}">
-          <span class="eyebrow">${DAYS[i]}${i === todayIdx ? " · اليوم" : ""} · ${estMin(i, d.items)} دقيقة</span>
+          <span class="eyebrow">${dayN(i)}${i === todayIdx ? L(" · اليوم", " · Today") : ""} · ${estMin(i, d.items)} ${L("دقيقة", "min")}</span>
           <b class="rc-t">${d.title}</b>
-          ${st === "full" ? `<span class="rc-badge">✓ خلّصتيه</span>` : st === "part" ? `<span class="rc-badge part">بلّشتي</span>` : ""}
+          ${st === "full" ? `<span class="rc-badge">${L("✓ خلّصتيه", "✓ Done")}</span>` : st === "part" ? `<span class="rc-badge part">${L("بلّشتي", "Started")}</span>` : ""}
           ${bubbles(d.items)}
         </button>`;
       }).join("")}</div>
     </section>`;
   if (!day) {
-    html += `<div class="rest"><h2>${DAYS[selDay]}: يوم راحة</h2><p class="muted">العضل بيكبر وقت الراحة. مشي خفيف ٢٠–٣٠ دقيقة أو تمطيط بيكفّي.</p></div>`;
+    html += `<div class="rest"><h2>${dayN(selDay)}: ${L("يوم راحة", "Rest day")}</h2><p class="muted">${L("العضل بيكبر وقت الراحة. مشي خفيف ٢٠–٣٠ دقيقة أو تمطيط بيكفّي.", "Muscles grow while you rest. A 20–30 minute walk or some stretching is enough.")}</p></div>`;
   } else {
     const dStr = ymd(dateOfDay(selDay)), canLog = dateOfDay(selDay) <= TODAY;
     const nDone = day.items.filter(it => (entry(dStr, it.ex.id) || {}).done).length, all = nDone === day.items.length;
     const est = estMin(selDay, day.items);
     html += `<section class="routine">
       <div class="routine-h">
-        <span class="eyebrow">${est} دقيقة تقريباً</span>
-        <h2>${DAYS[selDay]}: ${day.title}</h2>
-        <p class="small muted">${day.items.length} تمارين · راحة ${rng(g.rest)} بين المجموعات</p>
+        <span class="eyebrow">${L(`${est} دقيقة تقريباً`, `About ${est} min`)}</span>
+        <h2>${dayN(selDay)}: ${day.title}</h2>
+        <p class="small muted">${L(`${day.items.length} تمارين · راحة ${rng(g.rest)} بين المجموعات`, `${day.items.length} exercises · ${rng(g.restEn)} rest between sets`)}</p>
+        <p class="cover">${[...new Set(day.items.map(it => it.ex.m))].map(m => `<span class="pill">${shortM(m)}</span>`).join("")}</p>
       </div>
-      <div class="seg" role="group" aria-label="المعدات">
-        ${[["db","دمبل"],["machine","ماشين"],["both","التنين"]].map(([k,l]) => `<button data-eq="${k}" aria-pressed="${day.eq === k}">${l}</button>`).join("")}
+      <div class="seg" role="group" aria-label="${L("المعدات", "Equipment")}">
+        ${[["db",L("دمبل","Dumbbells")],["machine",L("ماشين","Machines")],["both",L("التنين","Both")]].map(([k,l]) => `<button data-eq="${k}" aria-pressed="${day.eq === k}">${l}</button>`).join("")}
       </div>
       <div class="daybar ${all ? "all" : ""}" aria-live="polite">
-        <div class="daybar-top"><span>${all ? "خلّصتي تمرين اليوم كلّو!" : nDone ? "كمّلي، عم تمشي منيح" : canLog ? "اضغطي عالدائرة لتعلّمي ✓، أو ابدئي التمرين" : "هيدا يوم جايي"}</span><b>${nDone}/${day.items.length}</b></div>
+        <div class="daybar-top"><span>${all ? L("خلّصتي تمرين اليوم كلّو!", "Today's workout is complete!") : nDone ? L("كمّلي، عم تمشي منيح", "Keep going, you're doing great") : canLog ? L("اضغطي عالدائرة لتعلّمي ✓، أو ابدئي التمرين", "Tap a circle to mark ✓, or start the workout") : L("هيدا يوم جايي", "This day is coming up")}</span><b>${nDone}/${day.items.length}</b></div>
         <div class="bar"><i style="width:${(nDone / day.items.length * 100).toFixed(0)}%"></i></div>
       </div>
       <div class="list">${day.items.map((it, i) => planRow(it, i + 1, `p-${selDay}-${i}`, `${selDay}-${i}-${day.eq}`, dStr, canLog)).join("")}</div>
-      <p class="note">اضغطي عاسم أي تمرين لتشوفي الشرح والفيديو. ابدئي بإحماء ٥–١٠ دقايق${profile.age >= 50 ? "، وخدي إحماء أطول وأوزان أخف بالأول" : ""}.</p>
+      <p class="note">${L("اضغطي عاسم أي تمرين لتشوفي الشرح والفيديو. ابدئي بإحماء ٥–١٠ دقايق", "Tap an exercise name for steps and video. Warm up for 5–10 minutes first")}${profile.age >= 50 ? L("، وخدي إحماء أطول وأوزان أخف بالأول", ", with a longer warm-up and lighter weights at first") : ""}.</p>
     </section>`;
     if (typeof startSession === "function") html += `<div class="startbar">${all
-      ? `<button class="start soft" data-tab="prog">✓ خلّصتي اليوم · شوفي تقدّمك</button>`
+      ? `<button class="start soft" data-tab="prog">${L("✓ خلّصتي اليوم · شوفي تقدّمك", "✓ Done today · See progress")}</button>`
       : canLog
-        ? `<button class="start" data-start="plan">▶ ${nDone ? "كمّلي التمرين" : "ابدئي التمرين"}<small>${est} د</small></button>`
-        : `<button class="start" disabled>بتبلّشي يوم ${DAYS[selDay]}</button>`}</div>`;
+        ? `<button class="start" data-start="plan">▶ ${nDone ? L("كمّلي التمرين", "Continue workout") : L("ابدئي التمرين", "Start workout")}<small>${est} ${L("د", "min")}</small></button>`
+        : `<button class="start" disabled>${L(`بتبلّشي يوم ${DAYS[selDay]}`, `Starts on ${DAYS_EN[selDay]}`)}</button>`}</div>`;
   }
   const protein = Math.round(profile.weight * 1.6), water = (profile.weight * 0.035).toFixed(1);
   html += `<section class="scheme" style="grid-template-columns:1fr 1fr">
-      <div><b>${protein} غ</b><span>بروتين باليوم (تقريباً)</span></div>
-      <div><b>${water} ل</b><span>مي باليوم (تقريباً)</span></div>
+      <div><b>${protein} ${L("غ", "g")}</b><span>${L("بروتين باليوم (تقريباً)", "Protein per day (approx.)")}</span></div>
+      <div><b>${water} ${L("ل", "L")}</b><span>${L("مي باليوم (تقريباً)", "Water per day (approx.)")}</span></div>
     </section>
-    <p class="note">أرقام تقريبية عامة. إذا عندك حالة صحية، استشيري دكتور قبل ما تبلّشي.</p>`;
+    <p class="note">${L("أرقام تقريبية عامة. إذا عندك حالة صحية، استشيري دكتور قبل ما تبلّشي.", "General estimates. If you have a health condition, check with a doctor before starting.")}</p>`;
   return html;
 }
 
 const AREA_ORDER = ["glutes", "abs", "calves", "quads", "hamstrings", "back", "chest", "shoulders", "biceps", "triceps"];
-const shortM = (m) => MUSCLES[m].ar.replace(/ \(.*\)/, "");
+const shortM = (m) => L(MUSCLES[m].ar.replace(/ \(.*\)/, ""), MUSCLES[m].en);
 function routineCard(r) {
   const items = routineItems(r);
   return `<button class="rcard sm" data-routine="${r.id}">
-      <span class="eyebrow">${estMin(`r-${r.id}`, items)} دقيقة · ${items.length} تمارين</span>
-      <b class="rc-t">${r.ar}</b><small>${r.sub}</small>
+      <span class="eyebrow">${estMin(`r-${r.id}`, items)} ${L("دقيقة", "min")} · ${items.length} ${L("تمارين", "exercises")}</span>
+      <b class="rc-t">${rN(r)}</b><small>${rSub(r)}</small>
       ${bubbles(items, 7, .72)}
     </button>`;
 }
 function renderRoutine(r) {
   const key = `r-${r.id}`, items = routineItems(r), est = estMin(key, items), g = GOALS[profile.goal];
-  let html = `<button class="back" data-libback="1">→ رجوع</button>
+  let html = `<button class="back" data-libback="1">${L("→ رجوع", "← Back")}</button>
     <section class="routine">
       <div class="routine-h">
-        <span class="eyebrow">${est} دقيقة تقريباً</span>
-        <h2>${r.ar}</h2>
-        <p class="small muted">${r.sub} · ${items.length} تمارين · راحة ${r.rest ? `${r.rest} ث` : rng(g.rest)}</p>
+        <span class="eyebrow">${L(`${est} دقيقة تقريباً`, `About ${est} min`)}</span>
+        <h2>${rN(r)}</h2>
+        <p class="small muted">${rSub(r)} · ${items.length} ${L("تمارين", "exercises")} · ${L("راحة", "rest")} ${r.rest ? `${r.rest} ${L("ث", "s")}` : rng(gRest(g))}</p>
       </div>
       <div class="list">${items.map((it, i) => {
         const k = `${key}-${i}`, isOpen = open === k;
         return `<div class="ex"><div class="ex-row">
             ${avatar(it.ex)}
-            <button class="ex-head" data-open="${k}" aria-expanded="${isOpen}"><span class="ex-main"><b>${esc(it.ex.ar)}</b><span class="ex-meta">${MUSCLES[it.ex.m].ar} · ${EQ[it.ex.eq]}${UNI.has(it.ex.id) ? " · لكل جهة" : ""}</span></span></button>
+            <button class="ex-head" data-open="${k}" aria-expanded="${isOpen}"><span class="ex-main"><b>${esc(exN(it.ex))}</b><span class="ex-meta">${mN(it.ex.m)} · ${eqN(it.ex.eq)}${UNI.has(it.ex.id) ? L(" · لكل جهة", " · each side") : ""}</span></span></button>
             ${rowStepper(it, key)}
           </div>
-          ${isOpen ? `<div class="ex-body">${exInfo(it.ex)}<div class="actions"><a class="video" href="${video(it.ex)}" target="_blank" rel="noopener">▶ فيديو الشرح</a><a class="ghost link" href="${search(it.ex)}" target="_blank" rel="noopener">فيديوهات تانية</a></div></div>` : ""}
+          ${isOpen ? `<div class="ex-body">${exInfo(it.ex)}<div class="actions"><a class="video" href="${video(it.ex)}" target="_blank" rel="noopener">▶ ${L("فيديو الشرح", "Watch video")}</a><a class="ghost link" href="${search(it.ex)}" target="_blank" rel="noopener">${L("فيديوهات تانية", "More videos")}</a></div></div>` : ""}
         </div>`;
       }).join("")}</div>
-      <p class="note">اضغطي عاسم أي تمرين لتشوفي الشرح. التمارين اللي بتخلّصيها بتنحسب بتقدّمك.</p>
+      <p class="note">${L("اضغطي عاسم أي تمرين لتشوفي الشرح. التمارين اللي بتخلّصيها بتنحسب بتقدّمك.", "Tap an exercise for steps. Everything you finish counts toward your progress.")}</p>
     </section>
-    <div class="startbar"><button class="start" data-start="${key}">▶ ابدئي<small>${est} د</small></button></div>`;
+    <div class="startbar"><button class="start" data-start="${key}">▶ ${L("ابدئي", "Start")}<small>${est} ${L("د", "min")}</small></button></div>`;
   return html;
 }
 function renderLib() {
   if (lib.routine) { const r = ROUTINES.find(x => x.id === lib.routine); if (r) return renderRoutine(r); lib.routine = null; }
   const q = norm(lib.q);
   let html = `<header style="display:flex;flex-direction:column;gap:4px">
-      <span class="eyebrow">${EX.length} تمرين قوة · ${ROUTINES.length} روتينات جاهزة</span><h1>التمارين</h1></header>
-    <input id="lib-q" class="search" type="search" placeholder="دوّري: أرداف، بطن، سمانة، دمبل…" value="${esc(lib.q)}" aria-label="دوّري عتمرين">`;
+      <span class="eyebrow">${L(`${EX.length} تمرين قوة · ${ROUTINES.length} روتينات جاهزة`, `${EX.length} strength exercises · ${ROUTINES.length} ready routines`)}</span><h1>${L("التمارين", "Exercises")}</h1></header>
+    <input id="lib-q" class="search" type="search" placeholder="${L("دوّري: أرداف، بطن، سمانة، دمبل…", "Search: glutes, abs, calves, dumbbell…")}" value="${esc(lib.q)}" aria-label="${L("دوّري عتمرين", "Search exercises")}">`;
   if (!q && !lib.area) {
-    html += `<section class="group"><h3 class="sec">روتينات جاهزة</h3>
+    html += `<section class="group"><h3 class="sec">${L("روتينات جاهزة", "Ready routines")}</h3>
         <div class="carousel">${ROUTINES.map(routineCard).join("")}</div></section>
-      <section class="group"><h3 class="sec">تصفّحي حسب المنطقة</h3>
-        <div class="areas">${AREA_ORDER.map(m => `<button class="area" data-area="${m}">${avatar({ m, id: "" }, { size: 48 })}<b>${shortM(m)}</b><small>${EX.filter(e => e.m === m).length} تمرين</small></button>`).join("")}
-          <button class="area" data-area="all" data-aeq="body"><span class="av all" style="--s:48px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7M5 10v10h14V10"/></svg></span><b>بلا معدات</b><small>${EX.filter(e => e.eq === "body").length} تمرين</small></button>
-          <button class="area" data-area="all" data-aeq="all"><span class="av all" style="--s:48px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><b>كل التمارين</b><small>${EX.length} تمرين</small></button>
+      <section class="group"><h3 class="sec">${L("تصفّحي حسب المنطقة", "Browse by area")}</h3>
+        <div class="areas">${AREA_ORDER.map(m => `<button class="area" data-area="${m}">${avatar({ m, id: "" }, { size: 48 })}<b>${shortM(m)}</b><small>${EX.filter(e => e.m === m).length} ${L("تمرين", "exercises")}</small></button>`).join("")}
+          <button class="area" data-area="all" data-aeq="body"><span class="av all" style="--s:48px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7M5 10v10h14V10"/></svg></span><b>${L("بلا معدات", "No equipment")}</b><small>${EX.filter(e => e.eq === "body").length} ${L("تمرين", "exercises")}</small></button>
+          <button class="area" data-area="all" data-aeq="all"><span class="av all" style="--s:48px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><b>${L("كل التمارين", "All exercises")}</b><small>${EX.length} ${L("تمرين", "exercises")}</small></button>
         </div></section>`;
     return html;
   }
@@ -980,19 +1101,19 @@ function renderLib() {
     if (lib.area && lib.area !== "all" && ex.m !== lib.area) return false;
     if (lib.eq !== "all" && ex.eq !== lib.eq) return false;
     if (!q) return true;
-    const hay = norm(`${ex.ar} ${ex.en} ${M.ar} ${M.kw} ${PARTS[M.part]} ${EQ[ex.eq]}`);
+    const hay = norm(`${ex.ar} ${ex.en} ${M.ar} ${M.en} ${M.kw} ${M.kwEn} ${PARTS[M.part]} ${EQ[ex.eq]} ${EQ_EN[ex.eq]}`);
     return q.split(/\s+/).every(w => hay.includes(w));
   });
   const groups = {};
   match.forEach(ex => (groups[ex.m] ||= []).push(ex));
   html += `<div style="display:flex;flex-direction:column;gap:8px">
-      ${lib.area ? `<button class="back" data-libback="1">→ كل المناطق</button><h2>${lib.area === "all" ? (lib.eq === "body" ? "بلا معدات" : "كل التمارين") : MUSCLES[lib.area].ar}</h2>` : ""}
-      <div class="chips">${[["all","كل المعدات"],["db","دمبل"],["machine","ماشين"],["body","وزن الجسم"]].map(([k,l]) => `<button class="chip" data-leq="${k}" aria-pressed="${lib.eq===k}">${l}</button>`).join("")}</div>
+      ${lib.area ? `<button class="back" data-libback="1">${L("→ كل المناطق", "← All areas")}</button><h2>${lib.area === "all" ? (lib.eq === "body" ? L("بلا معدات", "No equipment") : L("كل التمارين", "All exercises")) : mN(lib.area)}</h2>` : ""}
+      <div class="chips">${[["all",L("كل المعدات","All equipment")],["db",eqN("db")],["machine",eqN("machine")],["body",eqN("body")]].map(([k,l]) => `<button class="chip" data-leq="${k}" aria-pressed="${lib.eq===k}">${l}</button>`).join("")}</div>
     </div>`;
   const keys = AREA_ORDER.filter(k => groups[k]);
-  if (!keys.length) html += `<p class="empty">ما في تمارين بهالاسم. جربي «أرداف» أو «بطن».</p>`;
+  if (!keys.length) html += `<p class="empty">${L("ما في تمارين بهالاسم. جربي «أرداف» أو «بطن».", "No exercises found. Try “glutes” or “abs”.")}</p>`;
   keys.forEach(k => {
-    html += `<section class="group">${lib.area && lib.area !== "all" ? "" : `<h3>${MUSCLES[k].ar} <span class="small muted">· ${groups[k].length}</span></h3>`}
+    html += `<section class="group">${lib.area && lib.area !== "all" ? "" : `<h3>${mN(k)} <span class="small muted">· ${groups[k].length}</span></h3>`}
       <div class="list">${groups[k].map(ex => exRow(ex, null, null, `l-${ex.id}`, null)).join("")}</div></section>`;
   });
   return html;
@@ -1002,25 +1123,27 @@ let draft = null;
 function renderMe() {
   draft ||= JSON.parse(JSON.stringify(profile));
   const d = draft;
-  return `<header style="display:flex;flex-direction:column;gap:4px"><span class="eyebrow">بياناتك</span><h1>ملفي</h1></header>
+  return `<header style="display:flex;flex-direction:column;gap:4px"><span class="eyebrow">${L("بياناتك", "Your details")}</span><h1>${L("ملفي", "Profile")}</h1></header>
   <form id="me-form" novalidate>
     <div class="row2">
-      <div class="field"><label for="f-age">العمر</label><input id="f-age" class="num" type="number" inputmode="numeric" min="12" max="90" value="${d.age}"></div>
-      <div class="field"><label for="f-weight">الوزن (كغ)</label><input id="f-weight" class="num" type="number" inputmode="decimal" min="30" max="250" value="${d.weight}"></div>
+      <div class="field"><label for="f-age">${L("العمر", "Age")}</label><input id="f-age" class="num" type="number" inputmode="numeric" min="12" max="90" value="${d.age}"></div>
+      <div class="field"><label for="f-weight">${L("الوزن (كغ)", "Weight (kg)")}</label><input id="f-weight" class="num" type="number" inputmode="decimal" min="30" max="250" value="${d.weight}"></div>
     </div>
-    <div class="field"><span class="lbl">شو هدفك؟</span>
-      <div class="opts">${Object.entries(GOALS).map(([k,g]) => `<button type="button" class="opt" data-goal="${k}" aria-pressed="${d.goal===k}"><b>${g.ar}</b><small>${g.sub}</small></button>`).join("")}</div></div>
-    <div class="field"><span class="lbl">مستواكِ</span>
-      <div class="seg">${[["beginner","مبتدئة"],["inter","متوسطة"]].map(([k,l]) => `<button type="button" data-level="${k}" aria-pressed="${d.level===k}">${l}</button>`).join("")}</div></div>
-    <div class="field"><span class="lbl">أيام التمرين <span class="muted small">(${d.days.length} من ٦)</span></span>
-      <div class="chips">${DAYS.map((n,i) => `<button type="button" class="chip" data-fday="${i}" aria-pressed="${d.days.includes(i)}">${n}</button>`).join("")}</div></div>
-    <div class="field"><span class="lbl">المعدات الأساسية</span>
-      <div class="seg">${[["db","دمبل"],["machine","ماشين"],["both","التنين"]].map(([k,l]) => `<button type="button" data-feq="${k}" aria-pressed="${d.eq===k}">${l}</button>`).join("")}</div>
-      <span class="note">فيكِ تغيّريها لكل يوم لحال من «برنامجي».</span></div>
-    <div class="field"><span class="lbl">شكل التطبيق</span>
-      <div class="seg">${[["auto","تلقائي"],["light","فاتح"],["dark","غامق"]].map(([k,l]) => `<button type="button" data-theme-set="${k}" aria-pressed="${theme===k}">${l}</button>`).join("")}</div></div>
+    <div class="field"><span class="lbl">${L("شو هدفك؟", "Your goal")}</span>
+      <div class="opts">${Object.entries(GOALS).map(([k,g]) => `<button type="button" class="opt" data-goal="${k}" aria-pressed="${d.goal===k}"><b>${gN(g)}</b><small>${gSub(g)}</small></button>`).join("")}</div></div>
+    <div class="field"><span class="lbl">${L("مستواكِ", "Your level")}</span>
+      <div class="seg">${[["beginner",L("مبتدئة","Beginner")],["inter",L("متوسطة","Intermediate")]].map(([k,l]) => `<button type="button" data-level="${k}" aria-pressed="${d.level===k}">${l}</button>`).join("")}</div></div>
+    <div class="field"><span class="lbl">${L("أيام التمرين", "Training days")} <span class="muted small">(${d.days.length} ${L("من ٦", "of 6")})</span></span>
+      <div class="chips">${L(DAYS, DAYS_EN).map((n,i) => `<button type="button" class="chip" data-fday="${i}" aria-pressed="${d.days.includes(i)}">${n}</button>`).join("")}</div></div>
+    <div class="field"><span class="lbl">${L("المعدات الأساسية", "Main equipment")}</span>
+      <div class="seg">${[["db",L("دمبل","Dumbbells")],["machine",L("ماشين","Machines")],["both",L("التنين","Both")]].map(([k,l]) => `<button type="button" data-feq="${k}" aria-pressed="${d.eq===k}">${l}</button>`).join("")}</div>
+      <span class="note">${L("فيكِ تغيّريها لكل يوم لحال من «برنامجي».", "You can change it per day from “My Plan”.")}</span></div>
+    <div class="field"><span class="lbl">${L("اللغة", "Language")}</span>
+      <div class="seg">${[["ar","العربية"],["en","English"]].map(([k,l]) => `<button type="button" data-lang="${k}" lang="${k}" aria-pressed="${lang===k}">${l}</button>`).join("")}</div></div>
+    <div class="field"><span class="lbl">${L("شكل التطبيق", "Appearance")}</span>
+      <div class="seg">${[["auto",L("تلقائي","Auto")],["light",L("فاتح","Light")],["dark",L("غامق","Dark")]].map(([k,l]) => `<button type="button" data-theme-set="${k}" aria-pressed="${theme===k}">${l}</button>`).join("")}</div></div>
     <p class="err" id="me-err" hidden></p>
-    <button class="save" type="submit">احفظي وطلّعيلي البرنامج</button>
+    <button class="save" type="submit">${L("احفظي وطلّعيلي البرنامج", "Save and build my plan")}</button>
   </form>`;
 }
 
@@ -1054,19 +1177,19 @@ function barPath(x, y, w, h) {
 }
 
 function weeklyChart() {
-  const N = 8, W = 340, H = 190, top = 22, bot = 28, axisW = 26, plotL = 4, plotR = W - axisW;
+  const N = 8, W = 340, H = 190, top = 22, bot = 28, axisW = 26, rtl = lang !== "en", plotL = rtl ? 4 : axisW, plotR = rtl ? W - axisW : W - 4;
   const weeks = Array.from({ length: N }, (_, k) => {
     const off = k - (N - 1), s = dateOfDay(0, off);
-    return { off, label: off === 0 ? "هالأسبوع" : dm(s), full: off === 0 ? "هالأسبوع" : `أسبوع ${dm(s)}`, ...weekStats(off) };
+    return { off, label: off === 0 ? L("هالأسبوع", "This wk") : dm(s), full: off === 0 ? L("هالأسبوع", "This week") : L(`أسبوع ${dm(s)}`, `Week of ${dm(s)}`), ...weekStats(off) };
   });
   const max = Math.max(...weeks.map(w => w.ex)), step = niceStep(Math.max(max, 6)), yMax = Math.ceil(Math.max(max, 6) / step) * step;
   const ph = H - top - bot, y = (v) => top + ph - (v / yMax) * ph, band = (plotR - plotL) / N, bw = Math.min(24, band - 10);
   let g = "";
-  for (let v = 0; v <= yMax + 1e-9; v += step) g += `<line class="c-grid" x1="${plotL}" x2="${plotR}" y1="${y(v)}" y2="${y(v)}"/><text class="c-ax" x="${plotR + 6}" y="${y(v) + 3.5}" text-anchor="start">${r1(v)}</text>`;
+  for (let v = 0; v <= yMax + 1e-9; v += step) g += `<line class="c-grid" x1="${plotL}" x2="${plotR}" y1="${y(v)}" y2="${y(v)}"/><text class="c-ax" x="${rtl ? plotR + 6 : plotL - 6}" y="${y(v) + 3.5}" text-anchor="${rtl ? "start" : "end"}">${r1(v)}</text>`;
   const maxIdx = max > weeks[N - 1].ex ? weeks.findIndex(w => w.ex === max) : -1;
   weeks.forEach((w, i) => {
-    const cx = plotR - band * (i + 0.5) - 0, x = cx - bw / 2;  // الأحدث عالشمال: i=7 → أقصى الشمال
-    const h = y(0) - y(w.ex), tip = `${w.full}: ${w.ex} تمرين · ${w.days} ${w.days === 1 ? "يوم" : "أيام"}`;
+    const cx = rtl ? plotR - band * (i + 0.5) : plotL + band * (i + 0.5), x = cx - bw / 2;  // بالعربي الأحدث عالشمال، بالإنجليزي عاليمين
+    const h = y(0) - y(w.ex), tip = L(`${w.full}: ${w.ex} تمرين · ${w.days} ${w.days === 1 ? "يوم" : "أيام"}`, `${w.full}: ${w.ex} exercises · ${w.days} ${w.days === 1 ? "day" : "days"}`);
     if (w.ex > 0) g += `<path class="c-bar ${w.off === 0 ? "now" : ""}" d="${barPath(x, y(w.ex), bw, h)}"/>`;
     if ((w.off === 0 || i === maxIdx) && w.ex > 0) g += `<text class="c-val" x="${cx}" y="${y(w.ex) - 6}" text-anchor="middle">${w.ex}</text>`;
     g += `<text class="c-ax ${w.off === 0 ? "c-now" : ""}" x="${cx}" y="${H - 10}" text-anchor="middle">${w.label}</text>`;
@@ -1074,27 +1197,27 @@ function weeklyChart() {
   });
   g += `<line class="c-base" x1="${plotL}" x2="${plotR}" y1="${y(0)}" y2="${y(0)}"/>`;
   const table = weeks.slice().reverse().map(w => `<tr><td>${w.full}</td><td>${w.ex}</td><td>${w.days}</td></tr>`).join("");
-  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="group" aria-label="عدد التمارين اللي خلّصتيها بآخر ${N} أسابيع">${g}</svg>
-    <details class="tbl"><summary>شوفي الأرقام كجدول</summary><table><thead><tr><th>الأسبوع</th><th>تمارين</th><th>أيام</th></tr></thead><tbody>${table}</tbody></table></details>`;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="group" aria-label="${L(`عدد التمارين اللي خلّصتيها بآخر ${N} أسابيع`, `Exercises completed in the last ${N} weeks`)}">${g}</svg>
+    <details class="tbl"><summary>${L("شوفي الأرقام كجدول", "Show as table")}</summary><table><thead><tr><th>${L("الأسبوع", "Week")}</th><th>${L("تمارين", "Exercises")}</th><th>${L("أيام", "Days")}</th></tr></thead><tbody>${table}</tbody></table></details>`;
 }
 
 function spark(pts) {
   if (pts.length < 2) return `<svg class="spark" viewBox="0 0 72 28" aria-hidden="true"><circle class="c-dot" cx="36" cy="14" r="4"/></svg>`;
   const ws = pts.map(p => p.w), lo = Math.min(...ws), hi = Math.max(...ws), sp = hi - lo || 1;
-  const xy = pts.map((p, i) => [70 - (i / (pts.length - 1)) * 68, 24 - ((p.w - lo) / sp) * 20]);
+  const xy = pts.map((p, i) => { const f = i / (pts.length - 1); return [lang === "en" ? 2 + f * 68 : 70 - f * 68, 24 - ((p.w - lo) / sp) * 20]; });
   const last = xy[xy.length - 1];
   return `<svg class="spark" viewBox="0 0 72 28" aria-hidden="true"><polyline class="c-line" points="${xy.map(p => p.join(",")).join(" ")}"/><circle class="c-dot" cx="${last[0]}" cy="${last[1]}" r="3.5"/></svg>`;
 }
 
 function weightChart(ex, pts) {
-  const W = 340, H = 180, top = 24, bot = 26, axisW = 30, plotL = 26, plotR = W - axisW;
+  const W = 340, H = 180, top = 24, bot = 26, axisW = 30, rtl = lang !== "en", plotL = rtl ? 26 : axisW, plotR = rtl ? W - axisW : W - 26;
   const ws = pts.map(p => p.w), mn = Math.min(...ws), mx = Math.max(...ws);
   const step = niceStep(Math.max(mx - mn, 3)), lo = Math.max(0, Math.floor(mn / step) * step - (mx === mn ? step : 0)), hi = Math.ceil(mx / step) * step + (mx === mn ? step : 0);
   const ph = H - top - bot, y = (v) => top + ph - ((v - lo) / (hi - lo)) * ph;
   const t = pts.map(p => parseD(p.d).getTime()), t0 = t[0], t1 = t[t.length - 1];
-  const inset = 14, x = (ti) => t1 === t0 ? (plotL + plotR) / 2 : plotR - inset - ((ti - t0) / (t1 - t0)) * (plotR - plotL - 2 * inset);
+  const inset = 14, x = (ti) => { if (t1 === t0) return (plotL + plotR) / 2; const f = (ti - t0) / (t1 - t0) * (plotR - plotL - 2 * inset); return rtl ? plotR - inset - f : plotL + inset + f; };
   let g = "";
-  for (let v = lo; v <= hi + 1e-9; v += step) g += `<line class="c-grid" x1="${plotL}" x2="${plotR}" y1="${y(v)}" y2="${y(v)}"/><text class="c-ax" x="${plotR + 6}" y="${y(v) + 3.5}" text-anchor="start">${r1(v)}</text>`;
+  for (let v = lo; v <= hi + 1e-9; v += step) g += `<line class="c-grid" x1="${plotL}" x2="${plotR}" y1="${y(v)}" y2="${y(v)}"/><text class="c-ax" x="${rtl ? plotR + 6 : plotL - 6}" y="${y(v) + 3.5}" text-anchor="${rtl ? "start" : "end"}">${r1(v)}</text>`;
   const xy = pts.map((p, i) => [x(t[i]), y(p.w)]);
   if (xy.length > 1) {
     g += `<path class="c-area" d="M${xy[0][0]},${y(lo)}L${xy.map(p => p.join(",")).join("L")}L${xy[xy.length - 1][0]},${y(lo)}Z"/>`;
@@ -1104,50 +1227,50 @@ function weightChart(ex, pts) {
     const tip = `${dm(parseD(pts[i].d))}: ${fmtW(pts[i].w)}`;
     g += `<circle class="c-dot" cx="${p[0]}" cy="${p[1]}" r="4"/><circle class="c-hit" cx="${p[0]}" cy="${p[1]}" r="14" data-tip="${tip}" tabindex="0" role="img" aria-label="${tip}"/>`;
   });
-  const L = xy[xy.length - 1];
-  g += `<text class="c-val" x="${Math.max(L[0], plotL + 14)}" y="${L[1] - 10}" text-anchor="middle">${r1(pts[pts.length - 1].w)}</text>`;
-  g += `<text class="c-ax" x="${plotR}" y="${H - 8}" text-anchor="end">${dm(parseD(pts[0].d))}</text>`;
-  if (pts.length > 1) g += `<text class="c-ax" x="${plotL}" y="${H - 8}" text-anchor="start">${dm(parseD(pts[pts.length - 1].d))}</text>`;
+  const LP = xy[xy.length - 1];
+  g += `<text class="c-val" x="${Math.min(Math.max(LP[0], plotL + 14), plotR - 14)}" y="${LP[1] - 10}" text-anchor="middle">${r1(pts[pts.length - 1].w)}</text>`;
+  g += `<text class="c-ax" x="${rtl ? plotR : plotL}" y="${H - 8}" text-anchor="${rtl ? "end" : "start"}">${dm(parseD(pts[0].d))}</text>`;
+  if (pts.length > 1) g += `<text class="c-ax" x="${rtl ? plotL : plotR}" y="${H - 8}" text-anchor="${rtl ? "start" : "end"}">${dm(parseD(pts[pts.length - 1].d))}</text>`;
   const table = pts.slice().reverse().map(p => `<tr><td>${dm(parseD(p.d))}</td><td>${fmtW(p.w)}</td></tr>`).join("");
-  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="group" aria-label="تطوّر وزن ${esc(ex.ar)} بالكيلو">${g}</svg>
-    ${pts.length < 2 ? `<p class="note">سجّلي وزن هالتمرين مرة تانية لتشوفي خط التطوّر.</p>` : ""}
-    <details class="tbl"><summary>شوفي الأرقام كجدول</summary><table><thead><tr><th>التاريخ</th><th>الوزن</th></tr></thead><tbody>${table}</tbody></table></details>`;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="group" aria-label="${L(`تطوّر وزن ${esc(ex.ar)} بالكيلو`, `${esc(ex.en)} weight over time (kg)`)}">${g}</svg>
+    ${pts.length < 2 ? `<p class="note">${L("سجّلي وزن هالتمرين مرة تانية لتشوفي خط التطوّر.", "Log this exercise again to see your trend line.")}</p>` : ""}
+    <details class="tbl"><summary>${L("شوفي الأرقام كجدول", "Show as table")}</summary><table><thead><tr><th>${L("التاريخ", "Date")}</th><th>${L("الوزن", "Weight")}</th></tr></thead><tbody>${table}</tbody></table></details>`;
 }
 
 function renderProgress() {
   const now = weekStats(0), prev = weekStats(-1), goal = profile.days.length, total = totalDone(), streak = streakWeeks();
   const diff = now.ex - prev.ex;
-  let html = `<header style="display:flex;flex-direction:column;gap:4px"><span class="eyebrow">شوفي قدّيش وصلتي</span><h1>تقدّمي</h1></header>`;
+  let html = `<header style="display:flex;flex-direction:column;gap:4px"><span class="eyebrow">${L("شوفي قدّيش وصلتي", "See how far you've come")}</span><h1>${L("تقدّمي", "Progress")}</h1></header>`;
   if (!total && !Object.keys(log).length) {
-    return html + `<div class="rest"><h2>بعد ما في تمارين مسجّلة</h2><p class="muted">علّمي ✓ عالتمارين اللي بتخلّصيها بـ«برنامجي» وسجّلي أوزانك، وهون رح تشوفي تقدّمك أسبوع بأسبوع.</p><button class="save" data-tab="plan" style="margin-top:6px">روحي عالبرنامج</button></div>`;
+    return html + `<div class="rest"><h2>${L("بعد ما في تمارين مسجّلة", "Nothing logged yet")}</h2><p class="muted">${L("علّمي ✓ عالتمارين اللي بتخلّصيها بـ«برنامجي» وسجّلي أوزانك، وهون رح تشوفي تقدّمك أسبوع بأسبوع.", "Mark ✓ the exercises you finish in “My Plan” and log your weights. Your weekly progress will show up here.")}</p><button class="save" data-tab="plan" style="margin-top:6px">${L("روحي عالبرنامج", "Go to my plan")}</button></div>`;
   }
   html += `<div class="tiles">
-      <div class="tile"><span>تمارين هالأسبوع</span><b>${now.ex}</b><small class="${diff > 0 ? "up" : ""}">${diff > 0 ? `▲ ${diff} أكتر من الأسبوع الماضي` : diff < 0 ? `${-diff} أقل من الأسبوع الماضي` : "متل الأسبوع الماضي"}</small></div>
-      <div class="tile"><span>أيام التمرين</span><b>${now.days}<em>/${goal}</em></b><small class="${now.days >= goal ? "up" : ""}">${now.days >= goal ? "✓ حققتي هدف الأسبوع" : `باقي ${daysWord(goal - now.days)}`}</small></div>
-      <div class="tile"><span>أسابيع ورا بعض</span><b>${streak}</b><small>${streak >= 2 ? "استمرارية حلوة، كمّلي!" : "كل أسبوع بتتمرني فيه بيزيد السلسلة"}</small></div>
-      <div class="tile"><span>مجموع التمارين</span><b>${total}</b><small>من أول يوم</small></div>
+      <div class="tile"><span>${L("تمارين هالأسبوع", "Exercises this week")}</span><b>${now.ex}</b><small class="${diff > 0 ? "up" : ""}">${diff > 0 ? L(`▲ ${diff} أكتر من الأسبوع الماضي`, `▲ ${diff} more than last week`) : diff < 0 ? L(`${-diff} أقل من الأسبوع الماضي`, `${-diff} fewer than last week`) : L("متل الأسبوع الماضي", "Same as last week")}</small></div>
+      <div class="tile"><span>${L("أيام التمرين", "Training days")}</span><b>${now.days}<em>/${goal}</em></b><small class="${now.days >= goal ? "up" : ""}">${now.days >= goal ? L("✓ حققتي هدف الأسبوع", "✓ Weekly goal reached") : L(`باقي ${daysWord(goal - now.days)}`, `${daysWord(goal - now.days)} to go`)}</small></div>
+      <div class="tile"><span>${L("أسابيع ورا بعض", "Week streak")}</span><b>${streak}</b><small>${streak >= 2 ? L("استمرارية حلوة، كمّلي!", "Great consistency, keep it up!") : L("كل أسبوع بتتمرني فيه بيزيد السلسلة", "Every week you train adds to it")}</small></div>
+      <div class="tile"><span>${L("مجموع التمارين", "Total exercises")}</span><b>${total}</b><small>${L("من أول يوم", "since day one")}</small></div>
     </div>`;
-  html += `<section class="card"><div class="card-h"><h2>التمارين بالأسبوع</h2><span class="small muted">آخر ٨ أسابيع</span></div>${weeklyChart()}<p class="note">اضغطي عأي عمود لتشوفي الرقم.</p></section>`;
+  html += `<section class="card"><div class="card-h"><h2>${L("التمارين بالأسبوع", "Exercises per week")}</h2><span class="small muted">${L("آخر ٨ أسابيع", "Last 8 weeks")}</span></div>${weeklyChart()}<p class="note">${L("اضغطي عأي عمود لتشوفي الرقم.", "Tap a bar to see the number.")}</p></section>`;
 
   const ids = [...new Set(Object.values(log).flatMap(d => Object.keys(d).filter(id => d[id].w > 0)))];
   const items = ids.map(id => ({ ex: EX.find(e => e.id === id), pts: weightsOf(id) })).filter(x => x.ex)
     .sort((a, b) => b.pts[b.pts.length - 1].d.localeCompare(a.pts[a.pts.length - 1].d));
-  html += `<section class="group"><div class="card-h"><h2>تطوّر أوزاني</h2><span class="small muted">${items.length} تمرين</span></div>`;
-  if (!items.length) html += `<p class="empty">سجّلي الوزن اللي بترفعيه بكل تمرين، وهون بيطلعلك خط التطوّر.</p>`;
+  html += `<section class="group"><div class="card-h"><h2>${L("تطوّر أوزاني", "My weights")}</h2><span class="small muted">${items.length} ${L("تمرين", "exercises")}</span></div>`;
+  if (!items.length) html += `<p class="empty">${L("سجّلي الوزن اللي بترفعيه بكل تمرين، وهون بيطلعلك خط التطوّر.", "Log the weight you lift in each exercise to see your trend here.")}</p>`;
   else {
     if (progOpen === null || (progOpen && !items.some(x => x.ex.id === progOpen))) progOpen = items[0].ex.id;
     html += `<div class="list">${items.map(({ ex, pts }) => {
       const first = pts[0].w, last = pts[pts.length - 1].w, d = r1(last - first), best = Math.max(...pts.map(p => p.w)), isOpen = progOpen === ex.id;
       return `<div class="ex">
         <button class="ex-head" data-prog="${ex.id}" aria-expanded="${isOpen}">
-          <span class="ex-main"><b>${esc(ex.ar)}</b><span class="ex-meta">آخر وزن <span class="wtag">${fmtW(last)}</span>${d > 0 ? ` · <span class="up">▲ ${d} كغ من البداية</span>` : d < 0 ? ` · ${-d} كغ أقل من البداية` : ""}</span></span>
+          <span class="ex-main"><b>${esc(exN(ex))}</b><span class="ex-meta">${L("آخر وزن", "Latest")} <span class="wtag">${fmtW(last)}</span>${d > 0 ? ` · <span class="up">▲ ${d} ${L("كغ من البداية", "kg since start")}</span>` : d < 0 ? ` · ${-d} ${L("كغ أقل من البداية", "kg below start")}` : ""}</span></span>
           ${spark(pts)}
         </button>
-        ${isOpen ? `<div class="ex-body">${weightChart(ex, pts)}<p class="small muted">أحسن وزن: <b class="wtag">${fmtW(best)}</b> · ${pts.length} ${pts.length === 1 ? "تسجيل" : "تسجيلات"}</p></div>` : ""}
+        ${isOpen ? `<div class="ex-body">${weightChart(ex, pts)}<p class="small muted">${L("أحسن وزن", "Best")}: <b class="wtag">${fmtW(best)}</b> · ${pts.length} ${pts.length === 1 ? L("تسجيل", "entry") : L("تسجيلات", "entries")}</p></div>` : ""}
       </div>`;
     }).join("")}</div>`;
   }
-  html += `</section><p class="note">زيدي الوزن شوي شوي لمّا تقدري تعملي كل التكرارات بحركة صحيحة. هيدا اللي بيعمل التقدّم.</p>`;
+  html += `</section><p class="note">${L("زيدي الوزن شوي شوي لمّا تقدري تعملي كل التكرارات بحركة صحيحة. هيدا اللي بيعمل التقدّم.", "Add a little weight once you can do all reps with good form. That's what drives progress.")}</p>`;
   return html;
 }
 
@@ -1170,7 +1293,7 @@ let ses = store.get("tamrini.session", null);   // { key, title, list:[{id,t}], 
 if (ses && (Date.now() - ses.started > 12 * 3600e3 || !Array.isArray(ses.list) || !Array.isArray(ses.fin))) ses = null;   // جلسة قديمة
 const $play = document.createElement("div");
 $play.id = "play"; $play.dir = "rtl"; $play.lang = "ar"; $play.hidden = true;
-$play.setAttribute("role", "dialog"); $play.setAttribute("aria-modal", "true"); $play.setAttribute("aria-label", "وضع التمرين");
+$play.setAttribute("role", "dialog"); $play.setAttribute("aria-modal", "true");
 document.body.appendChild($play);
 const saveSes = () => store.set("tamrini.session", ses);
 
@@ -1205,10 +1328,10 @@ function startSession(key) {
   try { audio ||= new (window.AudioContext || window.webkitAudioContext)(); audio.resume?.(); } catch {}
   let items, date, title, fin = [];
   if (key === "plan") {
-    const d = buildDay(selDay); items = d.items; date = ymd(dateOfDay(selDay)); title = d.title; key = selDay;
+    const d = buildDay(selDay); items = d.items; date = ymd(dateOfDay(selDay)); title = { ar: d.titleAr, en: d.titleEn }; key = selDay;
     items.forEach((it, i) => { if ((entry(date, it.ex.id) || {}).done) fin.push(i); });   // كمّلي من وين وقفتي
   } else {
-    const r = ROUTINES.find(x => `r-${x.id}` === key); items = routineItems(r); date = ymd(TODAY); title = r.ar;
+    const r = ROUTINES.find(x => `r-${x.id}` === key); items = routineItems(r); date = ymd(TODAY); title = { ar: r.ar, en: r.en };
   }
   const first = items.findIndex((it, i) => !fin.includes(i));
   ses = { key, title, list: items.map(it => ({ id: it.ex.id, t: it.isTime })), date, idx: Math.max(0, first), fin, set: 1, phase: "work", until: 0, started: Date.now(), sets: 0, prs: 0, showHow: false };
@@ -1242,13 +1365,13 @@ function plWeight(ex) {
   if (ex.eq === "body") return "";
   const e = entry(ses.date, ex.id) || {}, prev = lastBefore(ex.id, ses.date), best = bestOf(ex.id, ses.date), step = ex.eq === "machine" ? 2.5 : 1;
   return `<div class="pl-w">
-      <span class="lbl">الوزن</span>
+      <span class="lbl">${L("الوزن", "Weight")}</span>
       <div class="stepper">
-        <button type="button" data-pwstep="${-step}" aria-label="نقّصي ${step} كغ">−</button>
-        <span class="wbox"><input class="num" data-pw="${ex.id}" type="number" inputmode="decimal" step="0.5" min="0" placeholder="${prev ?? "0"}" value="${e.w ?? ""}" aria-label="الوزن بالكيلو"><span class="unit">كغ</span></span>
-        <button type="button" data-pwstep="${step}" aria-label="زيدي ${step} كغ">+</button>
+        <button type="button" data-pwstep="${-step}" aria-label="${L(`نقّصي ${step} كغ`, `Minus ${step} kg`)}">−</button>
+        <span class="wbox"><input class="num" data-pw="${ex.id}" type="number" inputmode="decimal" step="0.5" min="0" placeholder="${prev ?? "0"}" value="${e.w ?? ""}" aria-label="${L("الوزن بالكيلو", "Weight in kg")}"><span class="unit">${L("كغ", "kg")}</span></span>
+        <button type="button" data-pwstep="${step}" aria-label="${L(`زيدي ${step} كغ`, `Plus ${step} kg`)}">+</button>
       </div>
-      <span class="small muted">${prev ? `المرة الماضية ${fmtW(prev)}` : "أول مرة؟ ابدئي خفيف"}${best ? ` · أحسن وزن ${fmtW(best)}` : ""}</span>
+      <span class="small muted">${prev ? `${L("المرة الماضية", "Last time")} ${fmtW(prev)}` : L("أول مرة؟ ابدئي خفيف", "First time? Start light")}${best ? ` · ${L("أحسن وزن", "Best")} ${fmtW(best)}` : ""}</span>
     </div>`;
 }
 
@@ -1263,61 +1386,61 @@ function renderPlay() {
     const mins = Math.max(1, Math.round((Date.now() - ses.started) / 60000));
     body = `<div class="pl-main pl-end">
         <div class="pl-trophy">${CHECK}</div>
-        <h1>برافو! خلّصتي تمرين اليوم</h1>
+        <h1>${L("برافو! خلّصتي تمرين اليوم", "Well done! Workout complete")}</h1>
         <p class="muted">${quote()}</p>
         <div class="tiles">
-          <div class="tile"><span>الوقت</span><b>${mins}<em> د</em></b></div>
-          <div class="tile"><span>تمارين</span><b>${doneN}<em>/${items.length}</em></b></div>
-          <div class="tile"><span>مجموعات</span><b>${ses.sets}</b></div>
-          <div class="tile"><span>أوزان جديدة</span><b>${ses.prs}</b><small>${ses.prs ? "رقم قياسي جديد!" : "المرة الجاية زيدي شوي"}</small></div>
+          <div class="tile"><span>${L("الوقت", "Time")}</span><b>${mins}<em> ${L("د", "min")}</em></b></div>
+          <div class="tile"><span>${L("تمارين", "Exercises")}</span><b>${doneN}<em>/${items.length}</em></b></div>
+          <div class="tile"><span>${L("مجموعات", "Sets")}</span><b>${ses.sets}</b></div>
+          <div class="tile"><span>${L("أوزان جديدة", "New bests")}</span><b>${ses.prs}</b><small>${ses.prs ? L("رقم قياسي جديد!", "New personal best!") : L("المرة الجاية زيدي شوي", "Add a little next time")}</small></div>
         </div>
       </div>
       <div class="pl-actions">
-        <button class="start" data-pl="prog">شوفي تقدّمك</button>
-        <button class="ghost wide" data-pl="close">رجعي عالبرنامج</button>
+        <button class="start" data-pl="prog">${L("شوفي تقدّمك", "See progress")}</button>
+        <button class="ghost wide" data-pl="close">${L("رجعي عالبرنامج", "Back to plan")}</button>
       </div>`;
   } else {
     const it = items[ses.idx], ex = it.ex, n = setsFor(ses.key, ex), hold = holdFor(ses.key, ex), uni = UNI.has(ex.id);
     if (ses.phase === "rest") {
       const left = Math.max(0, (ses.until - Date.now()) / 1000), tot = restFor(ses.key);
-      const nextTxt = ses.set === 1 ? `التمرين الجايي: ${esc(ex.ar)}` : `الجاية: المجموعة ${ses.set} من ${n}`;
+      const nextTxt = ses.set === 1 ? `${L("التمرين الجايي", "Up next")}: ${esc(exN(ex))}` : L(`الجاية: المجموعة ${ses.set} من ${n}`, `Next: set ${ses.set} of ${n}`);
       body = `<div class="pl-main">
-          <span class="pl-pill">راحة</span>
-          ${bigRing(Math.min(1, left / tot), mmss(Math.ceil(left)), "خدي نفس واشربي مي")}
-          <div class="pl-next">${avatar(ex)}<span><b>${nextTxt}</b><small class="muted">${it.isTime ? `${mmss(hold)} ثبات` : `${rng(g.reps)} تكرار`}${uni ? " · لكل جهة" : ""}</small></span></div>
+          <span class="pl-pill">${L("راحة", "Rest")}</span>
+          ${bigRing(Math.min(1, left / tot), mmss(Math.ceil(left)), L("خدي نفس واشربي مي", "Breathe and sip some water"))}
+          <div class="pl-next">${avatar(ex)}<span><b>${nextTxt}</b><small class="muted">${it.isTime ? `${mmss(hold)} ${L("ثبات", "hold")}` : `${rng(g.reps)} ${L("تكرار", "reps")}`}${uni ? L(" · لكل جهة", " · each side") : ""}</small></span></div>
         </div>
         <div class="pl-actions">
-          <div class="pl-row"><button class="ghost wide" data-pl="more">+15 ث</button><button class="ghost wide" data-pl="next">تخطّي الراحة</button></div>
+          <div class="pl-row"><button class="ghost wide" data-pl="more">+15 ${L("ث", "s")}</button><button class="ghost wide" data-pl="next">${L("تخطّي الراحة", "Skip rest")}</button></div>
         </div>`;
     } else if (ses.phase === "hold") {
       const left = Math.max(0, (ses.until - Date.now()) / 1000);
       body = `<div class="pl-main">
-          <span class="pl-pill">المجموعة ${ses.set} من ${n}</span>
-          <h2 class="pl-name">${esc(ex.ar)}</h2>
-          ${bigRing(Math.min(1, left / hold), mmss(Math.ceil(left)), uni ? "اثبتي · وبعدين بدّلي الجهة" : "اثبتي، فيكِ!")}
+          <span class="pl-pill">${L(`المجموعة ${ses.set} من ${n}`, `Set ${ses.set} of ${n}`)}</span>
+          <h2 class="pl-name">${esc(exN(ex))}</h2>
+          ${bigRing(Math.min(1, left / hold), mmss(Math.ceil(left)), uni ? L("اثبتي · وبعدين بدّلي الجهة", "Hold · then switch sides") : L("اثبتي، فيكِ!", "Hold it, you've got this!"))}
         </div>
-        <div class="pl-actions"><button class="start" data-pl="set">✓ خلّصت</button></div>`;
+        <div class="pl-actions"><button class="start" data-pl="set">${L("✓ خلّصت", "✓ Done")}</button></div>`;
     } else {
       body = `<div class="pl-main">
           ${avatar(ex, { big: true })}
           <div class="pl-head">
-            <h2 class="pl-name">${esc(ex.ar)}</h2>
-            <span class="pl-pill">المجموعة ${ses.set} من ${n}</span>
+            <h2 class="pl-name">${esc(exN(ex))}</h2>
+            <span class="pl-pill">${L(`المجموعة ${ses.set} من ${n}`, `Set ${ses.set} of ${n}`)}</span>
           </div>
-          <div class="pl-target"><b>${it.isTime ? mmss(hold) : rng(g.reps)}</b><span>${it.isTime ? "ثبات" : "تكرار"}${uni ? " · لكل جهة" : ""}</span></div>
+          <div class="pl-target"><b>${it.isTime ? mmss(hold) : rng(g.reps)}</b><span>${it.isTime ? L("ثبات", "hold") : L("تكرار", "reps")}${uni ? L(" · لكل جهة", " · each side") : ""}</span></div>
           ${plWeight(ex)}
-          <details class="pl-how" ${ses.showHow ? "open" : ""}><summary>شو الحركة؟</summary>${exInfo(ex)}<a class="video" href="${video(ex)}" target="_blank" rel="noopener">▶ فيديو الشرح</a></details>
+          <details class="pl-how" ${ses.showHow ? "open" : ""}><summary>${L("شو الحركة؟", "How to do it")}</summary>${exInfo(ex)}<a class="video" href="${video(ex)}" target="_blank" rel="noopener">▶ ${L("فيديو الشرح", "Watch video")}</a></details>
         </div>
         <div class="pl-actions">
-          ${it.isTime ? `<button class="start" data-pl="hold">▶ ابدئي ${mmss(hold)}</button>` : `<button class="start" data-pl="set">✓ خلّصت المجموعة</button>`}
-          <button class="ghost wide" data-pl="skip">تخطّي هالتمرين</button>
+          ${it.isTime ? `<button class="start" data-pl="hold">▶ ${L("ابدئي", "Start")} ${mmss(hold)}</button>` : `<button class="start" data-pl="set">${L("✓ خلّصت المجموعة", "✓ Set done")}</button>`}
+          <button class="ghost wide" data-pl="skip">${L("تخطّي هالتمرين", "Skip exercise")}</button>
         </div>`;
     }
   }
   $play.innerHTML = `<div class="pl">
       <header class="pl-top">
-        <button class="pl-x" data-pl="close" aria-label="سكّري وضع التمرين">✕</button>
-        <span class="pl-title"><b>${esc(ses.title)}</b><small>${ses.phase === "done" ? "خلصنا!" : `تمرين ${ses.idx + 1} من ${items.length}`}</small></span>
+        <button class="pl-x" data-pl="close" aria-label="${L("سكّري وضع التمرين", "Close workout")}">✕</button>
+        <span class="pl-title"><b>${esc(typeof ses.title === "string" ? ses.title : L(ses.title.ar, ses.title.en))}</b><small>${ses.phase === "done" ? L("خلصنا!", "Finished!") : L(`تمرين ${ses.idx + 1} من ${items.length}`, `Exercise ${ses.idx + 1} of ${items.length}`)}</small></span>
         <span class="pl-x" aria-hidden="true"></span>
       </header>
       ${segs}
@@ -1354,7 +1477,7 @@ $play.addEventListener("click", (e) => {
   }
   else if (a === "prog") { tab = "prog"; endSession(); window.scrollTo(0, 0); }
   else if (a === "close") {
-    if (ses.phase !== "done" && !confirm("بدّك توقفي التمرين؟ اللي خلّصتيه محفوظ.")) return;
+    if (ses.phase !== "done" && !confirm(L("بدّك توقفي التمرين؟ اللي خلّصتيه محفوظ.", "Stop the workout? What you finished is saved."))) return;
     endSession();
   }
 });
@@ -1402,6 +1525,7 @@ document.addEventListener("click", (e) => {
     const v = ds.adj === "sets" ? Math.min(8, Math.max(1, setsFor(key, ex) + dir)) : Math.min(180, Math.max(10, holdFor(key, ex) + dir * 5));
     adj[k] = { ...(adj[k] || {}), [ds.adj]: v }; store.set("tamrini.adj", adj); render(); return;
   }
+  if (ds.lang) { lang = ds.lang; store.set("tamrini.lang", lang); applyLang(); render(); if (ses) renderPlay(); return; }
   if (ds.themeSet) { theme = ds.themeSet; store.set("tamrini.theme", theme); applyTheme(); render(); return; }
   if (ds.prog) { progOpen = progOpen === ds.prog ? "" : ds.prog; render(); return; }
   if (ds.open) { open = open === ds.open ? null : ds.open; render(); return; }
@@ -1436,9 +1560,9 @@ document.addEventListener("submit", (e) => {
   if (e.target.id !== "me-form") return;
   e.preventDefault();
   const err = document.getElementById("me-err");
-  const bad = !(draft.age >= 12 && draft.age <= 90) ? "اكتبي عمر بين ١٢ و٩٠."
-    : !(draft.weight >= 30 && draft.weight <= 250) ? "اكتبي وزن بين ٣٠ و٢٥٠ كغ."
-    : !draft.days.length ? "اختاري يوم تمرين واحد عالأقل." : "";
+  const bad = !(draft.age >= 12 && draft.age <= 90) ? L("اكتبي عمر بين ١٢ و٩٠.", "Enter an age between 12 and 90.")
+    : !(draft.weight >= 30 && draft.weight <= 250) ? L("اكتبي وزن بين ٣٠ و٢٥٠ كغ.", "Enter a weight between 30 and 250 kg.")
+    : !draft.days.length ? L("اختاري يوم تمرين واحد عالأقل.", "Pick at least one training day.") : "";
   if (bad) { err.textContent = bad; err.hidden = false; return; }
   profile = { ...draft, saved: true };
   store.set("tamrini.profile", profile);
@@ -1447,6 +1571,15 @@ document.addEventListener("submit", (e) => {
   tab = "plan"; open = null; render(); window.scrollTo(0,0);
 });
 
+function applyLang() {
+  const dir = lang === "en" ? "ltr" : "rtl";
+  document.documentElement.lang = lang; document.documentElement.dir = dir;
+  [$app, document.querySelector(".tabs"), $play, $tip].forEach(el => { el.dir = dir; el.lang = lang; });
+  document.querySelectorAll(".tabs [data-ar]").forEach(el => { el.textContent = L(el.dataset.ar, el.dataset.en); });
+  $play.setAttribute("aria-label", L("وضع التمرين", "Workout mode"));
+  document.title = L("تمريني", "Tamrini");
+}
+applyLang();
 render();
 if (ses) { renderPlay(); lockScreen(); }
 </script>
