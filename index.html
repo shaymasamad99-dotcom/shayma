@@ -27,14 +27,14 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #111513; --surface: #1A201D; --ink: #ECEFEC; --muted: #9AA59F;
-    --line: #2A322E; --accent: #5CC092; --accent-ink: #0D1310; --accent-2: #3E9F75; --chart: #5CC092; --soft: #1D3128; --warn: #E0A35C;
+    --bg: #0A0D0B; --surface: #151A17; --ink: #EEF1EE; --muted: #9AA59F;
+    --line: #252D29; --accent: #5CC092; --accent-ink: #0D1310; --accent-2: #3E9F75; --chart: #5CC092; --soft: #1D3128; --warn: #E0A35C;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #111513; --surface: #1A201D; --ink: #ECEFEC; --muted: #9AA59F;
-  --line: #2A322E; --accent: #5CC092; --accent-ink: #0D1310; --accent-2: #3E9F75; --chart: #5CC092; --soft: #1D3128; --warn: #E0A35C;
+  --bg: #0A0D0B; --surface: #151A17; --ink: #EEF1EE; --muted: #9AA59F;
+  --line: #252D29; --accent: #5CC092; --accent-ink: #0D1310; --accent-2: #3E9F75; --chart: #5CC092; --soft: #1D3128; --warn: #E0A35C;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -83,7 +83,6 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .ex { border-top: 1px solid var(--line); }
 .ex:first-child { border-top: 0; }
 .ex-head { width: 100%; display: flex; align-items: center; gap: 12px; padding: 14px; background: none; border: 0; text-align: start; }
-.ex-num { flex: none; width: 28px; height: 28px; border-radius: 8px; background: var(--soft); color: var(--accent); display: grid; place-items: center; font-family: var(--display); font-size: .9rem; }
 .ex-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .ex-main b { font-weight: 600; }
 .ex-meta { font-size: .8rem; color: var(--muted); }
@@ -121,13 +120,6 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 /* صف التمرين مع علامة الإنجاز */
 .ex-row { display: flex; align-items: center; }
 .ex-row .ex-head { padding-inline-start: 10px; }
-.check { flex: none; position: relative; margin-inline-start: 14px; width: 34px; height: 34px; padding: 0; border-radius: 50%; border: 2px solid var(--line); background: var(--surface); color: var(--accent); display: grid; place-items: center; font-family: var(--display); font-size: .9rem; }
-.check::before { content: ""; position: absolute; inset: -6px; }
-.check svg { display: none; width: 18px; height: 18px; fill: none; stroke: var(--accent-ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.check[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); }
-.check[aria-pressed="true"] .n { display: none; }
-.check[aria-pressed="true"] svg { display: block; }
-.check:disabled { opacity: .5; cursor: default; }
 .ex.is-done .ex-main b { color: var(--muted); }
 .wtag { color: var(--accent); font-weight: 600; unicode-bidi: isolate; white-space: nowrap; }
 
@@ -174,6 +166,44 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .tbl th, .tbl td { text-align: start; padding: 6px 4px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
 .tbl th { color: var(--muted); font-weight: 500; }
 
+/* دوائر التمارين */
+.av { flex: none; position: relative; width: 52px; height: 52px; border-radius: 50%; background: var(--c); border: 0; padding: 0; display: grid; place-items: center; color: #fff; }
+.av.lt { color: #1A1E1C; }
+.av svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.av-done { position: absolute; inset: 0; border-radius: 50%; background: var(--accent); display: grid; place-items: center; box-shadow: 0 0 0 3px var(--surface) inset; }
+.av-done svg { width: 26px; height: 26px; stroke: var(--accent-ink); stroke-width: 3; }
+.av-uni { position: absolute; top: -3px; inset-inline-end: -4px; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); color: var(--ink); font-size: .72rem; line-height: 1; display: grid; place-items: center; box-shadow: 0 0 0 2px var(--surface), 0 1px 4px rgb(0 0 0 / .25); }
+.av:disabled { opacity: .7; cursor: default; }
+.av.big { width: 112px; height: 112px; }
+.av.big svg { width: 52px; height: 52px; }
+.ex-row > .av { margin-inline-start: 14px; }
+.ex-head .av { width: 44px; height: 44px; }
+.ex-head .av svg { width: 22px; height: 22px; }
+@media (prefers-reduced-motion: no-preference) { [data-pop] { animation: pop .35s ease-out; } }
+
+/* عدّاد المجموعات بالصف */
+.rstep { flex: none; display: flex; align-items: center; gap: 4px; margin-inline-end: 12px; }
+.rstep button { position: relative; width: 30px; height: 30px; border-radius: 50%; border: 0; padding: 0; background: var(--soft); color: var(--accent); font-size: 1.15rem; line-height: 1; display: grid; place-items: center; }
+.rstep button::before { content: ""; position: absolute; inset: -7px -3px; }
+.rv { min-width: 46px; display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
+.rv b { font-family: var(--display); font-size: 1.05rem; font-variant-numeric: tabular-nums; direction: ltr; }
+.rv small { font-size: .68rem; color: var(--muted); white-space: nowrap; }
+.routine { display: flex; flex-direction: column; gap: 12px; }
+.routine-h { display: flex; flex-direction: column; gap: 2px; text-align: center; padding-block: 4px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.routine-h .eyebrow { font-weight: 600; letter-spacing: .02em; }
+.routine-h h2 { font-size: 1.35rem; }
+
+/* زر البداية الثابت */
+.startbar { position: fixed; left: 0; right: 0; z-index: 4; bottom: var(--tabh, 70px); display: flex; justify-content: center;
+  padding: 14px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(to top, var(--bg) 55%, transparent); pointer-events: none; }
+.start { pointer-events: auto; width: 100%; max-width: 528px; min-height: 56px; border: 0; border-radius: 999px; background: var(--accent); color: var(--accent-ink);
+  font-family: var(--display); font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 8px 24px rgb(0 0 0 / .22); }
+.start small { font-family: var(--body); font-size: .82rem; font-weight: 500; opacity: .85; }
+.start.soft { background: var(--soft); color: var(--accent); }
+.start:disabled { background: var(--line); color: var(--muted); box-shadow: none; }
+body.has-start .app { padding-bottom: calc(190px + env(safe-area-inset-bottom, 0px)); }
+
 .rest { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 20px; text-align: center; display: flex; flex-direction: column; gap: 6px; }
 
 .search { width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
@@ -217,6 +247,10 @@ form { display: flex; flex-direction: column; gap: 18px; }
   .scheme b { font-size: 1rem; white-space: nowrap; }
   .ex-sets { font-size: .8rem; }
   .ex-head { gap: 8px; }
+  .ex-row > .av { width: 44px; height: 44px; margin-inline-start: 10px; }
+  .ex-row > .av svg { width: 22px; height: 22px; }
+  .rstep { margin-inline-end: 8px; gap: 2px; }
+  .rv { min-width: 40px; }
 }
 @media (prefers-reduced-motion: no-preference) { .ex-body { animation: in .18s ease-out; } @keyframes in { from { opacity: .4; transform: translateY(-3px); } } }
 </style>
@@ -483,6 +517,13 @@ let selDay = profile.days.includes(todayIdx) ? todayIdx : (profile.days[0] ?? to
 let open = null;
 let justDone = null;
 let tab = "plan";
+let theme = store.get("tamrini.theme", "auto");
+function applyTheme() {
+  if (theme === "auto") delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = theme;
+  const dark = theme === "dark" || (theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#0A0D0B" : "#2B7A57");
+}
+applyTheme();
 let lib = { q: "", part: "all", eq: "all" };
 
 /* ===================== السجل ===================== */
@@ -566,7 +607,7 @@ function exRow(ex, idx, setsTxt, key, swapKey) {
   const isOpen = open === key;
   return `<div class="ex">
     <button class="ex-head" data-open="${key}" aria-expanded="${isOpen}">
-      ${idx != null ? `<span class="ex-num">${idx}</span>` : ""}
+      ${avatar(ex)}
       <span class="ex-main"><b>${esc(ex.ar)}</b><span class="ex-meta">${MUSCLES[ex.m].ar} · ${EQ[ex.eq]}</span></span>
       ${setsTxt ? `<span class="ex-sets">${setsTxt}</span>` : `<span class="pill">${PARTS[MUSCLES[ex.m].part]}</span>`}
     </button>
@@ -603,15 +644,60 @@ function logBox(ex, e, date, canLog) {
       <button type="button" class="done-btn" data-done="${ex.id}" aria-pressed="${!!e.done}">${e.done ? "✓ تمّ! (اضغطي للتراجع)" : "✓ خلّصت التمرين"}</button>
     </div>`;
 }
-function planRow(ex, idx, setsTxt, key, swapKey, date, canLog) {
-  const isOpen = open === key, e = entry(date, ex.id) || {}, done = !!e.done;
+/* ===================== شكل الروتين: دوائر، عدّادات، مدة ===================== */
+const MCOL = { chest: "#E76F51", back: "#2A9D8F", shoulders: "#F4A261", biceps: "#8E7DBE", triceps: "#B565A7", quads: "#457B9D", hamstrings: "#3D5A80", glutes: "#D9668A", calves: "#6A994E", abs: "#E9C46A" };
+const MLIGHT = new Set(["shoulders", "abs"]);                    // ألوان فاتحة → أيقونة غامقة
+const ICON = {
+  db: '<path d="M6.5 8v8M17.5 8v8M3.5 10v4M20.5 10v4M6.5 12h11"/>',
+  machine: '<circle cx="12" cy="4.5" r="1.6"/><path d="M12 6.2V11"/><rect x="7.5" y="11" width="9" height="9" rx="1.6"/><path d="M7.5 14h9M7.5 17h9"/>',
+  body: '<circle cx="12" cy="4.8" r="2"/><path d="M12 7.6V14M6.5 10.5h11M12 14l-3.2 6M12 14l3.2 6"/>',
+};
+// تمارين بتنعمل لكل جهة لحال
+const UNI = new Set(["db-row", "m-cablelateral", "db-kickback", "db-concentration", "db-lunge", "db-stepup", "db-bulgarian", "db-revlunge", "db-curtsy",
+  "m-kickback", "m-glutekick", "donkey-kick", "fire-hydrant", "sl-bridge", "clamshell", "db-slcalf", "db-slrdl", "side-plank", "db-sidebend", "db-woodchop", "m-woodchop", "m-pallof"]);
+
+function avatar(ex, opts = {}) {
+  const { done = false, attrs = "", big = false } = opts;
+  const inner = `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[ex.eq]}</svg>${done ? `<span class="av-done">${CHECK}</span>` : ""}${UNI.has(ex.id) ? `<span class="av-uni" aria-hidden="true">⇄</span>` : ""}`;
+  const cls = `av ${MLIGHT.has(ex.m) ? "lt" : ""} ${big ? "big" : ""} ${done ? "on" : ""}`;
+  return attrs ? `<button class="${cls}" style="--c:${MCOL[ex.m]}" ${attrs}>${inner}</button>` : `<span class="${cls}" style="--c:${MCOL[ex.m]}">${inner}</span>`;
+}
+
+let adj = store.get("tamrini.adj", {});            // { "day-exId": { sets, hold } }
+const REST_SEC = { fat: 50, muscle: 75, strength: 150, fit: 60 };
+function baseSets() { const [a, b] = GOALS[profile.goal].sets.split("–").map(Number); return profile.level === "inter" && b ? b : a; }
+const setsFor = (day, ex) => (adj[`${day}-${ex.id}`] || {}).sets ?? baseSets();
+const holdFor = (day, ex) => (adj[`${day}-${ex.id}`] || {}).hold ?? 30;
+const mmss = (s) => `${Math.floor(s / 60)}:${pad(Math.round(s % 60))}`;
+function estMin(day, items) {
+  let s = 0;
+  items.forEach(it => {
+    const n = setsFor(day, it.ex), work = (it.isTime ? holdFor(day, it.ex) : 40) * (UNI.has(it.ex.id) ? 2 : 1);
+    s += n * work + (n - 1) * REST_SEC[profile.goal] + 60;
+  });
+  return Math.max(5, Math.round(s / 300) * 5);
+}
+function rowStepper(it, day) {
+  const ex = it.ex, n = setsFor(day, ex), g = GOALS[profile.goal];
+  const [kind, val, sub, lbl] = it.isTime
+    ? ["hold", mmss(holdFor(day, ex)), `× ${n}`, "ثواني الثبات"]
+    : ["sets", n, `× ${rng(g.reps)}`, "عدد المجموعات"];
+  return `<div class="rstep" role="group" aria-label="${lbl}: ${esc(ex.ar)}">
+      <button type="button" data-adj="${kind}" data-aid="${ex.id}" data-dir="-1" aria-label="أقل">−</button>
+      <span class="rv"><b>${val}</b><small>${sub}</small></span>
+      <button type="button" data-adj="${kind}" data-aid="${ex.id}" data-dir="1" aria-label="أكتر">+</button>
+    </div>`;
+}
+
+function planRow(it, idx, key, swapKey, date, canLog) {
+  const ex = it.ex, isOpen = open === key, e = entry(date, ex.id) || {}, done = !!e.done;
   return `<div class="ex ${done ? "is-done" : ""}">
     <div class="ex-row">
-      <button class="check ${justDone === ex.id && done ? "pop" : ""}" data-done="${ex.id}" aria-pressed="${done}" ${canLog ? "" : "disabled"} aria-label="${done ? "شيلي علامة الإنجاز عن" : "علّمي إنك خلّصتي"} ${esc(ex.ar)}"><span class="n">${idx}</span>${CHECK}</button>
+      ${avatar(ex, { done, attrs: `data-done="${ex.id}" aria-pressed="${done}" ${canLog ? "" : "disabled"} aria-label="${done ? "شيلي علامة الإنجاز عن" : "علّمي إنك خلّصتي"} ${esc(ex.ar)}"${justDone === ex.id && done ? ' data-pop="1"' : ""}` })}
       <button class="ex-head" data-open="${key}" aria-expanded="${isOpen}">
-        <span class="ex-main"><b>${esc(ex.ar)}</b><span class="ex-meta">${MUSCLES[ex.m].ar} · ${EQ[ex.eq]}${e.w ? ` · <span class="wtag">${fmtW(e.w)}</span>` : ""}</span></span>
-        <span class="ex-sets">${setsTxt}</span>
+        <span class="ex-main"><b>${esc(ex.ar)}</b><span class="ex-meta">${MUSCLES[ex.m].ar} · ${EQ[ex.eq]}${UNI.has(ex.id) ? " · لكل جهة" : ""}${e.w ? ` · <span class="wtag">${fmtW(e.w)}</span>` : ""}</span></span>
       </button>
+      ${rowStepper(it, selDay)}
     </div>
     ${isOpen ? `<div class="ex-body">
       ${exInfo(ex)}
@@ -637,11 +723,10 @@ function ring(frac, label) {
 
 function renderPlan() {
   const g = GOALS[profile.goal];
-  const sets = g.sets;
   const day = buildDay(selDay);
   let html = `<header style="display:flex;flex-direction:column;gap:4px">
       <span class="eyebrow">${DAYS[todayIdx]} · هدفك: ${g.ar}</span>
-      <h1>برنامجي الأسبوعي</h1>
+      <h1>برنامجي</h1>
     </header>`;
   if (!profile.saved) html += `<div class="banner"><span>هيدا برنامج مثال. عبّي عمرك ووزنك وهدفك ليتظبط إلك.</span><button data-tab="me">عبّي بياناتي</button></div>`;
   const ws = weekStats(), goalDays = profile.days.length;
@@ -654,13 +739,8 @@ function renderPlan() {
         <p>${quote()}</p>
       </div>
     </section>`;
-  html += `<div class="scheme">
-      <div><b>${rng(sets)}</b><span>مجموعات</span></div>
-      <div><b>${rng(g.reps)}</b><span>تكرار</span></div>
-      <div><b>${rng(g.rest)}</b><span>راحة</span></div>
-    </div>`;
-  html += `<div class="week" role="tablist">${DAYS_SHORT.map((d, i) => `
-      <button class="day ${profile.days.includes(i) ? "train" : ""} ${dayStatus(i)} ${i === selDay ? "sel" : ""}" data-day="${i}" aria-selected="${i === selDay}">
+  html += `<div class="week" role="tablist" aria-label="أيام الأسبوع">${DAYS_SHORT.map((d, i) => `
+      <button class="day ${profile.days.includes(i) ? "train" : ""} ${dayStatus(i)} ${i === selDay ? "sel" : ""}" data-day="${i}" role="tab" aria-selected="${i === selDay}">
         <span>${d}</span><i>${dayStatus(i) === "full" ? "✓" : ""}</i>${i === todayIdx ? `<span class="today">اليوم</span>` : ""}
       </button>`).join("")}</div>`;
   if (!day) {
@@ -668,20 +748,28 @@ function renderPlan() {
   } else {
     const dStr = ymd(dateOfDay(selDay)), canLog = dateOfDay(selDay) <= TODAY;
     const nDone = day.items.filter(it => (entry(dStr, it.ex.id) || {}).done).length, all = nDone === day.items.length;
-    html += `<section style="display:flex;flex-direction:column;gap:12px">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
-        <h2>${DAYS[selDay]}: ${day.title}</h2><span class="small muted">${day.items.length} تمارين</span>
+    const est = estMin(selDay, day.items);
+    html += `<section class="routine">
+      <div class="routine-h">
+        <span class="eyebrow">${DAYS[selDay]} · ${est} دقيقة تقريباً</span>
+        <h2>${day.title}</h2>
+        <p class="small muted">${day.items.length} تمارين · راحة ${rng(g.rest)} بين المجموعات</p>
       </div>
       <div class="seg" role="group" aria-label="المعدات">
         ${[["db","دمبل"],["machine","ماشين"],["both","التنين"]].map(([k,l]) => `<button data-eq="${k}" aria-pressed="${day.eq === k}">${l}</button>`).join("")}
       </div>
       <div class="daybar ${all ? "all" : ""}" aria-live="polite">
-        <div class="daybar-top"><span>${all ? "خلّصتي تمرين اليوم كلّو! 🎉" : nDone ? "كمّلي، عم تمشي منيح" : canLog ? "علّمي ✓ عكل تمرين بتخلّصيه" : "هيدا يوم جايي"}</span><b>${nDone}/${day.items.length}</b></div>
+        <div class="daybar-top"><span>${all ? "خلّصتي تمرين اليوم كلّو! 🎉" : nDone ? "كمّلي، عم تمشي منيح" : canLog ? "اضغطي عالدائرة لتعلّمي ✓، أو ابدئي التمرين" : "هيدا يوم جايي"}</span><b>${nDone}/${day.items.length}</b></div>
         <div class="bar"><i style="width:${(nDone / day.items.length * 100).toFixed(0)}%"></i></div>
       </div>
-      <div class="list">${day.items.map((it, i) => planRow(it.ex, i + 1, it.isTime ? `${sets} × 30ث` : `${sets} × ${g.reps}`, `p-${selDay}-${i}`, `${selDay}-${i}-${day.eq}`, dStr, canLog)).join("")}</div>
-      <p class="note">اضغطي عأي تمرين لتشوفي الشرح والفيديو وتسجّلي وزنك. ابدئي بإحماء ٥–١٠ دقايق${profile.age >= 50 ? "، وخدي إحماء أطول وأوزان أخف بالأول" : ""}.</p>
+      <div class="list">${day.items.map((it, i) => planRow(it, i + 1, `p-${selDay}-${i}`, `${selDay}-${i}-${day.eq}`, dStr, canLog)).join("")}</div>
+      <p class="note">اضغطي عاسم أي تمرين لتشوفي الشرح والفيديو. ابدئي بإحماء ٥–١٠ دقايق${profile.age >= 50 ? "، وخدي إحماء أطول وأوزان أخف بالأول" : ""}.</p>
     </section>`;
+    if (typeof startSession === "function") html += `<div class="startbar">${all
+      ? `<button class="start soft" data-tab="prog">✓ خلّصتي اليوم · شوفي تقدّمك</button>`
+      : canLog
+        ? `<button class="start" data-start="1">▶ ${nDone ? "كمّلي التمرين" : "ابدئي التمرين"}<small>${est} د</small></button>`
+        : `<button class="start" disabled>بتبلّشي يوم ${DAYS[selDay]}</button>`}</div>`;
   }
   const protein = Math.round(profile.weight * 1.6), water = (profile.weight * 0.035).toFixed(1);
   html += `<section class="scheme" style="grid-template-columns:1fr 1fr">
@@ -737,6 +825,8 @@ function renderMe() {
     <div class="field"><span class="lbl">المعدات الأساسية</span>
       <div class="seg">${[["db","دمبل"],["machine","ماشين"],["both","التنين"]].map(([k,l]) => `<button type="button" data-feq="${k}" aria-pressed="${d.eq===k}">${l}</button>`).join("")}</div>
       <span class="note">فيكِ تغيّريها لكل يوم لحال من «برنامجي».</span></div>
+    <div class="field"><span class="lbl">شكل التطبيق</span>
+      <div class="seg">${[["auto","تلقائي"],["light","فاتح"],["dark","غامق"]].map(([k,l]) => `<button type="button" data-theme-set="${k}" aria-pressed="${theme===k}">${l}</button>`).join("")}</div></div>
     <p class="err" id="me-err" hidden></p>
     <button class="save" type="submit">احفظي وطلّعيلي البرنامج</button>
   </form>`;
@@ -746,6 +836,8 @@ function render() {
   hideTip();
   $app.innerHTML = tab === "plan" ? renderPlan() : tab === "prog" ? renderProgress() : tab === "lib" ? renderLib() : renderMe();
   document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.tab === tab));
+  document.body.classList.toggle("has-start", !!$app.querySelector(".startbar"));
+  document.documentElement.style.setProperty("--tabh", document.querySelector(".tabs").offsetHeight + "px");
 }
 
 /* ===================== صفحة التقدّم ===================== */
@@ -907,6 +999,12 @@ document.addEventListener("click", (e) => {
     render(); return;
   }
   if (ds.tab) { tab = ds.tab; open = null; if (tab === "me") draft = null; render(); window.scrollTo(0,0); return; }
+  if (ds.adj) {
+    const ex = EX.find(x => x.id === ds.aid), k = `${selDay}-${ds.aid}`, dir = +ds.dir;
+    const v = ds.adj === "sets" ? Math.min(8, Math.max(1, setsFor(selDay, ex) + dir)) : Math.min(180, Math.max(10, holdFor(selDay, ex) + dir * 5));
+    adj[k] = { ...(adj[k] || {}), [ds.adj]: v }; store.set("tamrini.adj", adj); render(); return;
+  }
+  if (ds.themeSet) { theme = ds.themeSet; store.set("tamrini.theme", theme); applyTheme(); render(); return; }
   if (ds.prog) { progOpen = progOpen === ds.prog ? "" : ds.prog; render(); return; }
   if (ds.open) { open = open === ds.open ? null : ds.open; render(); return; }
   if (ds.day) { selDay = +ds.day; open = null; render(); return; }
@@ -946,7 +1044,7 @@ document.addEventListener("submit", (e) => {
   if (bad) { err.textContent = bad; err.hidden = false; return; }
   profile = { ...draft, saved: true };
   store.set("tamrini.profile", profile);
-  dayEq = {}; swaps = {}; store.set("tamrini.dayEq", dayEq); store.set("tamrini.swaps", swaps);
+  dayEq = {}; swaps = {}; adj = {}; store.set("tamrini.dayEq", dayEq); store.set("tamrini.swaps", swaps); store.set("tamrini.adj", adj);
   selDay = profile.days.includes(todayIdx) ? todayIdx : profile.days[0];
   tab = "plan"; open = null; render(); window.scrollTo(0,0);
 });
