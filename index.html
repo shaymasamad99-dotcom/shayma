@@ -253,10 +253,6 @@ body.playing { overflow: hidden; }
 @media (max-height: 640px) { .av.big { width: 84px; height: 84px; } .av.big svg { width: 40px; height: 40px; } .pl-target b { font-size: 2.4rem; } .pl-main { gap: 10px; } }
 
 /* أيقونة الجسم */
-.av .bd { opacity: .42; }
-.av .zn { stroke-width: 3.2; }
-.av .zn .f { fill: currentColor; stroke: none; }
-.av.lt .bd { opacity: .45; }
 .bubbles .av, .area .av { width: var(--s); height: var(--s); }
 .bubbles .av svg, .area .av svg { width: 54%; height: 54%; }
 .bubbles .av-uni { display: none; }
@@ -290,6 +286,36 @@ body.playing { overflow: hidden; }
 .hdr { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
 .hdr > div { display: flex; flex-direction: column; gap: 4px; }
 .cover { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-top: 6px; }
+/* حسابي وجدولي */
+.banner.ok { background: var(--soft); border: 1px solid var(--accent); }
+.acct { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); }
+.acct-top { display: flex; align-items: center; gap: 12px; }
+.acct-top > div { display: flex; flex-direction: column; }
+.acct-top b { font-family: var(--display); font-size: 1.15rem; }
+.acct-av { flex: none; width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; font-family: var(--display); font-size: 1.4rem; font-weight: 700; color: #fff; background: linear-gradient(135deg, #C24A78, #8E2F60); }
+.acct-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.acct-stats div { background: var(--bg); border-radius: 12px; padding: 10px; text-align: center; display: flex; flex-direction: column; }
+.acct-stats b { font-family: var(--display); font-size: 1.1rem; }
+.acct-stats b small { font-size: .75rem; color: var(--muted); }
+.acct-stats span { font-size: .75rem; color: var(--muted); }
+.sched { display: flex; flex-direction: column; gap: 8px; }
+.sd { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; box-shadow: var(--shadow); }
+.sd.full { border-color: var(--accent); }
+.sd.rest-d { background: transparent; box-shadow: none; border-style: dashed; padding-block: 10px; }
+.sd-h { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.sd-h b { font-family: var(--display); min-width: 64px; }
+.sd-t { font-weight: 600; flex: 1; }
+.pill.now { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.sd-list { margin: 0; padding-inline-start: 18px; display: flex; flex-direction: column; gap: 2px; font-size: .88rem; }
+.sd-list li { padding: 2px 0; }
+.sd-list li::marker { color: var(--muted); }
+.sd-list li span { display: inline-block; max-width: 70%; }
+.sd-list bdi { float: inline-end; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sd-go { align-self: flex-start; font-size: .85rem; }
+@media print {
+  .tabs, .startbar, #play, .sd-go, [data-print], .acct .save, .banner, .card { display: none !important; }
+  body { background: #fff; } .app { padding: 0; max-width: none; } .sd { break-inside: avoid; box-shadow: none; }
+}
 .rest { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 20px; text-align: center; display: flex; flex-direction: column; gap: 6px; }
 
 .search { width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
@@ -338,6 +364,10 @@ form { display: flex; flex-direction: column; gap: 18px; }
   .rv { min-width: 40px; }
 }
 @media (prefers-reduced-motion: no-preference) { .ex-body { animation: in .18s ease-out; } @keyframes in { from { opacity: .4; transform: translateY(-3px); } } }
+.av svg.fig { position: absolute; inset: 0; width: 100%; height: 100%; clip-path: circle(50%); stroke: none; }
+.fig .sil { fill: var(--av-ink); fill-opacity: .2; }
+.fig .zn { fill: #B83A6B; }
+.fig .hair { fill: var(--av-ink); fill-opacity: .55; }
 </style>
 
 <div class="app" dir="rtl" lang="ar" id="app"></div>
@@ -347,7 +377,7 @@ form { display: flex; flex-direction: column; gap: 18px; }
     <button id="tab-plan" data-tab="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span data-ar="برنامجي" data-en="Plan">برنامجي</span></button>
     <button id="tab-prog" data-tab="prog"><svg viewBox="0 0 24 24"><path d="M4 20h16M7 16v-5M12 16V6M17 16v-8"/></svg><span data-ar="تقدّمي" data-en="Progress">تقدّمي</span></button>
     <button id="tab-lib" data-tab="lib"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span data-ar="التمارين" data-en="Exercises">التمارين</span></button>
-    <button id="tab-me" data-tab="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span data-ar="ملفي" data-en="Profile">ملفي</span></button>
+    <button id="tab-me" data-tab="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span data-ar="حسابي" data-en="Account">حسابي</span></button>
   </div>
 </nav>
 
@@ -868,34 +898,37 @@ function logBox(ex, e, date, canLog) {
 /* ===================== شكل الروتين: دوائر، عدّادات، مدة ===================== */
 const MCOL = { chest: "#F4C7C3", back: "#CFE3DA", shoulders: "#F6D9B8", biceps: "#D9CCF0", triceps: "#E8C6E4", quads: "#C9D8EE", hamstrings: "#D6D2E9", glutes: "#F5BFD3", calves: "#D8E6C8", abs: "#F4E2B8" };
 const MLIGHT = new Set();
-const ICON = {
-  db: '<path d="M6.5 8v8M17.5 8v8M3.5 10v4M20.5 10v4M6.5 12h11"/>',
-  machine: '<circle cx="12" cy="4.5" r="1.6"/><path d="M12 6.2V11"/><rect x="7.5" y="11" width="9" height="9" rx="1.6"/><path d="M7.5 14h9M7.5 17h9"/>',
-  body: '<circle cx="12" cy="4.8" r="2"/><path d="M12 7.6V14M6.5 10.5h11M12 14l-3.2 6M12 14l3.2 6"/>',
-};
 // تمارين بتنعمل لكل جهة لحال
 const UNI = new Set(["db-row", "m-cablelateral", "db-kickback", "db-concentration", "db-lunge", "db-stepup", "db-bulgarian", "db-revlunge", "db-curtsy",
   "m-kickback", "m-glutekick", "donkey-kick", "fire-hydrant", "sl-bridge", "clamshell", "db-slcalf", "db-slrdl", "side-plank", "db-sidebend", "db-woodchop", "m-woodchop", "m-pallof"]);
 
-// جسم صغير والمنطقة اللي بيشتغل عليها التمرين مضوية
-const BODY = '<circle cx="12" cy="3.8" r="2"/><path d="M8.5 7h7l-1 7h-5z"/><path d="M8.5 7 6.6 11.2 6 15M15.5 7l1.9 4.2.6 3.8M10 14l-.5 4.5V22M14 14l.5 4.5V22"/>';
-const ZONE = {
-  chest: '<path d="M9.4 9.2h5.2"/>',
-  back: '<path d="M10.2 8.4v4.6M13.8 8.4v4.6"/>',
-  shoulders: '<circle class="f" cx="8.6" cy="7.3" r="1.5"/><circle class="f" cx="15.4" cy="7.3" r="1.5"/>',
-  biceps: '<path d="M8.5 7 6.6 11.2M15.5 7l1.9 4.2"/>',
-  triceps: '<path d="M8.5 7 6.6 11.2 6 15M15.5 7l1.9 4.2.6 3.8"/>',
-  quads: '<path d="M10 14l-.5 4.5M14 14l.5 4.5"/>',
-  hamstrings: '<path d="M10 14l-.5 4.5M14 14l.5 4.5"/><path d="M9.6 14h4.8"/>',
-  glutes: '<path d="M9.5 13.4q2.5 2.2 5 0"/>',
-  calves: '<path d="M9.5 18.5V22M14.5 18.5V22"/>',
-  abs: '<path d="M12 9.6v4"/>',
+// جسم حقيقي (من قدّام أو من ورا) والعضلة اللي بيشتغل عليها التمرين ملوّنة
+const BODY_SIL = "M46.2,29.0C44.8,30.0 46.6,33.4 45.6,35.0C44.6,36.6 42.0,37.5 40.0,38.5C38.0,39.5 35.2,39.8 33.5,41.0C31.8,42.2 30.4,43.7 29.5,45.5C28.6,47.3 28.2,49.6 27.8,52.0C27.4,54.4 27.3,57.0 27.0,60.0C26.7,63.0 26.4,66.7 26.2,70.0C26.0,73.3 25.9,76.7 25.6,80.0C25.3,83.3 24.8,86.7 24.4,90.0C24.0,93.3 23.5,96.8 23.2,100.0C22.9,103.2 22.7,106.5 22.4,109.0C22.1,111.5 21.5,113.0 21.2,115.0C20.9,117.0 20.4,119.2 20.6,121.0C20.8,122.8 21.7,125.0 22.4,125.5C23.1,126.0 24.4,125.2 25.0,124.0C25.6,122.8 25.5,120.2 25.8,118.0C26.1,115.8 26.1,114.0 26.6,111.0C27.1,108.0 28.0,103.5 28.6,100.0C29.2,96.5 29.7,93.3 30.2,90.0C30.7,86.7 31.2,83.3 31.6,80.0C32.0,76.7 32.2,73.2 32.6,70.0C33.0,66.8 33.8,61.3 34.2,61.0C34.6,60.7 34.8,65.2 35.2,68.0C35.6,70.8 36.0,74.8 36.4,78.0C36.8,81.2 37.4,84.2 37.4,87.0C37.4,89.8 36.9,92.2 36.2,95.0C35.5,97.8 34.1,101.0 33.4,104.0C32.7,107.0 32.3,109.7 32.2,113.0C32.1,116.3 32.3,120.2 32.6,124.0C32.9,127.8 33.5,132.0 34.0,136.0C34.5,140.0 35.2,144.7 35.6,148.0C36.0,151.3 36.2,153.0 36.2,156.0C36.2,159.0 35.5,162.7 35.4,166.0C35.3,169.3 35.1,172.0 35.4,176.0C35.7,180.0 36.9,186.2 37.4,190.0C37.9,193.8 38.5,196.5 38.4,199.0C38.3,201.5 36.6,203.5 36.6,205.0C36.6,206.5 37.2,207.5 38.6,208.0C40.0,208.5 43.8,208.8 45.0,208.0C46.2,207.2 45.6,205.0 45.6,203.0C45.6,201.0 45.1,199.2 45.0,196.0C44.9,192.8 45.0,188.3 45.2,184.0C45.4,179.7 45.8,174.0 46.0,170.0C46.2,166.0 46.1,163.3 46.2,160.0C46.3,156.7 46.6,154.0 46.8,150.0C47.0,146.0 47.3,140.3 47.6,136.0C47.9,131.7 48.3,127.2 48.6,124.0C48.9,120.8 49.3,117.8 49.6,116.5C49.9,115.2 50.1,115.2 50.4,116.5C50.7,117.8 51.1,120.8 51.4,124.0C51.7,127.2 52.1,131.7 52.4,136.0C52.7,140.3 53.0,146.0 53.2,150.0C53.4,154.0 53.7,156.7 53.8,160.0C53.9,163.3 53.8,166.0 54.0,170.0C54.2,174.0 54.6,179.7 54.8,184.0C55.0,188.3 55.1,192.8 55.0,196.0C54.9,199.2 54.4,201.0 54.4,203.0C54.4,205.0 53.8,207.2 55.0,208.0C56.2,208.8 60.0,208.5 61.4,208.0C62.8,207.5 63.4,206.5 63.4,205.0C63.4,203.5 61.7,201.5 61.6,199.0C61.5,196.5 62.1,193.8 62.6,190.0C63.1,186.2 64.3,180.0 64.6,176.0C64.9,172.0 64.7,169.3 64.6,166.0C64.5,162.7 63.8,159.0 63.8,156.0C63.8,153.0 64.0,151.3 64.4,148.0C64.8,144.7 65.5,140.0 66.0,136.0C66.5,132.0 67.1,127.8 67.4,124.0C67.7,120.2 67.9,116.3 67.8,113.0C67.7,109.7 67.3,107.0 66.6,104.0C65.9,101.0 64.5,97.8 63.8,95.0C63.1,92.2 62.6,89.8 62.6,87.0C62.6,84.2 63.2,81.2 63.6,78.0C64.0,74.8 64.4,70.8 64.8,68.0C65.2,65.2 65.4,60.7 65.8,61.0C66.2,61.3 67.0,66.8 67.4,70.0C67.8,73.2 68.0,76.7 68.4,80.0C68.8,83.3 69.3,86.7 69.8,90.0C70.3,93.3 70.8,96.5 71.4,100.0C72.0,103.5 72.9,108.0 73.4,111.0C73.9,114.0 73.9,115.8 74.2,118.0C74.5,120.2 74.4,122.8 75.0,124.0C75.6,125.2 76.9,126.0 77.6,125.5C78.3,125.0 79.2,122.8 79.4,121.0C79.6,119.2 79.1,117.0 78.8,115.0C78.5,113.0 77.9,111.5 77.6,109.0C77.3,106.5 77.1,103.2 76.8,100.0C76.5,96.8 76.0,93.3 75.6,90.0C75.2,86.7 74.7,83.3 74.4,80.0C74.1,76.7 74.0,73.3 73.8,70.0C73.6,66.7 73.3,63.0 73.0,60.0C72.7,57.0 72.6,54.4 72.2,52.0C71.8,49.6 71.5,47.3 70.5,45.5C69.5,43.7 68.2,42.2 66.5,41.0C64.8,39.8 62.0,39.5 60.0,38.5C58.0,37.5 55.4,36.6 54.4,35.0C53.4,33.4 55.2,30.0 53.8,29.0C52.4,28.0 47.6,28.0 46.2,29.0Z";
+const BODY_HEAD = "M50,5.5C56.6,5.5 60.2,10.6 60.2,17.2C60.2,24.4 55.8,30 50,30C44.2,30 39.8,24.4 39.8,17.2C39.8,10.6 43.4,5.5 50,5.5Z";
+const HAIR_F = "M50,1.2C53.2,1.2 55.2,3.2 55.2,5.8C55.2,8.4 53.2,10.2 50,10.2C46.8,10.2 44.8,8.4 44.8,5.8C44.8,3.2 46.8,1.2 50,1.2ZM50.0,5.2C52.2,5.2 54.8,5.6 56.6,7.0C58.4,8.4 59.9,11.1 60.6,13.4C61.3,15.7 61.1,19.1 60.8,21.0C60.5,22.9 59.5,25.2 59.0,24.6C58.5,24.0 58.3,19.6 57.6,17.6C56.9,15.6 55.9,13.6 54.6,12.6C53.3,11.6 51.5,11.4 50.0,11.4C48.5,11.4 46.7,11.6 45.4,12.6C44.1,13.6 43.1,15.6 42.4,17.6C41.7,19.6 41.5,24.0 41.0,24.6C40.5,25.2 39.5,22.9 39.2,21.0C38.9,19.1 38.7,15.7 39.4,13.4C40.1,11.1 41.6,8.4 43.4,7.0C45.2,5.6 47.8,5.2 50.0,5.2Z";
+const HAIR_B = "M50,1.2C53.2,1.2 55.2,3.2 55.2,5.8C55.2,8.4 53.2,10.2 50,10.2C46.8,10.2 44.8,8.4 44.8,5.8C44.8,3.2 46.8,1.2 50,1.2ZM50.0,5.2C52.3,5.2 55.0,5.6 56.8,7.0C58.6,8.4 60.2,11.1 60.8,13.6C61.4,16.1 61.1,19.5 60.6,22.0C60.1,24.5 59.4,27.0 57.6,28.4C55.8,29.8 52.5,30.6 50.0,30.6C47.5,30.6 44.2,29.8 42.4,28.4C40.6,27.0 39.9,24.5 39.4,22.0C38.9,19.5 38.6,16.1 39.2,13.6C39.8,11.1 41.4,8.4 43.2,7.0C45.0,5.6 47.7,5.2 50.0,5.2Z";
+const BODY_ZONE = {
+  shoulders: "M28.4,47.4C29.0,45.8 29.8,43.8 31.0,42.6C32.2,41.4 34.3,40.6 35.6,40.4C36.9,40.2 38.5,40.6 38.6,41.6C38.7,42.6 37.3,44.8 36.4,46.6C35.5,48.4 34.2,50.8 33.0,52.4C31.8,54.0 30.3,56.1 29.4,56.0C28.5,55.9 27.8,53.4 27.6,52.0C27.4,50.6 27.8,49.0 28.4,47.4ZM71.6,47.4C71.0,45.8 70.2,43.8 69.0,42.6C67.8,41.4 65.7,40.6 64.4,40.4C63.1,40.2 61.5,40.6 61.4,41.6C61.3,42.6 62.7,44.8 63.6,46.6C64.5,48.4 65.8,50.8 67.0,52.4C68.2,54.0 69.7,56.1 70.6,56.0C71.5,55.9 72.2,53.4 72.4,52.0C72.6,50.6 72.2,49.0 71.6,47.4Z",
+  chest: "M38.6,43.0C39.9,42.1 42.2,41.6 44.0,41.6C45.8,41.6 48.3,41.3 49.2,43.0C50.1,44.7 49.7,49.6 49.2,52.0C48.7,54.4 47.4,56.3 46.0,57.2C44.6,58.1 42.2,58.1 40.6,57.4C39.0,56.7 37.0,54.7 36.2,53.0C35.4,51.3 35.6,48.7 36.0,47.0C36.4,45.3 37.3,43.9 38.6,43.0ZM61.4,43.0C60.1,42.1 57.8,41.6 56.0,41.6C54.2,41.6 51.7,41.3 50.8,43.0C49.9,44.7 50.3,49.6 50.8,52.0C51.3,54.4 52.6,56.3 54.0,57.2C55.4,58.1 57.8,58.1 59.4,57.4C61.0,56.7 63.0,54.7 63.8,53.0C64.6,51.3 64.4,48.7 64.0,47.0C63.6,45.3 62.7,43.9 61.4,43.0Z",
+  biceps: "M27.9,58.0C28.6,55.9 30.1,56.7 31.0,57.4C31.9,58.1 33.1,59.6 33.4,62.0C33.7,64.4 33.0,69.0 32.6,72.0C32.2,75.0 31.9,78.7 31.0,80.0C30.1,81.3 28.1,81.3 27.4,79.6C26.7,77.9 26.5,73.6 26.6,70.0C26.7,66.4 27.2,60.1 27.9,58.0ZM72.1,58.0C71.4,55.9 69.9,56.7 69.0,57.4C68.1,58.1 66.9,59.6 66.6,62.0C66.3,64.4 67.0,69.0 67.4,72.0C67.8,75.0 68.1,78.7 69.0,80.0C69.9,81.3 71.9,81.3 72.6,79.6C73.3,77.9 73.5,73.6 73.4,70.0C73.3,66.4 72.8,60.1 72.1,58.0Z",
+  abs: "M43.2,60.6C44.5,58.2 47.7,59.6 50.0,59.6C52.3,59.6 55.5,58.2 56.8,60.6C58.1,63.0 57.7,69.4 57.8,74.0C57.9,78.6 57.7,83.8 57.2,88.0C56.7,92.2 55.8,96.6 54.6,99.0C53.4,101.4 51.5,102.4 50.0,102.4C48.5,102.4 46.6,101.4 45.4,99.0C44.2,96.6 43.3,92.2 42.8,88.0C42.3,83.8 42.1,78.6 42.2,74.0C42.3,69.4 41.9,63.0 43.2,60.6Z",
+  quads: "M34.6,113.0C35.8,111.2 38.7,110.1 41.0,111.0C43.3,111.9 47.1,115.1 48.2,118.6C49.3,122.1 48.1,127.4 47.8,132.0C47.5,136.6 47.4,142.8 46.4,146.0C45.4,149.2 43.5,151.2 42.0,151.4C40.5,151.6 38.6,149.9 37.4,147.0C36.2,144.1 35.2,138.2 34.6,134.0C34.0,129.8 33.6,125.5 33.6,122.0C33.6,118.5 33.4,114.8 34.6,113.0ZM65.4,113.0C64.2,111.2 61.3,110.1 59.0,111.0C56.7,111.9 52.9,115.1 51.8,118.6C50.7,122.1 51.9,127.4 52.2,132.0C52.5,136.6 52.6,142.8 53.6,146.0C54.6,149.2 56.5,151.2 58.0,151.4C59.5,151.6 61.4,149.9 62.6,147.0C63.8,144.1 64.8,138.2 65.4,134.0C66.0,129.8 66.4,125.5 66.4,122.0C66.4,118.5 66.6,114.8 65.4,113.0Z",
+  back: "M43.6,38.6C45.9,37.6 47.9,40.0 50.0,40.0C52.1,40.0 54.1,37.6 56.4,38.6C58.7,39.6 62.1,42.4 63.6,46.0C65.1,49.6 65.4,55.0 65.2,60.0C65.0,65.0 63.7,71.3 62.4,76.0C61.1,80.7 59.5,85.3 57.4,88.0C55.3,90.7 52.5,92.0 50.0,92.0C47.5,92.0 44.7,90.7 42.6,88.0C40.5,85.3 38.9,80.7 37.6,76.0C36.3,71.3 35.0,65.0 34.8,60.0C34.6,55.0 34.9,49.6 36.4,46.0C37.9,42.4 41.3,39.6 43.6,38.6Z",
+  triceps: "M27.6,57.4C28.4,55.2 30.5,55.7 31.4,56.6C32.3,57.5 33.0,60.3 33.2,63.0C33.4,65.7 32.8,70.1 32.4,73.0C32.0,75.9 31.9,79.2 31.0,80.4C30.1,81.6 28.0,81.7 27.2,80.0C26.4,78.3 26.3,73.8 26.4,70.0C26.5,66.2 26.8,59.6 27.6,57.4ZM72.4,57.4C71.6,55.2 69.5,55.7 68.6,56.6C67.7,57.5 67.0,60.3 66.8,63.0C66.6,65.7 67.2,70.1 67.6,73.0C68.0,75.9 68.1,79.2 69.0,80.4C69.9,81.6 72.0,81.7 72.8,80.0C73.6,78.3 73.7,73.8 73.6,70.0C73.5,66.2 73.2,59.6 72.4,57.4Z",
+  glutes: "M37.2,99.0C38.9,97.6 42.0,97.3 44.0,97.6C46.0,97.9 48.5,98.6 49.4,101.0C50.3,103.4 49.9,108.8 49.4,112.0C48.9,115.2 48.1,118.8 46.4,120.4C44.7,122.0 41.5,122.1 39.4,121.4C37.3,120.7 35.0,118.6 34.0,116.0C33.0,113.4 33.1,108.8 33.6,106.0C34.1,103.2 35.5,100.4 37.2,99.0ZM62.8,99.0C61.1,97.6 58.0,97.3 56.0,97.6C54.0,97.9 51.5,98.6 50.6,101.0C49.7,103.4 50.1,108.8 50.6,112.0C51.1,115.2 51.9,118.8 53.6,120.4C55.3,122.0 58.5,122.1 60.6,121.4C62.7,120.7 65.0,118.6 66.0,116.0C67.0,113.4 66.9,108.8 66.4,106.0C65.9,103.2 64.5,100.4 62.8,99.0Z",
+  hamstrings: "M34.8,124.0C35.9,121.8 39.4,122.4 41.6,122.6C43.8,122.8 47.2,122.6 48.2,125.0C49.2,127.4 47.9,133.2 47.6,137.0C47.3,140.8 47.2,145.5 46.2,148.0C45.2,150.5 43.1,152.0 41.6,152.0C40.1,152.0 38.5,150.7 37.4,148.0C36.3,145.3 35.4,140.0 35.0,136.0C34.6,132.0 33.7,126.2 34.8,124.0ZM65.2,124.0C64.1,121.8 60.6,122.4 58.4,122.6C56.2,122.8 52.8,122.6 51.8,125.0C50.8,127.4 52.1,133.2 52.4,137.0C52.7,140.8 52.8,145.5 53.8,148.0C54.8,150.5 56.9,152.0 58.4,152.0C59.9,152.0 61.5,150.7 62.6,148.0C63.7,145.3 64.6,140.0 65.0,136.0C65.4,132.0 66.3,126.2 65.2,124.0Z",
+  calves: "M36.4,158.0C37.2,156.3 39.1,155.8 40.6,156.0C42.1,156.2 44.8,157.0 45.6,159.0C46.4,161.0 45.8,164.8 45.6,168.0C45.4,171.2 45.1,175.8 44.2,178.0C43.3,180.2 41.7,181.3 40.4,181.0C39.1,180.7 37.4,178.5 36.6,176.0C35.8,173.5 35.6,169.0 35.6,166.0C35.6,163.0 35.6,159.7 36.4,158.0ZM63.6,158.0C62.8,156.3 60.9,155.8 59.4,156.0C57.9,156.2 55.2,157.0 54.4,159.0C53.6,161.0 54.2,164.8 54.4,168.0C54.6,171.2 54.9,175.8 55.8,178.0C56.7,180.2 58.3,181.3 59.6,181.0C60.9,180.7 62.6,178.5 63.4,176.0C64.2,173.5 64.4,169.0 64.4,166.0C64.4,163.0 64.4,159.7 63.6,158.0Z"
 };
-const bodyIcon = (m) => `<svg viewBox="0 0 24 24" aria-hidden="true"><g class="bd">${BODY}</g><g class="zn">${ZONE[m]}</g></svg>`;
+const BACK_VIEW = new Set(["back", "triceps", "glutes", "hamstrings", "calves"]);
+const ZONE_CY = { chest: 52, shoulders: 50, biceps: 62, triceps: 62, back: 62, abs: 80, glutes: 112, quads: 130, hamstrings: 136, calves: 166 };
+function bodyIcon(m, full = false) {
+  const vb = full ? "0 -10 100 232" : `6 ${ZONE_CY[m] - 44} 88 88`;
+  return `<svg class="fig" viewBox="${vb}" aria-hidden="true"><path class="sil" d="${BODY_SIL}"/><path class="sil" d="${BODY_HEAD}"/><path class="zn" d="${BODY_ZONE[m]}"/><path class="hair" d="${BACK_VIEW.has(m) ? HAIR_B : HAIR_F}"/></svg>`;
+}
 
 function avatar(ex, opts = {}) {
   const { done = false, attrs = "", big = false, size = 0 } = opts;
-  const inner = `${bodyIcon(ex.m)}${done ? `<span class="av-done">${CHECK}</span>` : ""}${UNI.has(ex.id) ? `<span class="av-uni" aria-hidden="true">⇄</span>` : ""}`;
+  const inner = `${bodyIcon(ex.m, big)}${done ? `<span class="av-done">${CHECK}</span>` : ""}${UNI.has(ex.id) ? `<span class="av-uni" aria-hidden="true">⇄</span>` : ""}`;
   const cls = `av ${MLIGHT.has(ex.m) ? "lt" : ""} ${big ? "big" : ""} ${done ? "on" : ""}`;
   const st = `--c:${MCOL[ex.m]}${size ? `;--s:${size}px` : ""}`;
   return attrs ? `<button class="${cls}" style="${st}" ${attrs}>${inner}</button>` : `<span class="${cls}" style="${st}">${inner}</span>`;
@@ -980,11 +1013,11 @@ function renderPlan() {
   const g = GOALS[profile.goal];
   const day = buildDay(selDay);
   let html = `<header class="hdr"><div>
-      <span class="eyebrow">${dayN(todayIdx)} · ${L("هدفك", "Goal")}: ${gN(g)}</span>
+      <span class="eyebrow">${profile.name ? L(`أهلا ${esc(profile.name)} · `, `Hi ${esc(profile.name)} · `) : ""}${dayN(todayIdx)} · ${L("هدفك", "Goal")}: ${gN(g)}</span>
       <h1>${L("برنامجي", "My Plan")}</h1></div>
       <button class="lang-btn" data-lang="${L("en", "ar")}" lang="${L("en", "ar")}">${L("English", "العربية")}</button>
     </header>`;
-  if (!profile.saved) html += `<div class="banner"><span>${L("هيدا برنامج مثال. عبّي عمرك ووزنك وهدفك ليتظبط إلك.", "This is a sample plan. Add your age, weight and goal to tailor it.")}</span><button data-tab="me">${L("عبّي بياناتي", "Set up profile")}</button></div>`;
+  if (!profile.saved) html += `<div class="banner"><span>${L("هيدا برنامج مثال. عبّي عمرك ووزنك وهدفك ليتظبط إلك.", "This is a sample plan. Add your age, weight and goal to tailor it.")}</span><button data-tab="me">${L("اعمليلي جدولي", "Build my schedule")}</button></div>`;
   const ws = weekStats(), goalDays = profile.days.length;
   const heroTitle = ws.days >= goalDays ? L("حققتي هدف الأسبوع، برافو!", "Weekly goal reached. Well done!") : ws.days ? L(`باقي ${daysWord(goalDays - ws.days)} لتكمّلي أسبوعك`, `${daysWord(goalDays - ws.days)} left this week`) : L("يلا نبلّش الأسبوع", "Let's start the week");
   html += `<section class="hero">
@@ -1119,12 +1152,62 @@ function renderLib() {
   return html;
 }
 
-let draft = null;
+let draft = null, meEdit = false, justSaved = false;
+function settingsBlock() {
+  return `<section class="card">
+      <h2>${L("الإعدادات", "Settings")}</h2>
+      <div class="field"><span class="lbl">${L("اللغة", "Language")}</span>
+        <div class="seg">${[["ar","العربية"],["en","English"]].map(([k,l]) => `<button type="button" data-lang="${k}" lang="${k}" aria-pressed="${lang===k}">${l}</button>`).join("")}</div></div>
+      <div class="field"><span class="lbl">${L("شكل التطبيق", "Appearance")}</span>
+        <div class="seg">${[["auto",L("تلقائي","Auto")],["light",L("فاتح","Light")],["dark",L("غامق","Dark")]].map(([k,l]) => `<button type="button" data-theme-set="${k}" aria-pressed="${theme===k}">${l}</button>`).join("")}</div></div>
+    </section>`;
+}
+function scheduleBlock() {
+  const g = GOALS[profile.goal], order = profile.days.slice().sort((x, y) => x - y);
+  const rows = DAYS.map((_, i) => {
+    const day = buildDay(i), today = i === todayIdx;
+    const head = `<div class="sd-h"><b>${dayN(i)}</b>${today ? `<span class="pill now">${L("اليوم", "Today")}</span>` : ""}`;
+    if (!day) return `<div class="sd rest-d">${head}<span class="muted small">${L("راحة · مشي خفيف أو تمطيط", "Rest · light walk or stretching")}</span></div></div>`;
+    const st = dayStatus(i);
+    return `<div class="sd ${st}">
+        ${head}<span class="sd-t">${day.title}</span><span class="muted small">${estMin(i, day.items)} ${L("د", "min")}${st === "full" ? " · ✓" : ""}</span></div>
+        <ol class="sd-list">${day.items.map(it => `<li><span>${esc(exN(it.ex))}</span><bdi dir="ltr">${it.isTime ? `${setsFor(i, it.ex)} × ${mmss(holdFor(i, it.ex))}` : `${setsFor(i, it.ex)} × ${g.reps}`}</bdi></li>`).join("")}</ol>
+        <button class="ghost sd-go" data-goday="${i}">${L("افتحي هاليوم ←", "Open this day →")}</button>
+      </div>`;
+  }).join("");
+  return `<section class="group" id="schedule">
+      <div class="card-h"><h2>${L("جدولي الأسبوعي", "My weekly schedule")}</h2><button class="ghost" data-print="1">${L("اطبعي / PDF", "Print / PDF")}</button></div>
+      <p class="small muted">${L(`${order.length} أيام بالأسبوع · ${gN(g)} · ${rng(g.sets)} مجموعات × ${rng(g.reps)} تكرار · راحة ${rng(g.rest)}`, `${order.length} days a week · ${gN(g)} · ${rng(g.sets)} sets × ${rng(g.reps)} reps · ${rng(g.restEn)} rest`)}</p>
+      <div class="sched">${rows}</div>
+    </section>`;
+}
 function renderMe() {
+  if (profile.saved && !meEdit) {
+    const g = GOALS[profile.goal], nm = (profile.name || "").trim();
+    return `<header class="hdr"><div><span class="eyebrow">${L("حسابي", "My account")}</span><h1>${nm ? L(`أهلا ${esc(nm)}`, `Hi ${esc(nm)}`) : L("حسابي", "Account")}</h1></div></header>
+      ${justSaved ? `<div class="banner ok"><span>${L("✓ جهز جدولك! عملناه حسب هدفك وأيامك. فيكِ تبلّشي من «برنامجي».", "✓ Your schedule is ready, built from your goal and days. Start from “My Plan”.")}</span><button data-tab="plan">${L("ابدئي", "Start")}</button></div>` : ""}
+      <section class="acct">
+        <div class="acct-top">
+          <span class="acct-av" aria-hidden="true">${nm ? esc(nm[0].toUpperCase()) : "♀"}</span>
+          <div><b>${gN(g)}</b><span class="muted small">${L(profile.level === "inter" ? "متوسطة" : "مبتدئة", profile.level === "inter" ? "Intermediate" : "Beginner")} · ${profile.days.length} ${L("أيام بالأسبوع", "days a week")}</span></div>
+        </div>
+        <div class="acct-stats">
+          <div><b>${profile.age}</b><span>${L("العمر", "Age")}</span></div>
+          <div><b>${profile.weight} <small>${L("كغ", "kg")}</small></b><span>${L("الوزن", "Weight")}</span></div>
+          <div><b>${profile.eq === "both" ? L("التنين", "Both") : profile.eq === "db" ? L("دمبل", "Dumbbells") : L("ماشين", "Machines")}</b><span>${L("المعدات", "Equipment")}</span></div>
+        </div>
+        <button class="save" data-me-edit="1">${L("عدّلي بياناتي وهدفي", "Edit my details & goal")}</button>
+      </section>
+      ${scheduleBlock()}
+      ${settingsBlock()}`;
+  }
   draft ||= JSON.parse(JSON.stringify(profile));
   const d = draft;
-  return `<header style="display:flex;flex-direction:column;gap:4px"><span class="eyebrow">${L("بياناتك", "Your details")}</span><h1>${L("ملفي", "Profile")}</h1></header>
+  return `<header class="hdr"><div><span class="eyebrow">${L("حسابي", "My account")}</span><h1>${profile.saved ? L("عدّلي بياناتك", "Edit your details") : L("خلّينا نعملك جدولك", "Let's build your schedule")}</h1></div>
+      ${profile.saved ? `<button class="lang-btn" data-me-cancel="1">${L("إلغاء", "Cancel")}</button>` : ""}</header>
+  <p class="muted">${L("عبّي معلوماتك وهدفك، والتطبيق بيعملك جدول تمارين أسبوعي منوّع وفيه كور كل يوم.", "Fill in your details and goal, and the app builds a varied weekly schedule with core work every day.")}</p>
   <form id="me-form" novalidate>
+    <div class="field"><label for="f-name">${L("اسمك (اختياري)", "Your name (optional)")}</label><input id="f-name" class="num" type="text" autocomplete="given-name" maxlength="24" value="${esc(d.name || "")}"></div>
     <div class="row2">
       <div class="field"><label for="f-age">${L("العمر", "Age")}</label><input id="f-age" class="num" type="number" inputmode="numeric" min="12" max="90" value="${d.age}"></div>
       <div class="field"><label for="f-weight">${L("الوزن (كغ)", "Weight (kg)")}</label><input id="f-weight" class="num" type="number" inputmode="decimal" min="30" max="250" value="${d.weight}"></div>
@@ -1138,13 +1221,10 @@ function renderMe() {
     <div class="field"><span class="lbl">${L("المعدات الأساسية", "Main equipment")}</span>
       <div class="seg">${[["db",L("دمبل","Dumbbells")],["machine",L("ماشين","Machines")],["both",L("التنين","Both")]].map(([k,l]) => `<button type="button" data-feq="${k}" aria-pressed="${d.eq===k}">${l}</button>`).join("")}</div>
       <span class="note">${L("فيكِ تغيّريها لكل يوم لحال من «برنامجي».", "You can change it per day from “My Plan”.")}</span></div>
-    <div class="field"><span class="lbl">${L("اللغة", "Language")}</span>
-      <div class="seg">${[["ar","العربية"],["en","English"]].map(([k,l]) => `<button type="button" data-lang="${k}" lang="${k}" aria-pressed="${lang===k}">${l}</button>`).join("")}</div></div>
-    <div class="field"><span class="lbl">${L("شكل التطبيق", "Appearance")}</span>
-      <div class="seg">${[["auto",L("تلقائي","Auto")],["light",L("فاتح","Light")],["dark",L("غامق","Dark")]].map(([k,l]) => `<button type="button" data-theme-set="${k}" aria-pressed="${theme===k}">${l}</button>`).join("")}</div></div>
     <p class="err" id="me-err" hidden></p>
-    <button class="save" type="submit">${L("احفظي وطلّعيلي البرنامج", "Save and build my plan")}</button>
-  </form>`;
+    <button class="save" type="submit">${L("احفظي واعمليلي جدولي", "Save and build my schedule")}</button>
+  </form>
+  ${settingsBlock()}`;
 }
 
 function render() {
@@ -1518,13 +1598,17 @@ document.addEventListener("click", (e) => {
   if (ds.routine) { lib.routine = ds.routine; open = null; render(); window.scrollTo(0, 0); return; }
   if (ds.libback) { lib.area = null; lib.routine = null; lib.eq = "all"; open = null; render(); window.scrollTo(0, 0); return; }
   if (ds.tab) { if (ds.tab === "lib" && tab === "lib") { lib = { q: "", part: "all", eq: "all", area: null, routine: null }; }
-    tab = ds.tab; open = null; if (tab === "me") draft = null; render(); window.scrollTo(0,0); return; }
+    tab = ds.tab; open = null; if (tab === "me") { draft = null; meEdit = false; } if (tab !== "me") justSaved = false; render(); window.scrollTo(0,0); return; }
   if (ds.start) { startSession(ds.start); return; }
   if (ds.adj) {
     const ex = EX.find(x => x.id === ds.aid), key = ds.akey, k = `${key}-${ds.aid}`, dir = +ds.dir;
     const v = ds.adj === "sets" ? Math.min(8, Math.max(1, setsFor(key, ex) + dir)) : Math.min(180, Math.max(10, holdFor(key, ex) + dir * 5));
     adj[k] = { ...(adj[k] || {}), [ds.adj]: v }; store.set("tamrini.adj", adj); render(); return;
   }
+  if (ds.meEdit) { meEdit = true; justSaved = false; draft = null; render(); window.scrollTo(0, 0); return; }
+  if (ds.meCancel) { meEdit = false; draft = null; render(); window.scrollTo(0, 0); return; }
+  if (ds.goday) { selDay = +ds.goday; tab = "plan"; open = null; render(); window.scrollTo(0, 0); return; }
+  if (ds.print) { window.print(); return; }
   if (ds.lang) { lang = ds.lang; store.set("tamrini.lang", lang); applyLang(); render(); if (ses) renderPlay(); return; }
   if (ds.themeSet) { theme = ds.themeSet; store.set("tamrini.theme", theme); applyTheme(); render(); return; }
   if (ds.prog) { progOpen = progOpen === ds.prog ? "" : ds.prog; render(); return; }
@@ -1553,6 +1637,7 @@ document.addEventListener("input", (e) => {
     setEntry(ymd(dateOfDay(selDay)), e.target.dataset.w, { w: v > 0 && v < 1000 ? v : undefined });
     return;
   }
+  if (e.target.id === "f-name") draft.name = e.target.value.slice(0, 24);
   if (e.target.id === "f-age") draft.age = +e.target.value;
   if (e.target.id === "f-weight") draft.weight = +e.target.value;
 });
@@ -1568,7 +1653,7 @@ document.addEventListener("submit", (e) => {
   store.set("tamrini.profile", profile);
   dayEq = {}; swaps = {}; adj = {}; store.set("tamrini.dayEq", dayEq); store.set("tamrini.swaps", swaps); store.set("tamrini.adj", adj);
   selDay = profile.days.includes(todayIdx) ? todayIdx : profile.days[0];
-  tab = "plan"; open = null; render(); window.scrollTo(0,0);
+  tab = "me"; meEdit = false; justSaved = true; draft = null; open = null; render(); window.scrollTo(0,0);
 });
 
 function applyLang() {
