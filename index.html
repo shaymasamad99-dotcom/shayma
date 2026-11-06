@@ -393,6 +393,57 @@ body.playing { overflow: hidden; }
 .vbox { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: #000; }
 .vbox iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 button.video { border: 0; font: inherit; font-weight: 600; cursor: pointer; }
+/* أقسام اليوم وصفحة التمرين */
+.blk { display: flex; flex-direction: column; gap: 6px; }
+.blk-h { display: flex; justify-content: space-between; align-items: baseline; padding-inline: 4px; }
+.blk-h b { font-family: var(--display); font-size: 1rem; }
+.blk-h span { font-size: .8rem; color: var(--muted); }
+.mv-av { flex: none; width: 52px; height: 52px; border-radius: 50%; border: 0; padding: 0; background: var(--c); overflow: hidden; margin-inline-start: 14px; }
+.mv-av svg { width: 100%; height: 100%; display: block; }
+.mv-t { flex: none; margin-inline-end: 14px; font-family: var(--display); color: var(--muted); font-variant-numeric: tabular-nums; }
+.ex.mv .ex-main b { font-weight: 500; }
+#sheet { position: fixed; inset: 0; z-index: 25; background: var(--bg); overflow-y: auto; overscroll-behavior: contain; }
+#sheet[hidden] { display: none; }
+body.sheet-open { overflow: hidden; }
+.sh { max-width: 560px; margin: 0 auto; min-height: 100%; display: flex; flex-direction: column; }
+.sh-x { position: fixed; z-index: 2; top: calc(12px + env(safe-area-inset-top, 0px)); inset-inline-end: max(14px, env(safe-area-inset-right, 0px)); width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgb(0 0 0 / .45); color: #fff; font-size: 1.2rem; }
+.sh-media { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: calc(56px + env(safe-area-inset-top, 0px)) 16px 18px; background: linear-gradient(180deg, var(--soft), var(--bg)); }
+.sh-demo { width: min(300px, 78vw); aspect-ratio: 1; border-radius: 50%; background: var(--c); overflow: hidden; box-shadow: 0 10px 30px rgb(90 30 60 / .15); }
+.sh-demo svg { width: 100%; height: 100%; display: block; }
+.sh-vid { width: 100%; max-width: 528px; }
+.sh-play { border: 0; border-radius: 999px; background: var(--ink); color: var(--bg); font: inherit; font-weight: 600; padding: 10px 20px; min-height: 44px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.sh-body { padding: 18px max(16px, env(safe-area-inset-right, 0px)) calc(32px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 14px; }
+.sh-h { display: flex; flex-direction: column; gap: 2px; }
+.sh-h h2 { font-size: 1.6rem; }
+.sh-target { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
+.sh-target div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 10px; display: flex; flex-direction: column; gap: 2px; }
+.sh-target span { font-size: .75rem; color: var(--muted); }
+.sh-target b { font-family: var(--display); font-size: 1.1rem; }
+.tl { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.tl li { position: relative; padding-inline-start: 30px; padding-bottom: 16px; }
+.tl li::before { content: ""; position: absolute; inset-inline-start: 6px; top: 6px; width: 12px; height: 12px; border-radius: 50%; border: 3px solid var(--accent); background: var(--surface); box-sizing: border-box; }
+.tl li::after { content: ""; position: absolute; inset-inline-start: 11px; top: 20px; bottom: 0; width: 2px; background: var(--line); }
+.tl li:last-child::after { display: none; }
+.sh-tip { color: var(--warn); }
+.ghost.wide.link { justify-content: center; }
+/* جدول الأيام والتمطيط */
+.sdcs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.sdc { position: relative; text-align: start; border: 1px solid var(--line); background: var(--surface); border-radius: 18px; padding: 12px; display: flex; flex-direction: column; gap: 2px; color: var(--ink); box-shadow: var(--shadow); min-height: 118px; }
+.sdc b { font-family: var(--display); font-size: 1.1rem; }
+.sdc small { color: var(--muted); font-size: .76rem; }
+.sdc .bubbles { justify-content: flex-start; gap: 4px; margin-top: auto; padding-top: 6px; }
+.sdc.full { border-color: var(--accent); }
+.sdc.rest { background: transparent; border-style: dashed; box-shadow: none; }
+.sdc.swim .waves { margin: auto 0 0; width: 80px; height: 28px; }
+.goal-q { font-family: var(--display); font-size: 1.05rem; color: var(--accent); }
+.opts.three { grid-template-columns: repeat(3, 1fr); }
+.opts.three .opt small { font-size: .7rem; }
+.ta { resize: vertical; min-height: 64px; line-height: 1.5; }
+.mv-av.big { width: 52px; height: 52px; margin: 0; display: block; }
+.mv-av.sm { width: 34px; height: 34px; margin: 0; display: block; border-radius: 50%; overflow: hidden; }
+.area[aria-pressed="true"] { border-color: var(--accent); background: var(--soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.str-p .bubbles { justify-content: flex-start; margin-top: 10px; }
+@media (max-width: 340px) { .opts.three { grid-template-columns: 1fr; } .sdcs { grid-template-columns: 1fr; } }
 .rest { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 20px; text-align: center; display: flex; flex-direction: column; gap: 6px; }
 
 .search { width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
@@ -452,6 +503,7 @@ form { display: flex; flex-direction: column; gap: 18px; }
 <nav class="tabs" dir="rtl">
   <div class="tabs-in">
     <button id="tab-plan" data-tab="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span data-ar="برنامجي" data-en="Plan">برنامجي</span></button>
+    <button id="tab-str" data-tab="str"><svg viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2"/><path d="M5 9.5c2.5 1 4.5 1.5 7 1.5s4.5-.5 7-1.5M12 11v4l-4 6M12 15l4 6"/></svg><span data-ar="تمطيط" data-en="Stretch">تمطيط</span></button>
     <button id="tab-prog" data-tab="prog"><svg viewBox="0 0 24 24"><path d="M4 20h16M7 16v-5M12 16V6M17 16v-8"/></svg><span data-ar="تقدّمي" data-en="Progress">تقدّمي</span></button>
     <button id="tab-lib" data-tab="lib"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span data-ar="التمارين" data-en="Exercises">التمارين</span></button>
     <button id="tab-me" data-tab="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span data-ar="حسابي" data-en="Account">حسابي</span></button>
@@ -476,6 +528,9 @@ const MUSCLES = {
 };
 const EQ = { db: "دمبل", machine: "ماشين", body: "وزن الجسم" };
 const EQ_EN = { db: "Dumbbell", machine: "Machine", body: "Bodyweight" };
+// وين وبشو بتتمرّني
+const EQ_OPTS = [["body", "بلا معدات", "No equipment", "بالبيت"], ["db", "دمبل", "Dumbbells", "بالبيت أو الجيم"], ["machine", "ماشينات", "Machines", "بالجيم"], ["both", "دمبل وماشينات", "Dumbbells + machines", "بالجيم، كل شي"]];
+const eqOptN = (k) => { const o = EQ_OPTS.find(x => x[0] === k) || EQ_OPTS[3]; return L(o[1], o[2]); };
 const eqN = (e) => L(EQ[e], EQ_EN[e]);
 const mN = (m) => L(MUSCLES[m].ar, MUSCLES[m].en);
 const PARTS = { upper: "علوي", lower: "سفلي", core: "بطن" };
@@ -769,12 +824,14 @@ const EX_EN = {
   "m-abcrunch": [["Adjust the seat and grab the handles.", "Crunch forward by squeezing your abs.", "Return slowly."], "The movement comes from your abs, not your arms."],
 };
 const exN = (ex) => L(ex.ar, ex.en);
-const exSteps = (ex) => lang === "en" && EX_EN[ex.id] ? EX_EN[ex.id][0] : ex.steps;
-const exTip = (ex) => lang === "en" && EX_EN[ex.id] ? EX_EN[ex.id][1] : ex.tip;
+const exSteps = (ex) => lang === "en" ? ((EX_EN[ex.id] || [])[0] || ex.stepsEn || ex.steps) : ex.steps;
+const exTip = (ex) => lang === "en" ? ((EX_EN[ex.id] || [])[1] || ex.tipEn || ex.tip) : ex.tip;
 
 const GOALS = {
   fat:      { ar: "خسارة دهون",  en: "Fat loss", subEn: "Burn & tone", restEn: "45–60 s", sub: "حرق وشد",         sets: "3",   reps: "12–15", rest: "45–60 ث" },
   muscle:   { ar: "بناء عضل",    en: "Build muscle", subEn: "Shape & size", restEn: "60–90 s", sub: "تضخيم وشكل",      sets: "3–4", reps: "8–12",  rest: "60–90 ث" },
+  gain:     { ar: "زيادة وزن",  en: "Gain weight", subEn: "Healthy mass", restEn: "60–90 s", sub: "كتلة صحية",       sets: "3–4", reps: "8–12",  rest: "60–90 ث" },
+  tone:     { ar: "شد وتنسيق",  en: "Tone & shape", subEn: "Firm & defined", restEn: "45–60 s", sub: "جسم مشدود",    sets: "3",   reps: "12–15", rest: "45–60 ث" },
   strength: { ar: "قوة",         en: "Strength", subEn: "Heavier weights", restEn: "2–3 min", sub: "أوزان أثقل",       sets: "4",   reps: "5–6",   rest: "2–3 د" },
   fit:      { ar: "لياقة عامة",  en: "General fitness", subEn: "Health & energy", restEn: "60 s", sub: "صحة ونشاط",       sets: "2–3", reps: "10–12", rest: "60 ث" },
 };
@@ -852,7 +909,7 @@ const SUGGEST_DAYS = { 1: [0], 2: [0, 3], 3: [0, 2, 4], 4: [0, 1, 3, 4], 5: [0, 
 const ACTS = { swim: { ar: "سباحة", en: "Swimming" }, walk: { ar: "مشي", en: "Walking" }, run: { ar: "ركض", en: "Running" }, cycle: { ar: "دراجة", en: "Cycling" }, yoga: { ar: "يوغا / بيلاتس", en: "Yoga / Pilates" } };
 
 /* ===================== الحالة ===================== */
-const DEFAULT = { age: 25, weight: 60, goal: "muscle", level: "beginner", days: [0,2,4], swim: [], eq: "both", saved: false };
+const DEFAULT = { age: 25, weight: 60, goal: "muscle", goalText: "", goalWeeks: 0, level: "beginner", days: [0,2,4], swim: [], eq: "both", saved: false };
 // التخزين: بالمتصفح، ومتزامن مع حسابك على claude.ai إذا التطبيق مفتوح هونيك (شوفي cloudSync تحت)
 const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
@@ -861,7 +918,7 @@ const store = {
     if (typeof cloudQueue === "function") cloudQueue(k, v);
   },
 };
-const SYNC_KEYS = ["profile", "log", "acts", "adj", "picks", "pkgSel", "dayEq", "week", "theme", "lang"];
+const SYNC_KEYS = ["profile", "log", "acts", "adj", "picks", "pkgSel", "dayEq", "week", "theme", "lang", "stretch"];
 let cloudCol = null, cloudPending = {}, cloudBusy = false, cloudTimer = null;
 let profile = store.get("tamrini.profile", DEFAULT);
 profile.swim = (profile.swim || []).filter(d => profile.days.includes(d));
@@ -979,6 +1036,9 @@ function pkgFor(k) {
   const chosen = PKG_BY_ID[pkgSel[k]];
   if (chosen && list.includes(chosen)) return chosen;
   const occ = splitFor(gymDays().length).slice(0, k).filter(t => t === type).length, gym = list.filter(p => !p.eq);
+  if (profile.eq === "body") { const home = list.find(p => p.eq === "body"); if (home) return home; }
+  const want = norm(profile.goalText || "");
+  if (/ارداف|مؤخره|glute|butt|booty/.test(want) && occ === 0) { const gl = gym.find(p => /glutes/.test(p.id)); if (gl) return gl; }
   return gym[occ % gym.length];
 }
 function buildWorkout(k, day) {
@@ -1000,8 +1060,11 @@ function buildWorkout(k, day) {
     return { ex, slot: i, isTime: !!ex.time, alts: base.filter(x => x.id !== ex.id) };
   });
   const T = TYPES[type];
-  return { k, type, pkg: pk, eq, items, typeName: L(T.ar, T.en), pkgName: L(pk.ar, pk.en), title: L(`${T.ar} · ${pk.ar}`, `${T.en} · ${pk.en}`), titleAr: `${T.ar} · ${pk.ar}`, titleEn: `${T.en} · ${pk.en}` };
+  return { k, type, pkg: pk, eq, items, warm: warmFor(type), cool: coolFor(items), typeName: L(T.ar, T.en), pkgName: L(pk.ar, pk.en), title: L(`${T.ar} · ${pk.ar}`, `${T.en} · ${pk.en}`), titleAr: `${T.ar} · ${pk.ar}`, titleEn: `${T.en} · ${pk.en}` };
 }
+const dayMin = (i, d) => estMin(i, d.items) + Math.round((moveSec(d.warm) + moveSec(d.cool)) / 60);
+function routineType(items) { const lower = items.filter(it => MUSCLES[it.ex.m].part === "lower").length, upper = items.filter(it => MUSCLES[it.ex.m].part === "upper").length; return lower > upper * 1.5 ? "lower" : upper > lower * 1.5 ? "upper" : "full"; }
+const routineMin = (key, items) => estMin(key, items) + Math.round((moveSec(warmFor(routineType(items))) + moveSec(coolFor(items))) / 60);
 function buildDay(day) { const k = wk.assign[day]; return k == null ? null : buildWorkout(k, day); }
 const actsOf = (date) => acts[date] || [];
 const actsTxt = (date) => actsOf(date).map(a => `${L(ACTS[a.t].ar, ACTS[a.t].en)} ${a.min} ${L("د", "min")}`).join(" · ");
@@ -1013,24 +1076,14 @@ const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;","
 /* ===================== الواجهة ===================== */
 const $app = document.getElementById("app");
 
-function exRow(ex, idx, setsTxt, key, swapKey) {
-  const isOpen = open === key;
-  return `<div class="ex">
-    <button class="ex-head" data-open="${key}" aria-expanded="${isOpen}">
-      ${avatar(ex)}
-      <span class="ex-main"><b>${esc(exN(ex))}</b><span class="ex-meta">${mN(ex.m)}${UNI.has(ex.id) ? L(" · لكل جهة", " · each side") : ""}</span></span>
-      <span class="pill">${eqN(ex.eq)}</span>
-    </button>
-    ${isOpen ? `<div class="ex-body">
-      ${exInfo(ex)}
-      ${vidBox(ex)}
-      <div class="actions">
-        ${vidBtn(ex)}
-        <a class="ghost link" href="${search(ex)}" target="_blank" rel="noopener">${L("فيديوهات تانية", "More videos")}</a>
-        ${swapKey ? `<button class="ghost" data-swap="${swapKey}">${L("بدّلي التمرين", "Swap exercise")}</button>` : ""}
-      </div>
-    </div>` : ""}
-  </div>`;
+function exRow(ex) {
+  return `<div class="ex"><div class="ex-row">
+      ${avatar(ex, { attrs: `data-sheet="${ex.id}" data-sctx="lib" aria-label="${esc(exN(ex))}"` })}
+      <button class="ex-head" data-sheet="${ex.id}" data-sctx="lib">
+        <span class="ex-main"><b>${esc(exN(ex))}</b><span class="ex-meta">${mN(ex.m)}${UNI.has(ex.id) ? L(" · لكل جهة", " · each side") : ""}</span></span>
+        <span class="pill">${eqN(ex.eq)}</span>
+      </button>
+    </div></div>`;
 }
 
 function exInfo(ex, noDemo = false) {
@@ -1112,19 +1165,24 @@ const BUB = [58, 44, 66, 40, 54, 46, 62, 42];
 const bubbles = (items, n = 8, k = 1) => `<div class="bubbles" aria-hidden="true">${items.slice(0, n).map((it, i) => avatar(it.ex, { size: Math.round(BUB[i % BUB.length] * k) })).join("")}</div>`;
 
 let adj = store.get("tamrini.adj", {});            // { "day-exId": { sets, hold } }
-const REST_SEC = { fat: 50, muscle: 75, strength: 150, fit: 60 };
-function baseSets() { const [a, b] = GOALS[profile.goal].sets.split("–").map(Number); return profile.level === "inter" && b ? b : a; }
+const REST_SEC = { fat: 50, gain: 75, tone: 50, muscle: 75, strength: 150, fit: 60 };
+function baseSets() { const [a, b] = GOALS[profile.goal].sets.split("–").map(Number); return profile.level !== "beginner" && b ? b : a; }
 const routineOf = (key) => typeof key === "string" && key.startsWith("r-") ? ROUTINES.find(r => `r-${r.id}` === key) : null;
 const setsFor = (day, ex) => (adj[`${day}-${ex.id}`] || {}).sets ?? routineOf(day)?.sets ?? Math.max(1, baseSets() - (isPlanKey(day) && phaseOf() === 4 ? 1 : 0));
 const restFor = (key) => routineOf(key)?.rest ?? REST_SEC[profile.goal];
 const holdFor = (day, ex) => (adj[`${day}-${ex.id}`] || {}).hold ?? (isPlanKey(day) ? Math.min(60, 30 + 5 * cycleOf() + { 1: 0, 2: 5, 3: 10, 4: -5 }[phaseOf()]) : 30);
-const roundW = (ex, w) => { const st = ex.eq === "machine" ? 2.5 : (w < 4 ? 0.5 : 1); return Math.max(st, Math.round(w / st) * st); };
+const roundW = (ex, w) => { const st = ex.eq === "machine" ? 2.5 : (w < 6 ? 0.5 : 1); return Math.max(st, Math.round(w / st) * st); };
 function startW(ex) {
   const b = W_START[ex.id]; if (b == null) return null;
-  const f = (profile.level === "inter" ? 1.5 : 1) * Math.min(1.25, Math.max(0.85, profile.weight / 60)) * ({ strength: 1.15, muscle: 1, fat: .9, fit: .9 }[profile.goal] || 1);
+  const f = ({ beginner: 0.85, inter: 1.4, adv: 1.9 }[profile.level] || 0.85) * Math.min(1.25, Math.max(0.85, profile.weight / 60)) * ({ strength: 1.15, muscle: 1, gain: 1, fat: .9, tone: .9, fit: .9 }[profile.goal] || 1);
   return roundW(ex, b * f);
 }
-const wInc = (ex) => ex.eq === "machine" ? ((W_START[ex.id] || 0) >= 30 ? 5 : 2.5) : ((W_START[ex.id] || 0) >= 8 ? 2 : 1);
+// المبتدئة بتزيد شوي شوي (نص كيلو لكيلو)، المتقدّمة أكتر
+const wInc = (ex) => {
+  const big = (W_START[ex.id] || 0) >= (ex.eq === "machine" ? 30 : 8), lv = profile.level;
+  if (ex.eq === "machine") return lv === "adv" ? (big ? 10 : 5) : big && lv === "inter" ? 5 : 2.5;
+  return lv === "beginner" ? (big ? 1 : 0.5) : lv === "adv" ? (big ? 4 : 2) : (big ? 2 : 1);
+};
 // الوزن المقترح لهالأسبوع: من آخر أوزانك (أو وزن البداية) + مرحلة الأسبوع
 function suggestW(ex) {
   const s0 = startW(ex); if (s0 == null) return null;
@@ -1158,29 +1216,30 @@ function rowStepper(it, day) {  // day = رقم اليوم أو "r-<id>"
 }
 
 function planRow(it, idx, key, swapKey, date, canLog) {
-  const ex = it.ex, isOpen = open === key, e = entry(date, ex.id) || {}, done = !!e.done;
+  const ex = it.ex, e = entry(date, ex.id) || {}, done = !!e.done, sctx = `plan:${idx - 1}`;
   return `<div class="ex ${done ? "is-done" : ""}">
     <div class="ex-row">
-      ${avatar(ex, { done, attrs: `data-done="${ex.id}" aria-pressed="${done}" ${canLog ? "" : "disabled"} aria-label="${done ? L("شيلي علامة الإنجاز عن", "Unmark") : L("علّمي إنك خلّصتي", "Mark done:")} ${esc(exN(ex))}"${justDone === ex.id && done ? ' data-pop="1"' : ""}` })}
-      <button class="ex-head" data-open="${key}" aria-expanded="${isOpen}">
-        <span class="ex-main"><b>${esc(exN(ex))}</b><span class="ex-meta">${mN(ex.m)} · ${eqN(ex.eq)}${UNI.has(ex.id) ? L(" · لكل جهة", " · each side") : ""}${e.w ? ` · <span class="wtag">${fmtW(e.w)}</span>` : suggestW(ex) ? ` · <span class="sugg">${L("هالأسبوع", "This week")} ${fmtW(suggestW(ex))}</span>` : ""}</span></span>
+      ${avatar(ex, { done, attrs: `data-sheet="${ex.id}" data-sctx="${sctx}" aria-label="${esc(exN(ex))}: ${L("كيف بتنعمل", "how to do it")}"` })}
+      <button class="ex-head" data-sheet="${ex.id}" data-sctx="${sctx}">
+        <span class="ex-main"><b>${esc(exN(ex))}</b><span class="ex-meta">${mN(ex.m)} · ${eqN(ex.eq)}${UNI.has(ex.id) ? L(" · لكل جهة", " · each side") : ""}${e.w ? ` · <span class="wtag">${fmtW(e.w)}</span>` : suggestW(ex) ? ` · <span class="sugg">${fmtW(suggestW(ex))}</span>` : ""}</span></span>
       </button>
       ${rowStepper(it, selDay)}
     </div>
-    ${isOpen ? `<div class="ex-body">
-      ${exInfo(ex)}
-      ${logBox(ex, e, date, canLog)}
-      ${vidBox(ex)}
-      <div class="actions">
-        ${vidBtn(ex)}
-        <a class="ghost link" href="${search(ex)}" target="_blank" rel="noopener">${L("فيديوهات تانية", "More videos")}</a>
-        <button class="ghost" data-alt="${key}" aria-expanded="${altOpen === key}">${L("غيّري التمرين", "Change exercise")}</button>
-      </div>
-      ${altOpen === key ? `<div class="alts"><span class="small muted">${L("اختاري بديل لنفس العضلة:", "Pick an alternative for the same muscle:")}</span>
-        ${it.alts.length ? it.alts.map(a => `<button class="alt" data-pick="${a.id}" data-pslot="${swapKey}">${avatar(a, { size: 36 })}<span><b>${esc(exN(a))}</b><small class="muted">${eqN(a.eq)}${UNI.has(a.id) ? L(" · لكل جهة", " · each side") : ""}</small></span></button>`).join("")
-          : `<span class="small muted">${L("ما في بديل تاني بهالمعدات.", "No other option with this equipment.")}</span>`}</div>` : ""}
-    </div>` : ""}
   </div>`;
+}
+function moveRow(it) {
+  const ex = it.ex, sec = it.h || ex.sec;
+  return `<div class="ex mv"><div class="ex-row">
+      <button class="mv-av" data-sheet="${ex.id}" data-sctx="move:${sec}" style="--c:${MCOL[ex.m]}" aria-label="${esc(exN(ex))}">${demoStatic(ex)}</button>
+      <button class="ex-head" data-sheet="${ex.id}" data-sctx="move:${sec}"><span class="ex-main"><b>${esc(exN(ex))}</b><span class="ex-meta">${ex.kind === "warm" ? L("إحماء", "Warm-up") : L("تمطيط", "Stretch")}${ex.uni ? L(" · لكل جهة", " · each side") : ""}</span></span></button>
+      <span class="mv-t"><bdi dir="ltr">${mmss(sec)}</bdi></span>
+    </div></div>`;
+}
+const blockH = (title, sub) => `<div class="blk-h"><b>${title}</b><span>${sub}</span></div>`;
+function dayBlocks(warm, rowsHtml, nItems, cool) {
+  return `<div class="blk">${blockH(L("١ · إحماء", "1 · Warm-up"), `${Math.max(1, Math.round(moveSec(warm) / 60))} ${L("د", "min")}`)}<div class="list">${warm.map(moveRow).join("")}</div></div>
+    <div class="blk">${blockH(L("٢ · التمرين", "2 · Workout"), `${nItems} ${L("تمارين", "exercises")}`)}<div class="list">${rowsHtml}</div></div>
+    <div class="blk">${blockH(L("٣ · تمطيط", "3 · Stretch"), `${Math.max(1, Math.round(moveSec(cool) / 60))} ${L("د", "min")}`)}<div class="list">${cool.map(moveRow).join("")}</div></div>`;
 }
 function dayStatus(i) {
   const day = buildDay(i);
@@ -1219,7 +1278,7 @@ function renderPlan() {
       <div class="carousel" id="days">${shown.map(i => {
         const d = buildDay(i), st = dayStatus(i), at = actsTxt(ymd(dateOfDay(i))), sw = !d && isSwimDay(i);
         return `<button class="rcard ${i === selDay ? "sel" : ""} ${d ? "" : "restc"}" data-day="${i}" aria-pressed="${i === selDay}">
-          <span class="eyebrow">${dayN(i)}${i === todayIdx ? L(" · اليوم", " · Today") : ""}${d ? ` · ${estMin(i, d.items)} ${L("دقيقة", "min")}` : sw ? ` · ${swimMin()} ${L("دقيقة", "min")}` : ""}</span>
+          <span class="eyebrow">${dayN(i)}${i === todayIdx ? L(" · اليوم", " · Today") : ""}${d ? ` · ${dayMin(i, d)} ${L("دقيقة", "min")}` : sw ? ` · ${swimMin()} ${L("دقيقة", "min")}` : ""}</span>
           <b class="rc-t">${d ? d.typeName : sw ? L("سباحة", "Swim") : L("راحة", "Rest")}</b>${sw ? `<small>${phaseName()}</small>` : ""}${d ? `<small>${d.pkgName} + ${L("كور", "core")}</small>` : ""}
           ${at ? `<small class="act-tag">${at}</small>` : ""}
           ${st === "full" ? `<span class="rc-badge">${L("✓ خلّصتيه", "✓ Done")}</span>` : st === "part" ? `<span class="rc-badge part">${L("بلّشتي", "Started")}</span>` : ""}
@@ -1262,7 +1321,7 @@ function renderPlan() {
       </section>`;
   } else {
     const nDone = day.items.filter(it => (entry(dStr, it.ex.id) || {}).done).length, all = nDone === day.items.length;
-    const est = estMin(selDay, day.items);
+    const est = dayMin(selDay, day);
     if (future && !nDone) html += `<section class="checkin">
         <h2>${selDay === todayIdx ? L("شو خطتك اليوم؟", "What's your plan today?") : L(`خطة ${DAYS[selDay]}`, `Plan for ${DAYS_EN[selDay]}`)}</h2>
         <div class="ci-btns">
@@ -1288,14 +1347,14 @@ function renderPlan() {
           return `<button class="pkg" data-pkg="${pk.id}" aria-pressed="${sel}"><b>${L(pk.ar, pk.en)}</b><small>${L(pk.subAr, pk.subEn)}</small></button>`;
         }).join("")}</div></div>
       ${day.pkg.eq ? "" : `<div class="seg" role="group" aria-label="${L("المعدات", "Equipment")}">
-        ${[["db",L("دمبل","Dumbbells")],["machine",L("ماشين","Machines")],["both",L("التنين","Both")]].map(([k,l]) => `<button data-eq="${k}" aria-pressed="${day.eq === k}">${l}</button>`).join("")}
+        ${EQ_OPTS.map(([k, ar, en]) => `<button data-eq="${k}" aria-pressed="${day.eq === k}">${L(ar, en)}</button>`).join("")}
       </div>`}
       <div class="daybar ${all ? "all" : ""}" aria-live="polite">
         <div class="daybar-top"><span>${all ? L("خلّصتي تمرين اليوم كلّو!", "Today's workout is complete!") : nDone ? L("كمّلي، عم تمشي منيح", "Keep going, you're doing great") : canLog ? L("اضغطي عالدائرة لتعلّمي ✓، أو ابدئي التمرين", "Tap a circle to mark ✓, or start the workout") : L("هيدا يوم جايي", "This day is coming up")}</span><b>${nDone}/${day.items.length}</b></div>
         <div class="bar"><i style="width:${(nDone / day.items.length * 100).toFixed(0)}%"></i></div>
       </div>
-      <div class="list">${day.items.map((it, i) => planRow(it, i + 1, `p-${selDay}-${i}`, `${day.pkg.id}-${i}`, dStr, canLog)).join("")}</div>
-      <p class="note">${L("اضغطي عاسم أي تمرين لتشوفي الشرح والفيديو أو تغيّريه. ابدئي بإحماء ٥–١٠ دقايق", "Tap an exercise name for steps, video, or to change it. Warm up for 5–10 minutes first")}${profile.age >= 50 ? L("، وخدي إحماء أطول وأوزان أخف بالأول", ", with a longer warm-up and lighter weights at first") : ""}.</p>
+      ${dayBlocks(day.warm, day.items.map((it, i) => planRow(it, i + 1, `p-${selDay}-${i}`, `${day.pkg.id}-${i}`, dStr, canLog)).join(""), day.items.length, day.cool)}
+      <p class="note">${L("اضغطي عالصورة أو الاسم لتشوفي كيف بتنعمل الحركة والفيديو والعدد المقترح.", "Tap the picture or name to see how it's done, the video and your target.")}${profile.age >= 50 ? L(" خدي إحماء أطول وأوزان أخف بالأول.", " Take a longer warm-up and lighter weights at first.") : ""}</p>
     </section>`;
     html += `<div class="startbar">${all
       ? `<button class="start soft" data-tab="prog">${L("✓ خلّصتي اليوم · شوفي تقدّمك", "✓ Done today · See progress")}</button>`
@@ -1317,13 +1376,13 @@ const shortM = (m) => L(MUSCLES[m].ar.replace(/ \(.*\)/, ""), MUSCLES[m].en);
 function routineCard(r) {
   const items = routineItems(r);
   return `<button class="rcard sm" data-routine="${r.id}">
-      <span class="eyebrow">${estMin(`r-${r.id}`, items)} ${L("دقيقة", "min")} · ${items.length} ${L("تمارين", "exercises")}</span>
+      <span class="eyebrow">${routineMin(`r-${r.id}`, items)} ${L("دقيقة", "min")} · ${items.length} ${L("تمارين", "exercises")}</span>
       <b class="rc-t">${rN(r)}</b><small>${rSub(r)}</small>
       ${bubbles(items, 7, .72)}
     </button>`;
 }
 function renderRoutine(r) {
-  const key = `r-${r.id}`, items = routineItems(r), est = estMin(key, items), g = GOALS[profile.goal];
+  const key = `r-${r.id}`, items = routineItems(r), est = routineMin(key, items), g = GOALS[profile.goal];
   let html = `<button class="back" data-libback="1">${L("→ رجوع", "← Back")}</button>
     <section class="routine">
       <div class="routine-h">
@@ -1331,16 +1390,11 @@ function renderRoutine(r) {
         <h2>${rN(r)}</h2>
         <p class="small muted">${rSub(r)} · ${items.length} ${L("تمارين", "exercises")} · ${L("راحة", "rest")} ${r.rest ? `${r.rest} ${L("ث", "s")}` : rng(gRest(g))}</p>
       </div>
-      <div class="list">${items.map((it, i) => {
-        const k = `${key}-${i}`, isOpen = open === k;
-        return `<div class="ex"><div class="ex-row">
-            ${avatar(it.ex)}
-            <button class="ex-head" data-open="${k}" aria-expanded="${isOpen}"><span class="ex-main"><b>${esc(exN(it.ex))}</b><span class="ex-meta">${mN(it.ex.m)} · ${eqN(it.ex.eq)}${UNI.has(it.ex.id) ? L(" · لكل جهة", " · each side") : ""}</span></span></button>
+      ${dayBlocks(warmFor(routineType(items)), items.map((it, i) => `<div class="ex"><div class="ex-row">
+            ${avatar(it.ex, { attrs: `data-sheet="${it.ex.id}" data-sctx="routine:${key}" aria-label="${esc(exN(it.ex))}"` })}
+            <button class="ex-head" data-sheet="${it.ex.id}" data-sctx="routine:${key}"><span class="ex-main"><b>${esc(exN(it.ex))}</b><span class="ex-meta">${mN(it.ex.m)} · ${eqN(it.ex.eq)}${UNI.has(it.ex.id) ? L(" · لكل جهة", " · each side") : ""}${suggestW(it.ex) ? ` · <span class="sugg">${fmtW(suggestW(it.ex))}</span>` : ""}</span></span></button>
             ${rowStepper(it, key)}
-          </div>
-          ${isOpen ? `<div class="ex-body">${exInfo(it.ex)}${vidBox(it.ex)}<div class="actions">${vidBtn(it.ex)}<a class="ghost link" href="${search(it.ex)}" target="_blank" rel="noopener">${L("فيديوهات تانية", "More videos")}</a></div></div>` : ""}
-        </div>`;
-      }).join("")}</div>
+          </div></div>`).join(""), items.length, coolFor(items))}
       <p class="note">${L("اضغطي عاسم أي تمرين لتشوفي الشرح. التمارين اللي بتخلّصيها بتنحسب بتقدّمك.", "Tap an exercise for steps. Everything you finish counts toward your progress.")}</p>
     </section>
     <div class="startbar"><button class="start" data-start="${key}">▶ ${L("ابدئي", "Start")}<small>${est} ${L("د", "min")}</small></button></div>`;
@@ -1380,12 +1434,44 @@ function renderLib() {
   if (!keys.length) html += `<p class="empty">${L("ما في تمارين بهالاسم. جربي «أرداف» أو «بطن».", "No exercises found. Try “glutes” or “abs”.")}</p>`;
   keys.forEach(k => {
     html += `<section class="group">${lib.area && lib.area !== "all" ? "" : `<h3>${mN(k)} <span class="small muted">· ${groups[k].length}</span></h3>`}
-      <div class="list">${groups[k].map(ex => exRow(ex, null, null, `l-${ex.id}`, null)).join("")}</div></section>`;
+      <div class="list">${groups[k].map(ex => exRow(ex)).join("")}</div></section>`;
   });
   return html;
 }
 
+/* ===================== تمطيط ===================== */
+let strSel = store.get("tamrini.stretch", { areas: ["back", "hips", "hamstrings"], min: 10 });
+const AREA_PIC = { neck: "s-neck", shoulders: "s-shoulder", chest: "s-chest", arms: "s-triceps", back: "s-child", core: "s-cobra", hips: "s-hipflexor", glutes: "s-figure4", hamstrings: "s-hamseated", quads: "s-quad", calves: "s-calf" };
+const STR_PRESETS = [["all", "كل الجسم", "Full body", "ALL"], ["desk", "بعد القعدة الطويلة", "After sitting all day", ["neck", "back", "hips", "chest"]], ["sleep", "قبل النوم", "Before bed", ["back", "hips", "glutes", "hamstrings"]], ["legs", "بعد الرجلين", "After leg day", ["glutes", "hamstrings", "quads", "calves"]]];
+const presetAreas = (pr) => pr[3] === "ALL" ? Object.keys(STRETCH_AREAS) : pr[3];
+function stretchItems() {
+  const want = strSel.areas.length ? strSel.areas : Object.keys(STRETCH_AREAS), goal = strSel.min * 60;
+  const pool = STRETCH.map(st => ({ st, score: st.area.filter(a => want.includes(a)).length })).filter(x => x.score).sort((a, b) => b.score - a.score);
+  const out = []; let t = 0;
+  for (const { st } of pool) { if (t >= goal) break; out.push(st); t += st.sec * (st.uni ? 2 : 1); }
+  const scale = t ? Math.max(1, goal / t) : 1;            // إذا ما في كفاية حركات، طوّلي الثبات
+  return out.map(st => ({ ex: st, isTime: true, kind: "stretch", h: Math.round(st.sec * scale / 5) * 5 }));
+}
+function renderStretch() {
+  const items = stretchItems(), total = Math.round(items.reduce((a, it) => a + it.h * (it.ex.uni ? 2 : 1), 0) / 60);
+  return `<header style="display:flex;flex-direction:column;gap:4px"><span class="eyebrow">${L("اختاري الأماكن اللي بدّك تمطّيها", "Pick the areas you want to stretch")}</span><h1>${L("تمطيط", "Stretch")}</h1></header>
+    <section class="group"><h3 class="sec">${L("جاهزين", "Quick picks")}</h3>
+      <div class="carousel">${STR_PRESETS.map(pr => [pr[0], pr[1], pr[2], presetAreas(pr)]).map(([k, ar, en, areas]) => `<button class="rcard sm str-p" data-strp="${k}"><b class="rc-t">${L(ar, en)}</b><small>${areas.slice(0, 4).map(a => L(...STRETCH_AREAS[a])).join(L("، ", ", "))}</small><div class="bubbles">${areas.slice(0, 4).map(a => `<span class="mv-av sm" style="--c:${MCOL[anyEx(AREA_PIC[a]).m]}">${demoStatic(anyEx(AREA_PIC[a]))}</span>`).join("")}</div></button>`).join("")}</div></section>
+    <section class="group"><h3 class="sec">${L("حسب المنطقة", "By area")}</h3>
+      <div class="areas">${Object.entries(STRETCH_AREAS).map(([k, [ar, en]]) => { const mv = anyEx(AREA_PIC[k]); return `<button class="area" data-stra="${k}" aria-pressed="${strSel.areas.includes(k)}"><span class="mv-av big" style="--c:${MCOL[mv.m]}">${demoStatic(mv)}</span><b>${L(ar, en)}</b></button>`; }).join("")}
+        <button class="area" data-strall="1" aria-pressed="${strSel.areas.length === Object.keys(STRETCH_AREAS).length}"><span class="mv-av big" style="--c:var(--soft)">${demoStatic(anyEx("s-fold"))}</span><b>${L("كل الجسم", "Full body")}</b></button></div></section>
+    <div class="field"><span class="lbl">${L("قدّيش وقت؟", "How long?")}</span>
+      <div class="seg">${[5, 10, 15, 20].map(m => `<button data-strm="${m}" aria-pressed="${strSel.min === m}">${m} ${L("د", "min")}</button>`).join("")}</div></div>
+    <section class="routine">
+      <div class="routine-h"><span class="eyebrow">${L(`${total} دقيقة تقريباً`, `About ${total} min`)}</span><h2>${L("روتين التمطيط", "Your stretch routine")}</h2><p class="small muted">${L(`${items.length} حركات · اضغطي عالصورة لتشوفي كيف`, `${items.length} moves · tap a picture to see how`)}</p></div>
+      ${items.length ? `<div class="list">${items.map(moveRow).join("")}</div>` : `<p class="empty">${L("اختاري منطقة وحدة عالأقل.", "Pick at least one area.")}</p>`}
+    </section>
+    ${items.length ? `<div class="startbar"><button class="start" data-start="stretch">▶ ${L("ابدئي التمطيط", "Start stretching")}<small>${total} ${L("د", "min")}</small></button></div>` : ""}`;
+}
+
 let draft = null, meEdit = false, justSaved = false;
+const LEVELS = [["beginner", "مبتدئة", "Beginner", "أوزان خفيفة وزيادة بطيئة"], ["inter", "متوسطة", "Intermediate", "بتعرفي الحركات"], ["adv", "متقدّمة", "Advanced", "أوزان أتقل ومجموعات أكتر"]];
+const lvN = (k) => { const o = LEVELS.find(x => x[0] === k) || LEVELS[0]; return L(o[1], o[2]); };
 function settingsBlock() {
   return `<section class="card">
       <h2>${L("الإعدادات", "Settings")}</h2>
@@ -1396,32 +1482,26 @@ function settingsBlock() {
     </section>`;
 }
 function scheduleBlock() {
-  const g = GOALS[profile.goal], order = profile.days.slice().sort((x, y) => x - y);
-  const rows = DAYS.map((_, i) => {
-    const day = buildDay(i), today = i === todayIdx;
-    const head = `<div class="sd-h"><b>${dayN(i)}</b>${today ? `<span class="pill now">${L("اليوم", "Today")}</span>` : ""}`;
-    const at = actsTxt(ymd(dateOfDay(i)));
-    if (!day && isSwimDay(i)) return `<div class="sd swim-d ${dayStatus(i)}">${head}<span class="sd-t">${L(`سباحة ${swimMin()} دقيقة`, `Swim ${swimMin()} min`)}</span>${dayStatus(i) ? `<span class="muted small">✓</span>` : ""}</div><span class="small muted">${swimTip()}</span>${at ? `<span class="act-tag small">${at}</span>` : ""}</div>`;
-    if (!day) return `<div class="sd rest-d">${head}<span class="muted small">${at || L("راحة · مشي خفيف أو تمطيط", "Rest · light walk or stretching")}</span></div></div>`;
-    const st = dayStatus(i);
-    return `<div class="sd ${st}">
-        ${head}<span class="sd-t">${day.title}</span><span class="muted small">${estMin(i, day.items)} ${L("د", "min")}${st === "full" ? " · ✓" : ""}</span></div>
-        ${at ? `<span class="act-tag small">${at}</span>` : ""}
-        <ol class="sd-list">${day.items.map(it => `<li><span>${esc(exN(it.ex))}</span><span class="sd-r"><bdi dir="ltr">${it.isTime ? `${setsFor(i, it.ex)} × ${mmss(holdFor(i, it.ex))}` : `${setsFor(i, it.ex)} × ${g.reps}`}</bdi>${suggestW(it.ex) ? `<b class="sugg">${fmtW(suggestW(it.ex))}</b>` : ""}</span></li>`).join("")}</ol>
-        <button class="ghost sd-go" data-goday="${i}">${L("افتحي هاليوم ←", "Open this day →")}</button>
-      </div>`;
-  }).join("");
-  const ph = phaseOf();
+  const g = GOALS[profile.goal], order = profile.days.slice().sort((x, y) => x - y), ph = phaseOf(), wkN = progWeek(), total = profile.goalWeeks || 0;
+  const goalLine = profile.goalText ? `<p class="goal-q">“${esc(profile.goalText)}”</p>` : "";
   const progCard = `<section class="progcard">
-      <div class="card-h"><b>${L(`الأسبوع ${progWeek()} من برنامجك`, `Week ${progWeek()} of your program`)}</b><span class="pill now">${phaseName()}</span></div>
+      <div class="card-h"><b>${total ? L(`الأسبوع ${Math.min(wkN, total)} من ${total}`, `Week ${Math.min(wkN, total)} of ${total}`) : L(`الأسبوع ${wkN} من برنامجك`, `Week ${wkN} of your program`)}</b><span class="pill now">${phaseName()}</span></div>
+      ${goalLine}
+      ${total ? `<div class="bar"><i style="width:${Math.min(100, (wkN / total) * 100).toFixed(0)}%"></i></div><span class="small muted">${wkN > total ? L("خلصت مدّة هدفك! عدّلي الهدف أو كمّلي عادي.", "Your goal period is over. Update the goal or keep going.") : L(`باقي ${total - wkN + 1} أسابيع`, `${total - wkN + 1} weeks left`)}</span>` : `<span class="small muted">${L("هدف مستمر", "Ongoing goal")}</span>`}
       <div class="phases">${[1, 2, 3, 4].map(i => `<span class="ph ${i === ph ? "on" : i < ph ? "past" : ""}"><b>${i}</b><small>${L(PHASES[i].ar, PHASES[i].en)}</small></span>`).join("")}</div>
       <p>${phaseTip()}</p>
-      <p class="small muted">${L("كل ٤ أسابيع بتعيدي الدورة بأوزان أعلى. الأوزان بالجدول مقترحة لهالأسبوع حسب آخر شي سجّلتيه؛ إذا كانت تقيلة كتير أو خفيفة، غيّريها عالبرنامج والجدول بيتعلّم منك.", "Every 4 weeks the cycle repeats with heavier weights. The weights shown are this week's suggestions based on what you last logged; if one feels too heavy or light, change it and the plan learns from you.")}</p>
     </section>`;
+  const cards = DAYS.map((_, i) => {
+    const day = buildDay(i), today = i === todayIdx, st = dayStatus(i);
+    const top = `<span class="eyebrow">${dayN(i)}${today ? L(" · اليوم", " · Today") : ""}</span>`;
+    if (!day && isSwimDay(i)) return `<button class="sdc swim" data-goday="${i}">${top}<b>${L("سباحة", "Swim")}</b><small>${swimMin()} ${L("دقيقة", "min")}${st ? " · ✓" : ""}</small>${WAVES}</button>`;
+    if (!day) return `<div class="sdc rest">${top}<b>${L("راحة", "Rest")}</b><small>${L("مشي خفيف أو تمطيط", "Light walk or stretch")}</small></div>`;
+    return `<button class="sdc ${st}" data-goday="${i}">${top}<b>${day.typeName}</b><small>${day.pkgName} · ${dayMin(i, day)} ${L("د", "min")}${st === "full" ? " · ✓" : ""}</small>${bubbles(day.items, 6, .5)}</button>`;
+  }).join("");
   return `${progCard}<section class="group" id="schedule">
       <div class="card-h"><h2>${L("جدولي الأسبوعي", "My weekly schedule")}</h2></div>
-      <p class="small muted">${L(`${order.length} أيام بالأسبوع${profile.swim.length ? ` (منها ${profile.swim.length} سباحة)` : ""} · ${gN(g)} · ${rng(g.sets)} مجموعات × ${rng(g.reps)} تكرار · راحة ${rng(g.rest)}`, `${order.length} days a week${profile.swim.length ? ` (${profile.swim.length} swim)` : ""} · ${gN(g)} · ${rng(g.sets)} sets × ${rng(g.reps)} reps · ${rng(g.restEn)} rest`)}</p>
-      <div class="sched">${rows}</div>
+      <p class="small muted">${L(`${order.length} أيام بالأسبوع${profile.swim.length ? ` (منها ${profile.swim.length} سباحة)` : ""} · كل يوم: إحماء، تمرين، تمطيط. اضغطي عاليوم لتفوتي عليه.`, `${order.length} days a week${profile.swim.length ? ` (${profile.swim.length} swim)` : ""} · Each day: warm-up, workout, stretch. Tap a day to open it.`)}</p>
+      <div class="sdcs">${cards}</div>
     </section>`;
 }
 function renderMe() {
@@ -1432,12 +1512,12 @@ function renderMe() {
       <section class="acct">
         <div class="acct-top">
           <span class="acct-av" aria-hidden="true">${nm ? esc(nm[0].toUpperCase()) : "♀"}</span>
-          <div><b>${gN(g)}</b><span class="muted small">${L(profile.level === "inter" ? "متوسطة" : "مبتدئة", profile.level === "inter" ? "Intermediate" : "Beginner")} · ${profile.days.length} ${L("أيام بالأسبوع", "days a week")}</span></div>
+          <div><b>${gN(g)}</b><span class="muted small">${lvN(profile.level)} · ${profile.days.length} ${L("أيام بالأسبوع", "days a week")} · ${profile.goalWeeks ? L(`${profile.goalWeeks} أسابيع`, `${profile.goalWeeks} weeks`) : L("مستمر", "ongoing")}</span></div>
         </div>
         <div class="acct-stats">
           <div><b>${profile.age}</b><span>${L("العمر", "Age")}</span></div>
           <div><b>${profile.weight} <small>${L("كغ", "kg")}</small></b><span>${L("الوزن", "Weight")}</span></div>
-          <div><b>${profile.eq === "both" ? L("التنين", "Both") : profile.eq === "db" ? L("دمبل", "Dumbbells") : L("ماشين", "Machines")}</b><span>${L("المعدات", "Equipment")}</span></div>
+          <div><b>${eqOptN(profile.eq)}</b><span>${L("المعدات", "Equipment")}</span></div>
         </div>
         <button class="save" data-me-edit="1">${L("عدّلي بياناتي وهدفي", "Edit my details & goal")}</button>
       </section>
@@ -1458,7 +1538,12 @@ function renderMe() {
     <div class="field"><span class="lbl">${L("شو هدفك؟", "Your goal")}</span>
       <div class="opts">${Object.entries(GOALS).map(([k,g]) => `<button type="button" class="opt" data-goal="${k}" aria-pressed="${d.goal===k}"><b>${gN(g)}</b><small>${gSub(g)}</small></button>`).join("")}</div></div>
     <div class="field"><span class="lbl">${L("مستواكِ", "Your level")}</span>
-      <div class="seg">${[["beginner",L("مبتدئة","Beginner")],["inter",L("متوسطة","Intermediate")]].map(([k,l]) => `<button type="button" data-level="${k}" aria-pressed="${d.level===k}">${l}</button>`).join("")}</div></div>
+      <div class="opts three">${LEVELS.map(([k, ar, en, sub]) => `<button type="button" class="opt" data-level="${k}" aria-pressed="${d.level === k}"><b>${L(ar, en)}</b><small>${L(sub, k === "beginner" ? "Light weights, slow increases" : k === "inter" ? "You know the moves" : "Heavier weights, more sets")}</small></button>`).join("")}</div></div>
+    <div class="field"><label for="f-goaltext">${L("اكتبي هدفك بكلماتك (اختياري)", "Your goal in your own words (optional)")}</label>
+      <textarea id="f-goaltext" class="num ta" rows="2" maxlength="140" placeholder="${L("مثلاً: بدّي زيد عضل بالأرداف وقلّل دهون البطن", "e.g. Build my glutes and lose belly fat")}">${esc(d.goalText || "")}</textarea></div>
+    <div class="field"><span class="lbl">${L("لمتى الهدف؟", "For how long?")}</span>
+      <div class="seg">${[[0, L("مستمر", "Ongoing")], [4, L("٤ أسابيع", "4 wks")], [8, L("٨ أسابيع", "8 wks")], [12, L("١٢ أسبوع", "12 wks")]].map(([k, l]) => `<button type="button" data-fweeks="${k}" aria-pressed="${(d.goalWeeks || 0) === k}">${l}</button>`).join("")}</div>
+      <span class="note">${L("المدّة بتحدّد الجدول والأسابيع الباقية؛ «مستمر» يعني بيضل يتطوّر بلا نهاية.", "The length sets your plan and weeks left; “ongoing” keeps progressing with no end date.")}</span></div>
     <div class="field"><span class="lbl">${L("كم يوم بدّك تتمرّني بالأسبوع؟", "How many days a week?")}</span>
       <div class="seg">${[1, 2, 3, 4, 5, 6].map(n => `<button type="button" data-fcount="${n}" aria-pressed="${d.days.length === n}">${n}</button>`).join("")}</div>
       <span class="note">${L("اقترحنالك الأيام تحت، موزّعة عالأسبوع. فيكِ تغيّريها.", "We suggested days below, spread across the week. Change them if you like.")}</span></div>
@@ -1466,8 +1551,8 @@ function renderMe() {
       <div class="chips">${L(DAYS, DAYS_EN).map((n,i) => `<button type="button" class="chip" data-fday="${i}" aria-pressed="${d.days.includes(i)}">${n}</button>`).join("")}</div></div>
     ${d.days.length ? `<div class="field"><span class="lbl">${L("كل يوم شو؟", "What on each day?")}</span>
       <div class="dtypes">${d.days.slice().sort((x, y) => x - y).map(i => `<div class="dtype"><b>${dayN(i)}</b><div class="seg">${[["gym", L("تمرين", "Workout")], ["swim", L("سباحة", "Swim")]].map(([k, l]) => `<button type="button" data-ftype="${i}:${k}" aria-pressed="${(d.swim || []).includes(i) === (k === "swim")}">${l}</button>`).join("")}</div></div>`).join("")}</div></div>` : ""}
-    <div class="field"><span class="lbl">${L("المعدات الأساسية", "Main equipment")}</span>
-      <div class="seg">${[["db",L("دمبل","Dumbbells")],["machine",L("ماشين","Machines")],["both",L("التنين","Both")]].map(([k,l]) => `<button type="button" data-feq="${k}" aria-pressed="${d.eq===k}">${l}</button>`).join("")}</div>
+    <div class="field"><span class="lbl">${L("وين وبشو بتتمرّني؟", "Where and with what?")}</span>
+      <div class="opts">${EQ_OPTS.map(([k, ar, en, where]) => `<button type="button" class="opt" data-feq="${k}" aria-pressed="${d.eq === k}"><b>${L(ar, en)}</b><small>${L(where, k === "body" ? "At home" : k === "db" ? "Home or gym" : k === "machine" ? "At the gym" : "Gym, everything")}</small></button>`).join("")}</div>
       <span class="note">${L("فيكِ تغيّريها لكل يوم لحال من «برنامجي».", "You can change it per day from “My Plan”.")}</span></div>
     <p class="err" id="me-err" hidden></p>
     <button class="save" type="submit">${L("احفظي واعمليلي جدولي", "Save and build my schedule")}</button>
@@ -1477,7 +1562,8 @@ function renderMe() {
 
 function render() {
   hideTip();
-  $app.innerHTML = tab === "plan" ? renderPlan() : tab === "prog" ? renderProgress() : tab === "lib" ? renderLib() : renderMe();
+  if (typeof renderSheet === "function" && sheet) setTimeout(renderSheet, 0);
+  $app.innerHTML = tab === "plan" ? renderPlan() : tab === "prog" ? renderProgress() : tab === "lib" ? renderLib() : tab === "str" ? renderStretch() : renderMe();
   document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.tab === tab));
   document.body.classList.toggle("has-start", !!$app.querySelector(".startbar"));
   const selCard = $app.querySelector("#days .rcard.sel");
@@ -1643,7 +1729,9 @@ function beep() {
 async function lockScreen() { try { if (ses && navigator.wakeLock && document.visibilityState === "visible") wake = await navigator.wakeLock.request("screen"); } catch {} }
 document.addEventListener("visibilitychange", () => { if (ses && ses.phase !== "done") lockScreen(); });
 
-function sesItems() { return ses.list.map(x => ({ ex: EX.find(e => e.id === x.id), isTime: x.t })).filter(it => it.ex); }
+function sesItems() { return ses.list.map(x => ({ ex: anyEx(x.id), isTime: x.t, h: x.h })).filter(it => it.ex); }
+const sS = (ex) => ex.kind ? (ex.uni ? 2 : 1) : setsFor(ses.key, ex);
+const hS = (it) => it.ex.kind ? (it.h || it.ex.sec) : holdFor(ses.key, it.ex);
 function nextUndone(from) {
   const items = sesItems();
   for (let k = 1; k <= items.length; k++) {
@@ -1656,21 +1744,37 @@ function startSession(key) {
   try { audio ||= new (window.AudioContext || window.webkitAudioContext)(); audio.resume?.(); } catch {}
   let items, date, title, fin = [];
   if (key === "plan") {
-    const d = buildDay(selDay); items = d.items; date = ymd(dateOfDay(selDay)); title = { ar: d.titleAr, en: d.titleEn }; key = selDay;
-    items.forEach((it, i) => { if ((entry(date, it.ex.id) || {}).done) fin.push(i); });   // كمّلي من وين وقفتي
+    const d = buildDay(selDay); date = ymd(dateOfDay(selDay)); title = { ar: d.titleAr, en: d.titleEn }; key = selDay;
+    const done = d.items.filter(it => (entry(date, it.ex.id) || {}).done).length;
+    items = [...(done ? [] : d.warm), ...d.items, ...d.cool];
+    items.forEach((it, i) => { if (!it.ex.kind && (entry(date, it.ex.id) || {}).done) fin.push(i); });   // كمّلي من وين وقفتي
+  } else if (key === "stretch") {
+    items = stretchItems(); date = ymd(TODAY); title = { ar: "تمطيط", en: "Stretch" };
   } else {
-    const r = ROUTINES.find(x => `r-${x.id}` === key); items = routineItems(r); date = ymd(TODAY); title = { ar: r.ar, en: r.en };
+    const r = ROUTINES.find(x => `r-${x.id}` === key), core = routineItems(r); date = ymd(TODAY); title = { ar: r.ar, en: r.en };
+    items = [...warmFor(routineType(core)), ...core, ...coolFor(core)];
   }
   const first = items.findIndex((it, i) => !fin.includes(i));
-  ses = { key, title, list: items.map(it => ({ id: it.ex.id, t: it.isTime })), date, idx: Math.max(0, first), fin, set: 1, phase: "work", until: 0, started: Date.now(), sets: 0, prs: 0, showHow: false };
+  ses = { key, title, list: items.map(it => ({ id: it.ex.id, t: it.isTime, h: it.h })), date, idx: Math.max(0, first), fin, set: 1, phase: "work", until: 0, started: Date.now(), sets: 0, prs: 0, showHow: false };
   saveSes(); lockScreen(); renderPlay();
 }
 function endSession() { ses = null; saveSes(); try { wake?.release(); } catch {} wake = null; renderPlay(); render(); }
 
 function finishSet() {
-  const items = sesItems(), it = items[ses.idx], n = setsFor(ses.key, it.ex);
-  ses.sets++;
-  if (ses.set < n) { ses.set++; ses.phase = "rest"; ses.until = Date.now() + restFor(ses.key) * 1000; }
+  const items = sesItems(), it = items[ses.idx], n = sS(it.ex), mv = !!it.ex.kind;
+  if (!mv) ses.sets++;
+  if (ses.set < n) {
+    ses.set++;
+    if (mv) { ses.phase = "hold"; ses.until = Date.now() + hS(it) * 1000; }      // الجهة التانية دغري
+    else { ses.phase = "rest"; ses.until = Date.now() + restFor(ses.key) * 1000; }
+  }
+  else if (mv) {
+    if (!ses.fin.includes(ses.idx)) ses.fin.push(ses.idx);
+    const nx = nextUndone(ses.idx);
+    if (nx < 0) { ses.phase = "done"; try { wake?.release(); } catch {} }
+    else { const nit = items[nx]; ses.idx = nx; ses.set = 1; ses.showHow = false;
+      if (nit.ex.kind && nx > items.indexOf(it)) { ses.phase = "hold"; ses.until = Date.now() + hS(nit) * 1000; } else ses.phase = "work"; }
+  }
   else {
     const e = entry(ses.date, it.ex.id) || {}, before = Math.max(0, ...weightsOf(it.ex.id).filter(x => x.d < ses.date).map(x => x.w));
     if (e.w && before && e.w > before) ses.prs++;
@@ -1678,7 +1782,7 @@ function finishSet() {
     if (!ses.fin.includes(ses.idx)) ses.fin.push(ses.idx);
     const nx = nextUndone(ses.idx);
     if (nx < 0) { ses.phase = "done"; try { wake?.release(); } catch {} }
-    else { ses.idx = nx; ses.set = 1; ses.phase = "rest"; ses.until = Date.now() + restFor(ses.key) * 1000; ses.showHow = false; }
+    else { ses.idx = nx; ses.set = 1; ses.showHow = false; if (items[nx].ex.kind) ses.phase = "work"; else { ses.phase = "rest"; ses.until = Date.now() + restFor(ses.key) * 1000; } }
   }
   saveSes(); renderPlay();
 }
@@ -1720,9 +1824,11 @@ function renderPlay() {
         <p class="muted">${quote()}</p>
         <div class="tiles">
           <div class="tile"><span>${L("الوقت", "Time")}</span><b>${mins}<em> ${L("د", "min")}</em></b></div>
-          <div class="tile"><span>${L("تمارين", "Exercises")}</span><b>${doneN}<em>/${items.length}</em></b></div>
+          ${items.some(x => !x.ex.kind) ? `<div class="tile"><span>${L("تمارين", "Exercises")}</span><b>${ses.fin.filter(i => items[i] && !items[i].ex.kind).length}<em>/${items.filter(x => !x.ex.kind).length}</em></b><small>${L("مع إحماء وتمطيط", "plus warm-up & stretch")}</small></div>
           <div class="tile"><span>${L("مجموعات", "Sets")}</span><b>${ses.sets}</b></div>
-          <div class="tile"><span>${L("أوزان جديدة", "New bests")}</span><b>${ses.prs}</b><small>${ses.prs ? L("رقم قياسي جديد!", "New personal best!") : L("المرة الجاية زيدي شوي", "Add a little next time")}</small></div>
+          <div class="tile"><span>${L("أوزان جديدة", "New bests")}</span><b>${ses.prs}</b><small>${ses.prs ? L("رقم قياسي جديد!", "New personal best!") : L("المرة الجاية زيدي شوي", "Add a little next time")}</small></div>`
+          : `<div class="tile"><span>${L("حركات تمطيط", "Stretches")}</span><b>${ses.fin.length}<em>/${items.length}</em></b></div>
+          <div class="tile"><span>${L("حسّيتي؟", "How do you feel?")}</span><b>✓</b><small>${L("جسمك ارتاح، كمّلي كل يوم شوي", "Lighter already. A little every day helps")}</small></div>`}
         </div>
       </div>
       <div class="pl-actions">
@@ -1730,7 +1836,7 @@ function renderPlay() {
         <button class="ghost wide" data-pl="close">${L("رجعي عالبرنامج", "Back to plan")}</button>
       </div>`;
   } else {
-    const it = items[ses.idx], ex = it.ex, n = setsFor(ses.key, ex), hold = holdFor(ses.key, ex), uni = UNI.has(ex.id);
+    const it = items[ses.idx], ex = it.ex, n = sS(ex), hold = hS(it), uni = UNI.has(ex.id) || !!ex.uni, mv = !!ex.kind, kindTxt = mv ? (ex.kind === "warm" ? L("إحماء", "Warm-up") : L("تمطيط", "Stretch")) : "";
     if (ses.phase === "rest") {
       const left = Math.max(0, (ses.until - Date.now()) / 1000), tot = restFor(ses.key);
       const nextTxt = ses.set === 1 ? `${L("التمرين الجايي", "Up next")}: ${esc(exN(ex))}` : L(`الجاية: المجموعة ${ses.set} من ${n}`, `Next: set ${ses.set} of ${n}`);
@@ -1745,7 +1851,7 @@ function renderPlay() {
     } else if (ses.phase === "hold") {
       const left = Math.max(0, (ses.until - Date.now()) / 1000);
       body = `<div class="pl-main">
-          <span class="pl-pill">${L(`المجموعة ${ses.set} من ${n}`, `Set ${ses.set} of ${n}`)}</span>
+          <span class="pl-pill">${mv ? `${kindTxt}${n > 1 ? L(` · الجهة ${ses.set} من ${n}`, ` · side ${ses.set} of ${n}`) : ""}` : L(`المجموعة ${ses.set} من ${n}`, `Set ${ses.set} of ${n}`)}</span>
           <h2 class="pl-name">${esc(exN(ex))}</h2>
           ${bigRing(Math.min(1, left / hold), mmss(Math.ceil(left)), uni ? L("اثبتي · وبعدين بدّلي الجهة", "Hold · then switch sides") : L("اثبتي، فيكِ!", "Hold it, you've got this!"), demoCircle(ex, "in-ring"))}
         </div>
@@ -1755,9 +1861,9 @@ function renderPlay() {
           ${demoCircle(ex, "big")}
           <div class="pl-head">
             <h2 class="pl-name">${esc(exN(ex))}</h2>
-            <span class="pl-pill">${L(`المجموعة ${ses.set} من ${n}`, `Set ${ses.set} of ${n}`)}</span>
+            <span class="pl-pill">${mv ? `${kindTxt}${n > 1 ? L(` · الجهة ${ses.set} من ${n}`, ` · side ${ses.set} of ${n}`) : ""}` : L(`المجموعة ${ses.set} من ${n}`, `Set ${ses.set} of ${n}`)}</span>
           </div>
-          <div class="pl-target"><b>${it.isTime ? mmss(hold) : rng(g.reps)}</b><span>${it.isTime ? L("ثبات", "hold") : L("تكرار", "reps")}${uni ? L(" · لكل جهة", " · each side") : ""}</span></div>
+          <div class="pl-target"><b>${it.isTime ? mmss(hold) : rng(g.reps)}</b><span>${mv ? (ex.kind === "warm" ? L("بإيقاع مريح", "easy pace") : L("ثبات وتنفّس", "hold & breathe")) : it.isTime ? L("ثبات", "hold") : L("تكرار", "reps")}${uni ? L(" · لكل جهة", " · each side") : ""}</span></div>
           ${plWeight(ex)}
           <details class="pl-how" ${ses.showHow ? "open" : ""}><summary>${L("شو الحركة؟", "How to do it")}</summary>${exInfo(ex, true)}${vidBox(ex)}${vidBtn(ex)}</details>
         </div>
@@ -1772,7 +1878,7 @@ function renderPlay() {
   $play.innerHTML = `<div class="pl">
       <header class="pl-top">
         <button class="pl-x" data-pl="close" aria-label="${L("سكّري وضع التمرين", "Close workout")}">✕</button>
-        <span class="pl-title"><b>${esc(typeof ses.title === "string" ? ses.title : L(ses.title.ar, ses.title.en))}</b><small>${ses.phase === "done" ? L("خلصنا!", "Finished!") : L(`تمرين ${ses.idx + 1} من ${items.length}`, `Exercise ${ses.idx + 1} of ${items.length}`)}</small></span>
+        <span class="pl-title"><b>${esc(typeof ses.title === "string" ? ses.title : L(ses.title.ar, ses.title.en))}</b><small>${ses.phase === "done" ? L("خلصنا!", "Finished!") : L(`${ses.idx + 1} من ${items.length}`, `${ses.idx + 1} of ${items.length}`)}</small></span>
         <span class="pl-x" aria-hidden="true"></span>
       </header>
       ${segs}
@@ -1785,7 +1891,7 @@ setInterval(() => {
   if (!ses || (ses.phase !== "rest" && ses.phase !== "hold")) return;
   const left = (ses.until - Date.now()) / 1000;
   if (left <= 0) { beep(); ses.phase === "rest" ? afterRest() : finishSet(); return; }
-  const tot = ses.phase === "rest" ? restFor(ses.key) : holdFor(ses.key, sesItems()[ses.idx].ex);
+  const tot = ses.phase === "rest" ? restFor(ses.key) : hS(sesItems()[ses.idx]);
   const t = $play.querySelector(".pl-time"); if (t) t.textContent = mmss(Math.ceil(left));
   const v = $play.querySelector(".pl-ring .val"); if (v) { const c = 2 * Math.PI * 104; v.setAttribute("stroke-dashoffset", (c * (1 - Math.min(1, left / tot))).toFixed(1)); }
 }, 250);
@@ -1800,7 +1906,7 @@ $play.addEventListener("click", (e) => {
     setEntry(ses.date, id, { w: Math.max(0, Math.round((cur + +step) * 10) / 10) }); renderPlay(); return;
   }
   if (a === "set") finishSet();
-  else if (a === "hold") { ses.phase = "hold"; ses.until = Date.now() + holdFor(ses.key, sesItems()[ses.idx].ex) * 1000; saveSes(); renderPlay(); }
+  else if (a === "hold") { ses.phase = "hold"; ses.until = Date.now() + hS(sesItems()[ses.idx]) * 1000; saveSes(); renderPlay(); }
   else if (a === "next") afterRest();
   else if (a === "more") { ses.until += 15000; saveSes(); renderPlay(); }
   else if (a === "skip") {
@@ -1891,6 +1997,7 @@ function poseAt(P, k) {
   const kb = A.kb ?? 1, eb = A.eb ?? -1;
   const [knee] = ik(hip, ank, DM.thigh, DM.shin, kb), [knee2] = ik(hip, ank2, DM.thigh, DM.shin, A.ank2 ? kb : kb);
   let hand = A.hand === "head" ? [hc[0] - 2, hc[1] + 2] : g("hand");
+  if (P.circle) { const ph = k * Math.PI * 2; hand = P.hang ? [sh[0] + Math.sin(ph) * P.circle, sh[1] + 24 - Math.cos(ph) * P.circle] : [sh[0] + Math.sin(ph) * P.circle, sh[1] + Math.cos(ph) * P.circle]; }
   const [elb, hand1] = ik(sh, hand, DM.ua, DM.fa, eb);
   const toe = A.toe ? g("toe") : [ank[0] + 6, ank[1] + 1.6], toe2 = A.toe2 ? g("toe2") : A.ank2 ? [ank2[0] + 6, ank2[1] + 1.6] : [ank2[0] + 6, ank2[1] + 1.6];
   return { hip, sh, hc, knee, ank: ik(hip, ank, DM.thigh, DM.shin, kb)[1], toe, knee2, ank2: ik(hip, ank2, DM.thigh, DM.shin, kb)[1], toe2, elb, hand: hand1, up };
@@ -1904,6 +2011,8 @@ function demoFrame(P, k, eq) {
   if (P.seat) props += `<rect class="d-prop" x="30" y="68" width="18" height="4.5" rx="2"/><rect class="d-prop2" x="37" y="72" width="3" height="16"/>`;
   if (P.prop === "pad") props += `<rect class="d-prop" x="14" y="79" width="70" height="4" rx="2"/>`;
   if (P.wall) props += `<rect class="d-prop2" x="22" y="10" width="4" height="78" rx="1"/>`;
+  if (P.wallR) props += `<rect class="d-prop2" x="75" y="-10" width="5" height="98" rx="1"/>`;
+  if (P.wallL) props += `<rect class="d-prop2" x="20" y="-10" width="5" height="98" rx="1"/>`;
   if (P.prop === "bar") props += `<line class="d-cable" x1="${p.hand[0]}" y1="${p.hand[1]}" x2="${p.hand[0]}" y2="-5"/><rect class="d-bar" x="${p.hand[0] - 9}" y="${p.hand[1] - 1.2}" width="18" height="2.4" rx="1.2"/>`;
   if (P.prop === "rope") props += `<line class="d-cable" x1="${p.hand[0]}" y1="${p.hand[1]}" x2="${p.hand[0] + 6}" y2="-5"/>`;
   const db = (h) => `<rect class="d-db" x="${(h[0] - 3.2).toFixed(2)}" y="${(h[1] - 1.4).toFixed(2)}" width="6.4" height="2.8" rx="1.2"/><rect class="d-db" x="${(h[0] - 3.8).toFixed(2)}" y="${(h[1] - 2.4).toFixed(2)}" width="1.8" height="4.8" rx=".7"/><rect class="d-db" x="${(h[0] + 2).toFixed(2)}" y="${(h[1] - 2.4).toFixed(2)}" width="1.8" height="4.8" rx=".7"/>`;
@@ -1930,8 +2039,13 @@ function demoVB(pat) {                      // مربّع على قدّ الحر
   const size = Math.max(x1 - x0, y1 - y0) * 1.28 + 6, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2 + 2;
   return (DEMO_VB[pat] = [cx - size / 2, cy - size / 2, size, size]);
 }
+const patOf = (exId) => DEMO_OF[exId] || (typeof MOVES !== "undefined" && (MOVES.find(m => m.id === exId) || {}).demo) || "squat";
+function demoStatic(ex) {
+  const pat = patOf(ex.id), P = DEMO[pat], vb = demoVB(pat);
+  return `<svg class="demo-st" viewBox="${vb.map(v => v.toFixed(1)).join(" ")}" aria-hidden="true">${demoFrame(P, P.loop ? 0.15 : 1, ex.eq)}</svg>`;
+}
 function demoSVG(exId, eq, cls = "") {
-  const pat = DEMO_OF[exId] || "squat", P = DEMO[pat], vb = demoVB(pat);
+  const pat = patOf(exId), P = DEMO[pat], vb = demoVB(pat);
   return `<svg class="demo ${cls}" viewBox="${vb.map(v => v.toFixed(1)).join(" ")}" data-pat="${pat}" data-eq="${eq}" aria-hidden="true">${demoFrame(P, 0.5, eq)}</svg>`;
 }
 let demoRAF = 0;
@@ -1941,13 +2055,117 @@ function demoTick(now) {
     els.forEach(el => {
       const P = DEMO[el.dataset.pat]; if (!P) return;
       const per = (P.hold ? 4200 : 2800) / (P.speed || 1);
-      const k = 0.5 - 0.5 * Math.cos((now % per) / per * Math.PI * 2);
+      const k = P.loop ? (now % per) / per : 0.5 - 0.5 * Math.cos((now % per) / per * Math.PI * 2);
       el.innerHTML = demoFrame(P, k, el.dataset.eq);
     });
   }
   demoRAF = requestAnimationFrame(demoTick);
 }
 if (typeof matchMedia === "function" && !matchMedia("(prefers-reduced-motion: reduce)").matches) demoRAF = requestAnimationFrame(demoTick);
+
+/* ===================== إحماء وتمطيط ===================== */
+// حركات رسمة إضافية (من جنب)
+Object.assign(DEMO, {
+  march:    { A: { hip: [48, 51], t: 0, ank: [56, 70], ank2: [48, 86], toe: [62, 72], hand: [42, 62], eb: -1 }, B: { hip: [48, 51], t: 0, ank: [50, 86], ank2: [55, 70], toe: [56, 88], hand: [56, 60], eb: -1 }, speed: 1.6 },
+  armcircle:{ A: { hip: [48, 51], t: 0, ank: [50, 86], hand: [50, 54], eb: -1 }, B: { hip: [48, 51], t: 0, ank: [50, 86], hand: [50, 54], eb: -1 }, circle: 23, loop: 1 },
+  roll:     { A: { hip: [48, 51], t: 0, ank: [50, 86], hand: [50, 54], eb: -1 }, B: { hip: [48, 51], t: 0, ank: [50, 86], hand: [50, 54], eb: -1 }, circle: 3.5, hang: 1, loop: 1 },
+  hipcircle:{ A: { hip: [45, 51], t: 6, ank: [50, 86], hand: [47, 50], eb: -1 }, B: { hip: [53, 51], t: -6, ank: [50, 86], hand: [53, 50], eb: -1 } },
+  legswing: { A: { hip: [48, 51], t: -4, ank: [68, 78], ank2: [48, 86], toe: [74, 76], hand: [40, 60], eb: -1 }, B: { hip: [48, 51], t: 6, ank: [30, 80], ank2: [48, 86], toe: [26, 84], hand: [58, 58], eb: -1 }, speed: 1.4 },
+  catcow:   { A: { hip: [38, 63], t: 76, ank: [22, 86], ank2: [23, 86], toe: [17, 88], kb: 1, hand: [60, 86], eb: -1 }, B: { hip: [38, 68], t: 88, ank: [22, 86], ank2: [23, 86], toe: [17, 88], kb: 1, hand: [60, 86], eb: -1 }, mat: 1 },
+  child:    { A: { hip: [30, 79], t: 104, ank: [22, 86], toe: [16, 88], kb: 1, hand: [74, 86], eb: 1 }, B: { hip: [29, 78], t: 102, ank: [22, 86], toe: [16, 88], kb: 1, hand: [74, 86], eb: 1 }, mat: 1, hold: 1 },
+  cobra:    { A: { hip: [44, 84], t: 72, ank: [10, 86], toe: [6, 88], kb: -1, hand: [62, 86], eb: -1 }, B: { hip: [44, 84], t: 42, ank: [10, 86], toe: [6, 88], kb: -1, hand: [60, 86], eb: -1 }, mat: 1 },
+  hipflex:  { A: { hip: [40, 67], t: -4, ank: [62, 86], ank2: [16, 86], toe2: [12, 88], kb: 1, hand: [44, 52], eb: -1 }, B: { hip: [45, 69], t: -8, ank: [62, 86], ank2: [16, 86], toe2: [12, 88], kb: 1, hand: [49, 54], eb: -1 }, mat: 1 },
+  fig4:     { A: { hip: [50, 84], t: -92, ank: [68, 86], ank2: [64, 66], toe2: [70, 64], kb: 1, hand: [60, 70], eb: 1 }, B: { hip: [50, 84], t: -88, ank: [64, 82], ank2: [62, 62], toe2: [68, 60], kb: 1, hand: [58, 66], eb: 1 }, mat: 1, hold: 1 },
+  twistl:   { A: { hip: [50, 84], t: -92, ank: [66, 86], kb: 1, hand: [30, 87], eb: 1 }, B: { hip: [50, 84], t: -92, ank: [72, 82], toe: [78, 80], kb: 1, hand: [30, 87], eb: 1 }, mat: 1 },
+  butterfly:{ A: { hip: [42, 82], t: -4, ank: [56, 86], toe: [61, 87], kb: 1, hand: [56, 82], eb: 1 }, B: { hip: [42, 82], t: 6, ank: [58, 86], toe: [63, 87], kb: 1, hand: [58, 83], eb: 1 }, mat: 1 },
+  pigeon:   { A: { hip: [46, 79], t: -2, ank: [60, 85], toe: [56, 88], kb: 1, ank2: [10, 86], toe2: [6, 88], hand: [56, 86], eb: 1 }, B: { hip: [46, 80], t: 62, ank: [60, 85], toe: [56, 88], kb: 1, ank2: [10, 86], toe2: [6, 88], hand: [74, 86], eb: 1 }, mat: 1 },
+  hamsit:   { A: { hip: [34, 84], t: 18, ank: [72, 86], toe: [74, 80], kb: 1, hand: [58, 74], eb: 1 }, B: { hip: [34, 84], t: 60, ank: [72, 86], toe: [74, 80], kb: 1, hand: [70, 80], eb: 1 }, mat: 1 },
+  hamstand: { A: { hip: [44, 52], t: 8, ank: [64, 84], toe: [66, 78], ank2: [42, 86], kb: 1, hand: [55, 64], eb: -1 }, B: { hip: [42, 54], t: 52, ank: [64, 84], toe: [66, 78], ank2: [42, 86], kb: 1, hand: [60, 70], eb: -1 } },
+  quadst:   { A: { hip: [49, 51], t: 0, ank: [40, 58], toe: [36, 60], ank2: [50, 86], kb: 1, hand: [40, 59], eb: 1 }, B: { hip: [49, 51], t: 3, ank: [38, 57], toe: [34, 59], ank2: [50, 86], kb: 1, hand: [38, 58], eb: 1 }, hold: 1 },
+  calfwall: { A: { hip: [46, 55], t: 24, ank: [60, 86], ank2: [26, 86], toe2: [32, 88], kb: 1, hand: [74, 42], eb: -1 }, B: { hip: [48, 57], t: 30, ank: [60, 86], ank2: [26, 86], toe2: [32, 88], kb: 1, hand: [74, 44], eb: -1 }, wallR: 1 },
+  fold:     { A: { hip: [44, 52], t: 144, ank: [50, 86], hand: [57, 84], eb: 1 }, B: { hip: [44, 53], t: 154, ank: [50, 86], hand: [53, 85], eb: 1 } },
+  sidebend: { A: { hip: [48, 51], t: -9, ank: [50, 86], hand: [44, 5], eb: 1 }, B: { hip: [48, 51], t: 9, ank: [50, 86], hand: [60, 6], eb: 1 } },
+  chestop:  { A: { hip: [48, 51], t: 4, ank: [50, 86], hand: [38, 58], eb: 1 }, B: { hip: [48, 51], t: 8, ank: [50, 86], hand: [32, 54], eb: 1 }, hold: 1 },
+  crossbody:{ A: { hip: [48, 51], t: 0, ank: [50, 86], hand: [72, 31], eb: -1 }, B: { hip: [48, 51], t: 0, ank: [50, 86], hand: [70, 32], eb: -1 }, hold: 1 },
+  neck:     { A: { hip: [48, 51], t: 0, ank: [50, 86], hand: "head", eb: 1 }, B: { hip: [48, 51], t: 3, ank: [50, 86], hand: "head", eb: 1 }, hold: 1 },
+  tristr:   { A: { hip: [48, 51], t: 0, ank: [50, 86], hand: [44, 17], eb: 1 }, B: { hip: [48, 51], t: 0, ank: [50, 86], hand: [43, 19], eb: 1 }, hold: 1 },
+  bicwall:  { A: { hip: [48, 51], t: 4, ank: [50, 86], hand: [26, 32], eb: -1 }, B: { hip: [48, 51], t: 9, ank: [50, 86], hand: [26, 32], eb: -1 }, hold: 1, wallL: 1 },
+});
+
+const MOVE = (id, ar, en, yt, demo, sec, extra, sAr, sEn, tAr, tEn) => ({ id, ar, en, yt, demo, sec, ...extra, steps: sAr, stepsEn: sEn, tip: tAr, tipEn: tEn, eq: "body", time: true, kind: extra.kind });
+const WARMS = [
+  MOVE("w-march", "مشي بالمحل", "March in Place", "u1gmWFvEluM", "march", 45, { kind: "warm", m: "quads" },
+    ["وقفي منتصبة وارفعي ركبة بعد التانية.", "حرّكي الإيد المعاكسة مع كل ركبة.", "زيدي السرعة شوي شوي."], ["Stand tall and lift one knee after the other.", "Swing the opposite arm with each knee.", "Gradually pick up the pace."], "بيحمّي الجسم كلّو ويرفع النبض بهدوء.", "Warms up the whole body and gently raises your heart rate."),
+  MOVE("w-armcircles", "دوائر بالإيدين", "Arm Circles", "WhAnHGhga98", "armcircle", 30, { kind: "warm", m: "shoulders" },
+    ["افتحي إيديك عالجنبين بمستوى الكتف.", "اعملي دوائر صغيرة وكبّريها شوي شوي.", "بعد ١٥ ثانية غيّري الاتجاه."], ["Raise your arms out to the sides at shoulder height.", "Make small circles and slowly make them bigger.", "After 15 seconds switch direction."], "حركة هادية بلا ضرب.", "Keep it smooth and controlled."),
+  MOVE("w-shoulderrolls", "تدوير الكتاف", "Shoulder Rolls", "X7NtgY9kCCM", "roll", 30, { kind: "warm", m: "shoulders" },
+    ["وقفي منتصبة وإيديك مرتاحين.", "ارفعي كتافك لفوق ولورا ونزّليهن بدائرة.", "كرّري لقدّام بعدين."], ["Stand tall with your arms relaxed.", "Roll your shoulders up, back and down in a circle.", "Then repeat forward."], "بيفك شد الرقبة والكتاف.", "Releases tension in the neck and shoulders."),
+  MOVE("w-hipcircles", "دوائر بالورك", "Hip Circles", "qkrJXGVj_OQ", "hipcircle", 30, { kind: "warm", m: "glutes" },
+    ["إيديك عخصرك ورجليكي بعرض الكتف.", "دوّري وركك بدائرة كبيرة.", "غيّري الاتجاه بالنص."], ["Hands on hips, feet shoulder-width apart.", "Rotate your hips in a big circle.", "Switch direction halfway."], "بيحضّر الورك والضهر لتمارين الرجلين.", "Prepares hips and lower back for leg work."),
+  MOVE("w-legswings", "مرجحة الرجل", "Leg Swings", "difYoBtZi2s", "legswing", 30, { kind: "warm", m: "hamstrings", uni: 1 },
+    ["امسكي حيط أو كرسي للتوازن.", "مرجحي رجل لقدّام ولورا بتحكّم.", "كبّري الحركة شوي شوي وبدّلي."], ["Hold a wall or chair for balance.", "Swing one leg forward and back with control.", "Gradually increase the range, then switch."], "ضهرك مستقيم، الحركة من الورك.", "Keep your back straight; move from the hip."),
+  MOVE("w-squat", "سكوات خفيف", "Easy Bodyweight Squats", "07qa56fS2TE", "squat", 40, { kind: "warm", m: "quads" },
+    ["رجليكي بعرض الكتف.", "انزلي نص نزلة بهدوء واطلعي.", "١٠–١٢ مرة بإيقاع مريح."], ["Feet shoulder-width apart.", "Squat halfway down slowly and stand up.", "10–12 reps at an easy pace."], "مش لازم تنزلي عالآخر بالإحماء.", "No need to go deep during the warm-up."),
+  MOVE("w-catcow", "قطة وجمل", "Cat-Cow", "Fa4ZMS5M7xA", "catcow", 40, { kind: "warm", m: "back" },
+    ["اركعي عإيديك وركبك.", "دوّري ضهرك لفوق (قطة) مع الزفير.", "نزّلي بطنك ورفعي راسك (جمل) مع الشهيق."], ["Get on your hands and knees.", "Round your back up (cat) as you exhale.", "Drop your belly and lift your head (cow) as you inhale."], "تحرّكي مع النفس، بلا عجلة.", "Move with your breath, no rush."),
+  MOVE("w-bridge", "جسر خفيف", "Easy Glute Bridges", "KI6fjDqGZh4", "bridge", 40, { kind: "warm", m: "glutes" },
+    ["نامي عضهرك وركبك مثنية.", "ارفعي وركك ونزّليه بهدوء.", "١٠–١٢ مرة لتصحى الأرداف."], ["Lie on your back with knees bent.", "Lift and lower your hips slowly.", "10–12 reps to wake up the glutes."], "بيشغّل الأرداف قبل التمرين.", "Activates the glutes before training."),
+];
+const STRETCH = [
+  MOVE("s-neck", "تمطيط الرقبة", "Neck Side Stretch", "R0lkMPT53qA", "neck", 30, { kind: "stretch", area: ["neck"], m: "shoulders", uni: 1 },
+    ["اقعدي أو وقفي منتصبة.", "ميّلي دينتك لصوب كتفك ببطء.", "حطي إيدك عراسك بخفّة لتزيدي الشد، وبدّلي."], ["Sit or stand tall.", "Slowly tilt your ear toward your shoulder.", "Rest your hand lightly on your head to deepen it, then switch."], "بلا ضغط قوي، شد خفيف ومريح.", "No forcing; a gentle, comfortable pull."),
+  MOVE("s-shoulder", "تمطيط الكتف قدّام الصدر", "Cross-Body Shoulder Stretch", "uNmWSg705JA", "crossbody", 30, { kind: "stretch", area: ["shoulders"], m: "shoulders", uni: 1 },
+    ["مدّي إيد قدّام صدرك بمستوى الكتف.", "اسحبيها بالإيد التانية من فوق الكوع.", "اثبتي وبدّلي."], ["Bring one arm across your chest at shoulder height.", "Pull it in with the other hand above the elbow.", "Hold, then switch."], "كتافك لتحت ومرتاحين.", "Keep your shoulders down and relaxed."),
+  MOVE("s-triceps", "تمطيط التراي فوق الراس", "Overhead Triceps Stretch", "cPTrm13hSSo", "tristr", 30, { kind: "stretch", area: ["arms", "shoulders"], m: "triceps", uni: 1 },
+    ["ارفعي إيد فوق راسك واثني الكوع.", "خلّي إيدك تنزل ورا راسك.", "اسحبي الكوع بالإيد التانية بخفّة وبدّلي."], ["Raise one arm overhead and bend the elbow.", "Let the hand drop behind your head.", "Gently pull the elbow with the other hand, then switch."], "راسك لقدّام، ما تدفشيه لتحت.", "Keep your head neutral; don't push it down."),
+  MOVE("s-biceps", "تمطيط الباي عالحيط", "Wall Biceps Stretch", "7WiSuaPAorU", "bicwall", 30, { kind: "stretch", area: ["arms", "chest"], m: "biceps", uni: 1 },
+    ["حطّي كفّك عالحيط وراكِ وإيدك مفرودة.", "لفّي جسمك بعيد عن الحيط ببطء.", "اثبتي لمّا تحسّي بشد قدّام الإيد وبدّلي."], ["Place your palm on the wall behind you, arm straight.", "Slowly turn your body away from the wall.", "Hold when you feel a stretch in the front of the arm, then switch."], "شد خفيف بس، بلا وجع بالكتف.", "Gentle only; no shoulder pain."),
+  MOVE("s-chest", "فتح الصدر", "Chest Opener", "UdU4XnU855Q", "chestop", 30, { kind: "stretch", area: ["chest", "shoulders"], m: "chest" },
+    ["شبكي إيديك ورا ضهرك.", "افردي إيديك وارفعيهن شوي لورا.", "افتحي صدرك وخدي نفس عميق."], ["Clasp your hands behind your back.", "Straighten your arms and lift them slightly.", "Open your chest and breathe deeply."], "ممتاز للوقفة بعد القعدة الطويلة.", "Great for posture after long sitting."),
+  MOVE("s-child", "وضعية الطفل", "Child's Pose", "4wjV4HdJG8Y", "child", 45, { kind: "stretch", area: ["back", "hips"], m: "back" },
+    ["اركعي واقعدي عكعبيكي.", "انحني لقدّام ومدّي إيديك عالأرض.", "ريّحي جبينك وتنفّسي ببطء."], ["Kneel and sit back on your heels.", "Fold forward and stretch your arms on the floor.", "Rest your forehead and breathe slowly."], "إذا ركبك بتوجعك، حطي مخدّة تحت وركك.", "If your knees hurt, put a cushion under your hips."),
+  MOVE("s-catcow", "قطة وجمل", "Cat-Cow", "Fa4ZMS5M7xA", "catcow", 45, { kind: "stretch", area: ["back", "core"], m: "back" },
+    ["اركعي عإيديك وركبك.", "دوّري ضهرك لفوق مع الزفير.", "نزّلي بطنك ورفعي راسك مع الشهيق."], ["Get on your hands and knees.", "Round your back as you exhale.", "Drop your belly and lift your head as you inhale."], "حركة بطيئة مع النفس.", "Slow, with your breath."),
+  MOVE("s-cobra", "الكوبرا", "Cobra Stretch", "5OEGMRnxA1I", "cobra", 30, { kind: "stretch", area: ["core", "back"], m: "abs" },
+    ["نامي عبطنك وإيديك تحت كتافك.", "ادفعي وارفعي صدرك، وركك عالأرض.", "كتافك لتحت واثبتي."], ["Lie on your stomach with hands under your shoulders.", "Press up and lift your chest; hips stay down.", "Shoulders down, then hold."], "إذا في وجع بالضهر، ارفعي أقل أو اسندي عكوعك.", "If your back hurts, lift less or rest on your forearms."),
+  MOVE("s-side", "تمطيط الجنب", "Standing Side Stretch", "6ybJI7jsAK4", "sidebend", 30, { kind: "stretch", area: ["core", "back"], m: "abs", uni: 1 },
+    ["وقفي منتصبة وارفعي إيد فوق راسك.", "ميلي عالجنب التاني ببطء.", "اثبتي وبدّلي."], ["Stand tall and raise one arm overhead.", "Slowly lean to the opposite side.", "Hold, then switch."], "وركك ثابت، الميلة من الخصر.", "Hips stay still; bend from the waist."),
+  MOVE("s-twist", "لفّة الضهر نايمة", "Supine Spinal Twist", "gI9BdrBvYn8", "twistl", 30, { kind: "stretch", area: ["back", "hips"], m: "back", uni: 1 },
+    ["نامي عضهرك وركبك مثنية.", "نزّلي ركبك سوا عجنب وإيديك مفتوحين.", "كتافك عالأرض، وبعدين بدّلي."], ["Lie on your back with knees bent.", "Drop both knees to one side with arms open.", "Keep your shoulders down, then switch."], "ريّحي وتنفّسي، ما في داعي تضغطي.", "Relax and breathe; no need to push."),
+  MOVE("s-hipflexor", "تمطيط مقدّمة الورك", "Kneeling Hip Flexor Stretch", "UU7Nqd_Dric", "hipflex", 30, { kind: "stretch", area: ["hips", "quads"], m: "quads", uni: 1 },
+    ["اركعي عركبة والرجل التانية لقدّام.", "شدّي الأرداف وادفعي وركك لقدّام شوي.", "اثبتي وبدّلي."], ["Kneel on one knee with the other foot forward.", "Squeeze your glute and shift your hips slightly forward.", "Hold, then switch."], "ضهرك منتصب، ما تقوّسيه.", "Keep your back upright; don't arch."),
+  MOVE("s-figure4", "تمطيط الأرداف (رقم ٤)", "Figure-Four Glute Stretch", "2VE_NLcNMvQ", "fig4", 30, { kind: "stretch", area: ["glutes", "hips"], m: "glutes", uni: 1 },
+    ["نامي عضهرك وركبك مثنية.", "حطّي كاحل فوق الركبة التانية.", "اسحبي الرجل اللي تحت لصدرك وبدّلي."], ["Lie on your back with knees bent.", "Cross one ankle over the other knee.", "Pull the bottom leg toward your chest, then switch."], "بتحسّي بالشد بالرِدف، ممتاز بعد تمارين الأرداف.", "You'll feel it in the glute; perfect after glute work."),
+  MOVE("s-pigeon", "وضعية الحمامة", "Pigeon Pose", "zuYbjkuKLKY", "pigeon", 40, { kind: "stretch", area: ["glutes", "hips"], m: "glutes", uni: 1 },
+    ["جيبي ركبة لقدّام والرجل التانية مفرودة لورا.", "خلّي وركك ينزل باتجاه الأرض.", "انحني لقدّام إذا مرتاحة، وبدّلي."], ["Bring one knee forward with the other leg stretched back.", "Let your hips sink toward the floor.", "Fold forward if comfortable, then switch."], "إذا ركبتك بتوجعك، اعملي «رقم ٤» بدالها.", "If your knee hurts, do the figure-four instead."),
+  MOVE("s-butterfly", "الفراشة", "Butterfly Stretch", "G2QlP76jiAI", "butterfly", 40, { kind: "stretch", area: ["hips"], m: "glutes" },
+    ["اقعدي وسكّري كفوف رجليكي ببعض.", "امسكي رجليكي وقعدي منتصبة.", "خلّي ركبك تنزل لتحت بهدوء."], ["Sit and bring the soles of your feet together.", "Hold your feet and sit tall.", "Let your knees drop gently."], "بلا ضرب بالركب.", "Don't bounce your knees."),
+  MOVE("s-hamseated", "تمطيط الفخد الخلفي قاعدة", "Seated Hamstring Stretch", "D8dJ9K7SIiE", "hamsit", 40, { kind: "stretch", area: ["hamstrings", "back"], m: "hamstrings" },
+    ["اقعدي ورجليكي مفرودين لقدّام.", "انحني من الورك وضهرك مستقيم.", "مدّي إيديك لصوب رجليكي واثبتي."], ["Sit with your legs straight out in front.", "Hinge from the hips with a straight back.", "Reach toward your feet and hold."], "إذا ما بتوصلي، عادي، الشد هو المهم.", "It's fine if you can't reach; the stretch is what counts."),
+  MOVE("s-hamstand", "تمطيط الفخد الخلفي واقفة", "Standing Hamstring Stretch", "LVY692zJK0A", "hamstand", 30, { kind: "stretch", area: ["hamstrings"], m: "hamstrings", uni: 1 },
+    ["حطي كعب رجل لقدّام وأصابعك لفوق.", "اثني الرجل التانية شوي وانحني لقدّام.", "ضهرك مستقيم، اثبتي وبدّلي."], ["Place one heel forward with toes up.", "Bend the other knee slightly and hinge forward.", "Keep your back straight, hold, then switch."], "الانحناء من الورك مش من الضهر.", "Bend from the hips, not the back."),
+  MOVE("s-quad", "تمطيط الفخد الأمامي واقفة", "Standing Quad Stretch", "2_pr9-LDUSQ", "quadst", 30, { kind: "stretch", area: ["quads"], m: "quads", uni: 1 },
+    ["وقفي عرجل وامسكي حيط إذا لزم.", "اثني الرجل التانية وامسكي كاحلك.", "قرّبي كعبك لأردافك والركب جنب بعض، وبدّلي."], ["Stand on one leg; hold a wall if needed.", "Bend the other knee and hold your ankle.", "Bring your heel toward your glute, knees together, then switch."], "شدّي بطنك لتضلي منتصبة.", "Brace your core to stay upright."),
+  MOVE("s-calf", "تمطيط السمانة عالحيط", "Wall Calf Stretch", "4fwN8uiF7z8", "calfwall", 30, { kind: "stretch", area: ["calves"], m: "calves", uni: 1 },
+    ["حطي إيديك عالحيط ورجل لورا مفرودة.", "كعب الرجل الورانية عالأرض.", "ميلي لقدّام لتحسّي بالشد وبدّلي."], ["Hands on the wall, one leg stretched back.", "Keep the back heel on the floor.", "Lean in until you feel the stretch, then switch."], "أصابع الرجل الورانية لقدّام.", "Point the back toes forward."),
+  MOVE("s-fold", "انحناء لقدّام (راج دول)", "Ragdoll Forward Fold", "2W7Dhf6n5aM", "fold", 45, { kind: "stretch", area: ["back", "hamstrings", "neck"], m: "hamstrings" },
+    ["وقفي ورجليكي بعرض الورك وركبك مثنية شوي.", "انحني لقدّام وخلّي جسمك يتدلّى.", "امسكي كوعك وريّحي راسك، وتمرجحي بهدوء."], ["Stand with feet hip-width and knees slightly bent.", "Fold forward and let your upper body hang.", "Hold opposite elbows, relax your head and sway gently."], "اطلعي ببطء فقرة فقرة.", "Roll up slowly, one vertebra at a time."),
+];
+const MOVES = [...WARMS, ...STRETCH];
+const anyEx = (id) => EX.find(e => e.id === id) || MOVES.find(e => e.id === id);
+const STRETCH_AREAS = { neck: ["الرقبة", "Neck"], shoulders: ["الكتاف", "Shoulders"], chest: ["الصدر", "Chest"], arms: ["الإيدين", "Arms"], back: ["الضهر", "Back"], core: ["الخصر والبطن", "Core"], hips: ["الورك", "Hips"], glutes: ["الأرداف", "Glutes"], hamstrings: ["الفخد الخلفي", "Hamstrings"], quads: ["الفخد الأمامي", "Quads"], calves: ["السمانة", "Calves"] };
+// إحماء حسب نوع اليوم
+const WARM_FOR = { upper: ["w-march", "w-armcircles", "w-shoulderrolls", "w-catcow"], lower: ["w-march", "w-hipcircles", "w-legswings", "w-squat", "w-bridge"], full: ["w-march", "w-armcircles", "w-hipcircles", "w-squat", "w-catcow"] };
+// تمطيط لكل عضلة اشتغلت
+const COOL_FOR = { chest: "s-chest", back: "s-child", shoulders: "s-shoulder", biceps: "s-biceps", triceps: "s-triceps", quads: "s-quad", hamstrings: "s-hamseated", glutes: "s-figure4", calves: "s-calf", abs: "s-cobra" };
+const moveItem = (mv) => ({ ex: mv, isTime: true, kind: mv.kind });
+function warmFor(type) { return (WARM_FOR[type] || WARM_FOR.full).map(id => moveItem(anyEx(id))); }
+function coolFor(items) {
+  const ids = [...new Set(items.map(it => COOL_FOR[it.ex.m]).filter(Boolean))];
+  if (!ids.includes("s-child")) ids.push("s-child");
+  return ids.slice(0, 6).map(id => moveItem(anyEx(id)));
+}
+const moveSec = (items) => items.reduce((a, it) => a + it.ex.sec * (it.ex.uni ? 2 : 1), 0);
 
 const demoCircle = (ex, cls = "") => `<div class="demo-c ${cls}" style="--c:${MCOL[ex.m]}">${demoSVG(ex.id, ex.eq)}</div>`;
 
@@ -1959,6 +2177,64 @@ function vidBtn(ex) {
   return `<a class="video" href="${video(ex)}" target="_blank" rel="noopener">▶ ${L("فيديو الشرح (يوتيوب)", "Watch on YouTube")}</a>`;
 }
 const vidBox = (ex) => vidOpen === ex.id && ex.yt && canEmbed() ? `<div class="vbox"><iframe src="https://www.youtube-nocookie.com/embed/${ex.yt}?autoplay=1&playsinline=1&rel=0&modestbranding=1" title="${esc(exN(ex))}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>` : "";
+
+/* ===================== صفحة التمرين ===================== */
+let sheet = null;                       // { id, ctx: "plan:i" | "lib" | "routine:key" | "move:sec" }
+const $sheet = document.createElement("div");
+$sheet.id = "sheet"; $sheet.hidden = true; $sheet.setAttribute("role", "dialog"); $sheet.setAttribute("aria-modal", "true");
+document.body.appendChild($sheet);
+function sheetData() {
+  const ex = anyEx(sheet.id); if (!ex) return null;
+  const [ctx, a] = sheet.ctx.split(":"), g = GOALS[profile.goal];
+  let plan = null; if (ctx === "plan") { const day = buildDay(selDay); plan = day && day.items[+a]; if (plan && plan.ex.id !== ex.id) plan = null; }
+  return { ex, ctx, a, g, plan, key: ctx === "plan" ? selDay : ctx === "routine" ? a : null };
+}
+function sheetMedia(ex) {
+  if (vidOpen === ex.id && ex.yt && canEmbed()) return `<div class="vbox sh-vid"><iframe src="https://www.youtube-nocookie.com/embed/${ex.yt}?autoplay=1&playsinline=1&rel=0&modestbranding=1" title="${esc(exN(ex))}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`;
+  const play = ex.yt && canEmbed() ? `<button class="sh-play" data-vid="${ex.id}">▶ ${L("شوفي الفيديو", "Watch video")}</button>`
+    : `<a class="sh-play" href="${video(ex)}" target="_blank" rel="noopener">▶ ${L("الفيديو عاليوتيوب", "Video on YouTube")}</a>`;
+  return `<div class="sh-demo" style="--c:${MCOL[ex.m]}">${demoSVG(ex.id, ex.eq)}</div>${play}`;
+}
+function sheetBody(d) {
+  const { ex, ctx, a, g, plan, key } = d, isMove = !!ex.kind;
+  const date = ymd(dateOfDay(selDay)), canLog = dateOfDay(selDay) <= TODAY, e = entry(date, ex.id) || {};
+  let target;
+  if (isMove) target = [[L("المدة", "Time"), `${mmss(+a || ex.sec)}${ex.uni ? L(" لكل جهة", " each side") : ""}`]];
+  else {
+    const n = key != null ? setsFor(key, ex) : baseSets(), sw = suggestW(ex);
+    target = [[L("المجموعات", "Sets"), String(n)], [ex.time ? L("ثبات", "Hold") : L("تكرار", "Reps"), ex.time ? mmss(key != null ? holdFor(key, ex) : 30) : rng(g.reps)]];
+    if (sw) target.push([L("الوزن المقترح", "Suggested weight"), fmtW(sw)]);
+    const rr = key != null && routineOf(key)?.rest;
+    target.push([L("راحة", "Rest"), rr ? `${rr} ${L("ث", "s")}` : rng(gRest(g))]);
+  }
+  return `<div class="sh-h">
+      <span class="eyebrow">${isMove ? (ex.kind === "warm" ? L("إحماء", "Warm-up") : L("تمطيط", "Stretch")) : `${mN(ex.m)} · ${eqN(ex.eq)}`}${UNI.has(ex.id) || ex.uni ? L(" · لكل جهة", " · each side") : ""}</span>
+      <h2>${esc(exN(ex))}</h2><span class="small muted" dir="${L("ltr", "rtl")}">${esc(L(ex.en, ex.ar))}</span>
+    </div>
+    <div class="sh-target">${target.map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join("")}</div>
+    ${!isMove && suggestW(ex) ? `<p class="phase-line"><b>${L(`الأسبوع ${progWeek()} · ${phaseName()}`, `Week ${progWeek()} · ${phaseName()}`)}</b> ${phaseTip()}</p>` : ""}
+    <h3 class="sec">${L("التعليمات", "Instructions")}</h3>
+    <ol class="tl">${exSteps(ex).map(st => `<li><span>${esc(st)}</span></li>`).join("")}</ol>
+    <h3 class="sec">${L("نصيحة", "Tip")}</h3>
+    <p class="sh-tip">${esc(exTip(ex))}</p>
+    ${ctx === "plan" && plan ? logBox(ex, e, date, canLog) : ""}
+    ${ctx === "plan" && plan ? `<button class="ghost wide" data-alt="sheet" aria-expanded="${altOpen === "sheet"}">${L("غيّري التمرين", "Change exercise")}</button>
+      ${altOpen === "sheet" ? `<div class="alts">${plan.alts.length ? plan.alts.map(x => `<button class="alt" data-pick="${x.id}" data-pslot="${buildDay(selDay).pkg.id}-${a}">${avatar(x, { size: 36 })}<span><b>${esc(exN(x))}</b><small class="muted">${eqN(x.eq)}${UNI.has(x.id) ? L(" · لكل جهة", " · each side") : ""}</small></span></button>`).join("") : `<span class="small muted">${L("ما في بديل تاني بهالمعدات.", "No other option with this equipment.")}</span>`}</div>` : ""}` : ""}
+    <a class="ghost wide link" href="${search(ex)}" target="_blank" rel="noopener">${L("فيديوهات تانية عاليوتيوب", "More videos on YouTube")}</a>`;
+}
+function renderSheet() {
+  if (!sheet) { $sheet.hidden = true; $sheet.innerHTML = ""; document.body.classList.remove("sheet-open"); return; }
+  const d = sheetData(); if (!d) { sheet = null; return renderSheet(); }
+  $sheet.dir = lang === "en" ? "ltr" : "rtl"; $sheet.lang = lang; $sheet.setAttribute("aria-label", exN(d.ex));
+  const mediaKey = `${d.ex.id}|${vidOpen === d.ex.id}|${lang}`;
+  if ($sheet.hidden || $sheet.dataset.media !== mediaKey) {
+    $sheet.innerHTML = `<div class="sh"><button class="sh-x" data-sh-close="1" aria-label="${L("سكّري", "Close")}">✕</button><div class="sh-media">${sheetMedia(d.ex)}</div><div class="sh-body">${sheetBody(d)}</div></div>`;
+    $sheet.dataset.media = mediaKey;
+  } else {
+    $sheet.querySelector(".sh-body").innerHTML = sheetBody(d);
+  }
+  $sheet.hidden = false; document.body.classList.add("sheet-open");
+}
 
 /* ===================== الأحداث ===================== */
 document.addEventListener("click", (e) => {
@@ -1977,9 +2253,12 @@ document.addEventListener("click", (e) => {
       const next = day.items.findIndex(it => !(entry(date, it.ex.id) || {}).done);
       open = next >= 0 ? `p-${selDay}-${next}` : null;
     }
-    render(); justDone = null;
-    if (open) document.querySelector(`[data-open="${open}"]`)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
-    return;
+    render(); justDone = null; return;
+  }
+  if (ds.wstep && sheet) {
+    const date = ymd(dateOfDay(selDay)), id = ds.wid, ex0 = EX.find(x => x.id === id);
+    const cur = (entry(date, id) || {}).w ?? suggestW(ex0) ?? lastBefore(id, date) ?? 0;
+    setEntry(date, id, { w: Math.max(0, Math.round((cur + +ds.wstep) * 10) / 10) }); render(); return;
   }
   if (ds.wstep) {
     const date = ymd(dateOfDay(selDay)), id = ds.wid;
@@ -1998,6 +2277,10 @@ document.addEventListener("click", (e) => {
     const v = ds.adj === "sets" ? Math.min(8, Math.max(1, setsFor(key, ex) + dir)) : Math.min(180, Math.max(10, holdFor(key, ex) + dir * 5));
     adj[k] = { ...(adj[k] || {}), [ds.adj]: v }; store.set("tamrini.adj", adj); render(); return;
   }
+  if (ds.stra) { const set = new Set(strSel.areas); set.has(ds.stra) ? set.delete(ds.stra) : set.add(ds.stra); strSel.areas = [...set]; store.set("tamrini.stretch", strSel); render(); return; }
+  if (ds.strall) { const all = Object.keys(STRETCH_AREAS); strSel.areas = strSel.areas.length === all.length ? [] : all.slice(); store.set("tamrini.stretch", strSel); render(); return; }
+  if (ds.strm) { strSel.min = +ds.strm; store.set("tamrini.stretch", strSel); render(); return; }
+  if (ds.strp) { const pr = STR_PRESETS.find(x => x[0] === ds.strp); strSel.areas = presetAreas(pr).slice(); store.set("tamrini.stretch", strSel); render(); return; }
   if (ds.meEdit) { meEdit = true; justSaved = false; draft = null; render(); window.scrollTo(0, 0); return; }
   if (ds.meCancel) { meEdit = false; draft = null; render(); window.scrollTo(0, 0); return; }
   if (ds.goday) { selDay = +ds.goday; tab = "plan"; open = null; render(); window.scrollTo(0, 0); return; }
@@ -2007,9 +2290,11 @@ document.addEventListener("click", (e) => {
   if (ds.open) { open = open === ds.open ? null : ds.open; vidOpen = null; render(); return; }
   if (ds.day) { selDay = +ds.day; open = null; altOpen = null; actOpen = false; postWarn = false; render(); return; }
   if (ds.eq) { dayEq[selDay] = ds.eq; store.set("tamrini.dayEq", dayEq); open = null; render(); return; }
-  if (ds.vid) { vidOpen = vidOpen === ds.vid ? null : ds.vid; render(); return; }
-  if (ds.alt) { altOpen = altOpen === ds.alt ? null : ds.alt; render(); return; }
-  if (ds.pick) { picks[ds.pslot] = ds.pick; store.set("tamrini.picks", picks); altOpen = null; render(); return; }
+  if (ds.shClose) { sheet = null; vidOpen = null; altOpen = null; renderSheet(); return; }
+  if (ds.sheet) { sheet = { id: ds.sheet, ctx: ds.sctx || "lib" }; vidOpen = null; altOpen = null; renderSheet(); return; }
+  if (ds.vid) { vidOpen = vidOpen === ds.vid ? null : ds.vid; if (sheet) renderSheet(); else render(); return; }
+  if (ds.alt) { altOpen = altOpen === ds.alt ? null : ds.alt; if (sheet) renderSheet(); else render(); return; }
+  if (ds.pick) { picks[ds.pslot] = ds.pick; store.set("tamrini.picks", picks); altOpen = null; if (sheet) sheet.id = ds.pick; render(); return; }
   if (ds.pkg) { const d = buildDay(selDay); if (d) { pkgSel[d.k] = ds.pkg; store.set("tamrini.pkgSel", pkgSel); } open = null; altOpen = null; render(); return; }
   if (ds.plan) {
     const p = ds.plan;
@@ -2054,6 +2339,7 @@ document.addEventListener("click", (e) => {
     if (s.has(i)) s.delete(i); else if (s.size < 6) s.add(i);
     draft.days = [...s].sort((a,b) => a-b); draft.swim = (draft.swim || []).filter(x => draft.days.includes(x)); render(); return;
   }
+  if (ds.fweeks !== undefined) { draft.goalWeeks = +ds.fweeks; render(); return; }
   if (ds.fcount) { draft.days = SUGGEST_DAYS[+ds.fcount].slice(); draft.swim = (draft.swim || []).filter(x => draft.days.includes(x)); render(); return; }
   if (ds.ftype) {
     const [i, k] = ds.ftype.split(":"), set = new Set(draft.swim || []);
@@ -2073,6 +2359,7 @@ document.addEventListener("input", (e) => {
   }
   if (e.target.dataset.actShift !== undefined) { actDraft.shift = e.target.checked; return; }
   if (e.target.id === "f-name") draft.name = e.target.value.slice(0, 24);
+  if (e.target.id === "f-goaltext") draft.goalText = e.target.value.slice(0, 140);
   if (e.target.id === "f-age") draft.age = +e.target.value;
   if (e.target.id === "f-weight") draft.weight = +e.target.value;
 });
@@ -2084,7 +2371,8 @@ document.addEventListener("submit", (e) => {
     : !(draft.weight >= 30 && draft.weight <= 250) ? L("اكتبي وزن بين ٣٠ و٢٥٠ كغ.", "Enter a weight between 30 and 250 kg.")
     : !draft.days.length ? L("اختاري يوم تمرين واحد عالأقل.", "Pick at least one training day.") : "";
   if (bad) { err.textContent = bad; err.hidden = false; return; }
-  profile = { ...draft, swim: (draft.swim || []).filter(x => draft.days.includes(x)), saved: true, start: profile.start || weekKey() };
+  const restart = !profile.saved || draft.goal !== profile.goal || (draft.goalWeeks || 0) !== (profile.goalWeeks || 0);
+  profile = { ...draft, swim: (draft.swim || []).filter(x => draft.days.includes(x)), saved: true, start: restart ? weekKey() : (profile.start || weekKey()) };
   store.set("tamrini.profile", profile);
   dayEq = {}; adj = {}; pkgSel = {}; store.set("tamrini.dayEq", dayEq); store.set("tamrini.adj", adj); store.set("tamrini.pkgSel", pkgSel); freshWeek();
   selDay = todayIdx;
@@ -2156,5 +2444,6 @@ async function cloudSync() {
 applyLang();
 render();
 if (ses) { renderPlay(); lockScreen(); }
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && sheet) { sheet = null; vidOpen = null; renderSheet(); } });
 cloudSync();
 </script>
