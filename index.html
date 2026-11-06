@@ -46,7 +46,7 @@ button, a, summary, input { touch-action: manipulation; }
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-top: max(20px, env(safe-area-inset-top, 0px));
-  padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
   display: flex; flex-direction: column; gap: 18px;
 }
 h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; }
@@ -194,7 +194,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .routine-h h2 { font-size: 1.35rem; }
 
 /* زر البداية الثابت */
-.startbar { position: fixed; left: 0; right: 0; z-index: 4; bottom: var(--tabh, 70px); display: flex; justify-content: center;
+.startbar { position: fixed; left: 0; right: 0; z-index: 4; bottom: var(--tabh, 80px); display: flex; justify-content: center;
   padding: 14px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px));
   background: linear-gradient(to top, var(--bg) 55%, transparent); pointer-events: none; }
 .start { pointer-events: auto; width: 100%; max-width: 528px; min-height: 56px; border: 0; border-radius: 999px; background: var(--accent); color: var(--accent-ink);
@@ -202,7 +202,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .start small { font-family: var(--body); font-size: .82rem; font-weight: 500; opacity: .85; }
 .start.soft { background: var(--soft); color: var(--accent); }
 .start:disabled { background: var(--line); color: var(--muted); box-shadow: none; }
-body.has-start .app { padding-bottom: calc(190px + env(safe-area-inset-bottom, 0px)); }
+body.has-start .app { padding-bottom: calc(180px + env(safe-area-inset-bottom, 0px)); }
 
 /* وضع التمرين */
 #play { position: fixed; inset: 0; z-index: 30; background: var(--bg); overflow-y: auto; display: flex; justify-content: center; overscroll-behavior: contain; }
@@ -249,6 +249,40 @@ body.playing { overflow: hidden; }
 @media (prefers-reduced-motion: no-preference) { .pl-trophy { animation: pop .5s ease-out; } }
 @media (max-height: 640px) { .av.big { width: 84px; height: 84px; } .av.big svg { width: 40px; height: 40px; } .pl-target b { font-size: 2.4rem; } .pl-main { gap: 10px; } }
 
+/* أيقونة الجسم */
+.av .bd { opacity: .5; }
+.av .zn { stroke-width: 3.2; }
+.av .zn .f { fill: currentColor; stroke: none; }
+.av.lt .bd { opacity: .45; }
+.bubbles .av, .area .av { width: var(--s); height: var(--s); }
+.bubbles .av svg, .area .av svg { width: 54%; height: 54%; }
+.bubbles .av-uni { display: none; }
+.area .av.all { background: var(--soft); color: var(--accent); }
+.area .av.all svg { stroke-width: 2; }
+
+/* كروت الروتين (متل الصفحة الرئيسية) */
+.carousel { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: -16px; padding: 2px 16px 6px; scrollbar-width: none; overscroll-behavior-x: contain; }
+.carousel::-webkit-scrollbar { display: none; }
+.rcard { flex: 0 0 84%; scroll-snap-align: center; position: relative; text-align: start; border: 1px solid var(--line); background: var(--surface); border-radius: 28px; padding: 20px 18px 18px; display: flex; flex-direction: column; gap: 2px; color: var(--ink); }
+.rcard.sel { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.rcard .eyebrow { font-weight: 600; letter-spacing: .03em; }
+.rc-t { font-family: var(--display); font-size: 1.7rem; line-height: 1.25; }
+.rcard small { color: var(--muted); font-size: .82rem; }
+.rcard .bubbles { margin-top: 14px; }
+.rcard.sm { flex-basis: 62%; border-radius: 24px; padding: 16px 14px 14px; }
+.rcard.sm .rc-t { font-size: 1.2rem; }
+.rc-badge { position: absolute; top: 16px; inset-inline-end: 16px; background: var(--accent); color: var(--accent-ink); font-size: .75rem; font-weight: 600; border-radius: 999px; padding: 3px 10px; }
+.rc-badge.part { background: var(--soft); color: var(--accent); }
+.bubbles { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+.sec { font-family: var(--display); font-size: .82rem; font-weight: 600; letter-spacing: .05em; color: var(--muted); }
+.areas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.area { border: 1px solid var(--line); background: var(--surface); border-radius: 18px; padding: 14px 6px 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; }
+.area b { font-size: .88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.area small { font-size: .72rem; color: var(--muted); margin-top: -4px; }
+.back { align-self: flex-start; border: 0; background: none; color: var(--accent); font-weight: 600; padding: 8px 0; min-height: 40px; }
+.pl-title { display: flex; flex-direction: column; align-items: center; line-height: 1.3; }
+.pl-title small { font-family: var(--body); color: var(--muted); font-size: .8rem; }
+
 .rest { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 20px; text-align: center; display: flex; flex-direction: column; gap: 6px; }
 
 .search { width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
@@ -272,17 +306,16 @@ form { display: flex; flex-direction: column; gap: 18px; }
 .note { font-size: .8rem; color: var(--muted); }
 
 .tabs {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 5;
-  background: var(--surface); border-top: 1px solid var(--line);
-  display: flex; justify-content: center;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  position: fixed; z-index: 5; left: 50%; transform: translateX(-50%);
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  width: calc(100% - 32px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)); max-width: 528px;
+  background: color-mix(in srgb, var(--surface) 90%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border: 1px solid var(--line); border-radius: 999px; padding: 6px; box-shadow: 0 10px 30px rgb(0 0 0 / .16);
 }
-.tabs-in { display: flex; width: 100%; max-width: 560px; }
-.tabs button { flex: 1; border: 0; background: none; padding: 12px 4px; font-size: .88rem; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.tabs-in { display: flex; width: 100%; gap: 4px; }
+.tabs button { flex: 1; border: 0; background: none; border-radius: 999px; padding: 7px 4px; font-size: .78rem; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 1px; min-height: 48px; }
+.tabs button[aria-current="true"] { background: var(--soft); color: var(--accent); font-weight: 600; }
 .tabs button svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; }
-.tabs button[aria-current="true"] { color: var(--accent); font-weight: 600; }
 @media (max-width: 340px) {
   .week { gap: 4px; }
   .day { font-size: .7rem; }
@@ -569,7 +602,7 @@ function applyTheme() {
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#0A0D0B" : "#2B7A57");
 }
 applyTheme();
-let lib = { q: "", part: "all", eq: "all" };
+let lib = { q: "", part: "all", eq: "all", area: null, routine: null };
 
 /* ===================== السجل ===================== */
 const pad = (n) => String(n).padStart(2, "0");
@@ -653,8 +686,8 @@ function exRow(ex, idx, setsTxt, key, swapKey) {
   return `<div class="ex">
     <button class="ex-head" data-open="${key}" aria-expanded="${isOpen}">
       ${avatar(ex)}
-      <span class="ex-main"><b>${esc(ex.ar)}</b><span class="ex-meta">${MUSCLES[ex.m].ar} · ${EQ[ex.eq]}</span></span>
-      ${setsTxt ? `<span class="ex-sets">${setsTxt}</span>` : `<span class="pill">${PARTS[MUSCLES[ex.m].part]}</span>`}
+      <span class="ex-main"><b>${esc(ex.ar)}</b><span class="ex-meta">${MUSCLES[ex.m].ar}${UNI.has(ex.id) ? " · لكل جهة" : ""}</span></span>
+      <span class="pill">${EQ[ex.eq]}</span>
     </button>
     ${isOpen ? `<div class="ex-body">
       ${exInfo(ex)}
@@ -701,36 +734,69 @@ const ICON = {
 const UNI = new Set(["db-row", "m-cablelateral", "db-kickback", "db-concentration", "db-lunge", "db-stepup", "db-bulgarian", "db-revlunge", "db-curtsy",
   "m-kickback", "m-glutekick", "donkey-kick", "fire-hydrant", "sl-bridge", "clamshell", "db-slcalf", "db-slrdl", "side-plank", "db-sidebend", "db-woodchop", "m-woodchop", "m-pallof"]);
 
+// جسم صغير والمنطقة اللي بيشتغل عليها التمرين مضوية
+const BODY = '<circle cx="12" cy="3.8" r="2"/><path d="M8.5 7h7l-1 7h-5z"/><path d="M8.5 7 6.6 11.2 6 15M15.5 7l1.9 4.2.6 3.8M10 14l-.5 4.5V22M14 14l.5 4.5V22"/>';
+const ZONE = {
+  chest: '<path d="M9.4 9.2h5.2"/>',
+  back: '<path d="M10.2 8.4v4.6M13.8 8.4v4.6"/>',
+  shoulders: '<circle class="f" cx="8.6" cy="7.3" r="1.5"/><circle class="f" cx="15.4" cy="7.3" r="1.5"/>',
+  biceps: '<path d="M8.5 7 6.6 11.2M15.5 7l1.9 4.2"/>',
+  triceps: '<path d="M8.5 7 6.6 11.2 6 15M15.5 7l1.9 4.2.6 3.8"/>',
+  quads: '<path d="M10 14l-.5 4.5M14 14l.5 4.5"/>',
+  hamstrings: '<path d="M10 14l-.5 4.5M14 14l.5 4.5"/><path d="M9.6 14h4.8"/>',
+  glutes: '<path d="M9.5 13.4q2.5 2.2 5 0"/>',
+  calves: '<path d="M9.5 18.5V22M14.5 18.5V22"/>',
+  abs: '<path d="M12 9.6v4"/>',
+};
+const bodyIcon = (m) => `<svg viewBox="0 0 24 24" aria-hidden="true"><g class="bd">${BODY}</g><g class="zn">${ZONE[m]}</g></svg>`;
+
 function avatar(ex, opts = {}) {
-  const { done = false, attrs = "", big = false } = opts;
-  const inner = `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[ex.eq]}</svg>${done ? `<span class="av-done">${CHECK}</span>` : ""}${UNI.has(ex.id) ? `<span class="av-uni" aria-hidden="true">⇄</span>` : ""}`;
+  const { done = false, attrs = "", big = false, size = 0 } = opts;
+  const inner = `${bodyIcon(ex.m)}${done ? `<span class="av-done">${CHECK}</span>` : ""}${UNI.has(ex.id) ? `<span class="av-uni" aria-hidden="true">⇄</span>` : ""}`;
   const cls = `av ${MLIGHT.has(ex.m) ? "lt" : ""} ${big ? "big" : ""} ${done ? "on" : ""}`;
-  return attrs ? `<button class="${cls}" style="--c:${MCOL[ex.m]}" ${attrs}>${inner}</button>` : `<span class="${cls}" style="--c:${MCOL[ex.m]}">${inner}</span>`;
+  const st = `--c:${MCOL[ex.m]}${size ? `;--s:${size}px` : ""}`;
+  return attrs ? `<button class="${cls}" style="${st}" ${attrs}>${inner}</button>` : `<span class="${cls}" style="${st}">${inner}</span>`;
 }
+
+const ROUTINES = [
+  { id: "glutes-gym",  ar: "أرداف بالجيم",      sub: "هيب ثرست، بلغاري، وأجهزة", list: ["db-hipthrust", "db-bulgarian", "m-pullthrough", "m-abduction", "m-glutekick", "frog-pump"] },
+  { id: "glutes-home", ar: "أرداف بالبيت",      sub: "بلا أي معدات",            rest: 45, list: ["glute-bridge", "bw-squat", "sl-bridge", "donkey-kick", "fire-hydrant", "clamshell", "frog-pump"] },
+  { id: "abs-quick",   ar: "بطن سريع",          sub: "عالأرض، بلا معدات",       rest: 30, sets: 2, list: ["crunch", "bicycle", "rev-crunch", "heel-taps", "plank", "side-plank"] },
+  { id: "abs-gym",     ar: "بطن وخصر بالجيم",   sub: "كيبل وأجهزة",             rest: 45, list: ["m-cablecrunch", "m-captain", "m-pallof", "m-woodchop", "hollow"] },
+  { id: "calves-legs", ar: "سمانة ورجلين",      sub: "دمبل وأجهزة",             list: ["goblet", "db-lunge", "db-calf", "db-slcalf", "m-standingcalf", "m-calf"] },
+  { id: "legs-gym",    ar: "رجلين بالجيم",      sub: "أجهزة الرجلين",           list: ["m-legpress", "m-hack", "m-legext", "m-lyingcurl", "db-rdl", "m-standingcalf"] },
+  { id: "upper-db",    ar: "علوي بالدمبل",      sub: "صدر، ظهر، كتاف، إيدين",   list: ["db-bench", "db-row", "db-shpress", "db-lateral", "db-curl", "db-overhead"] },
+  { id: "full-home",   ar: "جسم كامل بالبيت",   sub: "بلا معدات",               rest: 45, list: ["bw-squat", "incline-pushup", "glute-bridge", "superman", "bench-dips", "mountain", "plank"] },
+];
+const routineItems = (r) => r.list.map(id => EX.find(e => e.id === id)).filter(Boolean).map(ex => ({ ex, isTime: !!ex.time }));
+const BUB = [58, 44, 66, 40, 54, 46, 62, 42];
+const bubbles = (items, n = 8, k = 1) => `<div class="bubbles" aria-hidden="true">${items.slice(0, n).map((it, i) => avatar(it.ex, { size: Math.round(BUB[i % BUB.length] * k) })).join("")}</div>`;
 
 let adj = store.get("tamrini.adj", {});            // { "day-exId": { sets, hold } }
 const REST_SEC = { fat: 50, muscle: 75, strength: 150, fit: 60 };
 function baseSets() { const [a, b] = GOALS[profile.goal].sets.split("–").map(Number); return profile.level === "inter" && b ? b : a; }
-const setsFor = (day, ex) => (adj[`${day}-${ex.id}`] || {}).sets ?? baseSets();
+const routineOf = (key) => typeof key === "string" && key.startsWith("r-") ? ROUTINES.find(r => `r-${r.id}` === key) : null;
+const setsFor = (day, ex) => (adj[`${day}-${ex.id}`] || {}).sets ?? routineOf(day)?.sets ?? baseSets();
+const restFor = (key) => routineOf(key)?.rest ?? REST_SEC[profile.goal];
 const holdFor = (day, ex) => (adj[`${day}-${ex.id}`] || {}).hold ?? 30;
 const mmss = (s) => `${Math.floor(s / 60)}:${pad(Math.round(s % 60))}`;
 function estMin(day, items) {
   let s = 0;
   items.forEach(it => {
     const n = setsFor(day, it.ex), work = (it.isTime ? holdFor(day, it.ex) : 40) * (UNI.has(it.ex.id) ? 2 : 1);
-    s += n * work + (n - 1) * REST_SEC[profile.goal] + 60;
+    s += n * work + (n - 1) * restFor(day) + 60;
   });
   return Math.max(5, Math.round(s / 300) * 5);
 }
-function rowStepper(it, day) {
+function rowStepper(it, day) {  // day = رقم اليوم أو "r-<id>"
   const ex = it.ex, n = setsFor(day, ex), g = GOALS[profile.goal];
   const [kind, val, sub, lbl] = it.isTime
     ? ["hold", mmss(holdFor(day, ex)), `× ${n}`, "ثواني الثبات"]
     : ["sets", n, `× ${rng(g.reps)}`, "عدد المجموعات"];
   return `<div class="rstep" role="group" aria-label="${lbl}: ${esc(ex.ar)}">
-      <button type="button" data-adj="${kind}" data-aid="${ex.id}" data-dir="-1" aria-label="أقل">−</button>
+      <button type="button" data-adj="${kind}" data-akey="${day}" data-aid="${ex.id}" data-dir="-1" aria-label="أقل">−</button>
       <span class="rv"><b>${val}</b><small>${sub}</small></span>
-      <button type="button" data-adj="${kind}" data-aid="${ex.id}" data-dir="1" aria-label="أكتر">+</button>
+      <button type="button" data-adj="${kind}" data-akey="${day}" data-aid="${ex.id}" data-dir="1" aria-label="أكتر">+</button>
     </div>`;
 }
 
@@ -784,10 +850,19 @@ function renderPlan() {
         <p>${quote()}</p>
       </div>
     </section>`;
-  html += `<div class="week" role="tablist" aria-label="أيام الأسبوع">${DAYS_SHORT.map((d, i) => `
-      <button class="day ${profile.days.includes(i) ? "train" : ""} ${dayStatus(i)} ${i === selDay ? "sel" : ""}" data-day="${i}" role="tab" aria-selected="${i === selDay}">
-        <span>${d}</span><i>${dayStatus(i) === "full" ? "✓" : ""}</i>${i === todayIdx ? `<span class="today">اليوم</span>` : ""}
-      </button>`).join("")}</div>`;
+  const order = profile.days.slice().sort((x, y) => x - y);
+  html += `<section class="group">
+      <h3 class="sec">تمارين هالأسبوع${profile.days.includes(todayIdx) ? "" : " · اليوم راحة 🌿"}</h3>
+      <div class="carousel" id="days">${order.map(i => {
+        const d = buildDay(i), st = dayStatus(i);
+        return `<button class="rcard ${i === selDay ? "sel" : ""}" data-day="${i}" aria-pressed="${i === selDay}">
+          <span class="eyebrow">${DAYS[i]}${i === todayIdx ? " · اليوم" : ""} · ${estMin(i, d.items)} دقيقة</span>
+          <b class="rc-t">${d.title}</b>
+          ${st === "full" ? `<span class="rc-badge">✓ خلّصتيه</span>` : st === "part" ? `<span class="rc-badge part">بلّشتي</span>` : ""}
+          ${bubbles(d.items)}
+        </button>`;
+      }).join("")}</div>
+    </section>`;
   if (!day) {
     html += `<div class="rest"><h2>${DAYS[selDay]}: يوم راحة</h2><p class="muted">العضل بيكبر وقت الراحة. مشي خفيف ٢٠–٣٠ دقيقة أو تمطيط بيكفّي.</p></div>`;
   } else {
@@ -796,8 +871,8 @@ function renderPlan() {
     const est = estMin(selDay, day.items);
     html += `<section class="routine">
       <div class="routine-h">
-        <span class="eyebrow">${DAYS[selDay]} · ${est} دقيقة تقريباً</span>
-        <h2>${day.title}</h2>
+        <span class="eyebrow">${est} دقيقة تقريباً</span>
+        <h2>${DAYS[selDay]}: ${day.title}</h2>
         <p class="small muted">${day.items.length} تمارين · راحة ${rng(g.rest)} بين المجموعات</p>
       </div>
       <div class="seg" role="group" aria-label="المعدات">
@@ -813,7 +888,7 @@ function renderPlan() {
     if (typeof startSession === "function") html += `<div class="startbar">${all
       ? `<button class="start soft" data-tab="prog">✓ خلّصتي اليوم · شوفي تقدّمك</button>`
       : canLog
-        ? `<button class="start" data-start="1">▶ ${nDone ? "كمّلي التمرين" : "ابدئي التمرين"}<small>${est} د</small></button>`
+        ? `<button class="start" data-start="plan">▶ ${nDone ? "كمّلي التمرين" : "ابدئي التمرين"}<small>${est} د</small></button>`
         : `<button class="start" disabled>بتبلّشي يوم ${DAYS[selDay]}</button>`}</div>`;
   }
   const protein = Math.round(profile.weight * 1.6), water = (profile.weight * 0.035).toFixed(1);
@@ -825,27 +900,74 @@ function renderPlan() {
   return html;
 }
 
+const AREA_ORDER = ["glutes", "abs", "calves", "quads", "hamstrings", "back", "chest", "shoulders", "biceps", "triceps"];
+const shortM = (m) => MUSCLES[m].ar.replace(/ \(.*\)/, "");
+function routineCard(r) {
+  const items = routineItems(r);
+  return `<button class="rcard sm" data-routine="${r.id}">
+      <span class="eyebrow">${estMin(`r-${r.id}`, items)} دقيقة · ${items.length} تمارين</span>
+      <b class="rc-t">${r.ar}</b><small>${r.sub}</small>
+      ${bubbles(items, 7, .72)}
+    </button>`;
+}
+function renderRoutine(r) {
+  const key = `r-${r.id}`, items = routineItems(r), est = estMin(key, items), g = GOALS[profile.goal];
+  let html = `<button class="back" data-libback="1">→ رجوع</button>
+    <section class="routine">
+      <div class="routine-h">
+        <span class="eyebrow">${est} دقيقة تقريباً</span>
+        <h2>${r.ar}</h2>
+        <p class="small muted">${r.sub} · ${items.length} تمارين · راحة ${r.rest ? `${r.rest} ث` : rng(g.rest)}</p>
+      </div>
+      <div class="list">${items.map((it, i) => {
+        const k = `${key}-${i}`, isOpen = open === k;
+        return `<div class="ex"><div class="ex-row">
+            ${avatar(it.ex)}
+            <button class="ex-head" data-open="${k}" aria-expanded="${isOpen}"><span class="ex-main"><b>${esc(it.ex.ar)}</b><span class="ex-meta">${MUSCLES[it.ex.m].ar} · ${EQ[it.ex.eq]}${UNI.has(it.ex.id) ? " · لكل جهة" : ""}</span></span></button>
+            ${rowStepper(it, key)}
+          </div>
+          ${isOpen ? `<div class="ex-body">${exInfo(it.ex)}<div class="actions"><a class="video" href="${video(it.ex)}" target="_blank" rel="noopener">▶ فيديو الشرح</a><a class="ghost link" href="${search(it.ex)}" target="_blank" rel="noopener">فيديوهات تانية</a></div></div>` : ""}
+        </div>`;
+      }).join("")}</div>
+      <p class="note">اضغطي عاسم أي تمرين لتشوفي الشرح. التمارين اللي بتخلّصيها بتنحسب بتقدّمك.</p>
+    </section>
+    <div class="startbar"><button class="start" data-start="${key}">▶ ابدئي<small>${est} د</small></button></div>`;
+  return html;
+}
 function renderLib() {
+  if (lib.routine) { const r = ROUTINES.find(x => x.id === lib.routine); if (r) return renderRoutine(r); lib.routine = null; }
   const q = norm(lib.q);
+  let html = `<header style="display:flex;flex-direction:column;gap:4px">
+      <span class="eyebrow">${EX.length} تمرين قوة · ${ROUTINES.length} روتينات جاهزة</span><h1>التمارين</h1></header>
+    <input id="lib-q" class="search" type="search" placeholder="دوّري: أرداف، بطن، سمانة، دمبل…" value="${esc(lib.q)}" aria-label="دوّري عتمرين">`;
+  if (!q && !lib.area) {
+    html += `<section class="group"><h3 class="sec">روتينات جاهزة</h3>
+        <div class="carousel">${ROUTINES.map(routineCard).join("")}</div></section>
+      <section class="group"><h3 class="sec">تصفّحي حسب المنطقة</h3>
+        <div class="areas">${AREA_ORDER.map(m => `<button class="area" data-area="${m}">${avatar({ m, id: "" }, { size: 48 })}<b>${shortM(m)}</b><small>${EX.filter(e => e.m === m).length} تمرين</small></button>`).join("")}
+          <button class="area" data-area="all" data-aeq="body"><span class="av all" style="--s:48px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7M5 10v10h14V10"/></svg></span><b>بلا معدات</b><small>${EX.filter(e => e.eq === "body").length} تمرين</small></button>
+          <button class="area" data-area="all" data-aeq="all"><span class="av all" style="--s:48px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><b>كل التمارين</b><small>${EX.length} تمرين</small></button>
+        </div></section>`;
+    return html;
+  }
   const match = EX.filter(ex => {
     const M = MUSCLES[ex.m];
-    if (lib.part !== "all" && M.part !== lib.part) return false;
+    if (lib.area && lib.area !== "all" && ex.m !== lib.area) return false;
     if (lib.eq !== "all" && ex.eq !== lib.eq) return false;
     if (!q) return true;
-    const hay = norm(`${ex.ar} ${ex.en} ${M.ar} ${M.kw} ${PARTS[M.part]}`);
+    const hay = norm(`${ex.ar} ${ex.en} ${M.ar} ${M.kw} ${PARTS[M.part]} ${EQ[ex.eq]}`);
     return q.split(/\s+/).every(w => hay.includes(w));
   });
   const groups = {};
   match.forEach(ex => (groups[ex.m] ||= []).push(ex));
-  let html = `<header style="display:flex;flex-direction:column;gap:4px">
-      <span class="eyebrow">${EX.length} تمرين</span><h1>مكتبة التمارين</h1></header>
-    <input id="lib-q" class="search" type="search" placeholder="اكتبي منطقة: صدر، ظهر، فخد، بطن، أرداف…" value="${esc(lib.q)}">
-    <div class="chips">${[["all","الكل"],["upper","علوي"],["lower","سفلي"],["core","بطن"]].map(([k,l]) => `<button class="chip" data-part="${k}" aria-pressed="${lib.part===k}">${l}</button>`).join("")}</div>
-    <div class="chips">${[["all","كل المعدات"],["db","دمبل"],["machine","ماشين"],["body","وزن الجسم"]].map(([k,l]) => `<button class="chip" data-leq="${k}" aria-pressed="${lib.eq===k}">${l}</button>`).join("")}</div>`;
-  const keys = Object.keys(MUSCLES).filter(k => groups[k]);
-  if (!keys.length) html += `<p class="empty">ما في تمارين بهالاسم. جربي «صدر» أو «فخد».</p>`;
+  html += `<div style="display:flex;flex-direction:column;gap:8px">
+      ${lib.area ? `<button class="back" data-libback="1">→ كل المناطق</button><h2>${lib.area === "all" ? (lib.eq === "body" ? "بلا معدات" : "كل التمارين") : MUSCLES[lib.area].ar}</h2>` : ""}
+      <div class="chips">${[["all","كل المعدات"],["db","دمبل"],["machine","ماشين"],["body","وزن الجسم"]].map(([k,l]) => `<button class="chip" data-leq="${k}" aria-pressed="${lib.eq===k}">${l}</button>`).join("")}</div>
+    </div>`;
+  const keys = AREA_ORDER.filter(k => groups[k]);
+  if (!keys.length) html += `<p class="empty">ما في تمارين بهالاسم. جربي «أرداف» أو «بطن».</p>`;
   keys.forEach(k => {
-    html += `<section class="group"><h3>${MUSCLES[k].ar} <span class="small muted">· ${groups[k].length}</span></h3>
+    html += `<section class="group">${lib.area && lib.area !== "all" ? "" : `<h3>${MUSCLES[k].ar} <span class="small muted">· ${groups[k].length}</span></h3>`}
       <div class="list">${groups[k].map(ex => exRow(ex, null, null, `l-${ex.id}`, null)).join("")}</div></section>`;
   });
   return html;
@@ -882,7 +1004,9 @@ function render() {
   $app.innerHTML = tab === "plan" ? renderPlan() : tab === "prog" ? renderProgress() : tab === "lib" ? renderLib() : renderMe();
   document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.tab === tab));
   document.body.classList.toggle("has-start", !!$app.querySelector(".startbar"));
-  document.documentElement.style.setProperty("--tabh", document.querySelector(".tabs").offsetHeight + "px");
+  const selCard = $app.querySelector("#days .rcard.sel");
+  if (selCard) { const c = selCard.parentElement; c.scrollLeft += selCard.getBoundingClientRect().left - c.getBoundingClientRect().left - (c.clientWidth - selCard.offsetWidth) / 2; }
+  document.documentElement.style.setProperty("--tabh", (window.innerHeight - document.querySelector(".tabs").getBoundingClientRect().top + 2) + "px");
 }
 
 /* ===================== صفحة التقدّم ===================== */
@@ -1017,8 +1141,8 @@ document.addEventListener("focusin", (e) => { const el = e.target.closest?.("[da
 window.addEventListener("scroll", hideTip, { passive: true });
 
 /* ===================== وضع التمرين خطوة بخطوة ===================== */
-let ses = store.get("tamrini.session", null);   // { day, date, idx, set, phase: work|hold|rest|done, until, started, sets, prs, showHow }
-if (ses && (Date.now() - ses.started > 12 * 3600e3 || !buildDay(ses.day))) ses = null;   // جلسة قديمة
+let ses = store.get("tamrini.session", null);   // { key, title, list:[{id,t}], date, idx, fin:[], set, phase: work|hold|rest|done, until, started, sets, prs, showHow }
+if (ses && (Date.now() - ses.started > 12 * 3600e3 || !Array.isArray(ses.list) || !Array.isArray(ses.fin))) ses = null;   // جلسة قديمة
 const $play = document.createElement("div");
 $play.id = "play"; $play.dir = "rtl"; $play.lang = "ar"; $play.hidden = true;
 $play.setAttribute("role", "dialog"); $play.setAttribute("aria-modal", "true"); $play.setAttribute("aria-label", "وضع التمرين");
@@ -1043,35 +1167,42 @@ function beep() {
 async function lockScreen() { try { if (ses && navigator.wakeLock && document.visibilityState === "visible") wake = await navigator.wakeLock.request("screen"); } catch {} }
 document.addEventListener("visibilitychange", () => { if (ses && ses.phase !== "done") lockScreen(); });
 
-function sesItems() { return buildDay(ses.day).items; }
+function sesItems() { return ses.list.map(x => ({ ex: EX.find(e => e.id === x.id), isTime: x.t })).filter(it => it.ex); }
 function nextUndone(from) {
   const items = sesItems();
   for (let k = 1; k <= items.length; k++) {
     const i = (from + k) % items.length;
-    if (!(entry(ses.date, items[i].ex.id) || {}).done) return i;
+    if (!ses.fin.includes(i)) return i;
   }
   return -1;
 }
-function startSession() {
+function startSession(key) {
   try { audio ||= new (window.AudioContext || window.webkitAudioContext)(); audio.resume?.(); } catch {}
-  const date = ymd(dateOfDay(selDay)), items = buildDay(selDay).items;
-  const first = items.findIndex(it => !(entry(date, it.ex.id) || {}).done);
-  ses = { day: selDay, date, idx: Math.max(0, first), set: 1, phase: "work", until: 0, started: Date.now(), sets: 0, prs: 0, showHow: false };
+  let items, date, title, fin = [];
+  if (key === "plan") {
+    const d = buildDay(selDay); items = d.items; date = ymd(dateOfDay(selDay)); title = d.title; key = selDay;
+    items.forEach((it, i) => { if ((entry(date, it.ex.id) || {}).done) fin.push(i); });   // كمّلي من وين وقفتي
+  } else {
+    const r = ROUTINES.find(x => `r-${x.id}` === key); items = routineItems(r); date = ymd(TODAY); title = r.ar;
+  }
+  const first = items.findIndex((it, i) => !fin.includes(i));
+  ses = { key, title, list: items.map(it => ({ id: it.ex.id, t: it.isTime })), date, idx: Math.max(0, first), fin, set: 1, phase: "work", until: 0, started: Date.now(), sets: 0, prs: 0, showHow: false };
   saveSes(); lockScreen(); renderPlay();
 }
 function endSession() { ses = null; saveSes(); try { wake?.release(); } catch {} wake = null; renderPlay(); render(); }
 
 function finishSet() {
-  const items = sesItems(), it = items[ses.idx], n = setsFor(ses.day, it.ex);
+  const items = sesItems(), it = items[ses.idx], n = setsFor(ses.key, it.ex);
   ses.sets++;
-  if (ses.set < n) { ses.set++; ses.phase = "rest"; ses.until = Date.now() + REST_SEC[profile.goal] * 1000; }
+  if (ses.set < n) { ses.set++; ses.phase = "rest"; ses.until = Date.now() + restFor(ses.key) * 1000; }
   else {
     const e = entry(ses.date, it.ex.id) || {}, before = Math.max(0, ...weightsOf(it.ex.id).filter(x => x.d < ses.date).map(x => x.w));
     if (e.w && before && e.w > before) ses.prs++;
     setEntry(ses.date, it.ex.id, { done: true });
+    if (!ses.fin.includes(ses.idx)) ses.fin.push(ses.idx);
     const nx = nextUndone(ses.idx);
     if (nx < 0) { ses.phase = "done"; try { wake?.release(); } catch {} }
-    else { ses.idx = nx; ses.set = 1; ses.phase = "rest"; ses.until = Date.now() + REST_SEC[profile.goal] * 1000; ses.showHow = false; }
+    else { ses.idx = nx; ses.set = 1; ses.phase = "rest"; ses.until = Date.now() + restFor(ses.key) * 1000; ses.showHow = false; }
   }
   saveSes(); renderPlay();
 }
@@ -1100,8 +1231,8 @@ function renderPlay() {
   if (!ses) { $play.hidden = true; $play.innerHTML = ""; document.body.classList.remove("playing"); return; }
   $play.hidden = false; document.body.classList.add("playing");
   const items = sesItems(), g = GOALS[profile.goal];
-  const segs = `<div class="pl-segs" aria-hidden="true">${items.map((it, i) => `<i class="${(entry(ses.date, it.ex.id) || {}).done ? "f" : i === ses.idx && ses.phase !== "done" ? "c" : ""}"></i>`).join("")}</div>`;
-  const doneN = items.filter(it => (entry(ses.date, it.ex.id) || {}).done).length;
+  const segs = `<div class="pl-segs" aria-hidden="true">${items.map((it, i) => `<i class="${ses.fin.includes(i) ? "f" : i === ses.idx && ses.phase !== "done" ? "c" : ""}"></i>`).join("")}</div>`;
+  const doneN = ses.fin.length;
   let body;
   if (ses.phase === "done") {
     const mins = Math.max(1, Math.round((Date.now() - ses.started) / 60000));
@@ -1121,9 +1252,9 @@ function renderPlay() {
         <button class="ghost wide" data-pl="close">رجعي عالبرنامج</button>
       </div>`;
   } else {
-    const it = items[ses.idx], ex = it.ex, n = setsFor(ses.day, ex), hold = holdFor(ses.day, ex), uni = UNI.has(ex.id);
+    const it = items[ses.idx], ex = it.ex, n = setsFor(ses.key, ex), hold = holdFor(ses.key, ex), uni = UNI.has(ex.id);
     if (ses.phase === "rest") {
-      const left = Math.max(0, (ses.until - Date.now()) / 1000), tot = REST_SEC[profile.goal];
+      const left = Math.max(0, (ses.until - Date.now()) / 1000), tot = restFor(ses.key);
       const nextTxt = ses.set === 1 ? `التمرين الجايي: ${esc(ex.ar)}` : `الجاية: المجموعة ${ses.set} من ${n}`;
       body = `<div class="pl-main">
           <span class="pl-pill">راحة</span>
@@ -1161,7 +1292,7 @@ function renderPlay() {
   $play.innerHTML = `<div class="pl">
       <header class="pl-top">
         <button class="pl-x" data-pl="close" aria-label="سكّري وضع التمرين">✕</button>
-        <span>${ses.phase === "done" ? "خلصنا!" : `تمرين ${ses.idx + 1} من ${items.length}`}</span>
+        <span class="pl-title"><b>${esc(ses.title)}</b><small>${ses.phase === "done" ? "خلصنا!" : `تمرين ${ses.idx + 1} من ${items.length}`}</small></span>
         <span class="pl-x" aria-hidden="true"></span>
       </header>
       ${segs}
@@ -1174,7 +1305,7 @@ setInterval(() => {
   if (!ses || (ses.phase !== "rest" && ses.phase !== "hold")) return;
   const left = (ses.until - Date.now()) / 1000;
   if (left <= 0) { beep(); ses.phase === "rest" ? afterRest() : finishSet(); return; }
-  const tot = ses.phase === "rest" ? REST_SEC[profile.goal] : holdFor(ses.day, sesItems()[ses.idx].ex);
+  const tot = ses.phase === "rest" ? restFor(ses.key) : holdFor(ses.key, sesItems()[ses.idx].ex);
   const t = $play.querySelector(".pl-time"); if (t) t.textContent = mmss(Math.ceil(left));
   const v = $play.querySelector(".pl-ring .val"); if (v) { const c = 2 * Math.PI * 96; v.setAttribute("stroke-dashoffset", (c * (1 - Math.min(1, left / tot))).toFixed(1)); }
 }, 250);
@@ -1188,7 +1319,7 @@ $play.addEventListener("click", (e) => {
     setEntry(ses.date, id, { w: Math.max(0, Math.round((cur + +step) * 10) / 10) }); renderPlay(); return;
   }
   if (a === "set") finishSet();
-  else if (a === "hold") { ses.phase = "hold"; ses.until = Date.now() + holdFor(ses.day, sesItems()[ses.idx].ex) * 1000; saveSes(); renderPlay(); }
+  else if (a === "hold") { ses.phase = "hold"; ses.until = Date.now() + holdFor(ses.key, sesItems()[ses.idx].ex) * 1000; saveSes(); renderPlay(); }
   else if (a === "next") afterRest();
   else if (a === "more") { ses.until += 15000; saveSes(); renderPlay(); }
   else if (a === "skip") {
@@ -1235,11 +1366,15 @@ document.addEventListener("click", (e) => {
     setEntry(date, id, { w: Math.max(0, Math.round((cur + +ds.wstep) * 10) / 10) });
     render(); return;
   }
-  if (ds.tab) { tab = ds.tab; open = null; if (tab === "me") draft = null; render(); window.scrollTo(0,0); return; }
-  if (ds.start) { startSession(); return; }
+  if (ds.area) { lib.area = ds.area; lib.q = ""; if (ds.aeq) lib.eq = ds.aeq; open = null; render(); window.scrollTo(0, 0); return; }
+  if (ds.routine) { lib.routine = ds.routine; open = null; render(); window.scrollTo(0, 0); return; }
+  if (ds.libback) { lib.area = null; lib.routine = null; lib.eq = "all"; open = null; render(); window.scrollTo(0, 0); return; }
+  if (ds.tab) { if (ds.tab === "lib" && tab === "lib") { lib = { q: "", part: "all", eq: "all", area: null, routine: null }; }
+    tab = ds.tab; open = null; if (tab === "me") draft = null; render(); window.scrollTo(0,0); return; }
+  if (ds.start) { startSession(ds.start); return; }
   if (ds.adj) {
-    const ex = EX.find(x => x.id === ds.aid), k = `${selDay}-${ds.aid}`, dir = +ds.dir;
-    const v = ds.adj === "sets" ? Math.min(8, Math.max(1, setsFor(selDay, ex) + dir)) : Math.min(180, Math.max(10, holdFor(selDay, ex) + dir * 5));
+    const ex = EX.find(x => x.id === ds.aid), key = ds.akey, k = `${key}-${ds.aid}`, dir = +ds.dir;
+    const v = ds.adj === "sets" ? Math.min(8, Math.max(1, setsFor(key, ex) + dir)) : Math.min(180, Math.max(10, holdFor(key, ex) + dir * 5));
     adj[k] = { ...(adj[k] || {}), [ds.adj]: v }; store.set("tamrini.adj", adj); render(); return;
   }
   if (ds.themeSet) { theme = ds.themeSet; store.set("tamrini.theme", theme); applyTheme(); render(); return; }
