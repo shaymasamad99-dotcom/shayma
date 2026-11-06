@@ -14,6 +14,7 @@
   --accent: #2B7A57;
   --accent-ink: #FFFFFF;
   --accent-2: #3F9C73;
+  --chart: #1F8A5B;
   --soft: #E2EEE7;
   --warn: #9A5B12;
   --display: "Readex Pro", "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
@@ -22,13 +23,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #111513; --surface: #1A201D; --ink: #ECEFEC; --muted: #9AA59F;
-    --line: #2A322E; --accent: #5CC092; --accent-ink: #0D1310; --accent-2: #3E9F75; --soft: #1D3128; --warn: #E0A35C;
+    --line: #2A322E; --accent: #5CC092; --accent-ink: #0D1310; --accent-2: #3E9F75; --chart: #5CC092; --soft: #1D3128; --warn: #E0A35C;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #111513; --surface: #1A201D; --ink: #ECEFEC; --muted: #9AA59F;
-  --line: #2A322E; --accent: #5CC092; --accent-ink: #0D1310; --accent-2: #3E9F75; --soft: #1D3128; --warn: #E0A35C;
+  --line: #2A322E; --accent: #5CC092; --accent-ink: #0D1310; --accent-2: #3E9F75; --chart: #5CC092; --soft: #1D3128; --warn: #E0A35C;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -135,6 +136,36 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .day.part i { background: var(--surface); box-shadow: inset 0 0 0 2px var(--accent); width: 9px; height: 9px; }
 @media (prefers-reduced-motion: no-preference) { .pop { animation: pop .35s ease-out; } @keyframes pop { 40% { transform: scale(1.2); } } }
 
+/* صفحة التقدّم */
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.tile span { font-size: .8rem; color: var(--muted); }
+.tile b { font-family: var(--display); font-size: 1.6rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.tile b em { font-style: normal; font-size: 1rem; color: var(--muted); }
+.tile small { font-size: .75rem; color: var(--muted); }
+.up { color: var(--accent); font-weight: 600; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.card-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.chart { width: 100%; height: auto; display: block; overflow: visible; font-family: var(--body); }
+.c-grid { stroke: var(--line); stroke-width: 1; }
+.c-base { stroke: var(--muted); stroke-width: 1; opacity: .5; }
+.c-ax { fill: var(--muted); font-size: 10px; }
+.c-now { fill: var(--ink); font-weight: 600; }
+.c-val { fill: var(--ink); font-size: 11px; font-weight: 600; }
+.c-bar { fill: var(--chart); opacity: .55; }
+.c-bar.now { opacity: 1; }
+.c-line { fill: none; stroke: var(--chart); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.c-area { fill: var(--chart); opacity: .1; }
+.c-dot { fill: var(--chart); stroke: var(--surface); stroke-width: 2; }
+.c-hit { fill: transparent; cursor: pointer; outline: none; }
+.c-hit.on, .c-hit:focus-visible { fill: var(--ink); fill-opacity: .06; }
+.spark { flex: none; width: 72px; height: 28px; overflow: visible; }
+.tooltip { position: fixed; z-index: 20; background: var(--ink); color: var(--bg); font-size: .82rem; padding: 6px 10px; border-radius: 8px; pointer-events: none; white-space: nowrap; direction: rtl; box-shadow: 0 4px 14px rgb(0 0 0 / .18); }
+.tbl summary { font-size: .82rem; color: var(--muted); cursor: pointer; padding: 4px 0; }
+.tbl table { width: 100%; border-collapse: collapse; font-size: .85rem; margin-top: 6px; }
+.tbl th, .tbl td { text-align: start; padding: 6px 4px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.tbl th { color: var(--muted); font-weight: 500; }
+
 .rest { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 20px; text-align: center; display: flex; flex-direction: column; gap: 6px; }
 
 .search { width: 100%; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
@@ -177,6 +208,7 @@ form { display: flex; flex-direction: column; gap: 18px; }
 <nav class="tabs" dir="rtl">
   <div class="tabs-in">
     <button id="tab-plan" data-tab="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>برنامجي</button>
+    <button id="tab-prog" data-tab="prog"><svg viewBox="0 0 24 24"><path d="M4 20h16M7 16v-5M12 16V6M17 16v-8"/></svg>تقدّمي</button>
     <button id="tab-lib" data-tab="lib"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>التمارين</button>
     <button id="tab-me" data-tab="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>ملفي</button>
   </div>
@@ -693,12 +725,147 @@ function renderMe() {
 }
 
 function render() {
-  $app.innerHTML = tab === "plan" ? renderPlan() : tab === "lib" ? renderLib() : renderMe();
+  hideTip();
+  $app.innerHTML = tab === "plan" ? renderPlan() : tab === "prog" ? renderProgress() : tab === "lib" ? renderLib() : renderMe();
   document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.tab === tab));
 }
 
+/* ===================== صفحة التقدّم ===================== */
+let progOpen = null;
+const dm = (d) => `${d.getDate()}/${d.getMonth() + 1}`;
+const parseD = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const niceStep = (span) => { const raw = span / 3, p = Math.pow(10, Math.floor(Math.log10(raw || 1))); return [1, 2, 2.5, 5, 10].map(k => k * p).find(k => k >= raw) || raw; };
+const r1 = (n) => Math.round(n * 10) / 10;
+
+function streakWeeks() {
+  let n = 0, off = weekStats(0).days ? 0 : -1;      // أسبوع هلّق ما بيكسر السلسلة إذا بعدو ما بلّش
+  while (n < 104 && weekStats(off).days > 0) { n++; off--; }
+  return n;
+}
+function totalDone() { return Object.values(log).reduce((a, d) => a + Object.values(d).filter(e => e.done).length, 0); }
+
+function barPath(x, y, w, h) {
+  const r = Math.min(4, h);
+  return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`;
+}
+
+function weeklyChart() {
+  const N = 8, W = 340, H = 190, top = 22, bot = 28, axisW = 26, plotL = 4, plotR = W - axisW;
+  const weeks = Array.from({ length: N }, (_, k) => {
+    const off = k - (N - 1), s = dateOfDay(0, off);
+    return { off, label: off === 0 ? "هالأسبوع" : dm(s), full: off === 0 ? "هالأسبوع" : `أسبوع ${dm(s)}`, ...weekStats(off) };
+  });
+  const max = Math.max(...weeks.map(w => w.ex)), step = niceStep(Math.max(max, 6)), yMax = Math.ceil(Math.max(max, 6) / step) * step;
+  const ph = H - top - bot, y = (v) => top + ph - (v / yMax) * ph, band = (plotR - plotL) / N, bw = Math.min(24, band - 10);
+  let g = "";
+  for (let v = 0; v <= yMax + 1e-9; v += step) g += `<line class="c-grid" x1="${plotL}" x2="${plotR}" y1="${y(v)}" y2="${y(v)}"/><text class="c-ax" x="${plotR + 6}" y="${y(v) + 3.5}" text-anchor="start">${r1(v)}</text>`;
+  const maxIdx = max > weeks[N - 1].ex ? weeks.findIndex(w => w.ex === max) : -1;
+  weeks.forEach((w, i) => {
+    const cx = plotR - band * (i + 0.5) - 0, x = cx - bw / 2;  // الأحدث عالشمال: i=7 → أقصى الشمال
+    const h = y(0) - y(w.ex), tip = `${w.full}: ${w.ex} تمرين · ${w.days} ${w.days === 1 ? "يوم" : "أيام"}`;
+    if (w.ex > 0) g += `<path class="c-bar ${w.off === 0 ? "now" : ""}" d="${barPath(x, y(w.ex), bw, h)}"/>`;
+    if ((w.off === 0 || i === maxIdx) && w.ex > 0) g += `<text class="c-val" x="${cx}" y="${y(w.ex) - 6}" text-anchor="middle">${w.ex}</text>`;
+    g += `<text class="c-ax ${w.off === 0 ? "c-now" : ""}" x="${cx}" y="${H - 10}" text-anchor="middle">${w.label}</text>`;
+    g += `<rect class="c-hit" x="${cx - band / 2}" y="${top}" width="${band}" height="${ph + bot}" data-tip="${tip}" tabindex="0" role="img" aria-label="${tip}"/>`;
+  });
+  g += `<line class="c-base" x1="${plotL}" x2="${plotR}" y1="${y(0)}" y2="${y(0)}"/>`;
+  const table = weeks.slice().reverse().map(w => `<tr><td>${w.full}</td><td>${w.ex}</td><td>${w.days}</td></tr>`).join("");
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="group" aria-label="عدد التمارين اللي خلّصتيها بآخر ${N} أسابيع">${g}</svg>
+    <details class="tbl"><summary>شوفي الأرقام كجدول</summary><table><thead><tr><th>الأسبوع</th><th>تمارين</th><th>أيام</th></tr></thead><tbody>${table}</tbody></table></details>`;
+}
+
+function spark(pts) {
+  if (pts.length < 2) return `<svg class="spark" viewBox="0 0 72 28" aria-hidden="true"><circle class="c-dot" cx="36" cy="14" r="4"/></svg>`;
+  const ws = pts.map(p => p.w), lo = Math.min(...ws), hi = Math.max(...ws), sp = hi - lo || 1;
+  const xy = pts.map((p, i) => [70 - (i / (pts.length - 1)) * 68, 24 - ((p.w - lo) / sp) * 20]);
+  const last = xy[xy.length - 1];
+  return `<svg class="spark" viewBox="0 0 72 28" aria-hidden="true"><polyline class="c-line" points="${xy.map(p => p.join(",")).join(" ")}"/><circle class="c-dot" cx="${last[0]}" cy="${last[1]}" r="3.5"/></svg>`;
+}
+
+function weightChart(ex, pts) {
+  const W = 340, H = 180, top = 24, bot = 26, axisW = 30, plotL = 26, plotR = W - axisW;
+  const ws = pts.map(p => p.w), mn = Math.min(...ws), mx = Math.max(...ws);
+  const step = niceStep(Math.max(mx - mn, 3)), lo = Math.max(0, Math.floor(mn / step) * step - (mx === mn ? step : 0)), hi = Math.ceil(mx / step) * step + (mx === mn ? step : 0);
+  const ph = H - top - bot, y = (v) => top + ph - ((v - lo) / (hi - lo)) * ph;
+  const t = pts.map(p => parseD(p.d).getTime()), t0 = t[0], t1 = t[t.length - 1];
+  const inset = 14, x = (ti) => t1 === t0 ? (plotL + plotR) / 2 : plotR - inset - ((ti - t0) / (t1 - t0)) * (plotR - plotL - 2 * inset);
+  let g = "";
+  for (let v = lo; v <= hi + 1e-9; v += step) g += `<line class="c-grid" x1="${plotL}" x2="${plotR}" y1="${y(v)}" y2="${y(v)}"/><text class="c-ax" x="${plotR + 6}" y="${y(v) + 3.5}" text-anchor="start">${r1(v)}</text>`;
+  const xy = pts.map((p, i) => [x(t[i]), y(p.w)]);
+  if (xy.length > 1) {
+    g += `<path class="c-area" d="M${xy[0][0]},${y(lo)}L${xy.map(p => p.join(",")).join("L")}L${xy[xy.length - 1][0]},${y(lo)}Z"/>`;
+    g += `<polyline class="c-line" points="${xy.map(p => p.join(",")).join(" ")}"/>`;
+  }
+  xy.forEach((p, i) => {
+    const tip = `${dm(parseD(pts[i].d))}: ${fmtW(pts[i].w)}`;
+    g += `<circle class="c-dot" cx="${p[0]}" cy="${p[1]}" r="4"/><circle class="c-hit" cx="${p[0]}" cy="${p[1]}" r="14" data-tip="${tip}" tabindex="0" role="img" aria-label="${tip}"/>`;
+  });
+  const L = xy[xy.length - 1];
+  g += `<text class="c-val" x="${Math.max(L[0], plotL + 14)}" y="${L[1] - 10}" text-anchor="middle">${r1(pts[pts.length - 1].w)}</text>`;
+  g += `<text class="c-ax" x="${plotR}" y="${H - 8}" text-anchor="end">${dm(parseD(pts[0].d))}</text>`;
+  if (pts.length > 1) g += `<text class="c-ax" x="${plotL}" y="${H - 8}" text-anchor="start">${dm(parseD(pts[pts.length - 1].d))}</text>`;
+  const table = pts.slice().reverse().map(p => `<tr><td>${dm(parseD(p.d))}</td><td>${fmtW(p.w)}</td></tr>`).join("");
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="group" aria-label="تطوّر وزن ${esc(ex.ar)} بالكيلو">${g}</svg>
+    ${pts.length < 2 ? `<p class="note">سجّلي وزن هالتمرين مرة تانية لتشوفي خط التطوّر.</p>` : ""}
+    <details class="tbl"><summary>شوفي الأرقام كجدول</summary><table><thead><tr><th>التاريخ</th><th>الوزن</th></tr></thead><tbody>${table}</tbody></table></details>`;
+}
+
+function renderProgress() {
+  const now = weekStats(0), prev = weekStats(-1), goal = profile.days.length, total = totalDone(), streak = streakWeeks();
+  const diff = now.ex - prev.ex;
+  let html = `<header style="display:flex;flex-direction:column;gap:4px"><span class="eyebrow">شوفي قدّيش وصلتي</span><h1>تقدّمي</h1></header>`;
+  if (!total && !Object.keys(log).length) {
+    return html + `<div class="rest"><h2>بعد ما في تمارين مسجّلة</h2><p class="muted">علّمي ✓ عالتمارين اللي بتخلّصيها بـ«برنامجي» وسجّلي أوزانك، وهون رح تشوفي تقدّمك أسبوع بأسبوع.</p><button class="save" data-tab="plan" style="margin-top:6px">روحي عالبرنامج</button></div>`;
+  }
+  html += `<div class="tiles">
+      <div class="tile"><span>تمارين هالأسبوع</span><b>${now.ex}</b><small class="${diff > 0 ? "up" : ""}">${diff > 0 ? `▲ ${diff} أكتر من الأسبوع الماضي` : diff < 0 ? `${-diff} أقل من الأسبوع الماضي` : "متل الأسبوع الماضي"}</small></div>
+      <div class="tile"><span>أيام التمرين</span><b>${now.days}<em>/${goal}</em></b><small class="${now.days >= goal ? "up" : ""}">${now.days >= goal ? "✓ حققتي هدف الأسبوع" : `باقي ${daysWord(goal - now.days)}`}</small></div>
+      <div class="tile"><span>أسابيع ورا بعض</span><b>${streak}</b><small>${streak >= 2 ? "استمرارية حلوة، كمّلي!" : "كل أسبوع بتتمرني فيه بيزيد السلسلة"}</small></div>
+      <div class="tile"><span>مجموع التمارين</span><b>${total}</b><small>من أول يوم</small></div>
+    </div>`;
+  html += `<section class="card"><div class="card-h"><h2>التمارين بالأسبوع</h2><span class="small muted">آخر ٨ أسابيع</span></div>${weeklyChart()}<p class="note">اضغطي عأي عمود لتشوفي الرقم.</p></section>`;
+
+  const ids = [...new Set(Object.values(log).flatMap(d => Object.keys(d).filter(id => d[id].w > 0)))];
+  const items = ids.map(id => ({ ex: EX.find(e => e.id === id), pts: weightsOf(id) })).filter(x => x.ex)
+    .sort((a, b) => b.pts[b.pts.length - 1].d.localeCompare(a.pts[a.pts.length - 1].d));
+  html += `<section class="group"><div class="card-h"><h2>تطوّر أوزاني</h2><span class="small muted">${items.length} تمرين</span></div>`;
+  if (!items.length) html += `<p class="empty">سجّلي الوزن اللي بترفعيه بكل تمرين، وهون بيطلعلك خط التطوّر.</p>`;
+  else {
+    if (progOpen === null || (progOpen && !items.some(x => x.ex.id === progOpen))) progOpen = items[0].ex.id;
+    html += `<div class="list">${items.map(({ ex, pts }) => {
+      const first = pts[0].w, last = pts[pts.length - 1].w, d = r1(last - first), best = Math.max(...pts.map(p => p.w)), isOpen = progOpen === ex.id;
+      return `<div class="ex">
+        <button class="ex-head" data-prog="${ex.id}" aria-expanded="${isOpen}">
+          <span class="ex-main"><b>${esc(ex.ar)}</b><span class="ex-meta">آخر وزن <span class="wtag">${fmtW(last)}</span>${d > 0 ? ` · <span class="up">▲ ${d} كغ من البداية</span>` : d < 0 ? ` · ${-d} كغ أقل من البداية` : ""}</span></span>
+          ${spark(pts)}
+        </button>
+        ${isOpen ? `<div class="ex-body">${weightChart(ex, pts)}<p class="small muted">أحسن وزن: <b class="wtag">${fmtW(best)}</b> · ${pts.length} ${pts.length === 1 ? "تسجيل" : "تسجيلات"}</p></div>` : ""}
+      </div>`;
+    }).join("")}</div>`;
+  }
+  html += `</section><p class="note">زيدي الوزن شوي شوي لمّا تقدري تعملي كل التكرارات بحركة صحيحة. هيدا اللي بيعمل التقدّم.</p>`;
+  return html;
+}
+
+/* تلميح الأرقام عالرسوم (لمس أو ماوس) */
+const $tip = document.createElement("div"); $tip.className = "tooltip"; $tip.hidden = true; $tip.setAttribute("role", "status"); document.body.appendChild($tip);
+function showTip(el) {
+  const r = el.getBoundingClientRect();
+  $tip.textContent = el.dataset.tip; $tip.hidden = false;
+  const w = $tip.offsetWidth, x = Math.min(window.innerWidth - w - 8, Math.max(8, r.left + r.width / 2 - w / 2));
+  $tip.style.left = x + "px"; $tip.style.top = Math.max(8, r.top - $tip.offsetHeight - 8) + "px";
+  document.querySelectorAll(".c-hit.on").forEach(n => n.classList.remove("on")); el.classList.add("on");
+}
+function hideTip() { $tip.hidden = true; document.querySelectorAll(".c-hit.on").forEach(n => n.classList.remove("on")); }
+document.addEventListener("pointerover", (e) => { const el = e.target.closest?.("[data-tip]"); if (e.pointerType === "mouse") el ? showTip(el) : hideTip(); });
+document.addEventListener("focusin", (e) => { const el = e.target.closest?.("[data-tip]"); el ? showTip(el) : hideTip(); });
+window.addEventListener("scroll", hideTip, { passive: true });
+
 /* ===================== الأحداث ===================== */
 document.addEventListener("click", (e) => {
+  const tipEl = e.target.closest("[data-tip]");
+  if (tipEl) { tipEl.classList.contains("on") && !$tip.hidden ? hideTip() : showTip(tipEl); return; }
+  hideTip();
   const t = e.target.closest("button");
   if (!t) return;
   const ds = t.dataset;
@@ -722,6 +889,7 @@ document.addEventListener("click", (e) => {
     render(); return;
   }
   if (ds.tab) { tab = ds.tab; open = null; if (tab === "me") draft = null; render(); window.scrollTo(0,0); return; }
+  if (ds.prog) { progOpen = progOpen === ds.prog ? "" : ds.prog; render(); return; }
   if (ds.open) { open = open === ds.open ? null : ds.open; render(); return; }
   if (ds.day) { selDay = +ds.day; open = null; render(); return; }
   if (ds.eq) { dayEq[selDay] = ds.eq; store.set("tamrini.dayEq", dayEq); open = null; render(); return; }
