@@ -831,10 +831,16 @@ const ACTS = { swim: { ar: "سباحة", en: "Swimming" }, walk: { ar: "مشي",
 
 /* ===================== الحالة ===================== */
 const DEFAULT = { age: 25, weight: 60, goal: "muscle", level: "beginner", days: [0,2,4], swim: [], eq: "both", saved: false };
+// التخزين: بالمتصفح، ومتزامن مع حسابك على claude.ai إذا التطبيق مفتوح هونيك (شوفي cloudSync تحت)
 const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  set(k, v) {
+    try { localStorage.setItem(k, JSON.stringify(v)); localStorage.setItem(k + "@t", String(Date.now())); } catch {}
+    if (typeof cloudQueue === "function") cloudQueue(k, v);
+  },
 };
+const SYNC_KEYS = ["profile", "log", "acts", "adj", "picks", "pkgSel", "dayEq", "week", "theme", "lang"];
+let cloudCol = null, cloudPending = {}, cloudBusy = false, cloudTimer = null;
 let profile = store.get("tamrini.profile", DEFAULT);
 profile.swim = (profile.swim || []).filter(d => profile.days.includes(d));
 const gymDays = () => profile.days.filter(d => !profile.swim.includes(d)).sort((x, y) => x - y);
@@ -1388,7 +1394,7 @@ function scheduleBlock() {
       <p class="small muted">${L("كل ٤ أسابيع بتعيدي الدورة بأوزان أعلى. الأوزان بالجدول مقترحة لهالأسبوع حسب آخر شي سجّلتيه؛ إذا كانت تقيلة كتير أو خفيفة، غيّريها عالبرنامج والجدول بيتعلّم منك.", "Every 4 weeks the cycle repeats with heavier weights. The weights shown are this week's suggestions based on what you last logged; if one feels too heavy or light, change it and the plan learns from you.")}</p>
     </section>`;
   return `${progCard}<section class="group" id="schedule">
-      <div class="card-h"><h2>${L("جدولي الأسبوعي", "My weekly schedule")}</h2><button class="ghost" data-print="1">${L("اطبعي / PDF", "Print / PDF")}</button></div>
+      <div class="card-h"><h2>${L("جدولي الأسبوعي", "My weekly schedule")}</h2></div>
       <p class="small muted">${L(`${order.length} أيام بالأسبوع${profile.swim.length ? ` (منها ${profile.swim.length} سباحة)` : ""} · ${gN(g)} · ${rng(g.sets)} مجموعات × ${rng(g.reps)} تكرار · راحة ${rng(g.rest)}`, `${order.length} days a week${profile.swim.length ? ` (${profile.swim.length} swim)` : ""} · ${gN(g)} · ${rng(g.sets)} sets × ${rng(g.reps)} reps · ${rng(g.restEn)} rest`)}</p>
       <div class="sched">${rows}</div>
     </section>`;
@@ -1831,7 +1837,6 @@ document.addEventListener("click", (e) => {
   if (ds.meEdit) { meEdit = true; justSaved = false; draft = null; render(); window.scrollTo(0, 0); return; }
   if (ds.meCancel) { meEdit = false; draft = null; render(); window.scrollTo(0, 0); return; }
   if (ds.goday) { selDay = +ds.goday; tab = "plan"; open = null; render(); window.scrollTo(0, 0); return; }
-  if (ds.print) { window.print(); return; }
   if (ds.lang) { lang = ds.lang; store.set("tamrini.lang", lang); applyLang(); render(); if (ses) renderPlay(); return; }
   if (ds.themeSet) { theme = ds.themeSet; store.set("tamrini.theme", theme); applyTheme(); render(); return; }
   if (ds.prog) { progOpen = progOpen === ds.prog ? "" : ds.prog; render(); return; }
@@ -1929,7 +1934,62 @@ function applyLang() {
   $play.setAttribute("aria-label", L("وضع التمرين", "Workout mode"));
   document.title = L("تمريني", "Tamrini");
 }
+/* ===================== مزامنة مع الحساب ===================== */
+// إذا التطبيق مفتوح كـ Artifact على claude.ai وإنتِ مسجّلة دخول، بياناتك بتنحفظ بحسابك (خاصّة إلك)،
+// وإلّا بتضل بالمتصفح بس. ما منوقّف الرسم بانتظارها.
+function cloudQueue(k, v) {
+  const key = k.replace(/^tamrini\./, "");
+  if (!SYNC_KEYS.includes(key)) return;
+  cloudPending[key] = v;
+  if (cloudCol) { clearTimeout(cloudTimer); cloudTimer = setTimeout(cloudFlush, 800); }
+}
+async function cloudFlush() {
+  if (!cloudCol || cloudBusy) return;
+  cloudBusy = true;
+  try {
+    for (const key of Object.keys(cloudPending)) {
+      const v = cloudPending[key]; delete cloudPending[key];
+      try { await cloudCol.doc(key).set({ v, t: Date.now() }); } catch {}
+    }
+  } finally { cloudBusy = false; if (Object.keys(cloudPending).length) cloudTimer = setTimeout(cloudFlush, 800); }
+}
+function reloadState() {
+  profile = store.get("tamrini.profile", DEFAULT); profile.swim = (profile.swim || []).filter(d => profile.days.includes(d));
+  if (!profile.start) profile.start = weekKey();
+  log = store.get("tamrini.log", {}); acts = store.get("tamrini.acts", {}); adj = store.get("tamrini.adj", {});
+  picks = store.get("tamrini.picks", {}); pkgSel = store.get("tamrini.pkgSel", {}); dayEq = store.get("tamrini.dayEq", {});
+  wk = store.get("tamrini.week", null);
+  if (!wk || wk.start !== weekKey() || wk.sig !== weekSig() || !Array.isArray(wk.assign)) freshWeek();
+  theme = store.get("tamrini.theme", "auto"); lang = store.get("tamrini.lang", "ar");
+  applyTheme(); applyLang(); render();
+}
+async function cloudSync() {
+  try {
+    if (!window.claude || typeof window.claude.use !== "function") return;
+    const [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+    if (!db || !user) return;
+    const id = await user.id(); if (!id) return;
+    const col = db.collection("data/users/" + id);
+    const snaps = await Promise.all(SYNC_KEYS.map(k => col.doc(k).get().catch(() => null)));
+    let changed = false;
+    snaps.forEach((sn, i) => {
+      const k = "tamrini." + SYNC_KEYS[i];
+      let localT = 0; try { localT = +localStorage.getItem(k + "@t") || 0; } catch {}
+      const remote = sn && sn.exists ? sn.data() : null;
+      if (remote && (remote.t || 0) > localT) {          // الأحدث بالحساب → خديه
+        try { localStorage.setItem(k, JSON.stringify(remote.v)); localStorage.setItem(k + "@t", String(remote.t)); } catch {}
+        changed = true;
+      } else {                                          // الأحدث هون → ابعتيه
+        const v = store.get(k, undefined); if (v !== undefined) cloudPending[SYNC_KEYS[i]] = v;
+      }
+    });
+    cloudCol = col;
+    if (changed) reloadState();
+    cloudFlush();
+  } catch {}
+}
 applyLang();
 render();
 if (ses) { renderPlay(); lockScreen(); }
+cloudSync();
 </script>
