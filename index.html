@@ -568,13 +568,30 @@ const GOALS = {
 const DAYS = ["السبت","الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة"];
 const DAYS_SHORT = ["سبت","أحد","إثنين","ثلاثاء","أربعاء","خميس","جمعة"];
 
+// نوع الحركة جوّا كل عضلة، ليكون اليوم منوّع (ضغط + فتح، سحب عامودي + أفقي، كور ثبات + حركة…)
+const PAT = {
+  "chest:press": ["db-bench", "db-incline", "m-chestpress", "pushup", "incline-pushup"],
+  "chest:fly": ["db-fly", "m-pecdeck", "m-crossover"],
+  "back:v": ["m-pulldown", "m-assistpull", "m-straightarm", "db-pullover"],
+  "back:h": ["db-row", "db-chestrow", "m-cablerow", "superman"],
+  "shoulders:press": ["db-shpress", "m-shpress", "db-arnold"],
+  "shoulders:side": ["db-lateral", "m-cablelateral", "db-front"],
+  "shoulders:rear": ["db-reardelt", "m-revpec", "m-facepull"],
+  "glutes:thrust": ["db-hipthrust", "m-hipthrust", "glute-bridge", "sl-bridge", "m-pullthrough", "frog-pump"],
+  "glutes:uni": ["db-bulgarian", "db-revlunge", "db-curtsy", "db-sumo"],
+  "glutes:iso": ["m-abduction", "m-kickback", "m-glutekick", "donkey-kick", "fire-hydrant", "clamshell"],
+  "abs:hold": ["plank", "side-plank", "hollow", "deadbug", "m-pallof"],
+  "abs:flex": ["crunch", "bicycle", "rev-crunch", "legraise", "flutter", "heel-taps", "mountain", "m-cablecrunch", "m-captain", "m-abcrunch"],
+  "abs:rot": ["db-twist", "db-sidebend", "db-woodchop", "m-woodchop"],
+};
+// كل يوم فيه كور (نوعين مختلفين)، والمبتدئة بتنشال منها آخر حركة مش كور
 const TEMPLATES = {
-  full:  { ar: "جسم كامل",                 slots: ["quads","chest","back","hamstrings","shoulders","abs","glutes"] },
-  upper: { ar: "الجزء العلوي",             slots: ["chest","back","shoulders","chest","back","biceps","triceps"] },
-  lower: { ar: "الجزء السفلي",             slots: ["glutes","quads","hamstrings","glutes","calves","abs","abs"] },
-  push:  { ar: "دفع: صدر، كتف، تراي",      slots: ["chest","shoulders","chest","shoulders","triceps","triceps"] },
-  pull:  { ar: "سحب: ظهر، باي",            slots: ["back","back","shoulders","biceps","biceps","abs"] },
-  legs:  { ar: "رجلين وأرداف",             slots: ["glutes","quads","glutes","hamstrings","calves","calves","abs"] },
+  full:  { ar: "جسم كامل",                en: "Full Body",          slots: ["quads", "chest:press", "back:h", "glutes:thrust", "hamstrings", "shoulders:press", "abs:flex", "abs:hold"] },
+  upper: { ar: "الجزء العلوي + كور",      en: "Upper Body + Core",  slots: ["chest:press", "back:v", "shoulders:side", "back:h", "biceps", "triceps", "abs:hold", "abs:rot"] },
+  lower: { ar: "الجزء السفلي + كور",      en: "Lower Body + Core",  slots: ["glutes:thrust", "quads", "hamstrings", "glutes:uni", "glutes:iso", "calves", "abs:flex", "abs:hold"] },
+  push:  { ar: "دفع: صدر، كتف، تراي + كور", en: "Push + Core",       slots: ["chest:press", "shoulders:press", "chest:fly", "shoulders:side", "triceps", "abs:hold", "abs:rot"] },
+  pull:  { ar: "سحب: ظهر، باي + كور",      en: "Pull + Core",        slots: ["back:v", "back:h", "shoulders:rear", "biceps", "hamstrings", "abs:flex", "abs:hold"] },
+  legs:  { ar: "رجلين وأرداف + كور",       en: "Legs & Glutes + Core", slots: ["glutes:thrust", "quads", "glutes:uni", "hamstrings", "calves", "glutes:iso", "abs:flex", "abs:rot"] },
 };
 function splitFor(n) {
   if (n <= 3) return Array.from({ length: n }, (_, i) => "full");
@@ -664,17 +681,22 @@ function buildDay(day) {
   const t = TEMPLATES[tKey];
   const eq = dayEq[day] || profile.eq;
   let slots = t.slots.slice();
-  if (profile.level === "beginner") slots = slots.slice(0, slots.length - 1);
+  if (profile.level === "beginner") {                       // شيلي آخر حركة مش كور
+    for (let k = slots.length - 1; k >= 0; k--) if (!slots[k].startsWith("abs")) { slots.splice(k, 1); break; }
+  }
   const used = new Set();
-  const items = slots.map((m, i) => {
-    const list = candidates(m, eq).filter(x => !used.has(x.id));
-    const pool = list.length ? list : candidates(m, eq);
+  const items = slots.map((slot, i) => {
+    const m = slot.split(":")[0], pat = PAT[slot];
+    const all = candidates(m, eq), byPat = pat ? all.filter(x => pat.includes(x.id)) : all;
+    const base = byPat.length ? byPat : all;
+    const list = base.filter(x => !used.has(x.id));
+    const pool = list.length ? list : base;
     const off = (pos + (swaps[`${day}-${i}-${eq}`] || 0)) % pool.length;
     const ex = pool[off];
     used.add(ex.id);
     return { ex, slot: i, isTime: !!ex.time };
   });
-  return { title: t.ar, eq, items };
+  return { title: t.ar, titleEn: t.en, key: tKey, eq, items };
 }
 const norm = (s) => s.toLowerCase().replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").replace(/[ًٌٍَُِّْ]/g,"").trim();
 const video = (ex) => ex.yt ? "https://www.youtube.com/watch?v=" + ex.yt : search(ex);
