@@ -387,6 +387,46 @@ body.playing { overflow: hidden; }
 .d-leg2 { stroke: #26161F; stroke-linecap: round; }
 .d-top { stroke: #B83A6B; stroke-linecap: round; }
 .d-hair { fill: #4A2A22; }
+.d-ear { fill: #D99878; }
+.d-eye { fill: #3A2630; }
+.d-brow { stroke: #4A2A22; stroke-width: .38; fill: none; stroke-linecap: round; }
+.d-lip { stroke: #B25D66; stroke-width: .32; fill: none; stroke-linecap: round; }
+.male .d-top { stroke: #3F5F7F; }
+.male .d-hair { fill: #2E211C; }
+.sstep { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; margin: 18px 0 2px; }
+.sstep span { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-size: .9rem; flex: none; }
+.sgoal { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 14px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow); }
+.sgoal > div > b { font-size: 1.15rem; }
+.sgoal .ghost { align-self: flex-start; }
+.srows, .sweeks { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); }
+.srow, .sweek, .slink { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--ink); text-align: start; width: 100%; min-height: 64px; }
+.srow:last-child, .sweek:last-child { border-bottom: 0; }
+.srow.rest { opacity: .62; }
+.srow.full .sinfo b { color: var(--accent); }
+.sdate { flex: none; width: 46px; height: 50px; border-radius: 14px; background: var(--soft); display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
+.sdate small { font-size: .7rem; color: var(--muted); }
+.sdate b { font-size: 1.1rem; }
+.sdate.now { background: var(--accent); color: #fff; }
+.sdate.now small { color: #fff; opacity: .85; }
+.srow.swim .sdate { background: color-mix(in srgb, #5B8FB9 18%, var(--surface)); }
+.sinfo { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.sinfo small { color: var(--muted); font-size: .8rem; }
+.sinfo .bubbles { margin-top: 2px; }
+.chev { color: var(--muted); font-size: 1.4rem; flex: none; }
+[dir="ltr"] .chev { transform: scaleX(-1); }
+.sck { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; }
+.sck svg { width: 14px; height: 14px; }
+.sweek { min-height: 56px; }
+.sweek.now { background: var(--soft); }
+.sw-n { flex: none; width: 64px; font-weight: 600; color: var(--accent); font-size: .85rem; }
+.slink { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); }
+.sl-ic { flex: none; width: 44px; height: 44px; border-radius: 14px; background: var(--soft); display: grid; place-items: center; color: var(--accent); }
+.sl-ic svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+.hdr.sday { align-items: center; justify-content: flex-start; gap: 12px; }
+.back { flex: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 8px 14px; min-height: 44px; font-weight: 600; }
+.daypick { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+.daypick .chip { flex: none; }
+.combo { margin-top: 4px; }
 .d-mat { fill: #7E2D5A; opacity: .45; }
 .d-floor { fill: #000; opacity: .05; }
 .d-prop { fill: #CDB7C0; } .d-prop2 { fill: #B9A1AB; } .d-db, .d-bar { fill: #4B4B55; } .d-cable { stroke: #8D7A83; stroke-width: .8; }
@@ -474,7 +514,7 @@ form { display: flex; flex-direction: column; gap: 18px; }
   border: 1px solid var(--line); border-radius: 999px; padding: 6px; box-shadow: 0 10px 30px rgb(0 0 0 / .16);
 }
 .tabs-in { display: flex; width: 100%; gap: 4px; }
-.tabs button { flex: 1; border: 0; background: none; border-radius: 999px; padding: 7px 4px; font-size: .78rem; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 1px; min-height: 48px; }
+.tabs button { flex: 1; min-width: 0; border: 0; background: none; border-radius: 999px; padding: 7px 2px; font-size: .74rem; white-space: nowrap; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 1px; min-height: 48px; }
 .tabs button[aria-current="true"] { background: var(--soft); color: var(--accent); font-weight: 600; }
 .tabs button svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; }
 @media (max-width: 340px) {
@@ -482,7 +522,8 @@ form { display: flex; flex-direction: column; gap: 18px; }
   .day { font-size: .7rem; }
   .tile b { font-size: 1.35rem; }
   .hero { gap: 12px; padding: 14px; }
-  .tabs button { font-size: .78rem; }
+  .tabs button { font-size: .66rem; }
+  .tabs-in { gap: 2px; }
   .scheme b { font-size: 1rem; white-space: nowrap; }
   .ex-sets { font-size: .8rem; }
   .ex-head { gap: 8px; }
@@ -502,7 +543,8 @@ form { display: flex; flex-direction: column; gap: 18px; }
 
 <nav class="tabs" dir="rtl">
   <div class="tabs-in">
-    <button id="tab-plan" data-tab="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span data-ar="برنامجي" data-en="Plan">برنامجي</span></button>
+    <button id="tab-plan" data-tab="plan"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l5.5-3.5z"/></svg><span data-ar="اليوم" data-en="Today">اليوم</span></button>
+    <button id="tab-sched" data-tab="sched"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 14h3M8 17.5h6"/></svg><span data-ar="جدولي" data-en="Schedule">جدولي</span></button>
     <button id="tab-str" data-tab="str"><svg viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2"/><path d="M5 9.5c2.5 1 4.5 1.5 7 1.5s4.5-.5 7-1.5M12 11v4l-4 6M12 15l4 6"/></svg><span data-ar="تمطيط" data-en="Stretch">تمطيط</span></button>
     <button id="tab-prog" data-tab="prog"><svg viewBox="0 0 24 24"><path d="M4 20h16M7 16v-5M12 16V6M17 16v-8"/></svg><span data-ar="تقدّمي" data-en="Progress">تقدّمي</span></button>
     <button id="tab-lib" data-tab="lib"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span data-ar="التمارين" data-en="Exercises">التمارين</span></button>
@@ -513,7 +555,9 @@ form { display: flex; flex-direction: column; gap: 18px; }
 <script>
 /* ===================== البيانات ===================== */
 let lang = (() => { try { return JSON.parse(localStorage.getItem("tamrini.lang")) || "ar"; } catch { return "ar"; } })();
-const L = (ar, en) => lang === "en" ? en : ar;
+let gender = "f", MASC = {"بتتمرّني":"بتتمرّن","استلقي":"استلقِ","ادفعي":"ادفع","تقفلي":"تقفل","نزّلي":"نزّل","ترفعي":"ترفع","ارفعي":"ارفع","تحسي":"تحسّ","افتحي":"افتح","تحضني":"تحضن","رجعي":"رجع","سكّري":"سكّر","وأنتي":"وأنت","ظبطي":"ظبط","اقعدي":"اقعد","وظبطي":"وظبط","ترجعي":"ترجع","وقفي":"وقف","اسحبي":"اسحب","ميلي":"ميل","وثبتي":"وثبت","نزلي":"نزل","اعمليه":"اعمله","وطّيتي":"وطّيت","حطي":"حطّ","فكري":"فكّر","تسحبي":"تسحب","نامي":"نام","وعصري":"وعصر","امسكي":"امسك","واقعدي":"واقعد","تتمرجحي":"تتمرجح","ورجليكي":"ورجليك","اختاري":"اختار","اطلعي":"اطلع","قللي":"قلّل","لتوصلي":"لتوصل","حسي":"حسّ","اثبتي":"اثبت","ونزلي":"ونزل","وامسكي":"وامسك","رجعيه":"رجعه","وحسّي":"وحسّ","تقوّسي":"تقوّس","شدي":"شدّ","وبدّلي":"وبدّل","تلفّي":"تلفّ","وارجعي":"وارجع","لفّي":"لفّ","وافتحي":"وافتح","ولفّي":"ولفّ","وسنّدي":"وسنّد","افردي":"افرد","تفردي":"تفرد","اثني":"اثنِ","ونزّلي":"ونزّل","وخدي":"وخود","انزلي":"انزل","وادفعي":"وادفع","ورجعي":"ورجع","تميلي":"تميل","رجليكي":"رجليك","لتتعلمي":"لتتعلم","سنّدي":"سنّد","فكّي":"فكّ","وانزلي":"وانزل","ابدئي":"ابدأ","لتتعوّدي":"لتتعوّد","ارجعي":"ارجع","ثبّتي":"ثبّت","وجيبي":"وجيب","وتأكدي":"وتأكد","عصري":"عصر","ربطي":"ربط","وواجهي":"وواجه","واطلعي":"واطلع","تعملي":"تعمل","ووقفي":"ووقف","تشدي":"تشدّ","وحطي":"وحطّ","تعصري":"تعصر","لتطلعي":"لتطلع","اركعي":"اركع","وارفعي":"وارفع","وكرري":"وكرر","تفرقي":"تفرق","واثبتي":"واثبت","لتحسّي":"لتحسّ","تفكّي":"تفكّ","تنزّلي":"تنزّل","مدّي":"مدّ","وميلي":"وميل","حافظي":"حافظ","انثني":"انثنِ","قرّبي":"قرّب","وافردي":"وافرد","بدّلي":"بدّل","جيبي":"جيب","ورجّعيها":"ورجّعها","وقرّبي":"وقرّب","والمسي":"والمس","حرّكي":"حرّك","ودوّري":"ودوّر","وقاومي":"وقاوم","تختاري":"تختار","وركّزي":"وركّز","زيدي":"زيد","وحاولي":"وحاول","توصلي":"توصل","خففي":"خفف","بتبلّشي":"بتبلّش","مستواكِ":"مستواك","شوفي":"شوف","اخترتيه":"اخترته","قارني":"قارن","تأجّلي":"تأجّل","ركّزي":"ركّز","كرّري":"كرّر","لتقدري":"لتقدر","تعوّضيه":"تعوّضه","شيلي":"شيل","بتقدري":"بتقدر","تعلّمي":"تعلّم","وتسجّلي":"وتسجّل","رفعتيه":"رفعته","نقّصي":"نقّص","اضغطي":"اضغط","اعمليلي":"اعملّي","حققتي":"حققت","لتكمّلي":"لتكمّل","تمرّنتي":"تمرّنت","رجّعي":"رجّع","خلّصتيه":"خلّصته","بلّشتي":"بلّشت","وأجّلي":"وأجّل","سجّلي":"سجّل","امسحي":"امسح","سجّلتي":"سجّلت","سجّليها":"سجّلها","بتسجّليها":"بتسجّلها","عوّضي":"عوّض","أجّليه":"أجّله","خلّصتي":"خلّصت","كمّلي":"كمّل","لتعلّمي":"لتعلّم","لتشوفي":"لتشوف","خدي":"خود","خلّصي":"خلّص","سبحي":"سبح","قصّريها":"قصّرها","استشيري":"استشير","تبلّشي":"تبلّش","بتخلّصيها":"بتخلّصها","دوّري":"دوّر","تصفّحي":"تصفّح","جربي":"جرّب","طوّلي":"طوّل","تمطّيها":"تمطّطها","بتعرفي":"بتعرف","عدّلي":"عدّل","حطّي":"حطّ","لتفوتي":"لتفوت","فيكِ":"فيك","اكتبي":"اكتب","تتمرّني":"تتمرّن","تغيّريها":"تغيّرها","احفظي":"احفظ","واعمليلي":"واعملّي","خلّصتيها":"خلّصتها","وصلتي":"وصلت","علّمي":"علّم","وسجّلي":"وسجّل","تشوفي":"تشوف","روحي":"روح","بتتمرني":"بتتمرن","بترفعيه":"بترفعه","تقدري":"تقدر","وقفتي":"وقفت","حسّيتي":"حسّيت","واشربي":"واشرب","توقفي":"توقف","وقّفي":"وقّف","اعملي":"اعمل","وكبّريها":"وكبّرها","غيّري":"غيّر","مرجحي":"مرجح","كبّري":"كبّر","تنزلي":"تنزل","ورفعي":"ورفع","تحرّكي":"تحرّك","ونزّليه":"ونزّله","ميّلي":"ميّل","لتزيدي":"لتزيد","اسحبيها":"اسحبها","واثني":"واثنِ","تدفشيه":"تدفشه","وراكِ":"وراك","تحسّي":"تحسّ","شبكي":"شبك","عكعبيكي":"عكعبيك","انحني":"انحنِ","ومدّي":"ومدّ","ريّحي":"ريّح","وتنفّسي":"وتنفّس","اسندي":"اسند","تضغطي":"تضغط","شدّي":"شدّ","تقوّسيه":"تقوّسه","بتحسّي":"بتحسّ","وسكّري":"وسكّر","وقعدي":"وقعد","بتوصلي":"بتوصل","وانحني":"وانحنِ","لتضلي":"لتضل","وريّحي":"وريّح","وتمرجحي":"وتمرجح","لتأكدي":"لتأكد","خديه":"خوده","ابعتيه":"ابعته","مبتدئة":"مبتدئ","متوسطة":"متوسط","متقدّمة":"متقدّم"};   // كلمات المؤنث ← المذكر (بتنعبّى تحت)
+const gA = (v) => gender !== "m" ? v : Array.isArray(v) ? v.map(gA) : typeof v === "string" ? v.replace(/[\u0621-\u064A\u064B-\u0652\u0640]+/g, w => MASC[w] || w) : v;
+const L = (ar, en) => lang === "en" ? en : gA(ar);
 const MUSCLES = {
   chest:     { ar: "الصدر",          part: "upper", en: "Chest", kwEn: "chest pecs", kw: "صدر بنش" },
   back:      { ar: "الظهر",          part: "upper", en: "Back", kwEn: "back lats", kw: "ظهر لاتس" },
@@ -824,8 +868,8 @@ const EX_EN = {
   "m-abcrunch": [["Adjust the seat and grab the handles.", "Crunch forward by squeezing your abs.", "Return slowly."], "The movement comes from your abs, not your arms."],
 };
 const exN = (ex) => L(ex.ar, ex.en);
-const exSteps = (ex) => lang === "en" ? ((EX_EN[ex.id] || [])[0] || ex.stepsEn || ex.steps) : ex.steps;
-const exTip = (ex) => lang === "en" ? ((EX_EN[ex.id] || [])[1] || ex.tipEn || ex.tip) : ex.tip;
+const exSteps = (ex) => lang === "en" ? ((EX_EN[ex.id] || [])[0] || ex.stepsEn || ex.steps) : gA(ex.steps);
+const exTip = (ex) => lang === "en" ? ((EX_EN[ex.id] || [])[1] || ex.tipEn || ex.tip) : gA(ex.tip);
 
 const GOALS = {
   fat:      { ar: "خسارة دهون",  en: "Fat loss", subEn: "Burn & tone", restEn: "45–60 s", sub: "حرق وشد",         sets: "3",   reps: "12–15", rest: "45–60 ث" },
@@ -909,7 +953,7 @@ const SUGGEST_DAYS = { 1: [0], 2: [0, 3], 3: [0, 2, 4], 4: [0, 1, 3, 4], 5: [0, 
 const ACTS = { swim: { ar: "سباحة", en: "Swimming" }, walk: { ar: "مشي", en: "Walking" }, run: { ar: "ركض", en: "Running" }, cycle: { ar: "دراجة", en: "Cycling" }, yoga: { ar: "يوغا / بيلاتس", en: "Yoga / Pilates" } };
 
 /* ===================== الحالة ===================== */
-const DEFAULT = { age: 25, weight: 60, goal: "muscle", goalText: "", goalWeeks: 0, level: "beginner", days: [0,2,4], swim: [], eq: "both", saved: false };
+const DEFAULT = { age: 25, weight: 60, goal: "muscle", goalText: "", goalWeeks: 0, level: "beginner", gender: "f", days: [0,2,4], swim: [], combo: [], eq: "both", saved: false };
 // التخزين: بالمتصفح، ومتزامن مع حسابك على claude.ai إذا التطبيق مفتوح هونيك (شوفي cloudSync تحت)
 const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
@@ -921,9 +965,11 @@ const store = {
 const SYNC_KEYS = ["profile", "log", "acts", "adj", "picks", "pkgSel", "dayEq", "week", "theme", "lang", "stretch"];
 let cloudCol = null, cloudPending = {}, cloudBusy = false, cloudTimer = null;
 let profile = store.get("tamrini.profile", DEFAULT);
-profile.swim = (profile.swim || []).filter(d => profile.days.includes(d));
+const fixDays = (p) => { p.swim = (p.swim || []).filter(d => p.days.includes(d)); p.combo = (p.combo || []).filter(d => p.days.includes(d) && !p.swim.includes(d)); p.gender ||= "f"; return p; };
+fixDays(profile); gender = profile.gender;
 const gymDays = () => profile.days.filter(d => !profile.swim.includes(d)).sort((x, y) => x - y);
 const isSwimDay = (d) => profile.swim.includes(d);
+const isCombo = (d) => (profile.combo || []).includes(d) && !profile.swim.includes(d);   // تمرين + سباحة بنفس اليوم
 let log = store.get("tamrini.log", {});          // { "YYYY-MM-DD": { exId: { done, w } } }
 let dayEq = store.get("tamrini.dayEq", {});     // معدات كل يوم
 let pkgSel = store.get("tamrini.pkgSel", {});   // { رقم التمرين بالأسبوع: id الباقة }
@@ -1003,7 +1049,7 @@ function candidates(muscle, eq) {
 }
 /* أسبوعي: أي تمرين بأي يوم (بيتغيّر لمّا تأجّلي أو تقدّمي) */
 const weekKey = () => ymd(dateOfDay(0));
-const weekSig = () => gymDays().join(",") + "|" + profile.swim.slice().sort().join(",");
+const weekSig = () => gymDays().join(",") + "|" + profile.swim.slice().sort().join(",") + "|" + (profile.combo || []).slice().sort().join(",");
 function defaultAssign() { const a = Array(7).fill(null); gymDays().forEach((d, k) => { a[d] = k; }); return a; }
 let wk = store.get("tamrini.week", null);
 function freshWeek() { wk = { start: weekKey(), sig: weekSig(), assign: defaultAssign() }; store.set("tamrini.week", wk); }
@@ -1012,6 +1058,7 @@ const progWeek = () => Math.max(1, Math.round((new Date(weekKey()) - new Date(pr
 const phaseOf = () => ((progWeek() - 1) % 4) + 1;
 const cycleOf = () => Math.floor((progWeek() - 1) / 4);
 const phaseName = () => L(PHASES[phaseOf()].ar, PHASES[phaseOf()].en), phaseTip = () => L(PHASES[phaseOf()].tipAr, PHASES[phaseOf()].tipEn);
+const comboSwim = () => Math.max(15, swimMin() - 10);
 const swimMin = () => Math.min(60, (profile.level === "inter" ? 30 : 20) + 5 * cycleOf() + { 1: 0, 2: 5, 3: 10, 4: -5 }[phaseOf()]);
 const swimTip = () => L({ 1: "سباحة مريحة: ٥ د إحماء، ركّزي عالتنفّس، و٥ د تهدئة.", 2: "زيدي ٥ دقايق عالأسبوع الماضي بنفس الإيقاع المريح.", 3: "فترات: كرّري (٣ د أسرع + ١ د مريح)، والباقي مريح.", 4: "أسبوع خفيف: سباحة هادية وممتعة." }[phaseOf()],
   { 1: "Easy swim: 5 min warm-up, focus on breathing, 5 min cool-down.", 2: "Add 5 minutes to last week at the same easy pace.", 3: "Intervals: repeat (3 min faster + 1 min easy), rest of the time easy.", 4: "Light week: a calm, enjoyable swim." }[phaseOf()]);
@@ -1134,11 +1181,13 @@ const BODY_ZONE = {
   hamstrings: "M34.8,124.0C35.9,121.8 39.4,122.4 41.6,122.6C43.8,122.8 47.2,122.6 48.2,125.0C49.2,127.4 47.9,133.2 47.6,137.0C47.3,140.8 47.2,145.5 46.2,148.0C45.2,150.5 43.1,152.0 41.6,152.0C40.1,152.0 38.5,150.7 37.4,148.0C36.3,145.3 35.4,140.0 35.0,136.0C34.6,132.0 33.7,126.2 34.8,124.0ZM65.2,124.0C64.1,121.8 60.6,122.4 58.4,122.6C56.2,122.8 52.8,122.6 51.8,125.0C50.8,127.4 52.1,133.2 52.4,137.0C52.7,140.8 52.8,145.5 53.8,148.0C54.8,150.5 56.9,152.0 58.4,152.0C59.9,152.0 61.5,150.7 62.6,148.0C63.7,145.3 64.6,140.0 65.0,136.0C65.4,132.0 66.3,126.2 65.2,124.0Z",
   calves: "M36.4,158.0C37.2,156.3 39.1,155.8 40.6,156.0C42.1,156.2 44.8,157.0 45.6,159.0C46.4,161.0 45.8,164.8 45.6,168.0C45.4,171.2 45.1,175.8 44.2,178.0C43.3,180.2 41.7,181.3 40.4,181.0C39.1,180.7 37.4,178.5 36.6,176.0C35.8,173.5 35.6,169.0 35.6,166.0C35.6,163.0 35.6,159.7 36.4,158.0ZM63.6,158.0C62.8,156.3 60.9,155.8 59.4,156.0C57.9,156.2 55.2,157.0 54.4,159.0C53.6,161.0 54.2,164.8 54.4,168.0C54.6,171.2 54.9,175.8 55.8,178.0C56.7,180.2 58.3,181.3 59.6,181.0C60.9,180.7 62.6,178.5 63.4,176.0C64.2,173.5 64.4,169.0 64.4,166.0C64.4,163.0 64.4,159.7 63.6,158.0Z"
 };
+const HAIR_MF = "M40.4,15.5C40.0,9.2 44.4,5.0 50.0,5.0C55.6,5.0 60.0,9.2 59.6,15.5C58.2,11.6 54.6,10.2 50.0,10.2C45.4,10.2 41.8,11.6 40.4,15.5Z";
+const HAIR_MB = "M40.3,17.5C39.9,9.6 44.4,5.0 50.0,5.0C55.6,5.0 60.1,9.6 59.7,17.5C58.4,20.0 54.6,21.0 50.0,21.0C45.4,21.0 41.6,20.0 40.3,17.5Z";
 const BACK_VIEW = new Set(["back", "triceps", "glutes", "hamstrings", "calves"]);
 const ZONE_CY = { chest: 52, shoulders: 50, biceps: 62, triceps: 62, back: 62, abs: 80, glutes: 112, quads: 130, hamstrings: 136, calves: 166 };
 function bodyIcon(m, full = false) {
   const vb = full ? `-12 ${ZONE_CY[m] - 62} 124 124` : `6 ${ZONE_CY[m] - 44} 88 88`;
-  return `<svg class="fig" viewBox="${vb}" aria-hidden="true"><path class="sil" d="${BODY_SIL}"/><path class="sil" d="${BODY_HEAD}"/><path class="zn" d="${BODY_ZONE[m]}"/><path class="hair" d="${BACK_VIEW.has(m) ? HAIR_B : HAIR_F}"/></svg>`;
+  return `<svg class="fig" viewBox="${vb}" aria-hidden="true"><path class="sil" d="${BODY_SIL}"/><path class="sil" d="${BODY_HEAD}"/><path class="zn" d="${BODY_ZONE[m]}"/><path class="hair" d="${gender === "m" ? (BACK_VIEW.has(m) ? HAIR_MB : HAIR_MF) : BACK_VIEW.has(m) ? HAIR_B : HAIR_F}"/></svg>`;
 }
 
 function avatar(ex, opts = {}) {
@@ -1175,7 +1224,8 @@ const roundW = (ex, w) => { const st = ex.eq === "machine" ? 2.5 : (w < 6 ? 0.5 
 function startW(ex) {
   const b = W_START[ex.id]; if (b == null) return null;
   const f = ({ beginner: 0.85, inter: 1.4, adv: 1.9 }[profile.level] || 0.85) * Math.min(1.25, Math.max(0.85, profile.weight / 60)) * ({ strength: 1.15, muscle: 1, gain: 1, fat: .9, tone: .9, fit: .9 }[profile.goal] || 1);
-  return roundW(ex, b * f);
+  const gf = profile.gender === "m" ? (["chest", "back", "shoulders", "biceps", "triceps"].includes(ex.m) ? 1.5 : 1.25) : 1;
+  return roundW(ex, b * f * gf);
 }
 // المبتدئة بتزيد شوي شوي (نص كيلو لكيلو)، المتقدّمة أكتر
 const wInc = (ex) => {
@@ -1258,7 +1308,7 @@ function renderPlan() {
   const day = buildDay(selDay);
   let html = `<header class="hdr"><div>
       <span class="eyebrow">${profile.name ? L(`أهلا ${esc(profile.name)} · `, `Hi ${esc(profile.name)} · `) : ""}${dayN(todayIdx)} · ${L("هدفك", "Goal")}: ${gN(g)}</span>
-      <h1>${L("برنامجي", "My Plan")}</h1></div>
+      <h1>${L("تمرين اليوم", "Today")}</h1></div>
       <button class="lang-btn" data-lang="${L("en", "ar")}" lang="${L("en", "ar")}">${L("English", "العربية")}</button>
     </header>`;
   if (!profile.saved) html += `<div class="banner"><span>${L("هيدا برنامج مثال. عبّي عمرك ووزنك وهدفك ليتظبط إلك.", "This is a sample plan. Add your age, weight and goal to tailor it.")}</span><button data-tab="me">${L("اعمليلي جدولي", "Build my schedule")}</button></div>`;
@@ -1279,13 +1329,19 @@ function renderPlan() {
         const d = buildDay(i), st = dayStatus(i), at = actsTxt(ymd(dateOfDay(i))), sw = !d && isSwimDay(i);
         return `<button class="rcard ${i === selDay ? "sel" : ""} ${d ? "" : "restc"}" data-day="${i}" aria-pressed="${i === selDay}">
           <span class="eyebrow">${dayN(i)}${i === todayIdx ? L(" · اليوم", " · Today") : ""}${d ? ` · ${dayMin(i, d)} ${L("دقيقة", "min")}` : sw ? ` · ${swimMin()} ${L("دقيقة", "min")}` : ""}</span>
-          <b class="rc-t">${d ? d.typeName : sw ? L("سباحة", "Swim") : L("راحة", "Rest")}</b>${sw ? `<small>${phaseName()}</small>` : ""}${d ? `<small>${d.pkgName} + ${L("كور", "core")}</small>` : ""}
+          <b class="rc-t">${d ? d.typeName : sw ? L("سباحة", "Swim") : L("راحة", "Rest")}</b>${sw ? `<small>${phaseName()}</small>` : ""}${d ? `<small>${d.pkgName} + ${L("كور", "core")}${isCombo(i) ? L(" · + سباحة", " · + swim") : ""}</small>` : ""}
           ${at ? `<small class="act-tag">${at}</small>` : ""}
           ${st === "full" ? `<span class="rc-badge">${L("✓ خلّصتيه", "✓ Done")}</span>` : st === "part" ? `<span class="rc-badge part">${L("بلّشتي", "Started")}</span>` : ""}
           ${d ? bubbles(d.items) : sw ? WAVES : `<p class="muted small">${L("العضل بيكبر وقت الراحة", "Muscles grow while you rest")}</p>`}
         </button>`;
       }).join("")}</div>
     </section>`;
+  html += dayDetail();
+  return html;
+}
+function dayDetail() {
+  const g = GOALS[profile.goal], day = buildDay(selDay);
+  let html = "";
   if (planMsg) { html += `<div class="banner ok" role="status"><span>${planMsg}</span></div>`; planMsg = ""; }
   const dStr = ymd(dateOfDay(selDay)), canLog = dateOfDay(selDay) <= TODAY, future = dateOfDay(selDay) >= TODAY;
   const dayActs = actsOf(dStr);
@@ -1361,6 +1417,16 @@ function renderPlan() {
       : canLog
         ? `<button class="start" data-start="plan">▶ ${nDone ? L("كمّلي التمرين", "Continue workout") : L("ابدئي التمرين", "Start workout")}<small>${est} ${L("د", "min")}</small></button>`
         : `<button class="start" disabled>${L(`بتبلّشي يوم ${DAYS[selDay]}`, `Starts on ${DAYS_EN[selDay]}`)}</button>`}</div>`;
+    if (isCombo(selDay)) {
+      const swum = dayActs.some(a => a.t === "swim");
+      html += `<section class="checkin swimday combo">
+        <span class="eyebrow">${L("٤ · سباحة بعد التمرين", "4 · Swim after the workout")}</span>
+        <h2>${L(`سباحة خفيفة ${comboSwim()} دقيقة`, `Easy swim ${comboSwim()} min`)}</h2>
+        ${WAVES}
+        <p class="muted small">${L("خلّصي التمرين أول، وبعدين سبحي بهدوء. السباحة الخفيفة بتريّح العضل وبتزيد الحرق. إذا في تعب، قصّريها.", "Finish the workout first, then swim at an easy pace. It loosens the muscles and adds to the burn. Shorten it if you're tired.")}</p>
+        ${swum ? `<div class="banner ok"><span>${L("✓ برافو! سجّلتي السباحة.", "✓ Great! Swim logged.")}</span></div>` : canLog ? `<button class="save" data-plan="swimc">${L("✓ سبحت، سجّليها", "✓ I swam, log it")}</button>` : `<p class="note">${L(`بتسجّليها يوم ${DAYS[selDay]}.`, `You can log it on ${DAYS_EN[selDay]}.`)}</p>`}
+      </section>`;
+    }
   }
   const protein = Math.round(profile.weight * 1.6), water = (profile.weight * 0.035).toFixed(1);
   html += `<section class="scheme" style="grid-template-columns:1fr 1fr">
@@ -1481,38 +1547,68 @@ function settingsBlock() {
         <div class="seg">${[["auto",L("تلقائي","Auto")],["light",L("فاتح","Light")],["dark",L("غامق","Dark")]].map(([k,l]) => `<button type="button" data-theme-set="${k}" aria-pressed="${theme===k}">${l}</button>`).join("")}</div></div>
     </section>`;
 }
-function scheduleBlock() {
-  const g = GOALS[profile.goal], order = profile.days.slice().sort((x, y) => x - y), ph = phaseOf(), wkN = progWeek(), total = profile.goalWeeks || 0;
+function progCardHtml() {
+  const ph = phaseOf(), wkN = progWeek(), total = profile.goalWeeks || 0;
   const goalLine = profile.goalText ? `<p class="goal-q">“${esc(profile.goalText)}”</p>` : "";
-  const progCard = `<section class="progcard">
+  return `<section class="progcard">
       <div class="card-h"><b>${total ? L(`الأسبوع ${Math.min(wkN, total)} من ${total}`, `Week ${Math.min(wkN, total)} of ${total}`) : L(`الأسبوع ${wkN} من برنامجك`, `Week ${wkN} of your program`)}</b><span class="pill now">${phaseName()}</span></div>
       ${goalLine}
       ${total ? `<div class="bar"><i style="width:${Math.min(100, (wkN / total) * 100).toFixed(0)}%"></i></div><span class="small muted">${wkN > total ? L("خلصت مدّة هدفك! عدّلي الهدف أو كمّلي عادي.", "Your goal period is over. Update the goal or keep going.") : L(`باقي ${total - wkN + 1} أسابيع`, `${total - wkN + 1} weeks left`)}</span>` : `<span class="small muted">${L("هدف مستمر", "Ongoing goal")}</span>`}
       <div class="phases">${[1, 2, 3, 4].map(i => `<span class="ph ${i === ph ? "on" : i < ph ? "past" : ""}"><b>${i}</b><small>${L(PHASES[i].ar, PHASES[i].en)}</small></span>`).join("")}</div>
       <p>${phaseTip()}</p>
     </section>`;
-  const cards = DAYS.map((_, i) => {
-    const day = buildDay(i), today = i === todayIdx, st = dayStatus(i);
-    const top = `<span class="eyebrow">${dayN(i)}${today ? L(" · اليوم", " · Today") : ""}</span>`;
-    if (!day && isSwimDay(i)) return `<button class="sdc swim" data-goday="${i}">${top}<b>${L("سباحة", "Swim")}</b><small>${swimMin()} ${L("دقيقة", "min")}${st ? " · ✓" : ""}</small>${WAVES}</button>`;
-    if (!day) return `<div class="sdc rest">${top}<b>${L("راحة", "Rest")}</b><small>${L("مشي خفيف أو تمطيط", "Light walk or stretch")}</small></div>`;
-    return `<button class="sdc ${st}" data-goday="${i}">${top}<b>${day.typeName}</b><small>${day.pkgName} · ${dayMin(i, day)} ${L("د", "min")}${st === "full" ? " · ✓" : ""}</small>${bubbles(day.items, 6, .5)}</button>`;
-  }).join("");
-  return `${progCard}<section class="group" id="schedule">
-      <div class="card-h"><h2>${L("جدولي الأسبوعي", "My weekly schedule")}</h2></div>
-      <p class="small muted">${L(`${order.length} أيام بالأسبوع${profile.swim.length ? ` (منها ${profile.swim.length} سباحة)` : ""} · كل يوم: إحماء، تمرين، تمطيط. اضغطي عاليوم لتفوتي عليه.`, `${order.length} days a week${profile.swim.length ? ` (${profile.swim.length} swim)` : ""} · Each day: warm-up, workout, stretch. Tap a day to open it.`)}</p>
-      <div class="sdcs">${cards}</div>
-    </section>`;
+}
+let schedDay = null;
+const dayShort = (i) => L(DAYS[i], DAYS_EN[i].slice(0, 3));
+function schedRow(i) {
+  const day = buildDay(i), today = i === todayIdx, st = dayStatus(i), dt = dateOfDay(i);
+  const date = `<span class="sdate ${today ? "now" : ""}"><small>${dayShort(i)}</small><b>${dt.getDate()}</b></span>`;
+  const end = st === "full" ? `<span class="sck" aria-label="${L("خلّصتيه", "Done")}">${CHECK}</span>` : `<span class="chev" aria-hidden="true">‹</span>`;
+  if (!day && isSwimDay(i)) return `<button class="srow swim ${st}" data-goday="${i}">${date}<span class="sinfo"><b>${L("سباحة", "Swim")}</b><small>${swimMin()} ${L("دقيقة", "min")} · ${phaseName()}</small></span>${end}</button>`;
+  if (!day) return `<div class="srow rest">${date}<span class="sinfo"><b>${L("راحة", "Rest")}</b><small>${L("مشي خفيف أو تمطيط", "Light walk or stretch")}</small></span></div>`;
+  return `<button class="srow ${st}" data-goday="${i}">${date}<span class="sinfo"><b>${day.typeName}${isCombo(i) ? L(" + سباحة", " + swim") : ""}</b><small>${day.pkgName} · ${day.items.length} ${L("تمارين", "exercises")} · ${dayMin(i, day)} ${L("د", "min")}${isCombo(i) ? L(` · سباحة ${comboSwim()} د`, ` · swim ${comboSwim()} min`) : ""}</small>${bubbles(day.items, 5, .45)}</span>${end}</button>`;
+}
+function renderSched() {
+  if (schedDay != null) { selDay = schedDay; return schedDayView(); }
+  const g = GOALS[profile.goal], nm = (profile.name || "").trim(), wkN = progWeek(), total = profile.goalWeeks || 0;
+  const order = profile.days.slice().sort((x, y) => x - y), nSwim = order.filter(isSwimDay).length, nCombo = order.filter(isCombo).length;
+  const upto = total ? Math.min(total, wkN + 3) : wkN + 3;
+  const weeks = []; for (let w = wkN; w <= upto; w++) weeks.push(w);
+  const step = (n, t) => `<h3 class="sstep"><span>${n}</span>${t}</h3>`;
+  return `<header class="hdr"><div><span class="eyebrow">${nm ? L(`أهلا ${esc(nm)}`, `Hi ${esc(nm)}`) : L("برنامجك خطوة بخطوة", "Your plan, step by step")}</span><h1>${L("جدولي", "My schedule")}</h1></div>
+      <button class="lang-btn" data-lang="${L("en", "ar")}" lang="${L("en", "ar")}">${L("English", "العربية")}</button></header>
+    ${justSaved ? `<div class="banner ok"><span>${L("✓ جهز جدولك! اضغطي على أي يوم لتشوفي تمارينه بالترتيب.", "✓ Your schedule is ready! Tap any day to see its exercises in order.")}</span></div>` : ""}
+    ${profile.saved ? "" : `<div class="banner"><span>${L("هيدا جدول مثال. حطّي هدفك ومعلوماتك ليتظبط إلك.", "This is a sample. Add your goal and details to tailor it.")}</span><button data-me-edit="1">${L("حطّي هدفي", "Set my goal")}</button></div>`}
+    ${step(1, L("هدفي", "My goal"))}
+    <section class="sgoal">
+      <div><b>${gN(g)}</b>${profile.goalText ? `<p class="goal-q">“${esc(profile.goalText)}”</p>` : ""}</div>
+      <div class="chips">${[lvN(profile.level), L(`${order.length} أيام بالأسبوع`, `${order.length} days/week`), eqOptN(profile.eq), total ? L(`${total} أسابيع`, `${total} weeks`) : L("هدف مستمر", "Ongoing")].map(t => `<span class="pill">${t}</span>`).join("")}</div>
+      <button class="ghost" data-me-edit="1">${L("عدّلي هدفي", "Edit goal")}</button>
+    </section>
+    ${step(2, L("هالأسبوع", "This week"))}
+    <p class="small muted">${L(`${order.length - nSwim} أيام تمرين${nSwim ? ` · ${nSwim} سباحة` : ""}${nCombo ? ` · ${nCombo} منهن مع سباحة` : ""} · كل تمرين: إحماء، تمارين، تمطيط`, `${order.length - nSwim} workouts${nSwim ? ` · ${nSwim} swim` : ""}${nCombo ? ` · ${nCombo} with a swim` : ""} · each: warm-up, exercises, stretch`)}</p>
+    <div class="srows">${DAYS.map((_, i) => schedRow(i)).join("")}</div>
+    ${step(3, L("كيف رح يتطوّر", "How it progresses"))}
+    ${progCardHtml()}
+    <div class="sweeks">${weeks.map(w => { const ph = ((w - 1) % 4) + 1; return `<div class="sweek ${w === wkN ? "now" : ""}"><span class="sw-n">${L(`أسبوع ${w}`, `Week ${w}`)}</span><span class="sinfo"><b>${L(PHASES[ph].ar, PHASES[ph].en)}${w === wkN ? L(" · هلّق", " · now") : ""}</b><small>${L(PHASES[ph].tipAr, PHASES[ph].tipEn)}</small></span></div>`; }).join("")}</div>`;
+}
+function schedDayView() {
+  const day = buildDay(selDay);
+  const title = day ? `${day.typeName}${isCombo(selDay) ? L(" + سباحة", " + swim") : ""}` : isSwimDay(selDay) ? L("سباحة", "Swim") : L("راحة", "Rest");
+  return `<header class="hdr sday"><button class="back" data-schedback="1" aria-label="${L("رجوع لجدولي", "Back to schedule")}">${L("› جدولي", "‹ Schedule")}</button>
+      <div><span class="eyebrow">${dayN(selDay)}${selDay === todayIdx ? L(" · اليوم", " · Today") : ""}</span><h1>${title}</h1></div></header>
+    <div class="chips daypick">${DAYS.map((_, i) => `<button class="chip" data-goday="${i}" aria-pressed="${i === selDay}">${dayShort(i)}</button>`).join("")}</div>
+    ${dayDetail()}`;
 }
 function renderMe() {
   if (profile.saved && !meEdit) {
     const g = GOALS[profile.goal], nm = (profile.name || "").trim();
     return `<header class="hdr"><div><span class="eyebrow">${L("حسابي", "My account")}</span><h1>${nm ? L(`أهلا ${esc(nm)}`, `Hi ${esc(nm)}`) : L("حسابي", "Account")}</h1></div></header>
-      ${justSaved ? `<div class="banner ok"><span>${L("✓ جهز جدولك! عملناه حسب هدفك وأيامك. فيكِ تبلّشي من «برنامجي».", "✓ Your schedule is ready, built from your goal and days. Start from “My Plan”.")}</span><button data-tab="plan">${L("ابدئي", "Start")}</button></div>` : ""}
+      ${justSaved ? `<div class="banner ok"><span>${L("✓ جهز جدولك! عملناه حسب هدفك وأيامك. فيكِ تبلّشي من «اليوم».", "✓ Your schedule is ready, built from your goal and days. Start from “Today”.")}</span><button data-tab="plan">${L("ابدئي", "Start")}</button></div>` : ""}
       <section class="acct">
         <div class="acct-top">
-          <span class="acct-av" aria-hidden="true">${nm ? esc(nm[0].toUpperCase()) : "♀"}</span>
-          <div><b>${gN(g)}</b><span class="muted small">${lvN(profile.level)} · ${profile.days.length} ${L("أيام بالأسبوع", "days a week")} · ${profile.goalWeeks ? L(`${profile.goalWeeks} أسابيع`, `${profile.goalWeeks} weeks`) : L("مستمر", "ongoing")}</span></div>
+          <span class="acct-av" aria-hidden="true">${nm ? esc(nm[0].toUpperCase()) : profile.gender === "m" ? "♂" : "♀"}</span>
+          <div><b>${gN(g)}</b><span class="muted small">${profile.gender === "m" ? L("ذكر", "Male") : L("أنثى", "Female")} · ${lvN(profile.level)} · ${profile.days.length} ${L("أيام بالأسبوع", "days a week")} · ${profile.goalWeeks ? L(`${profile.goalWeeks} أسابيع`, `${profile.goalWeeks} weeks`) : L("مستمر", "ongoing")}</span></div>
         </div>
         <div class="acct-stats">
           <div><b>${profile.age}</b><span>${L("العمر", "Age")}</span></div>
@@ -1521,7 +1617,7 @@ function renderMe() {
         </div>
         <button class="save" data-me-edit="1">${L("عدّلي بياناتي وهدفي", "Edit my details & goal")}</button>
       </section>
-      ${scheduleBlock()}
+      <button class="slink" data-tab="sched"><span class="sl-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 14h3M8 17.5h6"/></svg></span><span class="sinfo"><b>${L("جدولي", "My schedule")}</b><small>${L("أيامك وتمارين كل يوم بالترتيب", "Your days and each day's exercises in order")}</small></span><span class="chev" aria-hidden="true">‹</span></button>
       ${settingsBlock()}`;
   }
   draft ||= JSON.parse(JSON.stringify(profile));
@@ -1531,6 +1627,9 @@ function renderMe() {
   <p class="muted">${L("عبّي معلوماتك وهدفك، والتطبيق بيعملك جدول تمارين أسبوعي منوّع وفيه كور كل يوم.", "Fill in your details and goal, and the app builds a varied weekly schedule with core work every day.")}</p>
   <form id="me-form" novalidate>
     <div class="field"><label for="f-name">${L("اسمك (اختياري)", "Your name (optional)")}</label><input id="f-name" class="num" type="text" autocomplete="given-name" maxlength="24" value="${esc(d.name || "")}"></div>
+    <div class="field"><span class="lbl">${L("الجنس", "Gender")}</span>
+      <div class="seg">${[["f", "أنثى", "Female"], ["m", "ذكر", "Male"]].map(([k, ar, en]) => `<button type="button" data-fgender="${k}" aria-pressed="${(d.gender || "f") === k}">${L(ar, en)}</button>`).join("")}</div>
+      <span class="note">${L("بيتغيّر شكل الشخص بالحركات، أوزان البداية، وطريقة الحكي.", "Changes the demo figure, starting weights and wording.")}</span></div>
     <div class="row2">
       <div class="field"><label for="f-age">${L("العمر", "Age")}</label><input id="f-age" class="num" type="number" inputmode="numeric" min="12" max="90" value="${d.age}"></div>
       <div class="field"><label for="f-weight">${L("الوزن (كغ)", "Weight (kg)")}</label><input id="f-weight" class="num" type="number" inputmode="decimal" min="30" max="250" value="${d.weight}"></div>
@@ -1550,10 +1649,11 @@ function renderMe() {
     <div class="field"><span class="lbl">${L("أيامك", "Your days")} <span class="muted small">(${d.days.length})</span></span>
       <div class="chips">${L(DAYS, DAYS_EN).map((n,i) => `<button type="button" class="chip" data-fday="${i}" aria-pressed="${d.days.includes(i)}">${n}</button>`).join("")}</div></div>
     ${d.days.length ? `<div class="field"><span class="lbl">${L("كل يوم شو؟", "What on each day?")}</span>
-      <div class="dtypes">${d.days.slice().sort((x, y) => x - y).map(i => `<div class="dtype"><b>${dayN(i)}</b><div class="seg">${[["gym", L("تمرين", "Workout")], ["swim", L("سباحة", "Swim")]].map(([k, l]) => `<button type="button" data-ftype="${i}:${k}" aria-pressed="${(d.swim || []).includes(i) === (k === "swim")}">${l}</button>`).join("")}</div></div>`).join("")}</div></div>` : ""}
+      <div class="dtypes">${d.days.slice().sort((x, y) => x - y).map(i => `<div class="dtype"><b>${dayN(i)}</b><div class="seg">${[["gym", L("تمرين", "Workout")], ["swim", L("سباحة", "Swim")], ["both", L("الاتنين", "Both")]].map(([k, l]) => { const t = (d.swim || []).includes(i) ? "swim" : (d.combo || []).includes(i) ? "both" : "gym"; return `<button type="button" data-ftype="${i}:${k}" aria-pressed="${t === k}">${l}</button>`; }).join("")}</div></div>`).join("")}</div>
+      <span class="note">${L("«الاتنين» يعني تمرين وبعدو سباحة خفيفة بنفس النهار.", "“Both” means a workout, then an easy swim the same day.")}</span></div>` : ""}
     <div class="field"><span class="lbl">${L("وين وبشو بتتمرّني؟", "Where and with what?")}</span>
       <div class="opts">${EQ_OPTS.map(([k, ar, en, where]) => `<button type="button" class="opt" data-feq="${k}" aria-pressed="${d.eq === k}"><b>${L(ar, en)}</b><small>${L(where, k === "body" ? "At home" : k === "db" ? "Home or gym" : k === "machine" ? "At the gym" : "Gym, everything")}</small></button>`).join("")}</div>
-      <span class="note">${L("فيكِ تغيّريها لكل يوم لحال من «برنامجي».", "You can change it per day from “My Plan”.")}</span></div>
+      <span class="note">${L("فيكِ تغيّريها لكل يوم لحال من «اليوم».", "You can change it per day from “Today”.")}</span></div>
     <p class="err" id="me-err" hidden></p>
     <button class="save" type="submit">${L("احفظي واعمليلي جدولي", "Save and build my schedule")}</button>
   </form>
@@ -1561,9 +1661,10 @@ function renderMe() {
 }
 
 function render() {
+  gender = (tab === "me" && draft ? draft.gender : profile.gender) || "f";
   hideTip();
   if (typeof renderSheet === "function" && sheet) setTimeout(renderSheet, 0);
-  $app.innerHTML = tab === "plan" ? renderPlan() : tab === "prog" ? renderProgress() : tab === "lib" ? renderLib() : tab === "str" ? renderStretch() : renderMe();
+  $app.innerHTML = tab === "sched" ? renderSched() : tab === "plan" ? renderPlan() : tab === "prog" ? renderProgress() : tab === "lib" ? renderLib() : tab === "str" ? renderStretch() : renderMe();
   document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.tab === tab));
   document.body.classList.toggle("has-start", !!$app.querySelector(".startbar"));
   const selCard = $app.querySelector("#days .rcard.sel");
@@ -1656,7 +1757,7 @@ function renderProgress() {
   const diff = now.ex - prev.ex;
   let html = `<header style="display:flex;flex-direction:column;gap:4px"><span class="eyebrow">${L("شوفي قدّيش وصلتي", "See how far you've come")}</span><h1>${L("تقدّمي", "Progress")}</h1></header>`;
   if (!total && !Object.keys(log).length && !Object.keys(acts).length) {
-    return html + `<div class="rest"><h2>${L("بعد ما في تمارين مسجّلة", "Nothing logged yet")}</h2><p class="muted">${L("علّمي ✓ عالتمارين اللي بتخلّصيها بـ«برنامجي» وسجّلي أوزانك، وهون رح تشوفي تقدّمك أسبوع بأسبوع.", "Mark ✓ the exercises you finish in “My Plan” and log your weights. Your weekly progress will show up here.")}</p><button class="save" data-tab="plan" style="margin-top:6px">${L("روحي عالبرنامج", "Go to my plan")}</button></div>`;
+    return html + `<div class="rest"><h2>${L("بعد ما في تمارين مسجّلة", "Nothing logged yet")}</h2><p class="muted">${L("علّمي ✓ عالتمارين اللي بتخلّصيها بـ«اليوم» وسجّلي أوزانك، وهون رح تشوفي تقدّمك أسبوع بأسبوع.", "Mark ✓ the exercises you finish in “Today” and log your weights. Your weekly progress will show up here.")}</p><button class="save" data-tab="plan" style="margin-top:6px">${L("روحي عالبرنامج", "Go to my plan")}</button></div>`;
   }
   html += `<div class="tiles">
       <div class="tile"><span>${L("تمارين هالأسبوع", "Exercises this week")}</span><b>${now.ex}</b><small class="${diff > 0 ? "up" : ""}">${diff > 0 ? L(`▲ ${diff} أكتر من الأسبوع الماضي`, `▲ ${diff} more than last week`) : diff < 0 ? L(`${-diff} أقل من الأسبوع الماضي`, `${-diff} fewer than last week`) : L("متل الأسبوع الماضي", "Same as last week")}</small></div>
@@ -2017,15 +2118,22 @@ function demoFrame(P, k, eq) {
   if (P.prop === "rope") props += `<line class="d-cable" x1="${p.hand[0]}" y1="${p.hand[1]}" x2="${p.hand[0] + 6}" y2="-5"/>`;
   const db = (h) => `<rect class="d-db" x="${(h[0] - 3.2).toFixed(2)}" y="${(h[1] - 1.4).toFixed(2)}" width="6.4" height="2.8" rx="1.2"/><rect class="d-db" x="${(h[0] - 3.8).toFixed(2)}" y="${(h[1] - 2.4).toFixed(2)}" width="1.8" height="4.8" rx=".7"/><rect class="d-db" x="${(h[0] + 2).toFixed(2)}" y="${(h[1] - 2.4).toFixed(2)}" width="1.8" height="4.8" rx=".7"/>`;
   const hold = eq !== "body" && (P.prop === "db1" || P.prop === "db2") ? db(p.hand) : "";
-  const hair = `<circle class="d-hair" cx="${p.hc[0].toFixed(2)}" cy="${(p.hc[1] - 0.6).toFixed(2)}" r="${DM.head + 0.35}"/><ellipse class="d-hair" cx="${(p.hc[0] - 5.6 * Math.cos(Math.atan2(p.up[0], -p.up[1]))).toFixed(2)}" cy="${(p.hc[1] + 1.6 + 5.6 * Math.sin(Math.atan2(p.up[0], -p.up[1])) * 0.2).toFixed(2)}" rx="2.6" ry="4.2" transform="rotate(${(Math.atan2(p.up[0], -p.up[1]) * 180 / Math.PI + 18).toFixed(1)} ${(p.hc[0] - 5.6 * Math.cos(Math.atan2(p.up[0], -p.up[1]))).toFixed(2)} ${(p.hc[1] + 1.6).toFixed(2)})"/>`;
   return `<rect class="d-floor" x="-60" y="88.6" width="220" height="80"/><rect class="d-mat" x="${P.mat || P.lie ? -2 : 26}" y="87" width="${P.mat || P.lie ? 104 : 48}" height="3.2" rx="1.6"/>${props}
     ${L2(p.sh, p.elb, "d-skin2", 4)}${L2(p.elb, p.hand, "d-skin2", 3.6)}
     ${L2(p.hip, p.knee2, "d-leg2", 6.4)}${L2(p.knee2, p.ank2, "d-leg2", 5.2)}${L2(p.ank2, p.toe2, "d-skin2", 3)}
     ${L2(p.hip, p.knee, "d-leg", 6.6)}${L2(p.knee, p.ank, "d-leg", 5.4)}${L2(p.ank, p.toe, "d-skin", 3.2)}
     ${L2([p.hip[0] + p.up[0] * 2, p.hip[1] + p.up[1] * 2], [p.sh[0] - p.up[0] * 1.5, p.sh[1] - p.up[1] * 1.5], "d-top", 9)}
     ${L2(p.sh, [p.sh[0] + p.up[0] * (DM.neck + 1), p.sh[1] + p.up[1] * (DM.neck + 1)], "d-skin", 3.4)}
-    ${hair}<circle class="d-skin-f" cx="${(p.hc[0] + 0.8 * Math.cos(Math.atan2(p.up[0], -p.up[1]))).toFixed(2)}" cy="${(p.hc[1] + 0.4).toFixed(2)}" r="${DM.head - 0.6}"/>
+    ${demoHead(p)}
     ${L2(p.sh, p.elb, "d-skin", 4.2)}${L2(p.elb, p.hand, "d-skin", 3.8)}${hold}`;
+}
+// راس جانبي طبيعي: جبين، أنف، شفايف، دقن، أذن، عين، وشعر (كعكة للبنت، قصير للشب)
+const HEAD_P = "M0,-5.3C2.8,-5.3 4.5,-3.7 4.7,-1.3L4.66,-0.5C5.15,0.15 5.75,0.75 5.8,1.1C5.62,1.48 5.15,1.58 4.86,1.72C5.06,2.05 5.06,2.42 4.86,2.68C5.0,3.05 4.98,3.55 4.62,3.95C3.86,4.8 2.5,4.95 1.3,4.6C0.1,4.3 -1.4,4.5 -2.6,3.95C-4.35,3.0 -5.2,1.05 -5.2,-0.8C-5.2,-3.55 -2.9,-5.3 0,-5.3Z";
+const HAIR_W = "M4.35,-2.7C4.1,-4.9 2.0,-6.05 -0.4,-5.95C-3.45,-5.85 -5.6,-3.6 -5.5,-0.6C-5.45,1.25 -4.7,2.7 -3.55,3.5C-3.35,1.7 -2.75,0.05 -1.45,-1.0C0.05,-2.15 2.2,-2.3 4.35,-2.7Z";
+const HAIR_MN = "M4.25,-2.95C3.95,-4.95 2.0,-5.85 -0.3,-5.8C-3.25,-5.75 -5.3,-3.75 -5.25,-1.05C-5.2,0.35 -4.8,1.45 -4.1,2.15C-3.7,0.85 -3.05,-0.55 -1.7,-1.45C-0.1,-2.4 2.15,-2.55 4.25,-2.95Z";
+function demoHead(p) {
+  const a = Math.atan2(p.up[0], -p.up[1]) * 180 / Math.PI, k = (DM.head / 5.1).toFixed(3), m = gender === "m";
+  return `<g transform="translate(${p.hc[0].toFixed(2)} ${p.hc[1].toFixed(2)}) rotate(${a.toFixed(1)}) scale(${k})">${m ? "" : `<ellipse class="d-hair" cx="-5.2" cy="-2.2" rx="2.2" ry="2.1"/>`}<path class="d-skin-f" d="${HEAD_P}"/><ellipse class="d-ear" cx="-0.7" cy="0.75" rx="0.85" ry="1.25"/><path class="d-hair" d="${m ? HAIR_MN : HAIR_W}"/><path class="d-brow" d="M2.55,-1.45Q3.3,-1.75 4.05,-1.42"/><path class="d-eye" d="M2.75,-0.42Q3.25,-0.75 3.75,-0.42Q3.25,-0.15 2.75,-0.42Z"/><path class="d-lip" d="M4.5,2.55Q4.72,2.66 4.95,2.52"/></g>`;
 }
 const DEMO_VB = {};
 function demoVB(pat) {                      // مربّع على قدّ الحركة، لتطلع الرسمة كبيرة بالدائرة
@@ -2042,11 +2150,11 @@ function demoVB(pat) {                      // مربّع على قدّ الحر
 const patOf = (exId) => DEMO_OF[exId] || (typeof MOVES !== "undefined" && (MOVES.find(m => m.id === exId) || {}).demo) || "squat";
 function demoStatic(ex) {
   const pat = patOf(ex.id), P = DEMO[pat], vb = demoVB(pat);
-  return `<svg class="demo-st" viewBox="${vb.map(v => v.toFixed(1)).join(" ")}" aria-hidden="true">${demoFrame(P, P.loop ? 0.15 : 1, ex.eq)}</svg>`;
+  return `<svg class="demo-st${gender === "m" ? " male" : ""}" viewBox="${vb.map(v => v.toFixed(1)).join(" ")}" aria-hidden="true">${demoFrame(P, P.loop ? 0.15 : 1, ex.eq)}</svg>`;
 }
 function demoSVG(exId, eq, cls = "") {
   const pat = patOf(exId), P = DEMO[pat], vb = demoVB(pat);
-  return `<svg class="demo ${cls}" viewBox="${vb.map(v => v.toFixed(1)).join(" ")}" data-pat="${pat}" data-eq="${eq}" aria-hidden="true">${demoFrame(P, 0.5, eq)}</svg>`;
+  return `<svg class="demo ${cls}${gender === "m" ? " male" : ""}" viewBox="${vb.map(v => v.toFixed(1)).join(" ")}" data-pat="${pat}" data-eq="${eq}" aria-hidden="true">${demoFrame(P, 0.5, eq)}</svg>`;
 }
 let demoRAF = 0;
 function demoTick(now) {
@@ -2226,7 +2334,7 @@ function renderSheet() {
   if (!sheet) { $sheet.hidden = true; $sheet.innerHTML = ""; document.body.classList.remove("sheet-open"); return; }
   const d = sheetData(); if (!d) { sheet = null; return renderSheet(); }
   $sheet.dir = lang === "en" ? "ltr" : "rtl"; $sheet.lang = lang; $sheet.setAttribute("aria-label", exN(d.ex));
-  const mediaKey = `${d.ex.id}|${vidOpen === d.ex.id}|${lang}`;
+  const mediaKey = `${d.ex.id}|${vidOpen === d.ex.id}|${lang}|${gender}`;
   if ($sheet.hidden || $sheet.dataset.media !== mediaKey) {
     $sheet.innerHTML = `<div class="sh"><button class="sh-x" data-sh-close="1" aria-label="${L("سكّري", "Close")}">✕</button><div class="sh-media">${sheetMedia(d.ex)}</div><div class="sh-body">${sheetBody(d)}</div></div>`;
     $sheet.dataset.media = mediaKey;
@@ -2270,7 +2378,7 @@ document.addEventListener("click", (e) => {
   if (ds.routine) { lib.routine = ds.routine; open = null; render(); window.scrollTo(0, 0); return; }
   if (ds.libback) { lib.area = null; lib.routine = null; lib.eq = "all"; open = null; render(); window.scrollTo(0, 0); return; }
   if (ds.tab) { if (ds.tab === "lib" && tab === "lib") { lib = { q: "", part: "all", eq: "all", area: null, routine: null }; }
-    tab = ds.tab; open = null; if (tab === "me") { draft = null; meEdit = false; } if (tab !== "me") justSaved = false; render(); window.scrollTo(0,0); return; }
+    tab = ds.tab; open = null; schedDay = null; if (tab === "me") { draft = null; meEdit = false; } if (tab !== "sched") justSaved = false; render(); window.scrollTo(0,0); return; }
   if (ds.start) { startSession(ds.start); return; }
   if (ds.adj) {
     const ex = EX.find(x => x.id === ds.aid), key = ds.akey, k = `${key}-${ds.aid}`, dir = +ds.dir;
@@ -2281,9 +2389,10 @@ document.addEventListener("click", (e) => {
   if (ds.strall) { const all = Object.keys(STRETCH_AREAS); strSel.areas = strSel.areas.length === all.length ? [] : all.slice(); store.set("tamrini.stretch", strSel); render(); return; }
   if (ds.strm) { strSel.min = +ds.strm; store.set("tamrini.stretch", strSel); render(); return; }
   if (ds.strp) { const pr = STR_PRESETS.find(x => x[0] === ds.strp); strSel.areas = presetAreas(pr).slice(); store.set("tamrini.stretch", strSel); render(); return; }
-  if (ds.meEdit) { meEdit = true; justSaved = false; draft = null; render(); window.scrollTo(0, 0); return; }
+  if (ds.schedback) { schedDay = null; render(); window.scrollTo(0, 0); return; }
+  if (ds.meEdit) { tab = "me"; meEdit = true; justSaved = false; draft = null; render(); window.scrollTo(0, 0); return; }
   if (ds.meCancel) { meEdit = false; draft = null; render(); window.scrollTo(0, 0); return; }
-  if (ds.goday) { selDay = +ds.goday; tab = "plan"; open = null; render(); window.scrollTo(0, 0); return; }
+  if (ds.goday) { selDay = schedDay = +ds.goday; tab = "sched"; open = null; altOpen = null; actOpen = false; justSaved = false; render(); window.scrollTo(0, 0); return; }
   if (ds.lang) { lang = ds.lang; store.set("tamrini.lang", lang); applyLang(); render(); if (ses) renderPlay(); return; }
   if (ds.themeSet) { theme = ds.themeSet; store.set("tamrini.theme", theme); applyTheme(); render(); return; }
   if (ds.prog) { progOpen = progOpen === ds.prog ? "" : ds.prog; render(); return; }
@@ -2299,6 +2408,7 @@ document.addEventListener("click", (e) => {
   if (ds.plan) {
     const p = ds.plan;
     if (p === "act") { actOpen = !actOpen; render(); return; }
+    if (p === "swimc") { const date = ymd(dateOfDay(selDay)); (acts[date] ||= []).push({ t: "swim", min: comboSwim() }); store.set("tamrini.acts", acts); planMsg = L(`برافو! سجّلنا سباحة ${comboSwim()} دقيقة.`, `Nice! Logged a ${comboSwim()} min swim.`); render(); return; }
     if (p === "swim") { actDraft = { t: "swim", min: swimMin(), shift: false }; actOpen = true; render(); return; }
     if (p === "post") {
       const d = buildDay(selDay), name = d ? d.title : "";
@@ -2337,15 +2447,16 @@ document.addEventListener("click", (e) => {
   if (ds.fday) {
     const i = +ds.fday, s = new Set(draft.days);
     if (s.has(i)) s.delete(i); else if (s.size < 6) s.add(i);
-    draft.days = [...s].sort((a,b) => a-b); draft.swim = (draft.swim || []).filter(x => draft.days.includes(x)); render(); return;
+    draft.days = [...s].sort((a,b) => a-b); fixDays(draft); render(); return;
   }
   if (ds.fweeks !== undefined) { draft.goalWeeks = +ds.fweeks; render(); return; }
-  if (ds.fcount) { draft.days = SUGGEST_DAYS[+ds.fcount].slice(); draft.swim = (draft.swim || []).filter(x => draft.days.includes(x)); render(); return; }
+  if (ds.fcount) { draft.days = SUGGEST_DAYS[+ds.fcount].slice(); fixDays(draft); render(); return; }
   if (ds.ftype) {
-    const [i, k] = ds.ftype.split(":"), set = new Set(draft.swim || []);
-    if (k === "swim") set.add(+i); else set.delete(+i);
-    draft.swim = [...set].sort((a, b) => a - b); render(); return;
+    const [i, k] = ds.ftype.split(":"), sw = new Set(draft.swim || []), cb = new Set(draft.combo || []);
+    sw.delete(+i); cb.delete(+i); if (k === "swim") sw.add(+i); if (k === "both") cb.add(+i);
+    draft.swim = [...sw].sort((a, b) => a - b); draft.combo = [...cb].sort((a, b) => a - b); render(); return;
   }
+  if (ds.fgender) { draft.gender = ds.fgender; render(); return; }
 });
 document.addEventListener("input", (e) => {
   if (e.target.id === "lib-q") {
@@ -2372,11 +2483,11 @@ document.addEventListener("submit", (e) => {
     : !draft.days.length ? L("اختاري يوم تمرين واحد عالأقل.", "Pick at least one training day.") : "";
   if (bad) { err.textContent = bad; err.hidden = false; return; }
   const restart = !profile.saved || draft.goal !== profile.goal || (draft.goalWeeks || 0) !== (profile.goalWeeks || 0);
-  profile = { ...draft, swim: (draft.swim || []).filter(x => draft.days.includes(x)), saved: true, start: restart ? weekKey() : (profile.start || weekKey()) };
+  profile = fixDays({ ...draft, saved: true, start: restart ? weekKey() : (profile.start || weekKey()) }); gender = profile.gender;
   store.set("tamrini.profile", profile);
   dayEq = {}; adj = {}; pkgSel = {}; store.set("tamrini.dayEq", dayEq); store.set("tamrini.adj", adj); store.set("tamrini.pkgSel", pkgSel); freshWeek();
   selDay = todayIdx;
-  tab = "me"; meEdit = false; justSaved = true; draft = null; open = null; render(); window.scrollTo(0,0);
+  tab = "sched"; schedDay = null; meEdit = false; justSaved = true; draft = null; open = null; render(); window.scrollTo(0,0);
 });
 
 function applyLang() {
@@ -2407,7 +2518,7 @@ async function cloudFlush() {
   } finally { cloudBusy = false; if (Object.keys(cloudPending).length) cloudTimer = setTimeout(cloudFlush, 800); }
 }
 function reloadState() {
-  profile = store.get("tamrini.profile", DEFAULT); profile.swim = (profile.swim || []).filter(d => profile.days.includes(d));
+  profile = fixDays(store.get("tamrini.profile", DEFAULT)); gender = profile.gender;
   if (!profile.start) profile.start = weekKey();
   log = store.get("tamrini.log", {}); acts = store.get("tamrini.acts", {}); adj = store.get("tamrini.adj", {});
   picks = store.get("tamrini.picks", {}); pkgSel = store.get("tamrini.pkgSel", {}); dayEq = store.get("tamrini.dayEq", {});
