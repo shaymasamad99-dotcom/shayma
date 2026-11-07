@@ -402,6 +402,7 @@ body.playing { overflow: hidden; }
 .ov-in { padding: 8px 12px 12px; background: var(--soft); }
 .ov-in .ov-list { max-width: none; }
 .pl-nav { margin-top: 4px; }
+.pl-finish { align-self: center; border: 0; background: none; color: var(--accent); font: inherit; font-weight: 600; padding: 10px 16px; min-height: 44px; text-decoration: underline; text-underline-offset: 4px; }
 .pl-nav button:disabled { opacity: .4; }
 .goal-hint { margin: 8px 0 0; padding: 10px 12px; border-radius: 14px; background: var(--soft); font-size: .85rem; line-height: 1.6; }
 .goal-hint b { color: var(--accent); display: block; }
@@ -1976,7 +1977,9 @@ function afterRest() { ses.phase = "work"; ses.until = 0; saveSes(); renderPlay(
 
 function plNav() {
   const n = sesItems().length;
-  return `<div class="pl-row pl-nav"><button class="ghost wide" data-pl="back" ${ses.idx > 0 ? "" : "disabled"}>${L("› السابق", "‹ Back")}</button><button class="ghost wide" data-pl="skip" ${ses.idx < n - 1 ? "" : "disabled"}>${L("التالي ‹", "Next ›")}</button></div>`;
+  const last = ses.idx >= n - 1;
+  return `<div class="pl-row pl-nav"><button class="ghost wide" data-pl="back" ${ses.idx > 0 ? "" : "disabled"}>${L("› السابق", "‹ Back")}</button><button class="ghost wide" data-pl="skip">${last ? L("تخطّي وخلّصي", "Skip & finish") : L("تخطّي ‹", "Skip ›")}</button></div>
+    <button class="pl-finish" data-pl="finish">${L("✓ خلّصت التمرين", "✓ Finish workout")}</button>`;
 }
 function bigRing(frac, txt, sub, inner = "") {
   const r = 104, c = 2 * Math.PI * r;
@@ -2102,6 +2105,7 @@ $play.addEventListener("click", (e) => {
   else if (a === "hold") { ses.phase = "hold"; ses.until = Date.now() + hS(sesItems()[ses.idx]) * 1000; saveSes(); renderPlay(); }
   else if (a === "next") afterRest();
   else if (a === "more") { ses.until += 15000; saveSes(); renderPlay(); }
+  else if (a === "finish") { ses.phase = "done"; ses.until = 0; ses.askClose = false; saveHist(); try { wake?.release(); } catch {} saveSes(); renderPlay(); }
   else if (a === "back") {
     if (ses.idx > 0) { ses.idx--; ses.set = 1; ses.phase = "work"; ses.until = 0; ses.showHow = false; }
     saveSes(); renderPlay();
