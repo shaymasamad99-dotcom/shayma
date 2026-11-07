@@ -450,11 +450,25 @@ body.playing { overflow: hidden; }
 .chip:disabled { opacity: .4; }
 .sstep { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; margin: 18px 0 2px; }
 .sstep span { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-size: .9rem; flex: none; }
-.sgoal { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 14px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow); }
-.sgoal > div > b { font-size: 1.15rem; }
-.sgoal .ghost { align-self: flex-start; }
+.sgoal { background: linear-gradient(135deg, #C9507F, #8E2A55); color: #fff; border-radius: 24px; padding: 18px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 10px 28px rgb(142 42 85 / .28); margin-top: 6px; }
+.sg-eyebrow { font-size: .8rem; opacity: .85; font-weight: 600; letter-spacing: .03em; }
+.sgoal > div > b { font-size: 1.25rem; font-family: var(--display); line-height: 1.35; }
+.sgoal .goal-q { color: #fff; opacity: .9; }
+.sgoal .pill { background: rgb(255 255 255 / .18); border-color: transparent; color: #fff; }
+.sgoal .ghost { align-self: flex-start; background: #fff; color: #8E2A55; border-color: #fff; font-weight: 600; }
 .srows, .sweeks { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); }
 .srow, .sweek, .slink { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--ink); text-align: start; width: 100%; min-height: 64px; }
+.srow { min-height: 52px; padding: 8px 14px; justify-content: space-between; }
+.srow.off { opacity: 1; }
+.sday-d { display: flex; align-items: baseline; gap: 6px; min-width: 64px; }
+.sday-d b { font-size: 1rem; }
+.sday-d small { color: var(--muted); font-size: .85rem; }
+.sday-d.now b { color: var(--accent); }
+.sday-d.now small::after { content: " •"; color: var(--accent); }
+.spill { margin-inline-start: auto; border-radius: 999px; padding: 5px 12px; font-size: .82rem; font-weight: 600; background: var(--soft); color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
+.spill.swim { background: color-mix(in srgb, #5B8FB9 16%, var(--surface)); color: #3F6E96; }
+.spill.free { background: none; color: var(--muted); border: 1px dashed var(--line); font-weight: 500; }
+.srow .sck { margin-inline-start: 8px; }
 .srow:last-child, .sweek:last-child { border-bottom: 0; }
 .srow.rest { opacity: .62; }
 .srow.full .sinfo b { color: var(--accent); }
@@ -1692,12 +1706,13 @@ function progCardHtml() {
 let schedDay = null;
 const dayShort = (i) => L(DAYS[i], DAYS_EN[i].slice(0, 3));
 function schedRow(i) {
+  // سطر صغير: اليوم عجنب، وعالجنب التاني شو في (تمرين / سباحة / فاضي)
   const day = buildDay(i), today = i === todayIdx, st = dayStatus(i), dt = dateOfDay(i);
-  const date = `<span class="sdate ${today ? "now" : ""}"><small>${dayShort(i)}</small><b>${dt.getDate()}</b></span>`;
-  const end = st === "full" ? `<span class="sck" aria-label="${L("خلّصتيه", "Done")}">${CHECK}</span>` : `<span class="chev" aria-hidden="true">‹</span>`;
-  if (!day && isSwimDay(i)) return `<button class="srow swim ${st}" data-goday="${i}">${date}<span class="sinfo"><b>${L("سباحة", "Swim")}</b><small>${swimMin()} ${L("دقيقة", "min")} · ${phaseName()}</small></span>${end}</button>`;
-  if (!day) return `<div class="srow rest">${date}<span class="sinfo"><b>${L("راحة", "Rest")}</b><small>${L("مشي خفيف أو تمطيط", "Light walk or stretch")}</small></span></div>`;
-  return `<button class="srow ${st}" data-goday="${i}">${date}<span class="sinfo"><b>${day.typeName}${isCombo(i) ? L(" + سباحة", " + swim") : ""}</b><small>${day.pkgName} · ${day.items.length} ${L("تمارين", "exercises")} · ${dayMin(i, day)} ${L("د", "min")}${isCombo(i) ? L(` · سباحة ${comboSwim()} د`, ` · swim ${comboSwim()} min`) : ""}</small>${bubbles(day.items, 5, .45)}</span>${end}</button>`;
+  const date = `<span class="sday-d ${today ? "now" : ""}"><b>${dayShort(i)}</b><small>${dt.getDate()}</small></span>`;
+  const done = st === "full" ? `<span class="sck" aria-label="${L("خلّصتيه", "Done")}">${CHECK}</span>` : "";
+  if (!day && isSwimDay(i)) return `<button class="srow swim ${st}" data-goday="${i}">${date}<span class="spill swim">${L("سباحة", "Swim")} · ${swimMin()} ${L("د", "min")}</span>${done}</button>`;
+  if (!day) return `<div class="srow off">${date}<span class="spill free">${L("فاضي", "Free")}</span></div>`;
+  return `<button class="srow ${st}" data-goday="${i}">${date}<span class="spill">${day.typeName}${isCombo(i) ? L(" + سباحة", " + swim") : ""} · ${dayMin(i, day)} ${L("د", "min")}</span>${done}</button>`;
 }
 function renderSched() {
   if (schedDay != null) { selDay = schedDay; return schedDayView(); }
@@ -1710,17 +1725,17 @@ function renderSched() {
       <button class="lang-btn" data-lang="${L("en", "ar")}" lang="${L("en", "ar")}">${L("English", "العربية")}</button></header>
     ${justSaved ? `<div class="banner ok"><span>${L("✓ جهز جدولك! اضغطي على أي يوم لتشوفي تمارينه بالترتيب.", "✓ Your schedule is ready! Tap any day to see its exercises in order.")}</span></div>` : ""}
     ${profile.saved ? "" : `<div class="banner"><span>${L("هيدا جدول مثال. حطّي هدفك ومعلوماتك ليتظبط إلك.", "This is a sample. Add your goal and details to tailor it.")}</span><button data-me-edit="1">${L("حطّي هدفي", "Set my goal")}</button></div>`}
-    ${step(1, L("هدفي", "My goal"))}
     <section class="sgoal">
+      <span class="sg-eyebrow">🎯 ${L("هدفي", "My goal")}</span>
       <div><b>${goalTitle()}</b>${profile.goalText ? `<p class="goal-q">“${esc(profile.goalText)}”</p>` : ""}</div>
       <div class="chips">${[lvN(profile.level), L(`${order.length} أيام بالأسبوع`, `${order.length} days/week`), eqOptN(profile.eq), total ? L(`${total} أسابيع`, `${total} weeks`) : L("هدف مستمر", "Ongoing")].map(t => `<span class="pill">${t}</span>`).join("")}</div>
       <button class="ghost" data-me-edit="1">${L("عدّلي هدفي", "Edit goal")}</button>
     </section>
-    ${step(2, L("هالأسبوع", "This week"))}
+    ${step(1, L("هالأسبوع", "This week"))}
     <p class="small muted">${L(`${order.length - nSwim} أيام تمرين${nSwim ? ` · ${nSwim} سباحة` : ""}${nCombo ? ` · ${nCombo} منهن مع سباحة` : ""} · كل تمرين: إحماء، تمارين، تمطيط`, `${order.length - nSwim} workouts${nSwim ? ` · ${nSwim} swim` : ""}${nCombo ? ` · ${nCombo} with a swim` : ""} · each: warm-up, exercises, stretch`)}</p>
     <div class="srows">${DAYS.map((_, i) => schedRow(i)).join("")}</div>
     ${profile.dir === "lose" || (profile.aims || []).includes("fat") ? `<p class="small muted">${L("وكمان: ١٥٠ دقيقة نشاط معتدل بالأسبوع (مشي سريع، سباحة، أو دراجة) بتساعد بخسارة الدهون. سجّليها من صفحة اليوم.", "Plus: 150 minutes of moderate activity a week (brisk walking, swimming or cycling) helps with fat loss. Log it from the day page.")}</p>` : ""}
-    ${step(3, L("كيف رح يتطوّر", "How it progresses"))}
+    ${step(2, L("كيف رح يتطوّر", "How it progresses"))}
     ${progCardHtml()}
     ${sciCard()}
     ${remindCard()}
