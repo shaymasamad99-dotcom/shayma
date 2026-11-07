@@ -484,6 +484,14 @@ body.sheet-open { overflow: hidden; }
 .sh-media { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: calc(56px + env(safe-area-inset-top, 0px)) 16px 18px; background: linear-gradient(180deg, var(--soft), var(--bg)); }
 .sh-demo { width: min(300px, 78vw); aspect-ratio: 1; border-radius: 50%; background: var(--c); overflow: hidden; box-shadow: 0 10px 30px rgb(90 30 60 / .15); }
 .sh-demo svg { width: 100%; height: 100%; display: block; }
+button.sh-demo { border: 0; padding: 0; cursor: pointer; }
+.sh-demo.how { width: min(340px, 86vw); }
+.how-cap { width: 100%; max-width: 420px; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 14px; display: flex; flex-direction: column; gap: 10px; text-align: start; box-shadow: var(--shadow); }
+.how-cap p { margin: 0; font-size: 1.05rem; line-height: 1.6; min-height: 3.2em; }
+.how-n { color: var(--accent); font-weight: 700; font-size: .85rem; }
+.how-dots { display: flex; gap: 6px; justify-content: center; }
+.how-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.how-dots i.on { background: var(--accent); width: 22px; border-radius: 4px; }
 .sh-clip { position: relative; width: min(420px, 100%); aspect-ratio: 4 / 3; border-radius: 28px; overflow: hidden; background: var(--c); box-shadow: 0 10px 30px rgb(90 30 60 / .18), 0 0 0 4px var(--c); }
 .clip { width: 100%; height: 100%; object-fit: cover; display: block; }
 .sh-ctag { position: absolute; bottom: 10px; inset-inline-start: 10px; background: rgb(255 255 255 / .85); color: var(--ink); font-size: .72rem; font-weight: 600; padding: 4px 10px; border-radius: 999px; }
@@ -2422,7 +2430,7 @@ if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol) && !/cla
 const canEmbed = () => /^https?:$/.test(location.protocol) && !(window.claude && typeof window.claude.use === "function") && !/claude|anthropic/i.test(location.hostname);
 function vidBtn(ex) {
   if (ex.yt && canEmbed()) return `<button class="video" data-vid="${ex.id}" aria-expanded="${vidOpen === ex.id}">▶ ${vidOpen === ex.id ? L("سكّري الفيديو", "Close video") : L("فيديو الشرح", "Watch video")}</button>`;
-  return `<a class="video" href="${video(ex)}" target="_blank" rel="noopener">▶ ${L("فيديو الشرح (يوتيوب)", "Watch on YouTube")}</a>`;
+  return "";   // جوّا claude.ai: بلا روابط لبرّا
 }
 const vidBox = (ex) => vidOpen === ex.id && ex.yt && canEmbed() ? `<div class="vbox"><iframe src="https://www.youtube-nocookie.com/embed/${ex.yt}?autoplay=1&playsinline=1&rel=0&modestbranding=1" title="${esc(exN(ex))}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>` : "";
 
@@ -2439,10 +2447,24 @@ function sheetData() {
 }
 function sheetMedia(ex) {
   if (vidOpen === ex.id && ex.yt && canEmbed()) return `<div class="vbox sh-vid"><iframe src="https://www.youtube-nocookie.com/embed/${ex.yt}?autoplay=1&playsinline=1&rel=0&modestbranding=1" title="${esc(exN(ex))}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`;
+  // جوّا claude.ai فيديو يوتيوب ما بيشتغل جوّا الصفحة، فالشرح بيفتح جوّا التطبيق (الحركة + الخطوات)
   const play = ex.yt && canEmbed() ? `<button class="sh-play" data-vid="${ex.id}">▶ ${L("شوفي الفيديو", "Watch video")}</button>`
-    : `<a class="sh-play" href="${video(ex)}" target="_blank" rel="noopener">▶ ${L("الفيديو عاليوتيوب", "Video on YouTube")}</a>`;
+    : `<button class="sh-play" data-how="${ex.id}">▶ ${L("شوفي كيف بتنعمل", "See how it's done")}</button>`;
+  if (howOpen === ex.id) return `<div class="sh-demo how" style="--c:${MCOL[ex.m]}">${clipOf(ex) ? clipTag(ex) : demoSVG(ex.id, ex.eq)}</div>${howCap(ex)}`;
   if (clipOf(ex)) return `<div class="sh-clip" style="--c:${MCOL[ex.m]}">${clipTag(ex)}<span class="sh-ctag">${L("فيديو حقيقي", "Real video")} · ${CLIPS[ex.id].by}</span></div>`;
-  return `<div class="sh-demo" style="--c:${MCOL[ex.m]}">${demoSVG(ex.id, ex.eq)}</div>${play}`;
+  return `<button class="sh-demo" style="--c:${MCOL[ex.m]}" ${ex.yt && canEmbed() ? `data-vid="${ex.id}"` : `data-how="${ex.id}"`} aria-label="${L("شوفي كيف بتنعمل", "See how it's done")}">${demoSVG(ex.id, ex.eq)}</button>${play}`;
+}
+let howOpen = null, howStep = 0, howTimer = 0;
+function howCap(ex) {
+  const st = exSteps(ex), i = howStep % st.length;
+  return `<div class="how-cap" aria-live="polite"><span class="how-n">${i + 1}/${st.length}</span><p>${esc(st[i])}</p>
+    <div class="how-dots">${st.map((_, j) => `<i class="${j === i ? "on" : ""}"></i>`).join("")}</div>
+    <div class="pl-row"><button class="ghost wide" data-howstep="-1">${L("الخطوة اللي قبل", "Previous step")}</button><button class="ghost wide" data-howstep="1">${L("الخطوة الجاية", "Next step")}</button></div>
+    <button class="pl-finish" data-how="${ex.id}">${L("تمام، فهمت", "Got it")}</button></div>`;
+}
+function setHow(id) {
+  howOpen = howOpen === id ? null : id; howStep = 0; clearInterval(howTimer);
+  if (howOpen) howTimer = setInterval(() => { if (!sheet || howOpen !== sheet.id) { clearInterval(howTimer); howOpen = null; return; } howStep++; renderSheet(); }, 3500);
 }
 function sheetBody(d) {
   const { ex, ctx, a, g, plan, key } = d, isMove = !!ex.kind;
@@ -2470,18 +2492,19 @@ function sheetBody(d) {
     ${ctx === "plan" && plan ? logBox(ex, e, date, canLog) : ""}
     ${ctx === "plan" && plan ? `<button class="ghost wide" data-alt="sheet" aria-expanded="${altOpen === "sheet"}">${L("غيّري التمرين", "Change exercise")}</button>
       ${altOpen === "sheet" ? `<div class="alts">${plan.alts.length ? plan.alts.map(x => `<button class="alt" data-pick="${x.id}" data-pslot="${buildDay(selDay).pkg.id}-${a}">${avatar(x, { size: 36 })}<span><b>${esc(exN(x))}</b><small class="muted">${eqN(x.eq)}${UNI.has(x.id) ? L(" · لكل جهة", " · each side") : ""}</small></span></button>`).join("") : `<span class="small muted">${L("ما في بديل تاني بهالمعدات.", "No other option with this equipment.")}</span>`}</div>` : ""}` : ""}
-    <a class="ghost wide link" href="${search(ex)}" target="_blank" rel="noopener">${L("فيديوهات تانية عاليوتيوب", "More videos on YouTube")}</a>`;
+    ${canEmbed() ? `<a class="ghost wide link" href="${search(ex)}" target="_blank" rel="noopener">${L("فيديوهات تانية عاليوتيوب", "More videos on YouTube")}</a>` : ""}`;
 }
 function renderSheet() {
   if (!sheet) { $sheet.hidden = true; $sheet.innerHTML = ""; document.body.classList.remove("sheet-open"); return; }
   const d = sheetData(); if (!d) { sheet = null; return renderSheet(); }
   $sheet.dir = lang === "en" ? "ltr" : "rtl"; $sheet.lang = lang; $sheet.setAttribute("aria-label", exN(d.ex));
-  const mediaKey = `${d.ex.id}|${vidOpen === d.ex.id}|${lang}|${gender}`;
+  const mediaKey = `${d.ex.id}|${vidOpen === d.ex.id}|${lang}|${gender}|${howOpen === d.ex.id ? "h" : ""}`;
   if ($sheet.hidden || $sheet.dataset.media !== mediaKey) {
     $sheet.innerHTML = `<div class="sh"><button class="sh-x" data-sh-close="1" aria-label="${L("سكّري", "Close")}">✕</button><div class="sh-media">${sheetMedia(d.ex)}</div><div class="sh-body">${sheetBody(d)}</div></div>`;
     $sheet.dataset.media = mediaKey;
   } else {
     $sheet.querySelector(".sh-body").innerHTML = sheetBody(d);
+    const cap = $sheet.querySelector(".how-cap"); if (cap && howOpen === d.ex.id) cap.outerHTML = howCap(d.ex);
   }
   const seq = sheet.seq || [], i = sheet.i || 0, nav = $sheet.querySelector(".sh-nav");
   const navHtml = seq.length > 1 ? `<button class="snav" data-shnav="-1" ${i ? "" : "disabled"}>${L("› السابق", "‹ Previous")}</button><span class="snav-n">${i + 1} ${L("من", "of")} ${seq.length}</span><button class="snav next" data-shnav="1" ${i < seq.length - 1 ? "" : "disabled"}>${i < seq.length - 1 ? `${L("التالي", "Next")}<small>${esc(exN(anyEx(seq[i + 1].id)))}</small>` : L("آخر تمرين", "Last one")} ${i < seq.length - 1 ? L("‹", "›") : ""}</button>` : "";
@@ -2545,18 +2568,21 @@ document.addEventListener("click", (e) => {
   if (ds.open) { open = open === ds.open ? null : ds.open; vidOpen = null; render(); return; }
   if (ds.day) { selDay = +ds.day; open = null; altOpen = null; actOpen = false; postWarn = false; render(); return; }
   if (ds.eq) { dayEq[selDay] = ds.eq; store.set("tamrini.dayEq", dayEq); open = null; render(); return; }
-  if (ds.shClose) { sheet = null; vidOpen = null; altOpen = null; renderSheet(); return; }
+  if (ds.how) { setHow(ds.how); renderSheet(); return; }
+  if (ds.howstep) { clearInterval(howTimer); const n = sheet ? exSteps(anyEx(sheet.id)).length : 1; howStep = (howStep + +ds.howstep + n) % n; renderSheet(); return; }
+  if (ds.shClose) { howOpen = null; clearInterval(howTimer); sheet = null; vidOpen = null; altOpen = null; renderSheet(); return; }
   if (ds.sheet) {
     // ترتيب التمارين اللي بنفس الصفحة، ليصير في «التالي» و«السابق»
     const box = t.closest(".routine") || t.closest(".list, section") || $app, seq = [];
     if (!t.closest("#sheet")) box.querySelectorAll("[data-sheet]").forEach(el => { const it = { id: el.dataset.sheet, ctx: el.dataset.sctx || "lib" }; const last = seq[seq.length - 1]; if (!last || last.id !== it.id || last.ctx !== it.ctx) seq.push(it); });
     const i = seq.findIndex(x => x.id === ds.sheet && x.ctx === (ds.sctx || "lib"));
+    howOpen = null; clearInterval(howTimer);
     sheet = { id: ds.sheet, ctx: ds.sctx || "lib", seq: i >= 0 ? seq : (sheet && sheet.seq) || [], i: i >= 0 ? i : (sheet ? sheet.i : 0) };
     vidOpen = null; altOpen = null; renderSheet(); return;
   }
   if (ds.shnav && sheet && sheet.seq) {
     const j = sheet.i + +ds.shnav, nx = sheet.seq[j]; if (!nx) return;
-    sheet = { ...sheet, id: nx.id, ctx: nx.ctx, i: j }; vidOpen = null; altOpen = null; renderSheet(); $sheet.scrollTo(0, 0); return;
+    sheet = { ...sheet, id: nx.id, ctx: nx.ctx, i: j }; vidOpen = null; altOpen = null; howOpen = null; clearInterval(howTimer); renderSheet(); $sheet.scrollTo(0, 0); return;
   }
   if (ds.vid) { vidOpen = vidOpen === ds.vid ? null : ds.vid; if (sheet) renderSheet(); else render(); return; }
   if (ds.alt) { altOpen = altOpen === ds.alt ? null : ds.alt; if (sheet) renderSheet(); else render(); return; }
