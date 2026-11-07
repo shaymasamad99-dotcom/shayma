@@ -1708,13 +1708,23 @@ function renderStretch() {
 let draft = null, meEdit = false, justSaved = false;
 const LEVELS = [["beginner", "مبتدئة", "Beginner", "أوزان خفيفة وزيادة بطيئة"], ["inter", "متوسطة", "Intermediate", "بتعرفي الحركات"], ["adv", "متقدّمة", "Advanced", "أوزان أتقل ومجموعات أكتر"]];
 const lvN = (k) => { const o = LEVELS.find(x => x[0] === k) || LEVELS[0]; return L(o[1], o[2]); };
+function voicePicker() {
+  const vs = (window.speechSynthesis && speechSynthesis.getVoices()) || [];
+  const list = vs.filter(v => /^(ar|en)/i.test(v.lang || "")).sort((a, b) => (a.lang.startsWith(lang === "en" ? "en" : "ar") ? 0 : 1) - (b.lang.startsWith(lang === "en" ? "en" : "ar") ? 0 : 1));
+  if (!list.length) return `<span class="note">${L("ما لقينا أصوات عهالجهاز. جرّبي «رنّات».", "No voices found on this device. Try “Chimes”.")}</span>`;
+  const cur = pickVoice();
+  return `<select id="f-voice" class="num">${list.map(v => `<option value="${esc(v.name)}" ${cur && cur.name === v.name ? "selected" : ""}>${esc(v.name)} · ${esc(v.lang)}</option>`).join("")}</select>
+    <button type="button" class="ghost" data-voicetest="1">▶ ${L("اسمعي", "Listen")}</button>
+    <span class="note">${L("عالآيفون فيكِ تنزّلي أصوات أحلى (Enhanced): Settings ← Accessibility ← Spoken Content ← Voices.", "On iPhone you can download nicer (Enhanced) voices: Settings → Accessibility → Spoken Content → Voices.")}</span>`;
+}
 function settingsBlock() {
   return `<section class="card">
       <h2>${L("الإعدادات", "Settings")}</h2>
       <div class="field"><span class="lbl">${L("اللغة", "Language")}</span>
         <div class="seg">${[["ar","العربية"],["en","English"]].map(([k,l]) => `<button type="button" data-lang="${k}" lang="${k}" aria-pressed="${lang===k}">${l}</button>`).join("")}</div></div>
-      <div class="field"><span class="lbl">${L("صوت بيوجّهك وقت التمرين", "Voice coaching during workouts")}</span>
-        <div class="seg">${[[true, L("شغّال", "On")], [false, L("مسكّر", "Off")]].map(([k, l]) => `<button type="button" data-voiceset="${k}" aria-pressed="${voiceOn === k}">${l}</button>`).join("")}</div></div>
+      <div class="field"><span class="lbl">${L("الصوت وقت التمرين", "Sound during workouts")}</span>
+        <div class="seg">${[["chime", L("رنّات", "Chimes")], ["voice", L("صوت بيحكي", "Spoken")], ["off", L("بلا صوت", "Off")]].map(([k, l]) => `<button type="button" data-soundset="${k}" aria-pressed="${soundMode === k}">${l}</button>`).join("")}</div>
+        ${soundMode === "voice" ? voicePicker() : `<span class="note">${L("رنّات ناعمة لما تبلّشي، بالراحة، وتك-تك-تك قبل ما يخلص الوقت.", "Soft chimes when you start, at rest, and a 3-2-1 tick before time is up.")}</span>`}</div>
       <div class="field"><span class="lbl">${L("شكل التطبيق", "Appearance")}</span>
         <div class="seg">${[["auto",L("تلقائي","Auto")],["light",L("فاتح","Light")],["dark",L("غامق","Dark")]].map(([k,l]) => `<button type="button" data-theme-set="${k}" aria-pressed="${theme===k}">${l}</button>`).join("")}</div></div>
     </section>`;
@@ -2106,19 +2116,33 @@ const saveSes = () => store.set("tamrini.session", ses);
 
 let audio = null, wake = null;
 /* ===================== صوت بيوجّهك وقت التمرين ===================== */
-let voiceOn = store.get("tamrini.voice", true), voiceLast = "", voiceCount = -1;
+let soundMode = store.get("tamrini.sound", store.get("tamrini.voice", true) === false ? "off" : "chime"), voiceName = store.get("tamrini.voiceName", ""), voiceLast = "", voiceCount = -1;
+let voiceOn = soundMode !== "off";
+// نغمات ناعمة (متل جرس صغير) بدل الكلام
+function chime(notes, gap = .16, vol = .22) {
+  try {
+    audio ||= new (window.AudioContext || window.webkitAudioContext)(); audio.resume?.();
+    notes.forEach((f, i) => { const t = audio.currentTime + i * gap;
+      [1, 2.01].forEach((h, j) => { const o = audio.createOscillator(), g = audio.createGain();
+        o.type = "sine"; o.frequency.value = f * h; o.connect(g); g.connect(audio.destination);
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol / (j ? 4 : 1), t + .015); g.gain.exponentialRampToValueAtTime(0.0001, t + .9);
+        o.start(t); o.stop(t + .95); }); });
+  } catch {}
+}
+const CHIME = { go: [659.3, 880], rest: [784, 587.3], tick: [1046.5], last: [1318.5], done: [523.3, 659.3, 784, 1046.5], side: [698.5, 698.5] };
 const VOICE_F = /laila|mariam|maryam|hala|salma|zeina|zaina|amira|lana|noura|mona|muna|reem|hoda|sara|layla|female|samantha|ava|allison|karen|moira|tessa|serena|zira|susan|victoria|google us english/i;
 const VOICE_M = /majed|maged|tarik|naayf|hamed|male|daniel|alex|fred|aaron|arthur/i;
 function pickVoice() {
   const vs = (window.speechSynthesis && speechSynthesis.getVoices()) || [], want = lang === "en" ? "en" : "ar";
+  const chosen = vs.find(v => v.name === voiceName); if (chosen) return chosen;
   const mine = vs.filter(v => (v.lang || "").toLowerCase().startsWith(want));
   if (!mine.length) return null;
   const pref = gender === "m" ? VOICE_M : VOICE_F;
   return mine.find(v => pref.test(v.name) && /enhanced|premium|natural|neural/i.test(v.name)) || mine.find(v => pref.test(v.name)) || mine.find(v => /enhanced|premium|natural|neural/i.test(v.name)) || mine[0];
 }
 try { speechSynthesis.onvoiceschanged = () => {}; speechSynthesis.getVoices(); } catch {}
-function say(text, interrupt = true) {
-  if (!voiceOn || !text || !window.speechSynthesis) return;
+function say(text, interrupt = true, force = false) {
+  if ((!force && soundMode !== "voice") || !text || !window.speechSynthesis) return;
   const v = pickVoice(); if (!v) return;                 // ما في صوت عربي عالجهاز: منكتفي بالرنّة
   try {
     if (interrupt) speechSynthesis.cancel();
@@ -2136,6 +2160,8 @@ const sayRange = (r) => { const [a, b] = String(r).split("–"); return b ? L(`�
 function voiceCue() {
   if (!ses) { voiceLast = ""; return; }
   const k = `${ses.idx}|${ses.set}|${ses.phase}`; if (k === voiceLast) return; voiceLast = k; voiceCount = -1;
+  if (soundMode === "chime") { const ph = ses.phase; if (ph === "done") chime(CHIME.done, .14); else if (ph === "rest") chime(CHIME.rest, .2); else if (ph === "hold") chime(ses.set > 1 ? CHIME.side : CHIME.go); else if (ph === "work" && voiceLast !== "") chime(CHIME.go); return; }
+  if (soundMode !== "voice") return;
   const items = sesItems(), it = items[ses.idx], g = GOALS[profile.goal];
   if (ses.phase === "check") return say(L("قبل ما نبلّش، كيف حاسّة اليوم؟", "Before we start, how are you feeling today?"));
   if (ses.phase === "done") return say(L("برافو! خلّصتي التمرين. فخورة فيكِ.", "Well done! Workout complete. Proud of you."));
@@ -2156,9 +2182,10 @@ function voiceCue() {
     : L(`المجموعة ${ses.set} من ${n}. يلا بلّشي.`, `Set ${ses.set} of ${n}. Let's go.`));
 }
 function voiceTick(left, tot) {
-  if (!ses || !voiceOn) return;
+  if (!ses || soundMode === "off") return;
   const s = Math.ceil(left);
   if (s === voiceCount) return;
+  if (soundMode === "chime") { if (s <= 3 && s >= 1) { voiceCount = s; chime(s === 1 ? CHIME.last : CHIME.tick, .1, .16); } return; }
   if (s === 10 && tot >= 20) { voiceCount = s; say(L("باقي عشر ثواني", "Ten seconds left"), false); }
   else if (s <= 3 && s >= 1) { voiceCount = s; say(L(["", "واحد", "تنين", "تلاتة"][s], ["", "one", "two", "three"][s])); }
 }
@@ -2409,7 +2436,7 @@ $play.addEventListener("click", (e) => {
     const ex0 = sesItems()[ses.idx].ex, id = ex0.id, cur = (entry(ses.date, id) || {}).w ?? suggestW(ex0) ?? lastBefore(id, ses.date) ?? 0;
     setEntry(ses.date, id, { w: Math.max(0, Math.round((cur + +step) * 10) / 10) }); renderPlay(); return;
   }
-  if (a === "voice") { voiceOn = !voiceOn; store.set("tamrini.voice", voiceOn); if (!voiceOn) try { speechSynthesis.cancel(); } catch {} else { voiceLast = ""; } renderPlay(); return; }
+  if (a === "voice") { soundMode = soundMode === "off" ? "chime" : "off"; voiceOn = soundMode !== "off"; store.set("tamrini.sound", soundMode); try { speechSynthesis.cancel(); } catch {} if (voiceOn) chime(CHIME.go); renderPlay(); return; }
   if (a === "ck") { ses.ck[t.dataset.q] = +t.dataset.v; saveSes(); renderPlay(); return; }
   if (a === "ckgo" || a === "ckskip") {
     if (a === "ckgo") { const sc = Object.values(ses.ck).reduce((x, y) => x + y, 0); ses.easy = sc >= 4; }
@@ -2838,7 +2865,8 @@ document.addEventListener("click", (e) => {
   if (ds.meCancel) { meEdit = false; draft = null; render(); window.scrollTo(0, 0); return; }
   if (ds.goday) { selDay = schedDay = +ds.goday; tab = "sched"; open = null; altOpen = null; actOpen = false; justSaved = false; render(); window.scrollTo(0, 0); return; }
   if (ds.lang) { lang = ds.lang; store.set("tamrini.lang", lang); applyLang(); render(); if (ses) renderPlay(); return; }
-  if (ds.voiceset) { voiceOn = ds.voiceset === "true"; store.set("tamrini.voice", voiceOn); if (voiceOn) say(L("أهلا! هيك رح ساعدك وقت التمرين.", "Hi! This is how I'll guide your workouts.")); render(); return; }
+  if (ds.soundset) { soundMode = ds.soundset; voiceOn = soundMode !== "off"; store.set("tamrini.sound", soundMode); if (soundMode === "chime") chime(CHIME.go); if (soundMode === "voice") say(L("أهلا! هيك رح ساعدك وقت التمرين.", "Hi! This is how I'll guide your workouts."), true, true); render(); return; }
+  if (ds.voicetest) { say(L("يلا نبلّش. المجموعة الأولى، من ٨ لـ ١٢ تكرار.", "Let's go. First set, eight to twelve reps."), true, true); return; }
   if (ds.themeSet) { theme = ds.themeSet; store.set("tamrini.theme", theme); applyTheme(); render(); return; }
   if (ds.ics) {
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([icsFile()], { type: "text/calendar" })); a.download = "shushys-fit.ics";
@@ -2949,6 +2977,7 @@ document.addEventListener("input", (e) => {
     return;
   }
   if (e.target.dataset.actShift !== undefined) { actDraft.shift = e.target.checked; return; }
+  if (e.target.id === "f-voice") { voiceName = e.target.value; store.set("tamrini.voiceName", voiceName); say(L("أهلا، هيدا صوتي.", "Hi, this is my voice."), true, true); return; }
   if (e.target.id === "f-remind") { remindAt = e.target.value || "18:00"; store.set("tamrini.remind", remindAt); return; }
   if (e.target.id === "f-name") draft.name = e.target.value.slice(0, 24);
   if (e.target.id === "f-goaltext") draft.goalText = e.target.value.slice(0, 140);
