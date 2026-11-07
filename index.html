@@ -3,12 +3,12 @@
 <meta name="theme-color" content="#FBF6F4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="تمريني">
+<meta name="apple-mobile-web-app-title" content="Shushy's Fit">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<title>تمريني</title>
+<title>شوشي فِت</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -416,6 +416,8 @@ body.playing { overflow: hidden; }
 .sci summary small { color: var(--muted); }
 .sci ul { margin: 10px 0 0; padding-inline-start: 18px; display: flex; flex-direction: column; gap: 8px; font-size: .86rem; line-height: 1.6; }
 .sci a { color: var(--muted); font-size: .76rem; white-space: nowrap; }
+.brand { margin: 0 0 -6px; font-family: var(--display); font-size: 1.05rem; color: var(--ink); letter-spacing: .02em; text-align: center; }
+.brand b { color: var(--accent); }
 .goal-hint { margin: 8px 0 0; padding: 10px 12px; border-radius: 14px; background: var(--soft); font-size: .85rem; line-height: 1.6; }
 .goal-hint b { color: var(--accent); display: block; }
 .chip:disabled { opacity: .4; }
@@ -1386,7 +1388,7 @@ function ring(frac, label) {
 function renderPlan() {
   const g = GOALS[profile.goal];
   const day = buildDay(selDay);
-  let html = `<header class="hdr"><div>
+  let html = `<p class="brand" dir="ltr" aria-label="Shushy's Fit">Shushy's <b>Fit</b></p><header class="hdr"><div>
       <span class="eyebrow">${profile.name ? L(`أهلا ${esc(profile.name)} · `, `Hi ${esc(profile.name)} · `) : ""}${dayN(todayIdx)} · ${L("هدفك", "Goal")}: ${goalTitle()}</span>
       <h1>${L("تمرين اليوم", "Today")}</h1></div>
       <button class="lang-btn" data-lang="${L("en", "ar")}" lang="${L("en", "ar")}">${L("English", "العربية")}</button>
@@ -2681,7 +2683,7 @@ function applyLang() {
   [$app, document.querySelector(".tabs"), $play, $tip].forEach(el => { el.dir = dir; el.lang = lang; });
   document.querySelectorAll(".tabs [data-ar]").forEach(el => { el.textContent = L(el.dataset.ar, el.dataset.en); });
   $play.setAttribute("aria-label", L("وضع التمرين", "Workout mode"));
-  document.title = L("تمريني", "Tamrini");
+  document.title = L("شوشي فِت", "Shushy's Fit");
 }
 /* ===================== مزامنة مع الحساب ===================== */
 // إذا التطبيق مفتوح كـ Artifact على claude.ai وإنتِ مسجّلة دخول، بياناتك بتنحفظ بحسابك (خاصّة إلك)،

@@ -1,5 +1,5 @@
-// تمريني: بيخلّي التطبيق يفتح بلا نت. الصفحة بتتحدّث من النت أول (إذا في)، والباقي من الذاكرة.
-const CACHE = "tamrini-v1";
+// Shushy's Fit: بيخلّي التطبيق يفتح بلا نت. الصفحة بتتحدّث من النت أول (إذا في)، والباقي من الذاكرة.
+const CACHE = "shushy-v1";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png"];
 
 self.addEventListener("install", (e) => {
