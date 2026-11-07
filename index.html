@@ -420,6 +420,16 @@ body.playing { overflow: hidden; }
 .sci a { color: var(--muted); font-size: .76rem; white-space: nowrap; }
 .brand { margin: 0 0 -6px; font-family: var(--display); font-size: 1.05rem; color: var(--ink); letter-spacing: .02em; text-align: center; }
 .brand b { color: var(--accent); }
+.bform { gap: 6px; }
+.pics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.pic { margin: 0; position: relative; border-radius: 14px; overflow: hidden; background: var(--soft); aspect-ratio: 3 / 4; }
+.pic img, .cmp img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pic figcaption { position: absolute; inset-inline: 0; bottom: 0; display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; font-size: .72rem; color: #fff; background: linear-gradient(transparent, rgb(0 0 0 / .55)); }
+.pic .x { color: #fff; background: none; border: 0; font-size: 1.1rem; min-width: 32px; min-height: 32px; }
+.cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.cmp figure { margin: 0; border-radius: 14px; overflow: hidden; aspect-ratio: 3 / 4; position: relative; }
+.cmp figcaption { position: absolute; bottom: 0; inset-inline: 0; padding: 6px; font-size: .78rem; color: #fff; background: linear-gradient(transparent, rgb(0 0 0 / .55)); }
+.file-btn { cursor: pointer; display: inline-flex; align-items: center; }
 .goal-hint { margin: 8px 0 0; padding: 10px 12px; border-radius: 14px; background: var(--soft); font-size: .85rem; line-height: 1.6; }
 .goal-hint b { color: var(--accent); display: block; }
 .chip:disabled { opacity: .4; }
@@ -1045,7 +1055,7 @@ const store = {
     if (typeof cloudQueue === "function") cloudQueue(k, v);
   },
 };
-const SYNC_KEYS = ["profile", "log", "acts", "adj", "picks", "pkgSel", "dayEq", "week", "theme", "lang", "stretch", "hist"];
+const SYNC_KEYS = ["profile", "log", "acts", "adj", "picks", "pkgSel", "dayEq", "week", "theme", "lang", "stretch", "hist", "body"];
 let cloudCol = null, cloudPending = {}, cloudBusy = false, cloudTimer = null;
 let profile = store.get("tamrini.profile", DEFAULT);
 const fixDays = (p) => { fixGoal(p); p.swim = (p.swim || []).filter(d => p.days.includes(d)); p.combo = (p.combo || []).filter(d => p.days.includes(d) && !p.swim.includes(d)); p.gender ||= "f"; return p; };
@@ -1830,7 +1840,7 @@ function spark(pts) {
   return `<svg class="spark" viewBox="0 0 72 28" aria-hidden="true"><polyline class="c-line" points="${xy.map(p => p.join(",")).join(" ")}"/><circle class="c-dot" cx="${last[0]}" cy="${last[1]}" r="3.5"/></svg>`;
 }
 
-function weightChart(ex, pts) {
+function weightChart(ex, pts, fmt = fmtW) {
   const W = 340, H = 180, top = 24, bot = 26, axisW = 30, rtl = lang !== "en", plotL = rtl ? 26 : axisW, plotR = rtl ? W - axisW : W - 26;
   const ws = pts.map(p => p.w), mn = Math.min(...ws), mx = Math.max(...ws);
   const step = niceStep(Math.max(mx - mn, 3)), lo = Math.max(0, Math.floor(mn / step) * step - (mx === mn ? step : 0)), hi = Math.ceil(mx / step) * step + (mx === mn ? step : 0);
@@ -1845,14 +1855,14 @@ function weightChart(ex, pts) {
     g += `<polyline class="c-line" points="${xy.map(p => p.join(",")).join(" ")}"/>`;
   }
   xy.forEach((p, i) => {
-    const tip = `${dm(parseD(pts[i].d))}: ${fmtW(pts[i].w)}`;
+    const tip = `${dm(parseD(pts[i].d))}: ${fmt(pts[i].w)}`;
     g += `<circle class="c-dot" cx="${p[0]}" cy="${p[1]}" r="4"/><circle class="c-hit" cx="${p[0]}" cy="${p[1]}" r="14" data-tip="${tip}" tabindex="0" role="img" aria-label="${tip}"/>`;
   });
   const LP = xy[xy.length - 1];
   g += `<text class="c-val" x="${Math.min(Math.max(LP[0], plotL + 14), plotR - 14)}" y="${LP[1] - 10}" text-anchor="middle">${r1(pts[pts.length - 1].w)}</text>`;
   g += `<text class="c-ax" x="${rtl ? plotR : plotL}" y="${H - 8}" text-anchor="${rtl ? "end" : "start"}">${dm(parseD(pts[0].d))}</text>`;
   if (pts.length > 1) g += `<text class="c-ax" x="${rtl ? plotL : plotR}" y="${H - 8}" text-anchor="${rtl ? "start" : "end"}">${dm(parseD(pts[pts.length - 1].d))}</text>`;
-  const table = pts.slice().reverse().map(p => `<tr><td>${dm(parseD(p.d))}</td><td>${fmtW(p.w)}</td></tr>`).join("");
+  const table = pts.slice().reverse().map(p => `<tr><td>${dm(parseD(p.d))}</td><td>${fmt(p.w)}</td></tr>`).join("");
   return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="group" aria-label="${L(`تطوّر وزن ${esc(ex.ar)} بالكيلو`, `${esc(ex.en)} weight over time (kg)`)}">${g}</svg>
     ${pts.length < 2 ? `<p class="note">${L("سجّلي وزن هالتمرين مرة تانية لتشوفي خط التطوّر.", "Log this exercise again to see your trend line.")}</p>` : ""}
     <details class="tbl"><summary>${L("شوفي الأرقام كجدول", "Show as table")}</summary><table><thead><tr><th>${L("التاريخ", "Date")}</th><th>${L("الوزن", "Weight")}</th></tr></thead><tbody>${table}</tbody></table></details>`;
@@ -1865,10 +1875,49 @@ function histBlock() {
     return `<button class="srow" data-hist="${i}" aria-expanded="${open}"><span class="sdate"><small>${L(DAYS[(dt.getDay() + 1) % 7], DAYS_EN[(dt.getDay() + 1) % 7].slice(0, 3))}</small><b>${dt.getDate()}</b></span><span class="sinfo"><b>${esc(L(h.t.ar, h.t.en))}</b><small>${h.min} ${L("د", "min")} · ${h.rows.length} ${L("تمارين", "exercises")} · ${h.sets} ${L("مجموعات", "sets")}${h.prs ? L(` · ${h.prs} رقم قياسي`, ` · ${h.prs} PR`) : ""}</small></span><span class="chev" aria-hidden="true">${open ? "⌄" : "‹"}</span></button>${open ? `<div class="ov-in">${overviewRows(h)}</div>` : ""}`;
   }).join("")}</div></section>`;
 }
+/* ===================== قياساتي وصور التقدّم ===================== */
+let body = store.get("tamrini.body", []), bodyOpen = false, bodyMetric = "w", photos = [], photoCmp = false;
+const METRICS = [["w", "الوزن", "Weight", "كغ", "kg"], ["waist", "الخصر", "Waist", "سم", "cm"], ["hips", "الوراك", "Hips", "سم", "cm"], ["thigh", "الفخد", "Thigh", "سم", "cm"]];
+const mUnit = (k) => { const m = METRICS.find(x => x[0] === k); return L(m[3], m[4]); };
+const fmtM = (k) => (v) => `${r1(v)} ${mUnit(k)}`;
+// الصور بتضل عالجهاز بس (IndexedDB)، ما بتطلع لأي مكان
+function photoDB() { return new Promise((res, rej) => { try { const q = indexedDB.open("shushy-photos", 1); q.onupgradeneeded = () => q.result.createObjectStore("p", { keyPath: "id" }); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); } catch (e) { rej(e); } }); }
+async function loadPhotos() { try { const db = await photoDB(); const all = await new Promise(r => { const q = db.transaction("p").objectStore("p").getAll(); q.onsuccess = () => r(q.result || []); q.onerror = () => r([]); }); photos = all.sort((a, b) => a.id - b.id); if (tab === "prog") render(); } catch { photos = []; } }
+async function addPhoto(file) {
+  const url = await new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = rej; fr.readAsDataURL(file); });
+  const img = await new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = url; });
+  const k = Math.min(1, 720 / Math.max(img.width, img.height)), c = document.createElement("canvas"); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+  c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+  const rec = { id: Date.now(), d: ymd(TODAY), src: c.toDataURL("image/jpeg", .72) };
+  const db = await photoDB(); await new Promise(r => { const t = db.transaction("p", "readwrite"); t.objectStore("p").put(rec); t.oncomplete = r; t.onerror = r; });
+  await loadPhotos();
+}
+async function delPhoto(id) { try { const db = await photoDB(); await new Promise(r => { const t = db.transaction("p", "readwrite"); t.objectStore("p").delete(id); t.oncomplete = r; t.onerror = r; }); } catch {} await loadPhotos(); }
+function bodyBlock() {
+  const last = (k) => { const xs = body.filter(b => b[k] > 0); return xs.length ? xs[xs.length - 1][k] : null; }, first = (k) => { const xs = body.filter(b => b[k] > 0); return xs.length ? xs[0][k] : null; };
+  const tiles = METRICS.filter(([k]) => last(k) != null).map(([k, ar, en]) => { const a = first(k), b = last(k), d = r1(b - a);
+    return `<div class="tile"><span>${L(ar, en)}</span><b>${r1(b)}<em> ${mUnit(k)}</em></b><small class="${d < 0 ? "up" : ""}">${body.length > 1 && d ? `${d > 0 ? "▲" : "▼"} ${Math.abs(d)} ${L("من أول قياس", "since first")}` : L("أول قياس", "First entry")}</small></div>`; }).join("");
+  const pts = body.filter(b => b[bodyMetric] > 0).map(b => ({ d: b.d, w: b[bodyMetric] }));
+  const m = METRICS.find(x => x[0] === bodyMetric), today = body.find(b => b.d === ymd(TODAY)) || {};
+  const form = bodyOpen ? `<div class="card bform">${METRICS.map(([k, ar, en]) => `<div class="field"><label for="bm-${k}">${L(ar, en)} (${mUnit(k)})</label><input id="bm-${k}" class="num" type="number" inputmode="decimal" step="0.1" min="0" value="${today[k] ?? ""}" placeholder="${last(k) ?? ""}"></div>`).join("")}
+      <button class="save" data-body="save">${L("احفظي القياس", "Save measurement")}</button><p class="note">${L("قيسي الصبح قبل الأكل، مرّة بالأسبوع، بنفس الطريقة.", "Measure in the morning before eating, once a week, the same way each time.")}</p></div>` : "";
+  const pics = photos.length ? `<div class="pics">${photos.slice().reverse().map(ph => `<figure class="pic"><img src="${ph.src}" alt="${L("صورة تقدّم", "Progress photo")} ${dm(parseD(ph.d))}"><figcaption>${dm(parseD(ph.d))}<button class="x" data-delphoto="${ph.id}" aria-label="${L("امسحي الصورة", "Delete photo")}">×</button></figcaption></figure>`).join("")}</div>
+      ${photos.length > 1 ? `<button class="ghost wide" data-photocmp="1" aria-expanded="${photoCmp}">${L("قارني أوّل صورة بآخر صورة", "Compare first and latest")}</button>` : ""}
+      ${photoCmp && photos.length > 1 ? `<div class="cmp"><figure><img src="${photos[0].src}" alt=""><figcaption>${L("قبل", "Before")} · ${dm(parseD(photos[0].d))}</figcaption></figure><figure><img src="${photos[photos.length - 1].src}" alt=""><figcaption>${L("هلّق", "Now")} · ${dm(parseD(photos[photos.length - 1].d))}</figcaption></figure></div>` : ""}` : "";
+  return `<section class="group"><div class="card-h"><h3 class="sec">${L("قياساتي", "My measurements")}</h3><button class="ghost" data-body="toggle" aria-expanded="${bodyOpen}">${bodyOpen ? L("سكّري", "Close") : L("+ سجّلي قياس", "+ Add")}</button></div>
+    ${form}
+    ${tiles ? `<div class="tiles">${tiles}</div>` : bodyOpen ? "" : `<p class="small muted">${L("سجّلي وزنك وقياس خصرك ووراكك كل أسبوع، وشوفي التغيير برسمة. أوقات الوزن ما بيتحرّك بس القياسات بتنزل!", "Log your weight and waist/hip measurements weekly and watch the change. Sometimes the scale stays put while measurements drop!")}</p>`}
+    ${pts.length ? `<div class="chips">${METRICS.filter(([k]) => body.some(b => b[k] > 0)).map(([k, ar, en]) => `<button class="chip" data-bmetric="${k}" aria-pressed="${bodyMetric === k}">${L(ar, en)}</button>`).join("")}</div>
+      <div class="card">${weightChart({ ar: L(m[1], m[1]), en: m[2] }, pts, fmtM(bodyMetric))}</div>` : ""}
+    <div class="card-h"><h3 class="sec">${L("صور التقدّم", "Progress photos")}</h3><label class="ghost file-btn">${L("+ صورة", "+ Photo")}<input type="file" accept="image/*" data-photo="1" hidden></label></div>
+    <p class="note">${L("الصور بتضل عهالجهاز بس، ما بتنبعت لأي مكان.", "Photos stay on this device only and are never uploaded.")}</p>
+    ${pics}</section>`;
+}
 function renderProgress() {
   const now = weekStats(0), prev = weekStats(-1), goal = profile.days.length, total = totalDone(), streak = streakWeeks();
   const diff = now.ex - prev.ex;
   let html = `<header style="display:flex;flex-direction:column;gap:4px"><span class="eyebrow">${L("شوفي قدّيش وصلتي", "See how far you've come")}</span><h1>${L("تقدّمي", "Progress")}</h1></header>`;
+  html += bodyBlock();
   if (!total && !Object.keys(log).length && !Object.keys(acts).length && !hist.length) {
     return html + `<div class="rest"><h2>${L("بعد ما في تمارين مسجّلة", "Nothing logged yet")}</h2><p class="muted">${L("علّمي ✓ عالتمارين اللي بتخلّصيها بـ«اليوم» وسجّلي أوزانك، وهون رح تشوفي تقدّمك أسبوع بأسبوع.", "Mark ✓ the exercises you finish in “Today” and log your weights. Your weekly progress will show up here.")}</p><button class="save" data-tab="plan" style="margin-top:6px">${L("روحي عالبرنامج", "Go to my plan")}</button></div>`;
   }
@@ -2635,7 +2684,7 @@ document.addEventListener("click", (e) => {
   if (ds.routine) { lib.routine = ds.routine; open = null; render(); window.scrollTo(0, 0); return; }
   if (ds.libback) { lib.area = null; lib.routine = null; lib.eq = "all"; open = null; render(); window.scrollTo(0, 0); return; }
   if (ds.tab) { if (ds.tab === "lib" && tab === "lib") { lib = { q: "", part: "all", eq: "all", area: null, routine: null }; }
-    tab = ds.tab; open = null; schedDay = null; if (tab === "me") { draft = null; meEdit = false; } if (tab !== "sched") justSaved = false; render(); window.scrollTo(0,0); return; }
+    tab = ds.tab; open = null; schedDay = null; if (tab === "prog") loadPhotos(); if (tab === "me") { draft = null; meEdit = false; } if (tab !== "sched") justSaved = false; render(); window.scrollTo(0,0); return; }
   if (ds.start) { startSession(ds.start); return; }
   if (ds.adj) {
     const ex = EX.find(x => x.id === ds.aid), key = ds.akey, k = `${key}-${ds.aid}`, dir = +ds.dir;
@@ -2653,6 +2702,16 @@ document.addEventListener("click", (e) => {
   if (ds.lang) { lang = ds.lang; store.set("tamrini.lang", lang); applyLang(); render(); if (ses) renderPlay(); return; }
   if (ds.voiceset) { voiceOn = ds.voiceset === "true"; store.set("tamrini.voice", voiceOn); if (voiceOn) say(L("أهلا! هيك رح ساعدك وقت التمرين.", "Hi! This is how I'll guide your workouts.")); render(); return; }
   if (ds.themeSet) { theme = ds.themeSet; store.set("tamrini.theme", theme); applyTheme(); render(); return; }
+  if (ds.body === "toggle") { bodyOpen = !bodyOpen; render(); return; }
+  if (ds.body === "save") {
+    const rec = { d: ymd(TODAY) }; let any = false;
+    METRICS.forEach(([k]) => { const v = parseFloat(document.getElementById(`bm-${k}`)?.value); if (v > 0 && v < 400) { rec[k] = v; any = true; } });
+    if (any) { body = [...body.filter(b => b.d !== rec.d), rec].sort((a, b) => a.d < b.d ? -1 : 1); store.set("tamrini.body", body); if (rec.w) { profile.weight = rec.w; store.set("tamrini.profile", profile); } }
+    bodyOpen = false; render(); return;
+  }
+  if (ds.bmetric) { bodyMetric = ds.bmetric; render(); return; }
+  if (ds.photocmp) { photoCmp = !photoCmp; render(); return; }
+  if (ds.delphoto) { delPhoto(+ds.delphoto); return; }
   if (ds.hist !== undefined) { histOpen = histOpen === +ds.hist ? null : +ds.hist; render(); return; }
   if (ds.prog) { progOpen = progOpen === ds.prog ? "" : ds.prog; render(); return; }
   if (ds.open) { open = open === ds.open ? null : ds.open; vidOpen = null; render(); return; }
@@ -2748,6 +2807,7 @@ document.addEventListener("input", (e) => {
   if (e.target.id === "f-age") draft.age = +e.target.value;
   if (e.target.id === "f-weight") draft.weight = +e.target.value;
 });
+document.addEventListener("change", (e) => { if (e.target.dataset && e.target.dataset.photo && e.target.files && e.target.files[0]) addPhoto(e.target.files[0]).catch(() => {}); });
 document.addEventListener("submit", (e) => {
   if (e.target.id !== "me-form") return;
   e.preventDefault();
@@ -2796,7 +2856,7 @@ function reloadState() {
   profile = fixDays(store.get("tamrini.profile", DEFAULT)); gender = profile.gender;
   if (!profile.start) profile.start = weekKey();
   log = store.get("tamrini.log", {}); acts = store.get("tamrini.acts", {}); adj = store.get("tamrini.adj", {});
-  hist = store.get("tamrini.hist", []); picks = store.get("tamrini.picks", {}); pkgSel = store.get("tamrini.pkgSel", {}); dayEq = store.get("tamrini.dayEq", {});
+  hist = store.get("tamrini.hist", []); body = store.get("tamrini.body", []); picks = store.get("tamrini.picks", {}); pkgSel = store.get("tamrini.pkgSel", {}); dayEq = store.get("tamrini.dayEq", {});
   wk = store.get("tamrini.week", null);
   if (!wk || wk.start !== weekKey() || wk.sig !== weekSig() || !Array.isArray(wk.assign)) freshWeek();
   theme = store.get("tamrini.theme", "auto"); lang = store.get("tamrini.lang", "ar");
