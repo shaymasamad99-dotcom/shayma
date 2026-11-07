@@ -444,6 +444,7 @@ body.playing { overflow: hidden; }
 .newbadge span { font-size: 1.6rem; margin-inline-end: 6px; }
 @keyframes pop { from { transform: scale(.8); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .newbadge { animation: none; } }
+.warmsets { font-size: .82rem; background: color-mix(in srgb, #F6D9B8 45%, var(--surface)); border-radius: 10px; padding: 6px 10px; }
 .goal-hint { margin: 8px 0 0; padding: 10px 12px; border-radius: 14px; background: var(--soft); font-size: .85rem; line-height: 1.6; }
 .goal-hint b { color: var(--accent); display: block; }
 .chip:disabled { opacity: .4; }
@@ -1708,6 +1709,7 @@ function renderSched() {
     ${step(3, L("كيف رح يتطوّر", "How it progresses"))}
     ${progCardHtml()}
     ${sciCard()}
+    ${remindCard()}
     <div class="sweeks">${weeks.map(w => { const ph = ((w - 1) % 4) + 1; return `<div class="sweek ${w === wkN ? "now" : ""}"><span class="sw-n">${L(`أسبوع ${w}`, `Week ${w}`)}</span><span class="sinfo"><b>${L(PHASES[ph].ar, PHASES[ph].en)}${w === wkN ? L(" · هلّق", " · now") : ""}</b><small>${L(PHASES[ph].tipAr, PHASES[ph].tipEn)}</small></span></div>`; }).join("")}</div>`;
 }
 // ليش الجدول هيك: ملخّص الأدلة العلمية اللي مبني عليها
@@ -1720,6 +1722,28 @@ const SCI = [
   ["بروتين ١٫٦ غ لكل كيلو من وزنك باليوم عالأقل، وأكتر شوي (لحد ٢٫٢) إذا عم تنزلي وزن.", "At least 1.6 g of protein per kg of body weight a day, a bit more (up to 2.2) when losing weight.", "Morton et al. 2018", "https://bjsm.bmj.com/content/52/6/376"],
   ["١٥٠–٣٠٠ دقيقة نشاط معتدل بالأسبوع (مشي سريع، سباحة)، والكارديو ما بيخرّب نمو العضل.", "150–300 minutes of moderate activity a week (brisk walking, swimming); cardio doesn't hurt muscle growth.", "WHO 2020 · Schumann et al. 2022", "https://www.who.int/publications/i/item/9789240015128"],
 ];
+// تذكير بالتمرين: تقويم الموبايل (.ics) عالموقع، أو Google Calendar
+let remindAt = store.get("tamrini.remind", "18:00");
+function nextDate(i) { const d = new Date(dateOfDay(i)); if (d < TODAY) d.setDate(d.getDate() + 7); return d; }
+function calStamp(d, hm) { const [h, m] = hm.split(":").map(Number), x = new Date(d); x.setHours(h, m, 0, 0); return x; }
+const icsT = (x) => x.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+function calTitle(i) { const day = buildDay(i); return day ? `${L("تمرين", "Workout")}: ${day.title}` : L("سباحة", "Swim"); }
+function icsFile() {
+  const days = profile.days.slice().sort((a, b) => a - b), mins = (i) => { const day = buildDay(i); return day ? dayMin(i, day) : swimMin(); };
+  const ev = days.map(i => { const st = calStamp(nextDate(i), remindAt), en = new Date(st.getTime() + mins(i) * 60000);
+    return `BEGIN:VEVENT\r\nUID:shushy-${i}-${st.getTime()}@shushysfit\r\nDTSTAMP:${icsT(new Date())}\r\nDTSTART:${icsT(st)}\r\nDTEND:${icsT(en)}\r\nRRULE:FREQ=WEEKLY\r\nSUMMARY:${calTitle(i)} · Shushy's Fit\r\nBEGIN:VALARM\r\nTRIGGER:-PT30M\r\nACTION:DISPLAY\r\nDESCRIPTION:${L("بعد نص ساعة تمرينك", "Workout in 30 minutes")}\r\nEND:VALARM\r\nEND:VEVENT`; }).join("\r\n");
+  return `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Shushy's Fit//AR\r\nCALSCALE:GREGORIAN\r\n${ev}\r\nEND:VCALENDAR\r\n`;
+}
+function gcalLink(i) { const day = buildDay(i), st = calStamp(nextDate(i), remindAt), en = new Date(st.getTime() + (day ? dayMin(i, day) : swimMin()) * 60000);
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(calTitle(i) + " · Shushy's Fit")}&dates=${icsT(st)}/${icsT(en)}&recur=${encodeURIComponent("RRULE:FREQ=WEEKLY")}`; }
+function remindCard() {
+  const days = profile.days.slice().sort((a, b) => a - b);
+  return `<details class="sci"><summary><b>⏰ ${L("ذكّريني بالتمرين", "Remind me to train")}</b><small>${L("زيدي أيام تمرينك عالتقويم، مع تذكير قبل بنص ساعة", "Add your training days to your calendar, with a 30-minute reminder")}</small></summary>
+    <div class="field" style="margin-top:10px"><label for="f-remind">${L("أيّا ساعة بتتمرّني؟", "What time do you train?")}</label><input id="f-remind" class="num" type="time" value="${remindAt}"></div>
+    ${canEmbed() ? `<button class="save" data-ics="1">📅 ${L("زيدي عـ تقويم الموبايل", "Add to my phone calendar")}</button>` : ""}
+    <div class="chips">${days.map(i => `<a class="chip" href="${gcalLink(i)}" target="_blank" rel="noopener">${dayShort(i)} · Google</a>`).join("")}</div>
+    <p class="note">${L("كل يوم بيتكرّر كل أسبوع.", "Each day repeats weekly.")}${canEmbed() ? "" : L(" عالموقع فيكِ تزيديهن كلّن عتقويم الآيفون بكبسة وحدة.", " On the website you can add them all to your iPhone calendar in one tap.")}</p></details>`;
+}
 function sciCard() {
   return `<details class="sci"><summary><b>${L("مبني على العلم", "Backed by research")}</b><small>${L("ليش الجدول هيك؟", "Why the plan looks like this")}</small></summary>
     <ul>${SCI.map(([ar, en, src, url]) => `<li>${L(ar, en)} <a href="${url}" target="_blank" rel="noopener">${src}</a></li>`).join("")}</ul></details>`;
@@ -2193,6 +2217,13 @@ function bigRing(frac, txt, sub, inner = "") {
   if (inner) return `<div class="pl-ring with-demo">${ring}${inner}</div><div class="pl-under"><b class="pl-time" aria-live="off">${txt}</b><span>${sub}</span></div>`;
   return `<div class="pl-ring">${ring}<div><b class="pl-time" aria-live="off">${txt}</b><span>${sub}</span></div></div>`;
 }
+// مجموعات إحماء قبل أول تمرينين تقال: ١٠ تكرار بـ ٥٠٪ و٥ بـ ٧٥٪
+function warmSets(ex, sw) {
+  if (!sw || ses.set !== 1 || sw < (ex.eq === "machine" ? 20 : 8)) return "";
+  const heavy = sesItems().map((it, i) => ({ it, i })).filter(({ it }) => !it.ex.kind && it.ex.eq !== "body" && (sesW(it.ex) || 0) >= (it.ex.eq === "machine" ? 20 : 8)).slice(0, 2).map(x => x.i);
+  if (!heavy.includes(ses.idx)) return "";
+  return `<span class="warmsets">🔥 ${L(`قبل: ١٠ تكرار بـ ${fmtW(roundW(ex, sw * .5))}، وبعدين ٥ بـ ${fmtW(roundW(ex, sw * .75))}`, `Warm-up first: 10 reps at ${fmtW(roundW(ex, sw * .5))}, then 5 at ${fmtW(roundW(ex, sw * .75))}`)}</span>`;
+}
 function plWeight(ex) {
   if (ex.eq === "body") return "";
   const e = entry(ses.date, ex.id) || {}, prev = lastBefore(ex.id, ses.date), best = bestOf(ex.id, ses.date), step = ex.eq === "machine" ? 2.5 : 1, sw = sesW(ex);
@@ -2204,6 +2235,7 @@ function plWeight(ex) {
         <button type="button" data-pwstep="${step}" aria-label="${L(`زيدي ${step} كغ`, `Plus ${step} kg`)}">+</button>
       </div>
       ${sw ? `<span class="sugg-box">${L(`المقترح: <b>${fmtW(sw)}</b>`, `Suggested: <b>${fmtW(sw)}</b>`)} · ${phaseName()}</span>` : ""}
+      ${warmSets(ex, sw)}
       <span class="small muted">${prev ? `${L("المرة الماضية", "Last time")} ${fmtW(prev)}` : L("أول مرة؟ ابدئي بالمقترح", "First time? Start with the suggestion")}${best ? ` · ${L("أحسن وزن", "Best")} ${fmtW(best)}` : ""}</span>
     </div>`;
 }
@@ -2752,6 +2784,10 @@ document.addEventListener("click", (e) => {
   if (ds.lang) { lang = ds.lang; store.set("tamrini.lang", lang); applyLang(); render(); if (ses) renderPlay(); return; }
   if (ds.voiceset) { voiceOn = ds.voiceset === "true"; store.set("tamrini.voice", voiceOn); if (voiceOn) say(L("أهلا! هيك رح ساعدك وقت التمرين.", "Hi! This is how I'll guide your workouts.")); render(); return; }
   if (ds.themeSet) { theme = ds.themeSet; store.set("tamrini.theme", theme); applyTheme(); render(); return; }
+  if (ds.ics) {
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([icsFile()], { type: "text/calendar" })); a.download = "shushys-fit.ics";
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); return;
+  }
   if (ds.food) {
     const [k, v] = ds.food.split(":"), d = ymd(TODAY), cur = food[d] || {};
     cur[k] = Math.max(0, (cur[k] || 0) + +v); food = { ...food, [d]: cur };
@@ -2857,6 +2893,7 @@ document.addEventListener("input", (e) => {
     return;
   }
   if (e.target.dataset.actShift !== undefined) { actDraft.shift = e.target.checked; return; }
+  if (e.target.id === "f-remind") { remindAt = e.target.value || "18:00"; store.set("tamrini.remind", remindAt); return; }
   if (e.target.id === "f-name") draft.name = e.target.value.slice(0, 24);
   if (e.target.id === "f-goaltext") draft.goalText = e.target.value.slice(0, 140);
   if (e.target.id === "f-age") draft.age = +e.target.value;
