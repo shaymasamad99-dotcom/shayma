@@ -393,6 +393,16 @@ body.playing { overflow: hidden; }
 .d-lip { stroke: #B25D66; stroke-width: .32; fill: none; stroke-linecap: round; }
 .male .d-top { stroke: #3F5F7F; }
 .male .d-hair { fill: #2E211C; }
+.ov-h { margin: 18px 0 6px; font-size: 1.05rem; align-self: stretch; text-align: start; }
+.ov-list { width: 100%; max-width: 420px; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; text-align: start; }
+.ov-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.ov-row:last-child { border-bottom: 0; }
+.ov-row .av { width: 44px; height: 44px; flex: none; }
+.ov-ic { width: 44px; height: 44px; border-radius: 50%; background: var(--soft); display: grid; place-items: center; color: var(--accent); flex: none; }
+.ov-in { padding: 8px 12px 12px; background: var(--soft); }
+.ov-in .ov-list { max-width: none; }
+.pl-nav { margin-top: 4px; }
+.pl-nav button:disabled { opacity: .4; }
 .goal-hint { margin: 8px 0 0; padding: 10px 12px; border-radius: 14px; background: var(--soft); font-size: .85rem; line-height: 1.6; }
 .goal-hint b { color: var(--accent); display: block; }
 .chip:disabled { opacity: .4; }
@@ -418,7 +428,8 @@ body.playing { overflow: hidden; }
 .chev { color: var(--muted); font-size: 1.4rem; flex: none; }
 [dir="ltr"] .chev { transform: scaleX(-1); }
 .sck { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; }
-.sck svg { width: 14px; height: 14px; }
+.sck { color: #fff; }
+.sck svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 3; }
 .sweek { min-height: 56px; }
 .sweek.now { background: var(--soft); }
 .sw-n { flex: none; width: 64px; font-weight: 600; color: var(--accent); font-size: .85rem; }
@@ -1008,7 +1019,7 @@ const store = {
     if (typeof cloudQueue === "function") cloudQueue(k, v);
   },
 };
-const SYNC_KEYS = ["profile", "log", "acts", "adj", "picks", "pkgSel", "dayEq", "week", "theme", "lang", "stretch"];
+const SYNC_KEYS = ["profile", "log", "acts", "adj", "picks", "pkgSel", "dayEq", "week", "theme", "lang", "stretch", "hist"];
 let cloudCol = null, cloudPending = {}, cloudBusy = false, cloudTimer = null;
 let profile = store.get("tamrini.profile", DEFAULT);
 const fixDays = (p) => { fixGoal(p); p.swim = (p.swim || []).filter(d => p.days.includes(d)); p.combo = (p.combo || []).filter(d => p.days.includes(d) && !p.swim.includes(d)); p.gender ||= "f"; return p; };
@@ -1802,11 +1813,18 @@ function weightChart(ex, pts) {
     <details class="tbl"><summary>${L("شوفي الأرقام كجدول", "Show as table")}</summary><table><thead><tr><th>${L("التاريخ", "Date")}</th><th>${L("الوزن", "Weight")}</th></tr></thead><tbody>${table}</tbody></table></details>`;
 }
 
+function histBlock() {
+  if (!hist.length) return "";
+  return `<section class="group"><h3 class="sec">${L("سجل تماريني", "My workout log")}</h3><div class="srows">${hist.slice(0, 20).map((h, i) => {
+    const dt = new Date(h.at), open = histOpen === i;
+    return `<button class="srow" data-hist="${i}" aria-expanded="${open}"><span class="sdate"><small>${L(DAYS[(dt.getDay() + 1) % 7], DAYS_EN[(dt.getDay() + 1) % 7].slice(0, 3))}</small><b>${dt.getDate()}</b></span><span class="sinfo"><b>${esc(L(h.t.ar, h.t.en))}</b><small>${h.min} ${L("د", "min")} · ${h.rows.length} ${L("تمارين", "exercises")} · ${h.sets} ${L("مجموعات", "sets")}${h.prs ? L(` · ${h.prs} رقم قياسي`, ` · ${h.prs} PR`) : ""}</small></span><span class="chev" aria-hidden="true">${open ? "⌄" : "‹"}</span></button>${open ? `<div class="ov-in">${overviewRows(h)}</div>` : ""}`;
+  }).join("")}</div></section>`;
+}
 function renderProgress() {
   const now = weekStats(0), prev = weekStats(-1), goal = profile.days.length, total = totalDone(), streak = streakWeeks();
   const diff = now.ex - prev.ex;
   let html = `<header style="display:flex;flex-direction:column;gap:4px"><span class="eyebrow">${L("شوفي قدّيش وصلتي", "See how far you've come")}</span><h1>${L("تقدّمي", "Progress")}</h1></header>`;
-  if (!total && !Object.keys(log).length && !Object.keys(acts).length) {
+  if (!total && !Object.keys(log).length && !Object.keys(acts).length && !hist.length) {
     return html + `<div class="rest"><h2>${L("بعد ما في تمارين مسجّلة", "Nothing logged yet")}</h2><p class="muted">${L("علّمي ✓ عالتمارين اللي بتخلّصيها بـ«اليوم» وسجّلي أوزانك، وهون رح تشوفي تقدّمك أسبوع بأسبوع.", "Mark ✓ the exercises you finish in “Today” and log your weights. Your weekly progress will show up here.")}</p><button class="save" data-tab="plan" style="margin-top:6px">${L("روحي عالبرنامج", "Go to my plan")}</button></div>`;
   }
   html += `<div class="tiles">
@@ -1836,6 +1854,7 @@ function renderProgress() {
     }).join("")}</div>`;
   }
   html += `</section><p class="note">${L("زيدي الوزن شوي شوي لمّا تقدري تعملي كل التكرارات بحركة صحيحة. هيدا اللي بيعمل التقدّم.", "Add a little weight once you can do all reps with good form. That's what drives progress.")}</p>`;
+  html += histBlock();
   return html;
 }
 
@@ -1909,11 +1928,27 @@ function startSession(key) {
   ses = { key, title, list: items.map(it => ({ id: it.ex.id, t: it.isTime, h: it.h })), date, idx: Math.max(0, first), fin, set: 1, phase: "work", until: 0, started: Date.now(), sets: 0, prs: 0, showHow: false };
   saveSes(); lockScreen(); renderPlay();
 }
-function endSession() { ses = null; saveSes(); try { wake?.release(); } catch {} wake = null; renderPlay(); render(); }
+// سجل التمارين: كل تمرين خلّصتيه بينحفظ مع الوقت والمجموعات والأوزان
+let hist = store.get("tamrini.hist", []), histOpen = null;
+function sesSummary() {
+  const items = sesItems(), rows = [];
+  items.forEach((it, i) => { if (it.ex.kind) return; const sets = (ses.by || {})[i] || 0; if (!sets && !ses.fin.includes(i)) return; const e = entry(ses.date, it.ex.id) || {}; rows.push({ id: it.ex.id, s: sets || sS(it.ex), w: e.w || null }); });
+  const moves = items.filter((it, i) => it.ex.kind && ses.fin.includes(i)).length;
+  return { d: ses.date, at: ses.started, min: Math.max(1, Math.round((Date.now() - ses.started) / 60000)), t: typeof ses.title === "string" ? { ar: ses.title, en: ses.title } : ses.title, rows, moves, sets: ses.sets, prs: ses.prs };
+}
+function saveHist() {
+  if (!ses || ses.saved) return; const sm = sesSummary(); if (!sm.rows.length && !sm.moves) return;
+  ses.saved = true; hist = [sm, ...hist.filter(h => h.at !== sm.at)].slice(0, 120); store.set("tamrini.hist", hist);
+}
+function overviewRows(sm) {
+  return `<div class="ov-list">${sm.rows.map(r => { const ex = anyEx(r.id); return ex ? `<div class="ov-row">${avatar(ex)}<span class="sinfo"><b>${esc(exN(ex))}</b><small>${r.s} ${L("مجموعات", "sets")}${r.w ? ` · ${fmtW(r.w)}` : ""}</small></span><span class="sck">${CHECK}</span></div>` : ""; }).join("")}
+    ${sm.moves ? `<div class="ov-row"><span class="ov-ic">✓</span><span class="sinfo"><b>${L("إحماء وتمطيط", "Warm-up & stretch")}</b><small>${sm.moves} ${L("حركات", "moves")}</small></span></div>` : ""}</div>`;
+}
+function endSession() { if (ses && ses.phase !== "done" && (ses.sets || ses.fin.length)) saveHist(); ses = null; saveSes(); try { wake?.release(); } catch {} wake = null; renderPlay(); render(); }
 
 function finishSet() {
   const items = sesItems(), it = items[ses.idx], n = sS(it.ex), mv = !!it.ex.kind;
-  if (!mv) ses.sets++;
+  if (!mv) { ses.sets++; (ses.by ||= {})[ses.idx] = ((ses.by || {})[ses.idx] || 0) + 1; }
   if (ses.set < n) {
     ses.set++;
     if (mv) { ses.phase = "hold"; ses.until = Date.now() + hS(it) * 1000; }      // الجهة التانية دغري
@@ -1922,7 +1957,7 @@ function finishSet() {
   else if (mv) {
     if (!ses.fin.includes(ses.idx)) ses.fin.push(ses.idx);
     const nx = nextUndone(ses.idx);
-    if (nx < 0) { ses.phase = "done"; try { wake?.release(); } catch {} }
+    if (nx < 0) { ses.phase = "done"; saveHist(); try { wake?.release(); } catch {} }
     else { const nit = items[nx]; ses.idx = nx; ses.set = 1; ses.showHow = false;
       if (nit.ex.kind && nx > items.indexOf(it)) { ses.phase = "hold"; ses.until = Date.now() + hS(nit) * 1000; } else ses.phase = "work"; }
   }
@@ -1932,13 +1967,17 @@ function finishSet() {
     setEntry(ses.date, it.ex.id, { done: true });
     if (!ses.fin.includes(ses.idx)) ses.fin.push(ses.idx);
     const nx = nextUndone(ses.idx);
-    if (nx < 0) { ses.phase = "done"; try { wake?.release(); } catch {} }
+    if (nx < 0) { ses.phase = "done"; saveHist(); try { wake?.release(); } catch {} }
     else { ses.idx = nx; ses.set = 1; ses.showHow = false; if (items[nx].ex.kind) ses.phase = "work"; else { ses.phase = "rest"; ses.until = Date.now() + restFor(ses.key) * 1000; } }
   }
   saveSes(); renderPlay();
 }
 function afterRest() { ses.phase = "work"; ses.until = 0; saveSes(); renderPlay(); }
 
+function plNav() {
+  const n = sesItems().length;
+  return `<div class="pl-row pl-nav"><button class="ghost wide" data-pl="back" ${ses.idx > 0 ? "" : "disabled"}>${L("› السابق", "‹ Back")}</button><button class="ghost wide" data-pl="skip" ${ses.idx < n - 1 ? "" : "disabled"}>${L("التالي ‹", "Next ›")}</button></div>`;
+}
 function bigRing(frac, txt, sub, inner = "") {
   const r = 104, c = 2 * Math.PI * r;
   const ring = `<svg viewBox="0 0 220 220" aria-hidden="true"><circle class="track" cx="110" cy="110" r="${r}"/><circle class="val" cx="110" cy="110" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c * (1 - frac)).toFixed(1)}"/></svg>`;
@@ -1981,9 +2020,11 @@ function renderPlay() {
           : `<div class="tile"><span>${L("حركات تمطيط", "Stretches")}</span><b>${ses.fin.length}<em>/${items.length}</em></b></div>
           <div class="tile"><span>${L("حسّيتي؟", "How do you feel?")}</span><b>✓</b><small>${L("جسمك ارتاح، كمّلي كل يوم شوي", "Lighter already. A little every day helps")}</small></div>`}
         </div>
+        <h3 class="ov-h">${L("ملخّص التمرين", "Workout overview")}</h3>
+        ${overviewRows(sesSummary())}
       </div>
       <div class="pl-actions">
-        <button class="start" data-pl="prog">${L("شوفي تقدّمك", "See progress")}</button>
+        <button class="start" data-pl="prog">${L("شوفي سجل تماريني", "See my workout log")}</button>
         <button class="ghost wide" data-pl="close">${L("رجعي عالبرنامج", "Back to plan")}</button>
       </div>`;
   } else {
@@ -1998,6 +2039,7 @@ function renderPlay() {
         </div>
         <div class="pl-actions">
           <div class="pl-row"><button class="ghost wide" data-pl="more">+15 ${L("ث", "s")}</button><button class="ghost wide" data-pl="next">${L("تخطّي الراحة", "Skip rest")}</button></div>
+          ${plNav()}
         </div>`;
     } else if (ses.phase === "hold") {
       const left = Math.max(0, (ses.until - Date.now()) / 1000);
@@ -2006,7 +2048,7 @@ function renderPlay() {
           <h2 class="pl-name">${esc(exN(ex))}</h2>
           ${bigRing(Math.min(1, left / hold), mmss(Math.ceil(left)), uni ? L("اثبتي · وبعدين بدّلي الجهة", "Hold · then switch sides") : L("اثبتي، فيكِ!", "Hold it, you've got this!"), demoCircle(ex, "in-ring"))}
         </div>
-        <div class="pl-actions"><button class="start" data-pl="set">${L("✓ خلّصت", "✓ Done")}</button></div>`;
+        <div class="pl-actions"><button class="start" data-pl="set">${L("✓ خلّصت", "✓ Done")}</button>${plNav()}</div>`;
     } else {
       body = `<div class="pl-main">
           ${demoCircle(ex, "big")}
@@ -2016,11 +2058,11 @@ function renderPlay() {
           </div>
           <div class="pl-target"><b>${it.isTime ? mmss(hold) : rng(g.reps)}</b><span>${mv ? (ex.kind === "warm" ? L("بإيقاع مريح", "easy pace") : L("ثبات وتنفّس", "hold & breathe")) : it.isTime ? L("ثبات", "hold") : L("تكرار", "reps")}${uni ? L(" · لكل جهة", " · each side") : ""}</span></div>
           ${plWeight(ex)}
-          <details class="pl-how" ${ses.showHow ? "open" : ""}><summary>${L("شو الحركة؟", "How to do it")}</summary>${exInfo(ex, true)}${vidBox(ex)}${vidBtn(ex)}</details>
+          <details class="pl-how" ${ses.showHow ? "open" : ""}><summary>${L("شو الحركة؟", "How to do it")}</summary><ol>${exSteps(ex).slice(0, 3).map(x => `<li>${esc(x)}</li>`).join("")}</ol><p class="tip">${esc(exTip(ex))}</p></details>
         </div>
         <div class="pl-actions">
           ${it.isTime ? `<button class="start" data-pl="hold">▶ ${L("ابدئي", "Start")} ${mmss(hold)}</button>` : `<button class="start" data-pl="set">${L("✓ خلّصت المجموعة", "✓ Set done")}</button>`}
-          <button class="ghost wide" data-pl="skip">${L("تخطّي هالتمرين", "Skip exercise")}</button>
+          ${plNav()}
         </div>`;
     }
   }
@@ -2060,9 +2102,13 @@ $play.addEventListener("click", (e) => {
   else if (a === "hold") { ses.phase = "hold"; ses.until = Date.now() + hS(sesItems()[ses.idx]) * 1000; saveSes(); renderPlay(); }
   else if (a === "next") afterRest();
   else if (a === "more") { ses.until += 15000; saveSes(); renderPlay(); }
+  else if (a === "back") {
+    if (ses.idx > 0) { ses.idx--; ses.set = 1; ses.phase = "work"; ses.until = 0; ses.showHow = false; }
+    saveSes(); renderPlay();
+  }
   else if (a === "skip") {
-    const nx = nextUndone(ses.idx);
-    if (nx < 0 || nx === ses.idx) { ses.phase = "done"; } else { ses.idx = nx; ses.set = 1; ses.phase = "work"; ses.showHow = false; }
+    const nx = ses.idx + 1 < sesItems().length ? ses.idx + 1 : -1;
+    if (nx < 0) { ses.phase = "done"; saveHist(); } else { ses.idx = nx; ses.set = 1; ses.phase = "work"; ses.until = 0; ses.showHow = false; }
     saveSes(); renderPlay();
   }
   else if (a === "prog") { tab = "prog"; endSession(); window.scrollTo(0, 0); }
@@ -2085,6 +2131,7 @@ $play.addEventListener("input", (e) => {
 // viewBox 0 0 100 100، الأرض y = 88.
 const DM = { thigh: 18, shin: 18, torso: 22, ua: 13, fa: 12, neck: 2.6, head: 5.4 };
 const DEMO = {
+  squatbw: { A: { hip: [48, 51], t: 4, ank: [50, 86], hand: [72, 40], eb: 1 }, B: { hip: [39, 67], t: 36, ank: [50, 86], hand: [74, 60], eb: 1 } },
   squat:   { A: { hip: [48, 51], t: 4, ank: [50, 86], hand: [57, 35], eb: 1 }, B: { hip: [39, 67], t: 36, ank: [50, 86], hand: [60, 54], eb: 1 }, prop: "db1" },
   lunge:   { A: { hip: [47, 51], t: 0, ank: [52, 86], ank2: [44, 86], hand: [47, 64], eb: -1 }, B: { hip: [43, 65], t: 2, ank: [58, 86], ank2: [26, 85], toe2: [22, 88], hand: [43, 78], eb: -1 }, prop: "db2" },
   hinge:   { A: { hip: [47, 51], t: 2, ank: [50, 86], hand: [48, 64], eb: -1 }, B: { hip: [38, 54], t: 80, ank: [50, 86], hand: [60, 76], eb: -1 }, prop: "db2" },
@@ -2197,7 +2244,9 @@ function demoVB(pat) {                      // مربّع على قدّ الحر
   const size = Math.max(x1 - x0, y1 - y0) * 1.28 + 6, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2 + 2;
   return (DEMO_VB[pat] = [cx - size / 2, cy - size / 2, size, size]);
 }
-const patOf = (exId) => DEMO_OF[exId] || (typeof MOVES !== "undefined" && (MOVES.find(m => m.id === exId) || {}).demo) || "squat";
+const patOf0 = (exId) => DEMO_OF[exId] || (typeof MOVES !== "undefined" && (MOVES.find(m => m.id === exId) || {}).demo) || "squat";
+// سكوات بلا وزن: الإيدين ممدودين لقدّام ليبيّنوا واضحين (مش عالوجّ)
+const patOf = (exId) => { const p = patOf0(exId), ex = anyEx(exId); return p === "squat" && ex && ex.eq === "body" ? "squatbw" : p; };
 function demoStatic(ex) {
   const pat = patOf(ex.id), P = DEMO[pat], vb = demoVB(pat);
   return `<svg class="demo-st${gender === "m" ? " male" : ""}" viewBox="${vb.map(v => v.toFixed(1)).join(" ")}" aria-hidden="true">${demoFrame(P, P.loop ? 0.15 : 1, ex.eq)}</svg>`;
@@ -2453,6 +2502,7 @@ document.addEventListener("click", (e) => {
   if (ds.goday) { selDay = schedDay = +ds.goday; tab = "sched"; open = null; altOpen = null; actOpen = false; justSaved = false; render(); window.scrollTo(0, 0); return; }
   if (ds.lang) { lang = ds.lang; store.set("tamrini.lang", lang); applyLang(); render(); if (ses) renderPlay(); return; }
   if (ds.themeSet) { theme = ds.themeSet; store.set("tamrini.theme", theme); applyTheme(); render(); return; }
+  if (ds.hist !== undefined) { histOpen = histOpen === +ds.hist ? null : +ds.hist; render(); return; }
   if (ds.prog) { progOpen = progOpen === ds.prog ? "" : ds.prog; render(); return; }
   if (ds.open) { open = open === ds.open ? null : ds.open; vidOpen = null; render(); return; }
   if (ds.day) { selDay = +ds.day; open = null; altOpen = null; actOpen = false; postWarn = false; render(); return; }
@@ -2592,7 +2642,7 @@ function reloadState() {
   profile = fixDays(store.get("tamrini.profile", DEFAULT)); gender = profile.gender;
   if (!profile.start) profile.start = weekKey();
   log = store.get("tamrini.log", {}); acts = store.get("tamrini.acts", {}); adj = store.get("tamrini.adj", {});
-  picks = store.get("tamrini.picks", {}); pkgSel = store.get("tamrini.pkgSel", {}); dayEq = store.get("tamrini.dayEq", {});
+  hist = store.get("tamrini.hist", []); picks = store.get("tamrini.picks", {}); pkgSel = store.get("tamrini.pkgSel", {}); dayEq = store.get("tamrini.dayEq", {});
   wk = store.get("tamrini.week", null);
   if (!wk || wk.start !== weekKey() || wk.sig !== weekSig() || !Array.isArray(wk.assign)) freshWeek();
   theme = store.get("tamrini.theme", "auto"); lang = store.get("tamrini.lang", "ar");
