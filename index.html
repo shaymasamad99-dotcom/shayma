@@ -457,6 +457,11 @@ body.sheet-open { overflow: hidden; }
 .sh-media { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: calc(56px + env(safe-area-inset-top, 0px)) 16px 18px; background: linear-gradient(180deg, var(--soft), var(--bg)); }
 .sh-demo { width: min(300px, 78vw); aspect-ratio: 1; border-radius: 50%; background: var(--c); overflow: hidden; box-shadow: 0 10px 30px rgb(90 30 60 / .15); }
 .sh-demo svg { width: 100%; height: 100%; display: block; }
+.sh-clip { position: relative; width: min(420px, 100%); aspect-ratio: 4 / 3; border-radius: 28px; overflow: hidden; background: var(--c); box-shadow: 0 10px 30px rgb(90 30 60 / .18), 0 0 0 4px var(--c); }
+.clip { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sh-ctag { position: absolute; bottom: 10px; inset-inline-start: 10px; background: rgb(255 255 255 / .85); color: var(--ink); font-size: .72rem; font-weight: 600; padding: 4px 10px; border-radius: 999px; }
+.demo-c.vid { border-radius: 50%; overflow: hidden; }
+.demo-c.vid .clip { border-radius: 50%; }
 .sh-vid { width: 100%; max-width: 528px; }
 .sh-play { border: 0; border-radius: 999px; background: var(--ink); color: var(--bg); font: inherit; font-weight: 600; padding: 10px 20px; min-height: 44px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
 .sh-body { padding: 18px max(16px, env(safe-area-inset-right, 0px)) calc(32px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 14px; }
@@ -2282,7 +2287,11 @@ function coolFor(items) {
 }
 const moveSec = (items) => items.reduce((a, it) => a + it.ex.sec * (it.ex.uni ? 2 : 1), 0);
 
-const demoCircle = (ex, cls = "") => `<div class="demo-c ${cls}" style="--c:${MCOL[ex.m]}">${demoSVG(ex.id, ex.eq)}</div>`;
+// فيديوهات حقيقية قصيرة (٤–٦ ثواني) من Pexels، محفوظة جوّا التطبيق بـ v/
+const CLIPS = { "m-captain": { by: "Pexels", src: 6286154 } };
+const clipOf = (ex) => ex && CLIPS[ex.id] ? `v/${ex.id}` : null;
+const clipTag = (ex, cls = "") => `<video class="clip ${cls}" src="${clipOf(ex)}.mp4" poster="${clipOf(ex)}.jpg" autoplay muted loop playsinline preload="auto" aria-label="${esc(exN(ex))}"></video>`;
+const demoCircle = (ex, cls = "") => clipOf(ex) ? `<div class="demo-c vid ${cls}" style="--c:${MCOL[ex.m]}">${clipTag(ex)}</div>` : `<div class="demo-c ${cls}" style="--c:${MCOL[ex.m]}">${demoSVG(ex.id, ex.eq)}</div>`;
 
 /* فيديو الشرح جوّا التطبيق (إذا مسموح)، وإلّا بيفتح عاليوتيوب */
 let vidOpen = null;
@@ -2308,6 +2317,7 @@ function sheetMedia(ex) {
   if (vidOpen === ex.id && ex.yt && canEmbed()) return `<div class="vbox sh-vid"><iframe src="https://www.youtube-nocookie.com/embed/${ex.yt}?autoplay=1&playsinline=1&rel=0&modestbranding=1" title="${esc(exN(ex))}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`;
   const play = ex.yt && canEmbed() ? `<button class="sh-play" data-vid="${ex.id}">▶ ${L("شوفي الفيديو", "Watch video")}</button>`
     : `<a class="sh-play" href="${video(ex)}" target="_blank" rel="noopener">▶ ${L("الفيديو عاليوتيوب", "Video on YouTube")}</a>`;
+  if (clipOf(ex)) return `<div class="sh-clip" style="--c:${MCOL[ex.m]}">${clipTag(ex)}<span class="sh-ctag">${L("فيديو حقيقي", "Real video")} · ${CLIPS[ex.id].by}</span></div>`;
   return `<div class="sh-demo" style="--c:${MCOL[ex.m]}">${demoSVG(ex.id, ex.eq)}</div>${play}`;
 }
 function sheetBody(d) {
