@@ -393,6 +393,27 @@ body.playing { overflow: hidden; }
 .d-lip { stroke: #B25D66; stroke-width: .32; fill: none; stroke-linecap: round; }
 .male .d-top { stroke: #3F5F7F; }
 .male .d-hair { fill: #2E211C; }
+.ov-h { margin: 18px 0 6px; font-size: 1.05rem; align-self: stretch; text-align: start; }
+.ov-list { width: 100%; max-width: 420px; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; text-align: start; }
+.ov-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.ov-row:last-child { border-bottom: 0; }
+.ov-row .av { width: 44px; height: 44px; flex: none; }
+.ov-ic { width: 44px; height: 44px; border-radius: 50%; background: var(--soft); display: grid; place-items: center; color: var(--accent); flex: none; }
+.ov-in { padding: 8px 12px 12px; background: var(--soft); }
+.ov-in .ov-list { max-width: none; }
+.pl-nav { margin-top: 4px; }
+.pl-finish { align-self: center; border: 0; background: none; color: var(--accent); font: inherit; font-weight: 600; padding: 10px 16px; min-height: 44px; text-decoration: underline; text-underline-offset: 4px; }
+.pl-nav button:disabled { opacity: .4; }
+.sci { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 12px 14px; box-shadow: var(--shadow); margin-bottom: 10px; }
+.sci summary { display: flex; flex-direction: column; gap: 2px; cursor: pointer; list-style: none; }
+.sci summary::-webkit-details-marker { display: none; }
+.sci summary b { color: var(--accent); }
+.sci summary small { color: var(--muted); }
+.sci ul { margin: 10px 0 0; padding-inline-start: 18px; display: flex; flex-direction: column; gap: 8px; font-size: .86rem; line-height: 1.6; }
+.sci a { color: var(--muted); font-size: .76rem; white-space: nowrap; }
+.goal-hint { margin: 8px 0 0; padding: 10px 12px; border-radius: 14px; background: var(--soft); font-size: .85rem; line-height: 1.6; }
+.goal-hint b { color: var(--accent); display: block; }
+.chip:disabled { opacity: .4; }
 .sstep { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; margin: 18px 0 2px; }
 .sstep span { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-size: .9rem; flex: none; }
 .sgoal { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 14px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow); }
@@ -415,7 +436,8 @@ body.playing { overflow: hidden; }
 .chev { color: var(--muted); font-size: 1.4rem; flex: none; }
 [dir="ltr"] .chev { transform: scaleX(-1); }
 .sck { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; }
-.sck svg { width: 14px; height: 14px; }
+.sck { color: #fff; }
+.sck svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 3; }
 .sweek { min-height: 56px; }
 .sweek.now { background: var(--soft); }
 .sw-n { flex: none; width: 64px; font-weight: 600; color: var(--accent); font-size: .85rem; }
@@ -567,7 +589,7 @@ form { display: flex; flex-direction: column; gap: 18px; }
 <script>
 /* ===================== البيانات ===================== */
 let lang = (() => { try { return JSON.parse(localStorage.getItem("tamrini.lang")) || "ar"; } catch { return "ar"; } })();
-let gender = "f", MASC = {"بتتمرّني":"بتتمرّن","استلقي":"استلقِ","ادفعي":"ادفع","تقفلي":"تقفل","نزّلي":"نزّل","ترفعي":"ترفع","ارفعي":"ارفع","تحسي":"تحسّ","افتحي":"افتح","تحضني":"تحضن","رجعي":"رجع","سكّري":"سكّر","وأنتي":"وأنت","ظبطي":"ظبط","اقعدي":"اقعد","وظبطي":"وظبط","ترجعي":"ترجع","وقفي":"وقف","اسحبي":"اسحب","ميلي":"ميل","وثبتي":"وثبت","نزلي":"نزل","اعمليه":"اعمله","وطّيتي":"وطّيت","حطي":"حطّ","فكري":"فكّر","تسحبي":"تسحب","نامي":"نام","وعصري":"وعصر","امسكي":"امسك","واقعدي":"واقعد","تتمرجحي":"تتمرجح","ورجليكي":"ورجليك","اختاري":"اختار","اطلعي":"اطلع","قللي":"قلّل","لتوصلي":"لتوصل","حسي":"حسّ","اثبتي":"اثبت","ونزلي":"ونزل","وامسكي":"وامسك","رجعيه":"رجعه","وحسّي":"وحسّ","تقوّسي":"تقوّس","شدي":"شدّ","وبدّلي":"وبدّل","تلفّي":"تلفّ","وارجعي":"وارجع","لفّي":"لفّ","وافتحي":"وافتح","ولفّي":"ولفّ","وسنّدي":"وسنّد","افردي":"افرد","تفردي":"تفرد","اثني":"اثنِ","ونزّلي":"ونزّل","وخدي":"وخود","انزلي":"انزل","وادفعي":"وادفع","ورجعي":"ورجع","تميلي":"تميل","رجليكي":"رجليك","لتتعلمي":"لتتعلم","سنّدي":"سنّد","فكّي":"فكّ","وانزلي":"وانزل","ابدئي":"ابدأ","لتتعوّدي":"لتتعوّد","ارجعي":"ارجع","ثبّتي":"ثبّت","وجيبي":"وجيب","وتأكدي":"وتأكد","عصري":"عصر","ربطي":"ربط","وواجهي":"وواجه","واطلعي":"واطلع","تعملي":"تعمل","ووقفي":"ووقف","تشدي":"تشدّ","وحطي":"وحطّ","تعصري":"تعصر","لتطلعي":"لتطلع","اركعي":"اركع","وارفعي":"وارفع","وكرري":"وكرر","تفرقي":"تفرق","واثبتي":"واثبت","لتحسّي":"لتحسّ","تفكّي":"تفكّ","تنزّلي":"تنزّل","مدّي":"مدّ","وميلي":"وميل","حافظي":"حافظ","انثني":"انثنِ","قرّبي":"قرّب","وافردي":"وافرد","بدّلي":"بدّل","جيبي":"جيب","ورجّعيها":"ورجّعها","وقرّبي":"وقرّب","والمسي":"والمس","حرّكي":"حرّك","ودوّري":"ودوّر","وقاومي":"وقاوم","تختاري":"تختار","وركّزي":"وركّز","زيدي":"زيد","وحاولي":"وحاول","توصلي":"توصل","خففي":"خفف","بتبلّشي":"بتبلّش","مستواكِ":"مستواك","شوفي":"شوف","اخترتيه":"اخترته","قارني":"قارن","تأجّلي":"تأجّل","ركّزي":"ركّز","كرّري":"كرّر","لتقدري":"لتقدر","تعوّضيه":"تعوّضه","شيلي":"شيل","بتقدري":"بتقدر","تعلّمي":"تعلّم","وتسجّلي":"وتسجّل","رفعتيه":"رفعته","نقّصي":"نقّص","اضغطي":"اضغط","اعمليلي":"اعملّي","حققتي":"حققت","لتكمّلي":"لتكمّل","تمرّنتي":"تمرّنت","رجّعي":"رجّع","خلّصتيه":"خلّصته","بلّشتي":"بلّشت","وأجّلي":"وأجّل","سجّلي":"سجّل","امسحي":"امسح","سجّلتي":"سجّلت","سجّليها":"سجّلها","بتسجّليها":"بتسجّلها","عوّضي":"عوّض","أجّليه":"أجّله","خلّصتي":"خلّصت","كمّلي":"كمّل","لتعلّمي":"لتعلّم","لتشوفي":"لتشوف","خدي":"خود","خلّصي":"خلّص","سبحي":"سبح","قصّريها":"قصّرها","استشيري":"استشير","تبلّشي":"تبلّش","بتخلّصيها":"بتخلّصها","دوّري":"دوّر","تصفّحي":"تصفّح","جربي":"جرّب","طوّلي":"طوّل","تمطّيها":"تمطّطها","بتعرفي":"بتعرف","عدّلي":"عدّل","حطّي":"حطّ","لتفوتي":"لتفوت","فيكِ":"فيك","اكتبي":"اكتب","تتمرّني":"تتمرّن","تغيّريها":"تغيّرها","احفظي":"احفظ","واعمليلي":"واعملّي","خلّصتيها":"خلّصتها","وصلتي":"وصلت","علّمي":"علّم","وسجّلي":"وسجّل","تشوفي":"تشوف","روحي":"روح","بتتمرني":"بتتمرن","بترفعيه":"بترفعه","تقدري":"تقدر","وقفتي":"وقفت","حسّيتي":"حسّيت","واشربي":"واشرب","توقفي":"توقف","وقّفي":"وقّف","اعملي":"اعمل","وكبّريها":"وكبّرها","غيّري":"غيّر","مرجحي":"مرجح","كبّري":"كبّر","تنزلي":"تنزل","ورفعي":"ورفع","تحرّكي":"تحرّك","ونزّليه":"ونزّله","ميّلي":"ميّل","لتزيدي":"لتزيد","اسحبيها":"اسحبها","واثني":"واثنِ","تدفشيه":"تدفشه","وراكِ":"وراك","تحسّي":"تحسّ","شبكي":"شبك","عكعبيكي":"عكعبيك","انحني":"انحنِ","ومدّي":"ومدّ","ريّحي":"ريّح","وتنفّسي":"وتنفّس","اسندي":"اسند","تضغطي":"تضغط","شدّي":"شدّ","تقوّسيه":"تقوّسه","بتحسّي":"بتحسّ","وسكّري":"وسكّر","وقعدي":"وقعد","بتوصلي":"بتوصل","وانحني":"وانحنِ","لتضلي":"لتضل","وريّحي":"وريّح","وتمرجحي":"وتمرجح","لتأكدي":"لتأكد","خديه":"خوده","ابعتيه":"ابعته","مبتدئة":"مبتدئ","متوسطة":"متوسط","متقدّمة":"متقدّم"};   // كلمات المؤنث ← المذكر (بتنعبّى تحت)
+let gender = "f", MASC = {"بتتمرّني":"بتتمرّن","استلقي":"استلقِ","ادفعي":"ادفع","تقفلي":"تقفل","نزّلي":"نزّل","ترفعي":"ترفع","ارفعي":"ارفع","تحسي":"تحسّ","افتحي":"افتح","تحضني":"تحضن","رجعي":"رجع","سكّري":"سكّر","وأنتي":"وأنت","ظبطي":"ظبط","اقعدي":"اقعد","وظبطي":"وظبط","ترجعي":"ترجع","وقفي":"وقف","اسحبي":"اسحب","ميلي":"ميل","وثبتي":"وثبت","نزلي":"نزل","اعمليه":"اعمله","وطّيتي":"وطّيت","حطي":"حطّ","فكري":"فكّر","تسحبي":"تسحب","نامي":"نام","وعصري":"وعصر","امسكي":"امسك","واقعدي":"واقعد","تتمرجحي":"تتمرجح","ورجليكي":"ورجليك","اختاري":"اختار","اطلعي":"اطلع","قللي":"قلّل","لتوصلي":"لتوصل","حسي":"حسّ","اثبتي":"اثبت","ونزلي":"ونزل","وامسكي":"وامسك","رجعيه":"رجعه","وحسّي":"وحسّ","تقوّسي":"تقوّس","شدي":"شدّ","وبدّلي":"وبدّل","تلفّي":"تلفّ","وارجعي":"وارجع","لفّي":"لفّ","وافتحي":"وافتح","ولفّي":"ولفّ","وسنّدي":"وسنّد","افردي":"افرد","تفردي":"تفرد","اثني":"اثنِ","ونزّلي":"ونزّل","وخدي":"وخود","انزلي":"انزل","وادفعي":"وادفع","ورجعي":"ورجع","تميلي":"تميل","رجليكي":"رجليك","لتتعلمي":"لتتعلم","سنّدي":"سنّد","فكّي":"فكّ","وانزلي":"وانزل","ابدئي":"ابدأ","لتتعوّدي":"لتتعوّد","ارجعي":"ارجع","ثبّتي":"ثبّت","وجيبي":"وجيب","وتأكدي":"وتأكد","عصري":"عصر","ربطي":"ربط","وواجهي":"وواجه","واطلعي":"واطلع","تعملي":"تعمل","ووقفي":"ووقف","تشدي":"تشدّ","وحطي":"وحطّ","تعصري":"تعصر","لتطلعي":"لتطلع","اركعي":"اركع","وارفعي":"وارفع","وكرري":"وكرر","تفرقي":"تفرق","واثبتي":"واثبت","لتحسّي":"لتحسّ","تفكّي":"تفكّ","تنزّلي":"تنزّل","مدّي":"مدّ","وميلي":"وميل","حافظي":"حافظ","انثني":"انثنِ","قرّبي":"قرّب","وافردي":"وافرد","بدّلي":"بدّل","جيبي":"جيب","ورجّعيها":"ورجّعها","وقرّبي":"وقرّب","والمسي":"والمس","حرّكي":"حرّك","ودوّري":"ودوّر","وقاومي":"وقاوم","تختاري":"تختار","وركّزي":"وركّز","زيدي":"زيد","وحاولي":"وحاول","توصلي":"توصل","خففي":"خفف","بتبلّشي":"بتبلّش","مستواكِ":"مستواك","شوفي":"شوف","اخترتيه":"اخترته","قارني":"قارن","تأجّلي":"تأجّل","ركّزي":"ركّز","كرّري":"كرّر","لتقدري":"لتقدر","تعوّضيه":"تعوّضه","شيلي":"شيل","بتقدري":"بتقدر","تعلّمي":"تعلّم","وتسجّلي":"وتسجّل","رفعتيه":"رفعته","نقّصي":"نقّص","اضغطي":"اضغط","اعمليلي":"اعملّي","حققتي":"حققت","لتكمّلي":"لتكمّل","تمرّنتي":"تمرّنت","رجّعي":"رجّع","خلّصتيه":"خلّصته","بلّشتي":"بلّشت","وأجّلي":"وأجّل","سجّلي":"سجّل","امسحي":"امسح","سجّلتي":"سجّلت","سجّليها":"سجّلها","بتسجّليها":"بتسجّلها","عوّضي":"عوّض","أجّليه":"أجّله","خلّصتي":"خلّصت","كمّلي":"كمّل","لتعلّمي":"لتعلّم","لتشوفي":"لتشوف","خدي":"خود","خلّصي":"خلّص","سبحي":"سبح","قصّريها":"قصّرها","استشيري":"استشير","تبلّشي":"تبلّش","بتخلّصيها":"بتخلّصها","دوّري":"دوّر","تصفّحي":"تصفّح","جربي":"جرّب","طوّلي":"طوّل","تمطّيها":"تمطّطها","بتعرفي":"بتعرف","عدّلي":"عدّل","حطّي":"حطّ","لتفوتي":"لتفوت","فيكِ":"فيك","اكتبي":"اكتب","تتمرّني":"تتمرّن","تغيّريها":"تغيّرها","احفظي":"احفظ","واعمليلي":"واعملّي","خلّصتيها":"خلّصتها","وصلتي":"وصلت","علّمي":"علّم","وسجّلي":"وسجّل","تشوفي":"تشوف","روحي":"روح","بتتمرني":"بتتمرن","بترفعيه":"بترفعه","تقدري":"تقدر","وقفتي":"وقفت","حسّيتي":"حسّيت","واشربي":"واشرب","توقفي":"توقف","وقّفي":"وقّف","اعملي":"اعمل","وكبّريها":"وكبّرها","غيّري":"غيّر","مرجحي":"مرجح","كبّري":"كبّر","تنزلي":"تنزل","ورفعي":"ورفع","تحرّكي":"تحرّك","ونزّليه":"ونزّله","ميّلي":"ميّل","لتزيدي":"لتزيد","اسحبيها":"اسحبها","واثني":"واثنِ","تدفشيه":"تدفشه","وراكِ":"وراك","تحسّي":"تحسّ","شبكي":"شبك","عكعبيكي":"عكعبيك","انحني":"انحنِ","ومدّي":"ومدّ","ريّحي":"ريّح","وتنفّسي":"وتنفّس","اسندي":"اسند","تضغطي":"تضغط","شدّي":"شدّ","تقوّسيه":"تقوّسه","بتحسّي":"بتحسّ","وسكّري":"وسكّر","وقعدي":"وقعد","بتوصلي":"بتوصل","وانحني":"وانحنِ","لتضلي":"لتضل","وريّحي":"وريّح","وتمرجحي":"وتمرجح","لتأكدي":"لتأكد","خديه":"خوده","ابعتيه":"ابعته","بتخسري":"بتخسر","بتشدّي":"بتشدّ","وبتحافظي":"وبتحافظ","وزيدي":"وزيد","وكلي":"وكول","تختاريها":"تختارها","وخلّصي":"وخلّص","مبتدئة":"مبتدئ","متوسطة":"متوسط","متقدّمة":"متقدّم"};   // كلمات المؤنث ← المذكر (بتنعبّى تحت)
 const gA = (v) => gender !== "m" ? v : Array.isArray(v) ? v.map(gA) : typeof v === "string" ? v.replace(/[\u0621-\u064A\u064B-\u0652\u0640]+/g, w => MASC[w] || w) : v;
 const L = (ar, en) => lang === "en" ? en : gA(ar);
 const MUSCLES = {
@@ -884,17 +906,48 @@ const exSteps = (ex) => lang === "en" ? ((EX_EN[ex.id] || [])[0] || ex.stepsEn |
 const exTip = (ex) => lang === "en" ? ((EX_EN[ex.id] || [])[1] || ex.tipEn || ex.tip) : gA(ex.tip);
 
 const GOALS = {
-  fat:      { ar: "خسارة دهون",  en: "Fat loss", subEn: "Burn & tone", restEn: "45–60 s", sub: "حرق وشد",         sets: "3",   reps: "12–15", rest: "45–60 ث" },
-  muscle:   { ar: "بناء عضل",    en: "Build muscle", subEn: "Shape & size", restEn: "60–90 s", sub: "تضخيم وشكل",      sets: "3–4", reps: "8–12",  rest: "60–90 ث" },
-  gain:     { ar: "زيادة وزن",  en: "Gain weight", subEn: "Healthy mass", restEn: "60–90 s", sub: "كتلة صحية",       sets: "3–4", reps: "8–12",  rest: "60–90 ث" },
-  tone:     { ar: "شد وتنسيق",  en: "Tone & shape", subEn: "Firm & defined", restEn: "45–60 s", sub: "جسم مشدود",    sets: "3",   reps: "12–15", rest: "45–60 ث" },
+  fat:      { ar: "خسارة دهون",  en: "Fat loss", subEn: "Burn & tone", restEn: "60–90 s", sub: "حرق وشد",         sets: "3",   reps: "12–15", rest: "60–90 ث" },
+  muscle:   { ar: "بناء عضل",    en: "Build muscle", subEn: "Shape & size", restEn: "90–120 s", sub: "تضخيم وشكل",      sets: "3–4", reps: "8–12",  rest: "90–120 ث" },
+  gain:     { ar: "زيادة وزن",  en: "Gain weight", subEn: "Healthy mass", restEn: "90–120 s", sub: "كتلة صحية",       sets: "3–4", reps: "8–12",  rest: "90–120 ث" },
+  tone:     { ar: "شد وتنسيق",  en: "Tone & shape", subEn: "Firm & defined", restEn: "60–90 s", sub: "جسم مشدود",    sets: "3",   reps: "10–15", rest: "60–90 ث" },
   strength: { ar: "قوة",         en: "Strength", subEn: "Heavier weights", restEn: "2–3 min", sub: "أوزان أثقل",       sets: "4",   reps: "5–6",   rest: "2–3 د" },
-  fit:      { ar: "لياقة عامة",  en: "General fitness", subEn: "Health & energy", restEn: "60 s", sub: "صحة ونشاط",       sets: "2–3", reps: "10–12", rest: "60 ث" },
+  fit:      { ar: "لياقة عامة",  en: "General fitness", subEn: "Health & energy", restEn: "60–90 s", sub: "صحة ونشاط",       sets: "2–3", reps: "10–12", rest: "60–90 ث" },
 };
 const DAYS = ["السبت","الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة"];
 const DAYS_SHORT = ["سبت","أحد","إثنين","ثلاثاء","أربعاء","خميس","جمعة"];
 const DAYS_EN = ["Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"];
 const dayN = (i) => L(DAYS[i], DAYS_EN[i]);
+// الهدف على مرحلتين: شو بدّك بوزنك، وبعدين شو كمان (أكتر من وحدة)
+const DIRS = [["lose", "خسارة وزن", "Lose weight", "نزول بطيء وصحّي"], ["gain", "زيادة وزن", "Gain weight", "كتلة صحية"], ["keep", "حافظي على وزني", "Keep my weight", "نفس الوزن، جسم أحسن"]];
+const AIMS = [["fat", "خسارة دهون", "Lose fat"], ["tone", "شد", "Tone"], ["muscle", "بناء عضل", "Build muscle"], ["strength", "قوة", "Strength"], ["fit", "لياقة", "Fitness"]];
+const OLD_GOAL = { fat: ["lose", ["fat"]], gain: ["gain", ["muscle"]], muscle: ["keep", ["muscle"]], tone: ["keep", ["tone"]], strength: ["keep", ["strength"]], fit: ["keep", ["fit"]] };
+// نوع التمرين (مجموعات، تكرار، راحة) حسب الهدفين سوا
+function goalKey(p) {
+  const a = p.aims || [], d = p.dir || "keep";
+  if (a.includes("muscle")) return d === "gain" ? "gain" : "muscle";
+  if (a.includes("strength")) return "strength";
+  if (a.includes("tone")) return "tone";
+  if (a.includes("fat")) return "fat";
+  if (a.includes("fit")) return "fit";
+  return d === "lose" ? "fat" : d === "gain" ? "gain" : "fit";
+}
+function fixGoal(p) {
+  if (!p.dir) { const o = OLD_GOAL[p.goal] || ["keep", ["fit"]]; p.dir = o[0]; p.aims = o[1].slice(); }
+  p.aims = (p.aims || []).filter(k => AIMS.some(x => x[0] === k) && !(p.dir === "gain" && k === "fat"));
+  p.goal = goalKey(p); return p;
+}
+const dirN = (k) => { const o = DIRS.find(x => x[0] === k) || DIRS[2]; return L(o[1], o[2]); };
+const aimN = (k) => { const o = AIMS.find(x => x[0] === k); return o ? L(o[1], o[2]) : ""; };
+const goalTitle = (p = profile) => { const a = (p.aims || []).map(aimN); return (p.dir === "keep" && a.length ? "" : dirN(p.dir) + (a.length ? " · " : "")) + a.join(L(" و", " & ")); };
+function goalHint(p) {
+  const a = p.aims || [], d = p.dir;
+  if (d === "lose" && (a.includes("muscle") || a.includes("tone"))) return L("منطقي ١٠٠٪: بتخسري دهون شوي شوي (حوالي نص كيلو بالأسبوع) وبنفس الوقت بتشدّي وبتحافظي عالعضل بالأوزان. السر: بروتين عالي وأكل أقل بشوي.", "Makes total sense: lose fat slowly (about 0.5 kg a week) while lifting to keep and firm your muscle. The key: high protein and a small calorie deficit.");
+  if (d === "lose") return L("خسارة وزن مع تمارين: تكرارات أكتر وراحة أقصر، وزيدي سباحة أو مشي.", "Weight loss with training: more reps, shorter rest, plus swimming or walking.");
+  if (d === "gain" && a.includes("muscle")) return L("زيادة وزن صحية: أوزان متوسطة لتقيلة، وكلي أكتر بشوي كل يوم لتطلع الزيادة عضل.", "Healthy gain: moderate to heavy weights and a small daily surplus so the gain is muscle.");
+  if (d === "gain") return L("زيادة وزن: منركّز على تمارين الأوزان لتطلع الزيادة عضل مش دهون.", "Weight gain: we focus on lifting so the gain is muscle, not fat.");
+  if (a.includes("fat") && a.includes("muscle")) return L("بتخسري دهون وبتبني عضل سوا، والوزن ممكن يضلّ متل ما هو بس الجسم بيتغيّر.", "Lose fat and build muscle together; the scale may not move but your body will.");
+  return L("بنفس وزنك، جسمك بيصير أقوى وأشد.", "Same weight, stronger and firmer body.");
+}
 const gN = (g) => L(g.ar, g.en), gSub = (g) => L(g.sub, g.subEn), gRest = (g) => L(g.rest, g.restEn);
 
 // نوع الحركة جوّا كل عضلة، ليكون اليوم منوّع (ضغط + فتح، سحب عامودي + أفقي، كور ثبات + حركة…)
@@ -916,21 +969,22 @@ const PAT = {
 // كل يوم: نوع (علوي / سفلي / جسم كامل) وكذا باقة تختاري منها. كل الباقات فيها كور من نوعين.
 const TYPES = { full: { ar: "جسم كامل", en: "Full body", pickAr: "اختاري باقة الجسم الكامل" }, upper: { ar: "علوي", en: "Upper body", pickAr: "اختاري باقة العلوي" }, lower: { ar: "سفلي", en: "Lower body", pickAr: "اختاري باقة السفلي" } };
 const PKGS = {
+  // مبني على الأدلة: كل عضلة كبيرة مرتين بالأسبوع عالأقل (ACSM 2026)، التمارين المركّبة أول، وكور واحد كل يوم (تنين بالبيت)
   full: [
-    { id: "full-classic", ar: "كلاسيك", en: "Classic", subAr: "كل العضلات بيوم واحد", subEn: "Every muscle in one day", slots: ["quads", "chest:press", "back:h", "glutes:thrust", "hamstrings", "shoulders:press", "abs:flex", "abs:hold"] },
-    { id: "full-glutes", ar: "مع تركيز أرداف", en: "Glute focus", subAr: "جسم كامل وأرداف أكتر", subEn: "Full body with extra glutes", slots: ["glutes:thrust", "quads", "back:h", "chest:press", "glutes:uni", "shoulders:side", "abs:flex", "abs:hold"] },
-    { id: "full-home", ar: "بالبيت", en: "At home", subAr: "بلا معدات", subEn: "No equipment", eq: "body", slots: ["quads", "chest:press", "back:h", "glutes:thrust", "glutes:iso", "triceps", "abs:flex", "abs:hold"] },
+    { id: "full-classic", ar: "كلاسيك", en: "Classic", subAr: "كل العضلات بيوم واحد", subEn: "Every muscle in one day", slots: ["quads", "chest:press", "back:v", "hamstrings", "glutes:thrust", "back:h", "shoulders:side", "abs:hold"] },
+    { id: "full-glutes", ar: "مع تركيز أرداف", en: "Glute focus", subAr: "جسم كامل وأرداف أكتر", subEn: "Full body with extra glutes", slots: ["glutes:thrust", "quads", "back:v", "hamstrings", "chest:press", "glutes:uni", "glutes:iso", "abs:flex"] },
+    { id: "full-home", ar: "بالبيت", en: "At home", subAr: "بلا معدات", subEn: "No equipment", eq: "body", slots: ["quads", "chest:press", "glutes:thrust", "back:h", "glutes:iso", "triceps", "abs:flex", "abs:hold"] },
   ],
   upper: [
-    { id: "upper-balanced", ar: "متوازن", en: "Balanced", subAr: "صدر، ظهر، كتاف وإيدين", subEn: "Chest, back, shoulders & arms", slots: ["chest:press", "back:v", "shoulders:side", "back:h", "biceps", "triceps", "abs:hold", "abs:rot"] },
-    { id: "upper-back", ar: "ظهر وكتاف", en: "Back & shoulders", subAr: "وقفة أحلى وظهر أقوى", subEn: "Better posture, stronger back", slots: ["back:v", "back:h", "shoulders:press", "shoulders:side", "shoulders:rear", "biceps", "abs:hold", "abs:rot"] },
-    { id: "upper-arms", ar: "صدر وإيدين", en: "Chest & arms", subAr: "شد الإيدين والصدر", subEn: "Toned arms and chest", slots: ["chest:press", "chest:fly", "triceps", "biceps", "triceps", "shoulders:side", "abs:flex", "abs:hold"] },
+    { id: "upper-balanced", ar: "متوازن", en: "Balanced", subAr: "صدر، ظهر، كتاف وإيدين", subEn: "Chest, back, shoulders & arms", slots: ["chest:press", "back:v", "shoulders:press", "back:h", "shoulders:side", "biceps", "triceps", "abs:hold"] },
+    { id: "upper-back", ar: "ظهر وكتاف", en: "Back & shoulders", subAr: "وقفة أحلى وظهر أقوى", subEn: "Better posture, stronger back", slots: ["back:v", "chest:press", "back:h", "shoulders:side", "shoulders:rear", "biceps", "abs:rot"] },
+    { id: "upper-arms", ar: "صدر وإيدين", en: "Chest & arms", subAr: "شد الإيدين والصدر", subEn: "Toned arms and chest", slots: ["chest:press", "back:v", "chest:fly", "back:h", "triceps", "biceps", "abs:flex"] },
     { id: "upper-home", ar: "بالبيت", en: "At home", subAr: "بلا معدات", subEn: "No equipment", eq: "body", slots: ["chest:press", "back:h", "triceps", "chest:press", "abs:flex", "abs:hold", "abs:rot"] },
   ],
   lower: [
-    { id: "lower-glutes", ar: "أرداف وشد", en: "Glutes & tone", subAr: "تركيز كامل عالأرداف", subEn: "All about the glutes", slots: ["glutes:thrust", "glutes:uni", "hamstrings", "glutes:iso", "glutes:iso", "calves", "abs:flex", "abs:hold"] },
-    { id: "lower-legs", ar: "فخاد وسمانة", en: "Thighs & calves", subAr: "أمامي، خلفي وسمانة", subEn: "Quads, hamstrings & calves", slots: ["quads", "hamstrings", "quads", "glutes:thrust", "calves", "calves", "abs:hold", "abs:rot"] },
-    { id: "lower-balanced", ar: "متوازن", en: "Balanced", subAr: "شوي من كل شي", subEn: "A bit of everything", slots: ["glutes:thrust", "quads", "hamstrings", "glutes:uni", "glutes:iso", "calves", "abs:flex", "abs:hold"] },
+    { id: "lower-glutes", ar: "أرداف وشد", en: "Glutes & tone", subAr: "تركيز كامل عالأرداف", subEn: "All about the glutes", slots: ["glutes:thrust", "glutes:uni", "hamstrings", "quads", "glutes:iso", "calves", "abs:flex"] },
+    { id: "lower-legs", ar: "فخاد وسمانة", en: "Thighs & calves", subAr: "أمامي، خلفي وسمانة", subEn: "Quads, hamstrings & calves", slots: ["quads", "hamstrings", "glutes:thrust", "quads", "calves", "abs:hold"] },
+    { id: "lower-balanced", ar: "متوازن", en: "Balanced", subAr: "شوي من كل شي", subEn: "A bit of everything", slots: ["quads", "glutes:thrust", "hamstrings", "glutes:uni", "glutes:iso", "calves", "abs:hold"] },
     { id: "lower-home", ar: "بالبيت", en: "At home", subAr: "بلا معدات", subEn: "No equipment", eq: "body", slots: ["quads", "glutes:thrust", "glutes:iso", "glutes:thrust", "glutes:iso", "calves", "abs:flex", "abs:hold"] },
   ],
 };
@@ -974,10 +1028,10 @@ const store = {
     if (typeof cloudQueue === "function") cloudQueue(k, v);
   },
 };
-const SYNC_KEYS = ["profile", "log", "acts", "adj", "picks", "pkgSel", "dayEq", "week", "theme", "lang", "stretch"];
+const SYNC_KEYS = ["profile", "log", "acts", "adj", "picks", "pkgSel", "dayEq", "week", "theme", "lang", "stretch", "hist"];
 let cloudCol = null, cloudPending = {}, cloudBusy = false, cloudTimer = null;
 let profile = store.get("tamrini.profile", DEFAULT);
-const fixDays = (p) => { p.swim = (p.swim || []).filter(d => p.days.includes(d)); p.combo = (p.combo || []).filter(d => p.days.includes(d) && !p.swim.includes(d)); p.gender ||= "f"; return p; };
+const fixDays = (p) => { fixGoal(p); p.swim = (p.swim || []).filter(d => p.days.includes(d)); p.combo = (p.combo || []).filter(d => p.days.includes(d) && !p.swim.includes(d)); p.gender ||= "f"; return p; };
 fixDays(profile); gender = profile.gender;
 const gymDays = () => profile.days.filter(d => !profile.swim.includes(d)).sort((x, y) => x - y);
 const isSwimDay = (d) => profile.swim.includes(d);
@@ -1104,7 +1158,7 @@ function buildWorkout(k, day) {
   const type = splitFor(gymDays().length)[k], pk = pkgFor(k);
   const eq = pk.eq || dayEq[day] || profile.eq;
   let slots = pk.slots.slice();
-  if (profile.level === "beginner") {                       // شيلي آخر حركة مش كور
+  if (profile.level === "beginner" || (profile.level === "adv" && baseSets() >= 4)) {   // شيلي آخر حركة مش كور
     for (let x = slots.length - 1; x >= 0; x--) if (!slots[x].startsWith("abs")) { slots.splice(x, 1); break; }
   }
   const used = new Set();
@@ -1226,8 +1280,9 @@ const BUB = [58, 44, 66, 40, 54, 46, 62, 42];
 const bubbles = (items, n = 8, k = 1) => `<div class="bubbles" aria-hidden="true">${items.slice(0, n).map((it, i) => avatar(it.ex, { size: Math.round(BUB[i % BUB.length] * k) })).join("")}</div>`;
 
 let adj = store.get("tamrini.adj", {});            // { "day-exId": { sets, hold } }
-const REST_SEC = { fat: 50, gain: 75, tone: 50, muscle: 75, strength: 150, fit: 60 };
-function baseSets() { const [a, b] = GOALS[profile.goal].sets.split("–").map(Number); return profile.level !== "beginner" && b ? b : a; }
+const REST_SEC = { fat: 75, gain: 105, tone: 75, muscle: 105, strength: 150, fit: 75 };
+// المتوسطة: الحد الأدنى من المجموعات مع كل التمارين؛ المتقدّمة: الحد الأعلى بس تمرين أقل، لتضل الحصة معقولة (أقل من ساعة وربع)
+function baseSets() { const [a, b] = GOALS[profile.goal].sets.split("–").map(Number); return profile.level === "adv" && b ? b : a; }
 const routineOf = (key) => typeof key === "string" && key.startsWith("r-") ? ROUTINES.find(r => `r-${r.id}` === key) : null;
 const setsFor = (day, ex) => (adj[`${day}-${ex.id}`] || {}).sets ?? routineOf(day)?.sets ?? Math.max(1, baseSets() - (isPlanKey(day) && phaseOf() === 4 ? 1 : 0));
 const restFor = (key) => routineOf(key)?.rest ?? REST_SEC[profile.goal];
@@ -1319,7 +1374,7 @@ function renderPlan() {
   const g = GOALS[profile.goal];
   const day = buildDay(selDay);
   let html = `<header class="hdr"><div>
-      <span class="eyebrow">${profile.name ? L(`أهلا ${esc(profile.name)} · `, `Hi ${esc(profile.name)} · `) : ""}${dayN(todayIdx)} · ${L("هدفك", "Goal")}: ${gN(g)}</span>
+      <span class="eyebrow">${profile.name ? L(`أهلا ${esc(profile.name)} · `, `Hi ${esc(profile.name)} · `) : ""}${dayN(todayIdx)} · ${L("هدفك", "Goal")}: ${goalTitle()}</span>
       <h1>${L("تمرين اليوم", "Today")}</h1></div>
       <button class="lang-btn" data-lang="${L("en", "ar")}" lang="${L("en", "ar")}">${L("English", "العربية")}</button>
     </header>`;
@@ -1440,7 +1495,7 @@ function dayDetail() {
       </section>`;
     }
   }
-  const protein = Math.round(profile.weight * 1.6), water = (profile.weight * 0.035).toFixed(1);
+  const protein = Math.round(profile.weight * (profile.dir === "lose" && (profile.aims || []).some(a => a === "muscle" || a === "tone") ? 2 : profile.dir === "gain" || (profile.aims || []).includes("muscle") ? 1.8 : 1.6)), water = (profile.weight * 0.035).toFixed(1);
   html += `<section class="scheme" style="grid-template-columns:1fr 1fr">
       <div><b>${protein} ${L("غ", "g")}</b><span>${L("بروتين باليوم (تقريباً)", "Protein per day (approx.)")}</span></div>
       <div><b>${water} ${L("ل", "L")}</b><span>${L("مي باليوم (تقريباً)", "Water per day (approx.)")}</span></div>
@@ -1593,16 +1648,32 @@ function renderSched() {
     ${profile.saved ? "" : `<div class="banner"><span>${L("هيدا جدول مثال. حطّي هدفك ومعلوماتك ليتظبط إلك.", "This is a sample. Add your goal and details to tailor it.")}</span><button data-me-edit="1">${L("حطّي هدفي", "Set my goal")}</button></div>`}
     ${step(1, L("هدفي", "My goal"))}
     <section class="sgoal">
-      <div><b>${gN(g)}</b>${profile.goalText ? `<p class="goal-q">“${esc(profile.goalText)}”</p>` : ""}</div>
+      <div><b>${goalTitle()}</b>${profile.goalText ? `<p class="goal-q">“${esc(profile.goalText)}”</p>` : ""}</div>
       <div class="chips">${[lvN(profile.level), L(`${order.length} أيام بالأسبوع`, `${order.length} days/week`), eqOptN(profile.eq), total ? L(`${total} أسابيع`, `${total} weeks`) : L("هدف مستمر", "Ongoing")].map(t => `<span class="pill">${t}</span>`).join("")}</div>
       <button class="ghost" data-me-edit="1">${L("عدّلي هدفي", "Edit goal")}</button>
     </section>
     ${step(2, L("هالأسبوع", "This week"))}
     <p class="small muted">${L(`${order.length - nSwim} أيام تمرين${nSwim ? ` · ${nSwim} سباحة` : ""}${nCombo ? ` · ${nCombo} منهن مع سباحة` : ""} · كل تمرين: إحماء، تمارين، تمطيط`, `${order.length - nSwim} workouts${nSwim ? ` · ${nSwim} swim` : ""}${nCombo ? ` · ${nCombo} with a swim` : ""} · each: warm-up, exercises, stretch`)}</p>
     <div class="srows">${DAYS.map((_, i) => schedRow(i)).join("")}</div>
+    ${profile.dir === "lose" || (profile.aims || []).includes("fat") ? `<p class="small muted">${L("وكمان: ١٥٠ دقيقة نشاط معتدل بالأسبوع (مشي سريع، سباحة، أو دراجة) بتساعد بخسارة الدهون. سجّليها من صفحة اليوم.", "Plus: 150 minutes of moderate activity a week (brisk walking, swimming or cycling) helps with fat loss. Log it from the day page.")}</p>` : ""}
     ${step(3, L("كيف رح يتطوّر", "How it progresses"))}
     ${progCardHtml()}
+    ${sciCard()}
     <div class="sweeks">${weeks.map(w => { const ph = ((w - 1) % 4) + 1; return `<div class="sweek ${w === wkN ? "now" : ""}"><span class="sw-n">${L(`أسبوع ${w}`, `Week ${w}`)}</span><span class="sinfo"><b>${L(PHASES[ph].ar, PHASES[ph].en)}${w === wkN ? L(" · هلّق", " · now") : ""}</b><small>${L(PHASES[ph].tipAr, PHASES[ph].tipEn)}</small></span></div>`; }).join("")}</div>`;
+}
+// ليش الجدول هيك: ملخّص الأدلة العلمية اللي مبني عليها
+const SCI = [
+  ["كل عضلة كبيرة بتشتغل مرتين بالأسبوع عالأقل، وحوالي ١٠ مجموعات أو أكتر بالأسبوع لتكبر وتنشد.", "Every major muscle is trained at least twice a week, with about 10+ weekly sets to grow and firm up.", "ACSM 2026", "https://acsm.org/resistance-training-guidelines-update-2026/"],
+  ["كل ما زاد عدد المجموعات بالأسبوع بتزيد النتيجة، بس الزيادة بتخفّ شوي شوي، عشان هيك منزيد بالتدريج.", "More weekly sets bring more results, with diminishing returns, so volume rises gradually.", "Pelland et al. 2024", "https://sportrxiv.org/index.php/server/preprint/view/460"],
+  ["راحة أكتر من دقيقة بين المجموعات بتعطي نتيجة أحسن شوي من الراحة القصيرة.", "Resting more than a minute between sets gives slightly better growth than short rests.", "Singer et al. 2024", "https://www.frontiersin.org/journals/sports-and-active-living/articles/10.3389/fspor.2024.1429789/full"],
+  ["ما لازم توصلي للفشل: وقّفي قبل الآخر بـ ١–٣ تكرار، والنتيجة تقريباً نفسها وأأمن.", "No need to train to failure: stopping 1–3 reps short gives similar results and is safer.", "Refalo et al. 2023", "https://link.springer.com/article/10.1007/s40279-023-01946-6"],
+  ["الهيب ثرست والسكوات بيكبّروا الأرداف تقريباً متل بعض، والسكوات بيزيد الفخذ كمان، عشان هيك الجدول فيه الاتنين.", "Hip thrusts and squats grow the glutes about equally (squats also build the thighs), so the plan uses both.", "Plotkin et al. 2023", "https://pubmed.ncbi.nlm.nih.gov/37877099/"],
+  ["بروتين ١٫٦ غ لكل كيلو من وزنك باليوم عالأقل، وأكتر شوي (لحد ٢٫٢) إذا عم تنزلي وزن.", "At least 1.6 g of protein per kg of body weight a day, a bit more (up to 2.2) when losing weight.", "Morton et al. 2018", "https://bjsm.bmj.com/content/52/6/376"],
+  ["١٥٠–٣٠٠ دقيقة نشاط معتدل بالأسبوع (مشي سريع، سباحة)، والكارديو ما بيخرّب نمو العضل.", "150–300 minutes of moderate activity a week (brisk walking, swimming); cardio doesn't hurt muscle growth.", "WHO 2020 · Schumann et al. 2022", "https://www.who.int/publications/i/item/9789240015128"],
+];
+function sciCard() {
+  return `<details class="sci"><summary><b>${L("مبني على العلم", "Backed by research")}</b><small>${L("ليش الجدول هيك؟", "Why the plan looks like this")}</small></summary>
+    <ul>${SCI.map(([ar, en, src, url]) => `<li>${L(ar, en)} <a href="${url}" target="_blank" rel="noopener">${src}</a></li>`).join("")}</ul></details>`;
 }
 function schedDayView() {
   const day = buildDay(selDay);
@@ -1620,7 +1691,7 @@ function renderMe() {
       <section class="acct">
         <div class="acct-top">
           <span class="acct-av" aria-hidden="true">${nm ? esc(nm[0].toUpperCase()) : profile.gender === "m" ? "♂" : "♀"}</span>
-          <div><b>${gN(g)}</b><span class="muted small">${profile.gender === "m" ? L("ذكر", "Male") : L("أنثى", "Female")} · ${lvN(profile.level)} · ${profile.days.length} ${L("أيام بالأسبوع", "days a week")} · ${profile.goalWeeks ? L(`${profile.goalWeeks} أسابيع`, `${profile.goalWeeks} weeks`) : L("مستمر", "ongoing")}</span></div>
+          <div><b>${goalTitle()}</b><span class="muted small">${profile.gender === "m" ? L("ذكر", "Male") : L("أنثى", "Female")} · ${lvN(profile.level)} · ${profile.days.length} ${L("أيام بالأسبوع", "days a week")} · ${profile.goalWeeks ? L(`${profile.goalWeeks} أسابيع`, `${profile.goalWeeks} weeks`) : L("مستمر", "ongoing")}</span></div>
         </div>
         <div class="acct-stats">
           <div><b>${profile.age}</b><span>${L("العمر", "Age")}</span></div>
@@ -1646,8 +1717,12 @@ function renderMe() {
       <div class="field"><label for="f-age">${L("العمر", "Age")}</label><input id="f-age" class="num" type="number" inputmode="numeric" min="12" max="90" value="${d.age}"></div>
       <div class="field"><label for="f-weight">${L("الوزن (كغ)", "Weight (kg)")}</label><input id="f-weight" class="num" type="number" inputmode="decimal" min="30" max="250" value="${d.weight}"></div>
     </div>
-    <div class="field"><span class="lbl">${L("شو هدفك؟", "Your goal")}</span>
-      <div class="opts">${Object.entries(GOALS).map(([k,g]) => `<button type="button" class="opt" data-goal="${k}" aria-pressed="${d.goal===k}"><b>${gN(g)}</b><small>${gSub(g)}</small></button>`).join("")}</div></div>
+    <div class="field"><span class="lbl">${L("١. شو بدّك بوزنك؟", "1. What about your weight?")}</span>
+      <div class="opts three">${DIRS.map(([k, ar, en, sub]) => `<button type="button" class="opt" data-fdir="${k}" aria-pressed="${d.dir === k}"><b>${L(ar, en)}</b><small>${L(sub, k === "lose" ? "Slow and healthy" : k === "gain" ? "Healthy mass" : "Same weight, better body")}</small></button>`).join("")}</div></div>
+    <div class="field"><span class="lbl">${L("٢. وشو كمان؟", "2. And what else?")} <span class="muted small">${L("(فيكِ تختاري أكتر من وحدة)", "(pick one or more)")}</span></span>
+      <div class="chips">${AIMS.map(([k, ar, en]) => { const off = d.dir === "gain" && k === "fat"; return `<button type="button" class="chip" data-faim="${k}" aria-pressed="${(d.aims || []).includes(k)}" ${off ? "disabled" : ""}>${L(ar, en)}</button>`; }).join("")}</div>
+      ${d.dir === "gain" ? `<span class="note">${L("«خسارة دهون» ما بتمشي مع زيادة الوزن، فما فيكِ تختاريها هون.", "“Lose fat” doesn't fit with gaining weight, so it's off.")}</span>` : ""}
+      <p class="goal-hint"><b>${goalTitle(d)}</b> ${goalHint(d)}</p></div>
     <div class="field"><span class="lbl">${L("مستواكِ", "Your level")}</span>
       <div class="opts three">${LEVELS.map(([k, ar, en, sub]) => `<button type="button" class="opt" data-level="${k}" aria-pressed="${d.level === k}"><b>${L(ar, en)}</b><small>${L(sub, k === "beginner" ? "Light weights, slow increases" : k === "inter" ? "You know the moves" : "Heavier weights, more sets")}</small></button>`).join("")}</div></div>
     <div class="field"><label for="f-goaltext">${L("اكتبي هدفك بكلماتك (اختياري)", "Your goal in your own words (optional)")}</label>
@@ -1764,11 +1839,18 @@ function weightChart(ex, pts) {
     <details class="tbl"><summary>${L("شوفي الأرقام كجدول", "Show as table")}</summary><table><thead><tr><th>${L("التاريخ", "Date")}</th><th>${L("الوزن", "Weight")}</th></tr></thead><tbody>${table}</tbody></table></details>`;
 }
 
+function histBlock() {
+  if (!hist.length) return "";
+  return `<section class="group"><h3 class="sec">${L("سجل تماريني", "My workout log")}</h3><div class="srows">${hist.slice(0, 20).map((h, i) => {
+    const dt = new Date(h.at), open = histOpen === i;
+    return `<button class="srow" data-hist="${i}" aria-expanded="${open}"><span class="sdate"><small>${L(DAYS[(dt.getDay() + 1) % 7], DAYS_EN[(dt.getDay() + 1) % 7].slice(0, 3))}</small><b>${dt.getDate()}</b></span><span class="sinfo"><b>${esc(L(h.t.ar, h.t.en))}</b><small>${h.min} ${L("د", "min")} · ${h.rows.length} ${L("تمارين", "exercises")} · ${h.sets} ${L("مجموعات", "sets")}${h.prs ? L(` · ${h.prs} رقم قياسي`, ` · ${h.prs} PR`) : ""}</small></span><span class="chev" aria-hidden="true">${open ? "⌄" : "‹"}</span></button>${open ? `<div class="ov-in">${overviewRows(h)}</div>` : ""}`;
+  }).join("")}</div></section>`;
+}
 function renderProgress() {
   const now = weekStats(0), prev = weekStats(-1), goal = profile.days.length, total = totalDone(), streak = streakWeeks();
   const diff = now.ex - prev.ex;
   let html = `<header style="display:flex;flex-direction:column;gap:4px"><span class="eyebrow">${L("شوفي قدّيش وصلتي", "See how far you've come")}</span><h1>${L("تقدّمي", "Progress")}</h1></header>`;
-  if (!total && !Object.keys(log).length && !Object.keys(acts).length) {
+  if (!total && !Object.keys(log).length && !Object.keys(acts).length && !hist.length) {
     return html + `<div class="rest"><h2>${L("بعد ما في تمارين مسجّلة", "Nothing logged yet")}</h2><p class="muted">${L("علّمي ✓ عالتمارين اللي بتخلّصيها بـ«اليوم» وسجّلي أوزانك، وهون رح تشوفي تقدّمك أسبوع بأسبوع.", "Mark ✓ the exercises you finish in “Today” and log your weights. Your weekly progress will show up here.")}</p><button class="save" data-tab="plan" style="margin-top:6px">${L("روحي عالبرنامج", "Go to my plan")}</button></div>`;
   }
   html += `<div class="tiles">
@@ -1798,6 +1880,7 @@ function renderProgress() {
     }).join("")}</div>`;
   }
   html += `</section><p class="note">${L("زيدي الوزن شوي شوي لمّا تقدري تعملي كل التكرارات بحركة صحيحة. هيدا اللي بيعمل التقدّم.", "Add a little weight once you can do all reps with good form. That's what drives progress.")}</p>`;
+  html += histBlock();
   return html;
 }
 
@@ -1871,11 +1954,27 @@ function startSession(key) {
   ses = { key, title, list: items.map(it => ({ id: it.ex.id, t: it.isTime, h: it.h })), date, idx: Math.max(0, first), fin, set: 1, phase: "work", until: 0, started: Date.now(), sets: 0, prs: 0, showHow: false };
   saveSes(); lockScreen(); renderPlay();
 }
-function endSession() { ses = null; saveSes(); try { wake?.release(); } catch {} wake = null; renderPlay(); render(); }
+// سجل التمارين: كل تمرين خلّصتيه بينحفظ مع الوقت والمجموعات والأوزان
+let hist = store.get("tamrini.hist", []), histOpen = null;
+function sesSummary() {
+  const items = sesItems(), rows = [];
+  items.forEach((it, i) => { if (it.ex.kind) return; const sets = (ses.by || {})[i] || 0; if (!sets && !ses.fin.includes(i)) return; const e = entry(ses.date, it.ex.id) || {}; rows.push({ id: it.ex.id, s: sets || sS(it.ex), w: e.w || null }); });
+  const moves = items.filter((it, i) => it.ex.kind && ses.fin.includes(i)).length;
+  return { d: ses.date, at: ses.started, min: Math.max(1, Math.round((Date.now() - ses.started) / 60000)), t: typeof ses.title === "string" ? { ar: ses.title, en: ses.title } : ses.title, rows, moves, sets: ses.sets, prs: ses.prs };
+}
+function saveHist() {
+  if (!ses || ses.saved) return; const sm = sesSummary(); if (!sm.rows.length && !sm.moves) return;
+  ses.saved = true; hist = [sm, ...hist.filter(h => h.at !== sm.at)].slice(0, 120); store.set("tamrini.hist", hist);
+}
+function overviewRows(sm) {
+  return `<div class="ov-list">${sm.rows.map(r => { const ex = anyEx(r.id); return ex ? `<div class="ov-row">${avatar(ex)}<span class="sinfo"><b>${esc(exN(ex))}</b><small>${r.s} ${L("مجموعات", "sets")}${r.w ? ` · ${fmtW(r.w)}` : ""}</small></span><span class="sck">${CHECK}</span></div>` : ""; }).join("")}
+    ${sm.moves ? `<div class="ov-row"><span class="ov-ic">✓</span><span class="sinfo"><b>${L("إحماء وتمطيط", "Warm-up & stretch")}</b><small>${sm.moves} ${L("حركات", "moves")}</small></span></div>` : ""}</div>`;
+}
+function endSession() { if (ses && ses.phase !== "done" && (ses.sets || ses.fin.length)) saveHist(); ses = null; saveSes(); try { wake?.release(); } catch {} wake = null; renderPlay(); render(); }
 
 function finishSet() {
   const items = sesItems(), it = items[ses.idx], n = sS(it.ex), mv = !!it.ex.kind;
-  if (!mv) ses.sets++;
+  if (!mv) { ses.sets++; (ses.by ||= {})[ses.idx] = ((ses.by || {})[ses.idx] || 0) + 1; }
   if (ses.set < n) {
     ses.set++;
     if (mv) { ses.phase = "hold"; ses.until = Date.now() + hS(it) * 1000; }      // الجهة التانية دغري
@@ -1884,7 +1983,7 @@ function finishSet() {
   else if (mv) {
     if (!ses.fin.includes(ses.idx)) ses.fin.push(ses.idx);
     const nx = nextUndone(ses.idx);
-    if (nx < 0) { ses.phase = "done"; try { wake?.release(); } catch {} }
+    if (nx < 0) { ses.phase = "done"; saveHist(); try { wake?.release(); } catch {} }
     else { const nit = items[nx]; ses.idx = nx; ses.set = 1; ses.showHow = false;
       if (nit.ex.kind && nx > items.indexOf(it)) { ses.phase = "hold"; ses.until = Date.now() + hS(nit) * 1000; } else ses.phase = "work"; }
   }
@@ -1894,13 +1993,19 @@ function finishSet() {
     setEntry(ses.date, it.ex.id, { done: true });
     if (!ses.fin.includes(ses.idx)) ses.fin.push(ses.idx);
     const nx = nextUndone(ses.idx);
-    if (nx < 0) { ses.phase = "done"; try { wake?.release(); } catch {} }
+    if (nx < 0) { ses.phase = "done"; saveHist(); try { wake?.release(); } catch {} }
     else { ses.idx = nx; ses.set = 1; ses.showHow = false; if (items[nx].ex.kind) ses.phase = "work"; else { ses.phase = "rest"; ses.until = Date.now() + restFor(ses.key) * 1000; } }
   }
   saveSes(); renderPlay();
 }
 function afterRest() { ses.phase = "work"; ses.until = 0; saveSes(); renderPlay(); }
 
+function plNav() {
+  const n = sesItems().length;
+  const last = ses.idx >= n - 1;
+  return `<div class="pl-row pl-nav"><button class="ghost wide" data-pl="back" ${ses.idx > 0 ? "" : "disabled"}>${L("› السابق", "‹ Back")}</button><button class="ghost wide" data-pl="skip">${last ? L("تخطّي وخلّصي", "Skip & finish") : L("تخطّي ‹", "Skip ›")}</button></div>
+    <button class="pl-finish" data-pl="finish">${L("✓ خلّصت التمرين", "✓ Finish workout")}</button>`;
+}
 function bigRing(frac, txt, sub, inner = "") {
   const r = 104, c = 2 * Math.PI * r;
   const ring = `<svg viewBox="0 0 220 220" aria-hidden="true"><circle class="track" cx="110" cy="110" r="${r}"/><circle class="val" cx="110" cy="110" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c * (1 - frac)).toFixed(1)}"/></svg>`;
@@ -1943,9 +2048,11 @@ function renderPlay() {
           : `<div class="tile"><span>${L("حركات تمطيط", "Stretches")}</span><b>${ses.fin.length}<em>/${items.length}</em></b></div>
           <div class="tile"><span>${L("حسّيتي؟", "How do you feel?")}</span><b>✓</b><small>${L("جسمك ارتاح، كمّلي كل يوم شوي", "Lighter already. A little every day helps")}</small></div>`}
         </div>
+        <h3 class="ov-h">${L("ملخّص التمرين", "Workout overview")}</h3>
+        ${overviewRows(sesSummary())}
       </div>
       <div class="pl-actions">
-        <button class="start" data-pl="prog">${L("شوفي تقدّمك", "See progress")}</button>
+        <button class="start" data-pl="prog">${L("شوفي سجل تماريني", "See my workout log")}</button>
         <button class="ghost wide" data-pl="close">${L("رجعي عالبرنامج", "Back to plan")}</button>
       </div>`;
   } else {
@@ -1960,6 +2067,7 @@ function renderPlay() {
         </div>
         <div class="pl-actions">
           <div class="pl-row"><button class="ghost wide" data-pl="more">+15 ${L("ث", "s")}</button><button class="ghost wide" data-pl="next">${L("تخطّي الراحة", "Skip rest")}</button></div>
+          ${plNav()}
         </div>`;
     } else if (ses.phase === "hold") {
       const left = Math.max(0, (ses.until - Date.now()) / 1000);
@@ -1968,7 +2076,7 @@ function renderPlay() {
           <h2 class="pl-name">${esc(exN(ex))}</h2>
           ${bigRing(Math.min(1, left / hold), mmss(Math.ceil(left)), uni ? L("اثبتي · وبعدين بدّلي الجهة", "Hold · then switch sides") : L("اثبتي، فيكِ!", "Hold it, you've got this!"), demoCircle(ex, "in-ring"))}
         </div>
-        <div class="pl-actions"><button class="start" data-pl="set">${L("✓ خلّصت", "✓ Done")}</button></div>`;
+        <div class="pl-actions"><button class="start" data-pl="set">${L("✓ خلّصت", "✓ Done")}</button>${plNav()}</div>`;
     } else {
       body = `<div class="pl-main">
           ${demoCircle(ex, "big")}
@@ -1978,11 +2086,11 @@ function renderPlay() {
           </div>
           <div class="pl-target"><b>${it.isTime ? mmss(hold) : rng(g.reps)}</b><span>${mv ? (ex.kind === "warm" ? L("بإيقاع مريح", "easy pace") : L("ثبات وتنفّس", "hold & breathe")) : it.isTime ? L("ثبات", "hold") : L("تكرار", "reps")}${uni ? L(" · لكل جهة", " · each side") : ""}</span></div>
           ${plWeight(ex)}
-          <details class="pl-how" ${ses.showHow ? "open" : ""}><summary>${L("شو الحركة؟", "How to do it")}</summary>${exInfo(ex, true)}${vidBox(ex)}${vidBtn(ex)}</details>
+          <details class="pl-how" ${ses.showHow ? "open" : ""}><summary>${L("شو الحركة؟", "How to do it")}</summary><ol>${exSteps(ex).slice(0, 3).map(x => `<li>${esc(x)}</li>`).join("")}</ol><p class="tip">${esc(exTip(ex))}</p></details>
         </div>
         <div class="pl-actions">
           ${it.isTime ? `<button class="start" data-pl="hold">▶ ${L("ابدئي", "Start")} ${mmss(hold)}</button>` : `<button class="start" data-pl="set">${L("✓ خلّصت المجموعة", "✓ Set done")}</button>`}
-          <button class="ghost wide" data-pl="skip">${L("تخطّي هالتمرين", "Skip exercise")}</button>
+          ${plNav()}
         </div>`;
     }
   }
@@ -2022,9 +2130,14 @@ $play.addEventListener("click", (e) => {
   else if (a === "hold") { ses.phase = "hold"; ses.until = Date.now() + hS(sesItems()[ses.idx]) * 1000; saveSes(); renderPlay(); }
   else if (a === "next") afterRest();
   else if (a === "more") { ses.until += 15000; saveSes(); renderPlay(); }
+  else if (a === "finish") { ses.phase = "done"; ses.until = 0; ses.askClose = false; saveHist(); try { wake?.release(); } catch {} saveSes(); renderPlay(); }
+  else if (a === "back") {
+    if (ses.idx > 0) { ses.idx--; ses.set = 1; ses.phase = "work"; ses.until = 0; ses.showHow = false; }
+    saveSes(); renderPlay();
+  }
   else if (a === "skip") {
-    const nx = nextUndone(ses.idx);
-    if (nx < 0 || nx === ses.idx) { ses.phase = "done"; } else { ses.idx = nx; ses.set = 1; ses.phase = "work"; ses.showHow = false; }
+    const nx = ses.idx + 1 < sesItems().length ? ses.idx + 1 : -1;
+    if (nx < 0) { ses.phase = "done"; saveHist(); } else { ses.idx = nx; ses.set = 1; ses.phase = "work"; ses.until = 0; ses.showHow = false; }
     saveSes(); renderPlay();
   }
   else if (a === "prog") { tab = "prog"; endSession(); window.scrollTo(0, 0); }
@@ -2047,6 +2160,7 @@ $play.addEventListener("input", (e) => {
 // viewBox 0 0 100 100، الأرض y = 88.
 const DM = { thigh: 18, shin: 18, torso: 22, ua: 13, fa: 12, neck: 2.6, head: 5.4 };
 const DEMO = {
+  squatbw: { A: { hip: [48, 51], t: 4, ank: [50, 86], hand: [72, 40], eb: 1 }, B: { hip: [39, 67], t: 36, ank: [50, 86], hand: [74, 60], eb: 1 } },
   squat:   { A: { hip: [48, 51], t: 4, ank: [50, 86], hand: [57, 35], eb: 1 }, B: { hip: [39, 67], t: 36, ank: [50, 86], hand: [60, 54], eb: 1 }, prop: "db1" },
   lunge:   { A: { hip: [47, 51], t: 0, ank: [52, 86], ank2: [44, 86], hand: [47, 64], eb: -1 }, B: { hip: [43, 65], t: 2, ank: [58, 86], ank2: [26, 85], toe2: [22, 88], hand: [43, 78], eb: -1 }, prop: "db2" },
   hinge:   { A: { hip: [47, 51], t: 2, ank: [50, 86], hand: [48, 64], eb: -1 }, B: { hip: [38, 54], t: 80, ank: [50, 86], hand: [60, 76], eb: -1 }, prop: "db2" },
@@ -2159,7 +2273,9 @@ function demoVB(pat) {                      // مربّع على قدّ الحر
   const size = Math.max(x1 - x0, y1 - y0) * 1.28 + 6, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2 + 2;
   return (DEMO_VB[pat] = [cx - size / 2, cy - size / 2, size, size]);
 }
-const patOf = (exId) => DEMO_OF[exId] || (typeof MOVES !== "undefined" && (MOVES.find(m => m.id === exId) || {}).demo) || "squat";
+const patOf0 = (exId) => DEMO_OF[exId] || (typeof MOVES !== "undefined" && (MOVES.find(m => m.id === exId) || {}).demo) || "squat";
+// سكوات بلا وزن: الإيدين ممدودين لقدّام ليبيّنوا واضحين (مش عالوجّ)
+const patOf = (exId) => { const p = patOf0(exId), ex = anyEx(exId); return p === "squat" && ex && ex.eq === "body" ? "squatbw" : p; };
 function demoStatic(ex) {
   const pat = patOf(ex.id), P = DEMO[pat], vb = demoVB(pat);
   return `<svg class="demo-st${gender === "m" ? " male" : ""}" viewBox="${vb.map(v => v.toFixed(1)).join(" ")}" aria-hidden="true">${demoFrame(P, P.loop ? 0.15 : 1, ex.eq)}</svg>`;
@@ -2331,6 +2447,7 @@ function sheetBody(d) {
     if (sw) target.push([L("الوزن المقترح", "Suggested weight"), fmtW(sw)]);
     const rr = key != null && routineOf(key)?.rest;
     target.push([L("راحة", "Rest"), rr ? `${rr} ${L("ث", "s")}` : rng(gRest(g))]);
+    target.push([L("الجهد", "Effort"), L("وقّفي قبل الآخر بـ ١–٣", "Stop 1–3 reps short")]);
   }
   return `<div class="sh-h">
       <span class="eyebrow">${isMove ? (ex.kind === "warm" ? L("إحماء", "Warm-up") : L("تمطيط", "Stretch")) : `${mN(ex.m)} · ${eqN(ex.eq)}`}${UNI.has(ex.id) || ex.uni ? L(" · لكل جهة", " · each side") : ""}</span>
@@ -2415,6 +2532,7 @@ document.addEventListener("click", (e) => {
   if (ds.goday) { selDay = schedDay = +ds.goday; tab = "sched"; open = null; altOpen = null; actOpen = false; justSaved = false; render(); window.scrollTo(0, 0); return; }
   if (ds.lang) { lang = ds.lang; store.set("tamrini.lang", lang); applyLang(); render(); if (ses) renderPlay(); return; }
   if (ds.themeSet) { theme = ds.themeSet; store.set("tamrini.theme", theme); applyTheme(); render(); return; }
+  if (ds.hist !== undefined) { histOpen = histOpen === +ds.hist ? null : +ds.hist; render(); return; }
   if (ds.prog) { progOpen = progOpen === ds.prog ? "" : ds.prog; render(); return; }
   if (ds.open) { open = open === ds.open ? null : ds.open; vidOpen = null; render(); return; }
   if (ds.day) { selDay = +ds.day; open = null; altOpen = null; actOpen = false; postWarn = false; render(); return; }
@@ -2472,7 +2590,8 @@ document.addEventListener("click", (e) => {
   }
   if (ds.part) { lib.part = ds.part; render(); return; }
   if (ds.leq) { lib.eq = ds.leq; render(); return; }
-  if (ds.goal) { draft.goal = ds.goal; render(); return; }
+  if (ds.fdir) { draft.dir = ds.fdir; fixGoal(draft); render(); return; }
+  if (ds.faim) { const a = new Set(draft.aims || []); a.has(ds.faim) ? a.delete(ds.faim) : a.add(ds.faim); draft.aims = [...a]; fixGoal(draft); render(); return; }
   if (ds.level) { draft.level = ds.level; render(); return; }
   if (ds.feq) { draft.eq = ds.feq; render(); return; }
   if (ds.fday) {
@@ -2513,7 +2632,8 @@ document.addEventListener("submit", (e) => {
     : !(draft.weight >= 30 && draft.weight <= 250) ? L("اكتبي وزن بين ٣٠ و٢٥٠ كغ.", "Enter a weight between 30 and 250 kg.")
     : !draft.days.length ? L("اختاري يوم تمرين واحد عالأقل.", "Pick at least one training day.") : "";
   if (bad) { err.textContent = bad; err.hidden = false; return; }
-  const restart = !profile.saved || draft.goal !== profile.goal || (draft.goalWeeks || 0) !== (profile.goalWeeks || 0);
+  fixGoal(draft);
+  const restart = !profile.saved || draft.goal !== profile.goal || draft.dir !== profile.dir || (draft.goalWeeks || 0) !== (profile.goalWeeks || 0);
   profile = fixDays({ ...draft, saved: true, start: restart ? weekKey() : (profile.start || weekKey()) }); gender = profile.gender;
   store.set("tamrini.profile", profile);
   dayEq = {}; adj = {}; pkgSel = {}; store.set("tamrini.dayEq", dayEq); store.set("tamrini.adj", adj); store.set("tamrini.pkgSel", pkgSel); freshWeek();
@@ -2552,7 +2672,7 @@ function reloadState() {
   profile = fixDays(store.get("tamrini.profile", DEFAULT)); gender = profile.gender;
   if (!profile.start) profile.start = weekKey();
   log = store.get("tamrini.log", {}); acts = store.get("tamrini.acts", {}); adj = store.get("tamrini.adj", {});
-  picks = store.get("tamrini.picks", {}); pkgSel = store.get("tamrini.pkgSel", {}); dayEq = store.get("tamrini.dayEq", {});
+  hist = store.get("tamrini.hist", []); picks = store.get("tamrini.picks", {}); pkgSel = store.get("tamrini.pkgSel", {}); dayEq = store.get("tamrini.dayEq", {});
   wk = store.get("tamrini.week", null);
   if (!wk || wk.start !== weekKey() || wk.sig !== weekSig() || !Array.isArray(wk.assign)) freshWeek();
   theme = store.get("tamrini.theme", "auto"); lang = store.get("tamrini.lang", "ar");
