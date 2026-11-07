@@ -444,6 +444,13 @@ button.video { border: 0; font: inherit; font-weight: 600; cursor: pointer; }
 .ex.mv .ex-main b { font-weight: 500; }
 #sheet { position: fixed; inset: 0; z-index: 25; background: var(--bg); overflow-y: auto; overscroll-behavior: contain; }
 #sheet[hidden] { display: none; }
+.sh-nav { position: sticky; bottom: 0; display: flex; align-items: center; gap: 10px; padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)); background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-top: 1px solid var(--line); margin-top: auto; }
+.sh-nav:empty { display: none; }
+.snav { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 10px 14px; min-height: 48px; font-weight: 600; }
+.snav.next { flex: 1; background: var(--accent); color: #fff; border-color: var(--accent); display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 0; }
+.snav.next small { font-weight: 400; opacity: .85; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.snav:disabled { opacity: .45; }
+.snav-n { font-size: .8rem; color: var(--muted); white-space: nowrap; }
 body.sheet-open { overflow: hidden; }
 .sh { max-width: 560px; margin: 0 auto; min-height: 100%; display: flex; flex-direction: column; }
 .sh-x { position: fixed; z-index: 2; top: calc(12px + env(safe-area-inset-top, 0px)); inset-inline-end: max(14px, env(safe-area-inset-right, 0px)); width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgb(0 0 0 / .45); color: #fff; font-size: 1.2rem; }
@@ -2341,6 +2348,9 @@ function renderSheet() {
   } else {
     $sheet.querySelector(".sh-body").innerHTML = sheetBody(d);
   }
+  const seq = sheet.seq || [], i = sheet.i || 0, nav = $sheet.querySelector(".sh-nav");
+  const navHtml = seq.length > 1 ? `<button class="snav" data-shnav="-1" ${i ? "" : "disabled"}>${L("› السابق", "‹ Previous")}</button><span class="snav-n">${i + 1} ${L("من", "of")} ${seq.length}</span><button class="snav next" data-shnav="1" ${i < seq.length - 1 ? "" : "disabled"}>${i < seq.length - 1 ? `${L("التالي", "Next")}<small>${esc(exN(anyEx(seq[i + 1].id)))}</small>` : L("آخر تمرين", "Last one")} ${i < seq.length - 1 ? L("‹", "›") : ""}</button>` : "";
+  if (nav) nav.innerHTML = navHtml; else if (navHtml) $sheet.querySelector(".sh").insertAdjacentHTML("beforeend", `<div class="sh-nav">${navHtml}</div>`);
   $sheet.hidden = false; document.body.classList.add("sheet-open");
 }
 
@@ -2400,7 +2410,18 @@ document.addEventListener("click", (e) => {
   if (ds.day) { selDay = +ds.day; open = null; altOpen = null; actOpen = false; postWarn = false; render(); return; }
   if (ds.eq) { dayEq[selDay] = ds.eq; store.set("tamrini.dayEq", dayEq); open = null; render(); return; }
   if (ds.shClose) { sheet = null; vidOpen = null; altOpen = null; renderSheet(); return; }
-  if (ds.sheet) { sheet = { id: ds.sheet, ctx: ds.sctx || "lib" }; vidOpen = null; altOpen = null; renderSheet(); return; }
+  if (ds.sheet) {
+    // ترتيب التمارين اللي بنفس الصفحة، ليصير في «التالي» و«السابق»
+    const box = t.closest(".routine") || t.closest(".list, section") || $app, seq = [];
+    if (!t.closest("#sheet")) box.querySelectorAll("[data-sheet]").forEach(el => { const it = { id: el.dataset.sheet, ctx: el.dataset.sctx || "lib" }; const last = seq[seq.length - 1]; if (!last || last.id !== it.id || last.ctx !== it.ctx) seq.push(it); });
+    const i = seq.findIndex(x => x.id === ds.sheet && x.ctx === (ds.sctx || "lib"));
+    sheet = { id: ds.sheet, ctx: ds.sctx || "lib", seq: i >= 0 ? seq : (sheet && sheet.seq) || [], i: i >= 0 ? i : (sheet ? sheet.i : 0) };
+    vidOpen = null; altOpen = null; renderSheet(); return;
+  }
+  if (ds.shnav && sheet && sheet.seq) {
+    const j = sheet.i + +ds.shnav, nx = sheet.seq[j]; if (!nx) return;
+    sheet = { ...sheet, id: nx.id, ctx: nx.ctx, i: j }; vidOpen = null; altOpen = null; renderSheet(); $sheet.scrollTo(0, 0); return;
+  }
   if (ds.vid) { vidOpen = vidOpen === ds.vid ? null : ds.vid; if (sheet) renderSheet(); else render(); return; }
   if (ds.alt) { altOpen = altOpen === ds.alt ? null : ds.alt; if (sheet) renderSheet(); else render(); return; }
   if (ds.pick) { picks[ds.pslot] = ds.pick; store.set("tamrini.picks", picks); altOpen = null; if (sheet) sheet.id = ds.pick; render(); return; }
