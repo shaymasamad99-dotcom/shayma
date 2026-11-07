@@ -430,6 +430,20 @@ body.playing { overflow: hidden; }
 .cmp figure { margin: 0; border-radius: 14px; overflow: hidden; aspect-ratio: 3 / 4; position: relative; }
 .cmp figcaption { position: absolute; bottom: 0; inset-inline: 0; padding: 6px; font-size: .78rem; color: #fff; background: linear-gradient(transparent, rgb(0 0 0 / .55)); }
 .file-btn { cursor: pointer; display: inline-flex; align-items: center; }
+.food { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fcard { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: var(--shadow); min-width: 0; }
+.fcard b { font-size: 1.5rem; font-family: var(--display); }
+.fcard em { font-size: .8rem; color: var(--muted); font-style: normal; }
+.fcard .ghost.wide { min-height: 44px; }
+.badges { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.badge { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; filter: grayscale(1); opacity: .45; }
+.badge span { font-size: 1.6rem; }
+.badge small { font-size: .7rem; line-height: 1.3; }
+.badge.on { filter: none; opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+.newbadge { background: var(--soft); border-radius: 16px; padding: 12px 16px; font-size: 1rem; animation: pop .5s ease; }
+.newbadge span { font-size: 1.6rem; margin-inline-end: 6px; }
+@keyframes pop { from { transform: scale(.8); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .newbadge { animation: none; } }
 .goal-hint { margin: 8px 0 0; padding: 10px 12px; border-radius: 14px; background: var(--soft); font-size: .85rem; line-height: 1.6; }
 .goal-hint b { color: var(--accent); display: block; }
 .chip:disabled { opacity: .4; }
@@ -1055,7 +1069,7 @@ const store = {
     if (typeof cloudQueue === "function") cloudQueue(k, v);
   },
 };
-const SYNC_KEYS = ["profile", "log", "acts", "adj", "picks", "pkgSel", "dayEq", "week", "theme", "lang", "stretch", "hist", "body"];
+const SYNC_KEYS = ["profile", "log", "acts", "adj", "picks", "pkgSel", "dayEq", "week", "theme", "lang", "stretch", "hist", "body", "food", "badges"];
 let cloudCol = null, cloudPending = {}, cloudBusy = false, cloudTimer = null;
 let profile = store.get("tamrini.profile", DEFAULT);
 const fixDays = (p) => { fixGoal(p); p.swim = (p.swim || []).filter(d => p.days.includes(d)); p.combo = (p.combo || []).filter(d => p.days.includes(d) && !p.swim.includes(d)); p.gender ||= "f"; return p; };
@@ -1523,10 +1537,16 @@ function dayDetail() {
     }
   }
   const protein = Math.round(profile.weight * (profile.dir === "lose" && (profile.aims || []).some(a => a === "muscle" || a === "tone") ? 2 : profile.dir === "gain" || (profile.aims || []).includes("muscle") ? 1.8 : 1.6)), water = (profile.weight * 0.035).toFixed(1);
-  html += `<section class="scheme" style="grid-template-columns:1fr 1fr">
-      <div><b>${protein} ${L("غ", "g")}</b><span>${L("بروتين باليوم (تقريباً)", "Protein per day (approx.)")}</span></div>
-      <div><b>${water} ${L("ل", "L")}</b><span>${L("مي باليوم (تقريباً)", "Water per day (approx.)")}</span></div>
-    </section>
+  const fd = food[ymd(TODAY)] || {}, pg = fd.p || 0, wl = (fd.w || 0) / 1000;
+  const fbar = (v, goal) => `<div class="bar"><i style="width:${Math.min(100, v / goal * 100).toFixed(0)}%"></i></div>`;
+  html += `<section class="group"><h3 class="sec">${L("أكلي ومَيّي اليوم", "Food & water today")}</h3><div class="food">
+      <div class="fcard"><span class="lbl">${L("بروتين", "Protein")}</span><b>${pg}<em> / ${protein} ${L("غ", "g")}</em></b>${fbar(pg, protein)}
+        <div class="pl-row"><button class="ghost wide" data-food="p:-20" aria-label="${L("نقّصي ٢٠ غ", "Minus 20 g")}">−</button><button class="ghost wide" data-food="p:20">+20 ${L("غ", "g")}</button></div>
+        <small class="muted">${L("٢٠ غ ≈ ٣ بيضات، أو كف دجاج، أو علبة لبن يوناني", "20 g ≈ 3 eggs, a palm of chicken, or a cup of Greek yogurt")}</small></div>
+      <div class="fcard"><span class="lbl">${L("مي", "Water")}</span><b>${r1(wl)}<em> / ${water} ${L("ل", "L")}</em></b>${fbar(wl, +water)}
+        <div class="pl-row"><button class="ghost wide" data-food="w:-250" aria-label="${L("نقّصي كباية", "Minus a glass")}">−</button><button class="ghost wide" data-food="w:250">+${L("كباية", "glass")}</button></div>
+        <small class="muted">${L("كباية = ٢٥٠ مل", "1 glass = 250 ml")}</small></div>
+    </div></section>
     <p class="note">${L("أرقام تقريبية عامة. إذا عندك حالة صحية، استشيري دكتور قبل ما تبلّشي.", "General estimates. If you have a health condition, check with a doctor before starting.")}</p>`;
   return html;
 }
@@ -1876,6 +1896,7 @@ function histBlock() {
   }).join("")}</div></section>`;
 }
 /* ===================== قياساتي وصور التقدّم ===================== */
+let food = store.get("tamrini.food", {});
 let body = store.get("tamrini.body", []), bodyOpen = false, bodyMetric = "w", photos = [], photoCmp = false;
 const METRICS = [["w", "الوزن", "Weight", "كغ", "kg"], ["waist", "الخصر", "Waist", "سم", "cm"], ["hips", "الوراك", "Hips", "سم", "cm"], ["thigh", "الفخد", "Thigh", "سم", "cm"]];
 const mUnit = (k) => { const m = METRICS.find(x => x[0] === k); return L(m[3], m[4]); };
@@ -1913,11 +1934,39 @@ function bodyBlock() {
     <p class="note">${L("الصور بتضل عهالجهاز بس، ما بتنبعت لأي مكان.", "Photos stay on this device only and are never uploaded.")}</p>
     ${pics}</section>`;
 }
+/* ===================== إنجازاتي ===================== */
+let badges = store.get("tamrini.badges", {});
+const BADGES = [
+  ["first", "🌱", "أوّل تمرين", "First workout", () => hist.length >= 1 || totalDone() >= 1],
+  ["ex10", "💪", "١٠ تمارين", "10 exercises", () => totalDone() >= 10],
+  ["ex50", "🔥", "٥٠ تمرين", "50 exercises", () => totalDone() >= 50],
+  ["ex100", "🏆", "١٠٠ تمرين", "100 exercises", () => totalDone() >= 100],
+  ["week", "📅", "أسبوع كامل", "Full week", () => streakWeeks() >= 1],
+  ["streak4", "⭐", "٤ أسابيع ورا بعض", "4-week streak", () => streakWeeks() >= 4],
+  ["pr", "🥇", "رقم قياسي", "Personal best", () => hist.some(h => h.prs > 0)],
+  ["ses10", "🎯", "١٠ حصص كاملة", "10 sessions", () => hist.length >= 10],
+  ["measure", "📏", "أوّل قياس", "First measurement", () => body.length >= 1],
+  ["active", "🏊", "١٥٠ دقيقة نشاط", "150 active minutes", () => Object.values(acts).flat().reduce((a, x) => a + (x.min || 0), 0) >= 150],
+  ["hydrate", "💧", "يوم مي كامل", "Hydration day", () => Object.values(food).some(f => (f.w || 0) / 1000 >= +(profile.weight * 0.035).toFixed(1))],
+];
+// بترجّع الإنجازات الجديدة (لنحتفل فيها)
+function checkBadges() {
+  const fresh = [];
+  BADGES.forEach(([id, ic, ar, en, ok]) => { try { if (!badges[id] && ok()) { badges[id] = ymd(TODAY); fresh.push([ic, L(ar, en)]); } } catch {} });
+  if (fresh.length) store.set("tamrini.badges", badges);
+  return fresh;
+}
+function badgesBlock() {
+  checkBadges();
+  const n = BADGES.filter(([id]) => badges[id]).length;
+  return `<section class="group"><h3 class="sec">${L("إنجازاتي", "My achievements")} <span class="small muted">· ${n}/${BADGES.length}</span></h3>
+    <div class="badges">${BADGES.map(([id, ic, ar, en]) => `<div class="badge ${badges[id] ? "on" : ""}" title="${badges[id] ? dm(parseD(badges[id])) : ""}"><span>${ic}</span><small>${L(ar, en)}</small></div>`).join("")}</div></section>`;
+}
 function renderProgress() {
   const now = weekStats(0), prev = weekStats(-1), goal = profile.days.length, total = totalDone(), streak = streakWeeks();
   const diff = now.ex - prev.ex;
   let html = `<header style="display:flex;flex-direction:column;gap:4px"><span class="eyebrow">${L("شوفي قدّيش وصلتي", "See how far you've come")}</span><h1>${L("تقدّمي", "Progress")}</h1></header>`;
-  html += bodyBlock();
+  html += badgesBlock() + bodyBlock();
   if (!total && !Object.keys(log).length && !Object.keys(acts).length && !hist.length) {
     return html + `<div class="rest"><h2>${L("بعد ما في تمارين مسجّلة", "Nothing logged yet")}</h2><p class="muted">${L("علّمي ✓ عالتمارين اللي بتخلّصيها بـ«اليوم» وسجّلي أوزانك، وهون رح تشوفي تقدّمك أسبوع بأسبوع.", "Mark ✓ the exercises you finish in “Today” and log your weights. Your weekly progress will show up here.")}</p><button class="save" data-tab="plan" style="margin-top:6px">${L("روحي عالبرنامج", "Go to my plan")}</button></div>`;
   }
@@ -2192,6 +2241,7 @@ function renderPlay() {
           : `<div class="tile"><span>${L("حركات تمطيط", "Stretches")}</span><b>${ses.fin.length}<em>/${items.length}</em></b></div>
           <div class="tile"><span>${L("حسّيتي؟", "How do you feel?")}</span><b>✓</b><small>${L("جسمك ارتاح، كمّلي كل يوم شوي", "Lighter already. A little every day helps")}</small></div>`}
         </div>
+        ${(ses.newBadges ||= checkBadges()).length ? `<div class="newbadge" role="status">${ses.newBadges.map(([ic, t]) => `<span>${ic}</span><b>${L("إنجاز جديد:", "New achievement:")} ${t}</b>`).join("<br>")}</div>` : ""}
         <h3 class="ov-h">${L("ملخّص التمرين", "Workout overview")}</h3>
         ${overviewRows(sesSummary())}
       </div>
@@ -2702,6 +2752,11 @@ document.addEventListener("click", (e) => {
   if (ds.lang) { lang = ds.lang; store.set("tamrini.lang", lang); applyLang(); render(); if (ses) renderPlay(); return; }
   if (ds.voiceset) { voiceOn = ds.voiceset === "true"; store.set("tamrini.voice", voiceOn); if (voiceOn) say(L("أهلا! هيك رح ساعدك وقت التمرين.", "Hi! This is how I'll guide your workouts.")); render(); return; }
   if (ds.themeSet) { theme = ds.themeSet; store.set("tamrini.theme", theme); applyTheme(); render(); return; }
+  if (ds.food) {
+    const [k, v] = ds.food.split(":"), d = ymd(TODAY), cur = food[d] || {};
+    cur[k] = Math.max(0, (cur[k] || 0) + +v); food = { ...food, [d]: cur };
+    Object.keys(food).sort().slice(0, -60).forEach(x => delete food[x]); store.set("tamrini.food", food); render(); return;
+  }
   if (ds.body === "toggle") { bodyOpen = !bodyOpen; render(); return; }
   if (ds.body === "save") {
     const rec = { d: ymd(TODAY) }; let any = false;
@@ -2856,7 +2911,7 @@ function reloadState() {
   profile = fixDays(store.get("tamrini.profile", DEFAULT)); gender = profile.gender;
   if (!profile.start) profile.start = weekKey();
   log = store.get("tamrini.log", {}); acts = store.get("tamrini.acts", {}); adj = store.get("tamrini.adj", {});
-  hist = store.get("tamrini.hist", []); body = store.get("tamrini.body", []); picks = store.get("tamrini.picks", {}); pkgSel = store.get("tamrini.pkgSel", {}); dayEq = store.get("tamrini.dayEq", {});
+  hist = store.get("tamrini.hist", []); body = store.get("tamrini.body", []); food = store.get("tamrini.food", {}); badges = store.get("tamrini.badges", {}); picks = store.get("tamrini.picks", {}); pkgSel = store.get("tamrini.pkgSel", {}); dayEq = store.get("tamrini.dayEq", {});
   wk = store.get("tamrini.week", null);
   if (!wk || wk.start !== weekKey() || wk.sig !== weekSig() || !Array.isArray(wk.assign)) freshWeek();
   theme = store.get("tamrini.theme", "auto"); lang = store.get("tamrini.lang", "ar");
