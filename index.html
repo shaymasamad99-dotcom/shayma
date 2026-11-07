@@ -3,6 +3,11 @@
 <meta name="theme-color" content="#FBF6F4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="تمريني">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <title>تمريني</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2411,6 +2416,9 @@ const demoCircle = (ex, cls = "") => clipOf(ex) ? `<div class="demo-c vid ${cls}
 
 /* فيديو الشرح جوّا التطبيق (إذا مسموح)، وإلّا بيفتح عاليوتيوب */
 let vidOpen = null;
+// تطبيق عالموبايل (PWA): بس عالموقع (مش جوّا claude.ai)
+if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol) && !/claude|anthropic/i.test(location.hostname) && !(window.claude && typeof window.claude.use === "function"))
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 const canEmbed = () => /^https?:$/.test(location.protocol) && !(window.claude && typeof window.claude.use === "function") && !/claude|anthropic/i.test(location.hostname);
 function vidBtn(ex) {
   if (ex.yt && canEmbed()) return `<button class="video" data-vid="${ex.id}" aria-expanded="${vidOpen === ex.id}">▶ ${vidOpen === ex.id ? L("سكّري الفيديو", "Close video") : L("فيديو الشرح", "Watch video")}</button>`;
