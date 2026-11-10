@@ -402,6 +402,13 @@ body.gated .tabs, body.gated .startbar { display: none; }
 .demo-c { position: relative; border-radius: 50%; background: var(--c); overflow: hidden; aspect-ratio: 1; width: 132px; flex: none; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .04); }
 .demo-c.big { width: min(260px, 66vw); }
 .demo-c .demo { width: 100%; height: 100%; display: block; }
+.art { position: relative; display: block; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: #CFE0F6; }
+.art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.1); }
+.art .f2 { animation: artswap 2.8s ease-in-out infinite; }
+@keyframes artswap { 0%, 30% { opacity: 0; } 45%, 80% { opacity: 1; } 95%, 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .art .f2 { animation: none; opacity: 0; } }
+.sh-art { width: min(340px, 82vw); aspect-ratio: 1; margin: 0 auto; }
+.art-st { border-radius: 50%; object-fit: cover; transform: scale(1.1); }
 .ex-demo { display: flex; flex-direction: column; align-items: center; gap: 6px; padding-top: 4px; }
 .pl-ring.with-demo { width: min(270px, 72vw); }
 .pl-ring.with-demo .demo-c { position: absolute; inset: 9%; width: auto; }
@@ -2843,6 +2850,7 @@ const patOf0 = (exId) => DEMO_OF[exId] || (typeof MOVES !== "undefined" && (MOVE
 // سكوات بلا وزن: الإيدين ممدودين لقدّام ليبيّنوا واضحين (مش عالوجّ)
 const patOf = (exId) => { const p = patOf0(exId), ex = anyEx(exId); return p === "squat" && ex && ex.eq === "body" ? "squatbw" : p; };
 function demoStatic(ex) {
+  if (artOf(ex.id)) return `<img class="demo-st art-st" src="${artOf(ex.id)}-1.webp" alt="" aria-hidden="true">`;
   const pat = patOf(ex.id), P = DEMO[pat], vb = demoVB(pat);
   return `<svg class="demo-st${gender === "m" ? " male" : ""}" viewBox="${vb.map(v => v.toFixed(1)).join(" ")}" aria-hidden="true">${demoFrame(P, P.loop ? 0.15 : 1, ex.eq)}</svg>`;
 }
@@ -3046,9 +3054,13 @@ const moveSec = (items) => items.reduce((a, it) => a + it.ex.sec * (it.ex.uni ? 
 
 // فيديوهات حقيقية قصيرة (٤–٦ ثواني) من Pexels و Pixabay، محفوظة جوّا التطبيق بـ v/
 const CLIPS = Object.fromEntries([...["bicycle", "bw-squat", "crunch", "db-bench", "db-lunge", "db-sumo", "donkey-kick", "flutter", "glute-bridge", "incline-pushup", "m-captain", "plank", "pushup", "s-fold", "s-hamseated", "s-hipflexor", "s-side", "w-armcircles", "w-march", "w-shoulderrolls", "w-squat"].map(id => [id, { by: "Pexels" }]), ...["s-child", "db-overhead", "m-pulldown", "side-lunge", "ctrl-march", "db-curl", "db-row", "s-butterfly", "s-shoulder"].map(id => [id, { by: "Pixabay" }])]);
+// رسومات شوشي (نفس البنت): صورتين لكل تمرين، بداية الحركة وآخرها، وبيتبدّلوا بنعومة
+const ART = {"db-bench":"db-bench","m-crossover":"m-crossover","db-fly":"db-fly","db-incline":"db-incline","m-chestpress":"m-chestpress","m-pecdeck":"m-pecdeck","pushup":"pushup","incline-pushup":"incline-pushup","db-pullover":"db-pullover","m-pallof":"m-pallof","db-chestrow":"db-chestrow","m-pulldown":"m-pulldown","m-cablerow":"m-cablerow","db-row":"db-row","m-revpec":"m-revpec","m-assistpull":"m-assistpull","m-straightarm":"m-straightarm","superman":"superman","db-reardelt":"db-reardelt","db-shrug":"db-shrug","m-shpress":"m-shpress","db-front":"db-front","db-lateral":"db-lateral","db-shpress":"db-shpress","db-arnold":"db-shpress","m-facepull":"m-facepull","m-cablelateral":"m-cablelateral","m-pushdown":"m-pushdown","db-overhead":"db-overhead","m-overheadext":"db-overhead","db-concentration":"db-concentration","db-curl":"db-curl","bench-dips":"bench-dips","db-skull":"db-skull","db-kickback":"db-kickback","m-preacher":"m-preacher","m-cablecurl":"m-cablecurl","db-hammer":"db-hammer","bw-squat":"bw-squat","db-rdl":"db-rdl","db-slrdl":"db-rdl","m-pullthrough":"db-rdl","back-ext":"db-rdl","glute-bridge":"glute-bridge","sl-bridge":"glute-bridge","frog-pump":"glute-bridge","goblet":"goblet","db-bulgarian":"db-bulgarian","db-hipthrust":"db-hipthrust","m-hipthrust":"db-hipthrust","m-lyingcurl":"m-lyingcurl","db-hamcurl":"m-lyingcurl","m-seatedcurl":"m-lyingcurl","m-legext":"m-legext","db-revlunge":"db-revlunge","db-lunge":"db-revlunge","db-sumo":"db-sumo","m-adductor":"db-sumo","m-legpress":"m-legpress","m-hack":"m-legpress","db-stepup":"db-stepup","donkey-kick":"donkey-kick","m-calf":"m-calf","db-seatedcalf":"m-calf","side-abd":"side-abd","clamshell":"side-abd","db-calf":"db-calf","bw-calf":"db-calf","db-slcalf":"db-calf","m-standingcalf":"db-calf","m-legpresscalf":"db-calf","m-kickback":"m-kickback","m-glutekick":"m-kickback","w-bridge":"w-bridge","m-abduction":"m-abduction","m-cableabd":"m-cableabd","band-walk":"m-cableabd","fire-hydrant":"m-cableabd","crunch":"crunch","m-abcrunch":"crunch","m-cablecrunch":"crunch","plank":"plank","legraise":"legraise","flutter":"legraise","db-twist":"db-twist","bicycle":"bicycle","deadbug":"deadbug","rev-crunch":"rev-crunch","side-plank":"side-plank","mountain":"mountain","heel-taps":"heel-taps","db-woodchop":"db-woodchop","m-woodchop":"db-woodchop","hollow":"hollow","bird-dog":"bird-dog","side-lunge":"side-lunge","db-curtsy":"side-lunge","s-chest":"s-chest","db-sidebend":"db-sidebend","dia-breath":"dia-breath","pelvic-floor":"dia-breath","s-neck":"s-neck","neck-iso":"s-neck","w-legswings":"w-legswings","m-captain":"m-captain","knee-drive":"m-captain","ctrl-march":"m-captain","w-march":"m-captain","s-cobra":"s-cobra","s-shoulder":"s-shoulder","s-quad":"s-quad","s-hipflexor":"s-hipflexor","s-hamseated":"s-hamseated","s-side":"s-side","w-catcow":"w-catcow","s-catcow":"w-catcow","s-child":"s-child","tib-raise":"tib-raise","s-twist":"s-twist","s-hamstand":"s-hamstand","band-ever":"band-ever","toe-raise":"band-ever","bigtoe":"band-ever","s-butterfly":"s-butterfly","s-figure4":"s-figure4","s-pigeon":"s-figure4","s-calf":"s-calf"};
+const artOf = (id) => gender !== "m" && ART[id] ? `a/${ART[id]}` : null;
+const artTag = (id, cls = "") => `<span class="art ${cls}" aria-hidden="true"><img src="${artOf(id)}-1.webp" alt="" loading="lazy"><img class="f2" src="${artOf(id)}-2.webp" alt="" loading="lazy"></span>`;
 const clipOf = (ex) => ex && CLIPS[ex.id] ? `v/${ex.id}` : null;
 const clipTag = (ex, cls = "") => `<video class="clip ${cls}" src="${clipOf(ex)}.mp4" poster="${clipOf(ex)}.jpg" autoplay muted loop playsinline preload="auto" aria-label="${esc(exN(ex))}"></video>`;
-const demoCircle = (ex, cls = "") => clipOf(ex) ? `<div class="demo-c vid ${cls}" style="--c:${MCOL[ex.m]}">${clipTag(ex)}</div>` : `<div class="demo-c ${cls}" style="--c:${MCOL[ex.m]}">${demoSVG(ex.id, ex.eq)}</div>`;
+const demoCircle = (ex, cls = "") => artOf(ex.id) ? `<div class="demo-c vid ${cls}" style="--c:${MCOL[ex.m]}">${artTag(ex.id)}</div>` : clipOf(ex) ? `<div class="demo-c vid ${cls}" style="--c:${MCOL[ex.m]}">${clipTag(ex)}</div>` : `<div class="demo-c ${cls}" style="--c:${MCOL[ex.m]}">${demoSVG(ex.id, ex.eq)}</div>`;
 
 /* فيديو الشرح جوّا التطبيق (إذا مسموح)، وإلّا بيفتح عاليوتيوب */
 let vidOpen = null;
@@ -3078,6 +3090,7 @@ function sheetMedia(ex) {
   // جوّا claude.ai فيديو يوتيوب ما بيشتغل جوّا الصفحة، فالشرح بيفتح جوّا التطبيق (الحركة + الخطوات)
   const play = ex.yt && false ? `<button class="sh-play" data-vid="${ex.id}">▶ ${L("شوفي الفيديو", "Watch video")}</button>`
     : `<button class="sh-play" data-how="${ex.id}">▶ ${L("شوفي كيف بتنعمل", "See how it's done")}</button>`;
+  if (artOf(ex.id)) return `<div class="sh-art">${artTag(ex.id, "big")}</div>${howOpen === ex.id ? howCap(ex) : `<button class="sh-play" data-how="${ex.id}">▶ ${L("شوفي الخطوات", "See the steps")}</button>`}`;
   if (howOpen === ex.id) return `<div class="sh-demo how" style="--c:${MCOL[ex.m]}">${clipOf(ex) ? clipTag(ex) : demoSVG(ex.id, ex.eq)}</div>${howCap(ex)}`;
   if (clipOf(ex)) return `<div class="sh-clip" style="--c:${MCOL[ex.m]}">${clipTag(ex)}<span class="sh-ctag">${L("فيديو حقيقي", "Real video")} · ${CLIPS[ex.id].by}</span></div>`;
   return `<button class="sh-demo" style="--c:${MCOL[ex.m]}" ${ex.yt && false ? `data-vid="${ex.id}"` : `data-how="${ex.id}"`} aria-label="${L("شوفي كيف بتنعمل", "See how it's done")}">${demoSVG(ex.id, ex.eq)}</button>${play}`;
