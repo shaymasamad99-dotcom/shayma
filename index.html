@@ -294,6 +294,23 @@ body.playing { overflow: hidden; }
 /* حسابي وجدولي */
 .banner.ok { background: var(--soft); border: 1px solid var(--accent); }
 .acct { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); }
+.auth { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow); }
+.auth form { display: flex; flex-direction: column; gap: 10px; }
+.auth h2 { margin: 0; }
+.auth p { margin: 0; }
+.auth-top { display: flex; align-items: center; gap: 12px; }
+.auth-top > div { display: flex; flex-direction: column; min-width: 0; }
+.auth-top .small { overflow-wrap: anywhere; }
+.auth-ic { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); font-weight: 700; flex: none; }
+.auth-ic.off { background: var(--soft); color: var(--accent); }
+.auth-row { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.auth-row .save { flex: 1; }
+.auth-ok { color: var(--accent); font-size: .9rem; }
+.auth-del { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.linkbtn { background: none; border: 0; padding: 6px 0; color: var(--accent); font: inherit; font-size: .9rem; text-decoration: underline; text-underline-offset: 3px; min-height: 36px; }
+.linkbtn.danger { color: var(--warn); }
+.save.danger { background: var(--warn); color: #fff; }
+.acct-note { margin: 0; }
 .acct-top { display: flex; align-items: center; gap: 12px; }
 .acct-top > div { display: flex; flex-direction: column; }
 .acct-top b { font-family: var(--display); font-size: 1.15rem; }
@@ -673,7 +690,7 @@ form { display: flex; flex-direction: column; gap: 18px; }
 <script>
 /* ===================== البيانات ===================== */
 let lang = (() => { try { return JSON.parse(localStorage.getItem("tamrini.lang")) || "ar"; } catch { return "ar"; } })();
-let gender = "f", MASC = {"بتتمرّني":"بتتمرّن","استلقي":"استلقِ","ادفعي":"ادفع","تقفلي":"تقفل","نزّلي":"نزّل","ترفعي":"ترفع","ارفعي":"ارفع","تحسي":"تحسّ","افتحي":"افتح","تحضني":"تحضن","رجعي":"رجع","سكّري":"سكّر","وأنتي":"وأنت","ظبطي":"ظبط","اقعدي":"اقعد","وظبطي":"وظبط","ترجعي":"ترجع","وقفي":"وقف","اسحبي":"اسحب","ميلي":"ميل","وثبتي":"وثبت","نزلي":"نزل","اعمليه":"اعمله","وطّيتي":"وطّيت","حطي":"حطّ","فكري":"فكّر","تسحبي":"تسحب","نامي":"نام","وعصري":"وعصر","امسكي":"امسك","واقعدي":"واقعد","تتمرجحي":"تتمرجح","ورجليكي":"ورجليك","اختاري":"اختار","اطلعي":"اطلع","قللي":"قلّل","لتوصلي":"لتوصل","حسي":"حسّ","اثبتي":"اثبت","ونزلي":"ونزل","وامسكي":"وامسك","رجعيه":"رجعه","وحسّي":"وحسّ","تقوّسي":"تقوّس","شدي":"شدّ","وبدّلي":"وبدّل","تلفّي":"تلفّ","وارجعي":"وارجع","لفّي":"لفّ","وافتحي":"وافتح","ولفّي":"ولفّ","وسنّدي":"وسنّد","افردي":"افرد","تفردي":"تفرد","اثني":"اثنِ","ونزّلي":"ونزّل","وخدي":"وخود","انزلي":"انزل","وادفعي":"وادفع","ورجعي":"ورجع","تميلي":"تميل","رجليكي":"رجليك","لتتعلمي":"لتتعلم","سنّدي":"سنّد","فكّي":"فكّ","وانزلي":"وانزل","ابدئي":"ابدأ","لتتعوّدي":"لتتعوّد","ارجعي":"ارجع","ثبّتي":"ثبّت","وجيبي":"وجيب","وتأكدي":"وتأكد","عصري":"عصر","ربطي":"ربط","وواجهي":"وواجه","واطلعي":"واطلع","تعملي":"تعمل","ووقفي":"ووقف","تشدي":"تشدّ","وحطي":"وحطّ","تعصري":"تعصر","لتطلعي":"لتطلع","اركعي":"اركع","وارفعي":"وارفع","وكرري":"وكرر","تفرقي":"تفرق","واثبتي":"واثبت","لتحسّي":"لتحسّ","تفكّي":"تفكّ","تنزّلي":"تنزّل","مدّي":"مدّ","وميلي":"وميل","حافظي":"حافظ","انثني":"انثنِ","قرّبي":"قرّب","وافردي":"وافرد","بدّلي":"بدّل","جيبي":"جيب","ورجّعيها":"ورجّعها","وقرّبي":"وقرّب","والمسي":"والمس","حرّكي":"حرّك","ودوّري":"ودوّر","وقاومي":"وقاوم","تختاري":"تختار","وركّزي":"وركّز","زيدي":"زيد","وحاولي":"وحاول","توصلي":"توصل","خففي":"خفف","بتبلّشي":"بتبلّش","مستواكِ":"مستواك","شوفي":"شوف","اخترتيه":"اخترته","قارني":"قارن","تأجّلي":"تأجّل","ركّزي":"ركّز","كرّري":"كرّر","لتقدري":"لتقدر","تعوّضيه":"تعوّضه","شيلي":"شيل","بتقدري":"بتقدر","تعلّمي":"تعلّم","وتسجّلي":"وتسجّل","رفعتيه":"رفعته","نقّصي":"نقّص","اضغطي":"اضغط","اعمليلي":"اعملّي","حققتي":"حققت","لتكمّلي":"لتكمّل","تمرّنتي":"تمرّنت","رجّعي":"رجّع","خلّصتيه":"خلّصته","بلّشتي":"بلّشت","وأجّلي":"وأجّل","سجّلي":"سجّل","امسحي":"امسح","سجّلتي":"سجّلت","سجّليها":"سجّلها","بتسجّليها":"بتسجّلها","عوّضي":"عوّض","أجّليه":"أجّله","خلّصتي":"خلّصت","كمّلي":"كمّل","لتعلّمي":"لتعلّم","لتشوفي":"لتشوف","خدي":"خود","خلّصي":"خلّص","سبحي":"سبح","قصّريها":"قصّرها","استشيري":"استشير","تبلّشي":"تبلّش","بتخلّصيها":"بتخلّصها","دوّري":"دوّر","تصفّحي":"تصفّح","جربي":"جرّب","طوّلي":"طوّل","تمطّيها":"تمطّطها","بتعرفي":"بتعرف","عدّلي":"عدّل","حطّي":"حطّ","لتفوتي":"لتفوت","فيكِ":"فيك","اكتبي":"اكتب","تتمرّني":"تتمرّن","تغيّريها":"تغيّرها","احفظي":"احفظ","واعمليلي":"واعملّي","خلّصتيها":"خلّصتها","وصلتي":"وصلت","علّمي":"علّم","وسجّلي":"وسجّل","تشوفي":"تشوف","روحي":"روح","بتتمرني":"بتتمرن","بترفعيه":"بترفعه","تقدري":"تقدر","وقفتي":"وقفت","حسّيتي":"حسّيت","واشربي":"واشرب","توقفي":"توقف","وقّفي":"وقّف","اعملي":"اعمل","وكبّريها":"وكبّرها","غيّري":"غيّر","مرجحي":"مرجح","كبّري":"كبّر","تنزلي":"تنزل","ورفعي":"ورفع","تحرّكي":"تحرّك","ونزّليه":"ونزّله","ميّلي":"ميّل","لتزيدي":"لتزيد","اسحبيها":"اسحبها","واثني":"واثنِ","تدفشيه":"تدفشه","وراكِ":"وراك","تحسّي":"تحسّ","شبكي":"شبك","عكعبيكي":"عكعبيك","انحني":"انحنِ","ومدّي":"ومدّ","ريّحي":"ريّح","وتنفّسي":"وتنفّس","اسندي":"اسند","تضغطي":"تضغط","شدّي":"شدّ","تقوّسيه":"تقوّسه","بتحسّي":"بتحسّ","وسكّري":"وسكّر","وقعدي":"وقعد","بتوصلي":"بتوصل","وانحني":"وانحنِ","لتضلي":"لتضل","وريّحي":"وريّح","وتمرجحي":"وتمرجح","لتأكدي":"لتأكد","خديه":"خوده","ابعتيه":"ابعته","بتخسري":"بتخسر","بتشدّي":"بتشدّ","وبتحافظي":"وبتحافظ","وزيدي":"وزيد","وكلي":"وكول","تختاريها":"تختارها","وخلّصي":"وخلّص","ارتاحي":"ارتاح","بلّشي":"بلّش","شغّلي":"شغّل","نمتي":"نمت","جيتي":"جيت","تقربي":"تقرب","إيديكي":"إيديك","تدفعي":"تدفع","اكبسي":"اكبس","لتعرفي":"لتعرف","جرّبي":"جرّب","اسمعي":"اسمع","ذكّريني":"ذكّرني","قيسي":"قيس","وشوفي":"وشوف","مبتدئة":"مبتدئ","متوسطة":"متوسط","متقدّمة":"متقدّم","حاسّة":"حاسس","تعبانة":"تعبان"};   // كلمات المؤنث ← المذكر (بتنعبّى تحت)
+let gender = "f", MASC = {"بتتمرّني":"بتتمرّن","استلقي":"استلقِ","ادفعي":"ادفع","تقفلي":"تقفل","نزّلي":"نزّل","ترفعي":"ترفع","ارفعي":"ارفع","تحسي":"تحسّ","افتحي":"افتح","تحضني":"تحضن","رجعي":"رجع","سكّري":"سكّر","وأنتي":"وأنت","ظبطي":"ظبط","اقعدي":"اقعد","وظبطي":"وظبط","ترجعي":"ترجع","وقفي":"وقف","اسحبي":"اسحب","ميلي":"ميل","وثبتي":"وثبت","نزلي":"نزل","اعمليه":"اعمله","وطّيتي":"وطّيت","حطي":"حطّ","فكري":"فكّر","تسحبي":"تسحب","نامي":"نام","وعصري":"وعصر","امسكي":"امسك","واقعدي":"واقعد","تتمرجحي":"تتمرجح","ورجليكي":"ورجليك","اختاري":"اختار","اطلعي":"اطلع","قللي":"قلّل","لتوصلي":"لتوصل","حسي":"حسّ","اثبتي":"اثبت","ونزلي":"ونزل","وامسكي":"وامسك","رجعيه":"رجعه","وحسّي":"وحسّ","تقوّسي":"تقوّس","شدي":"شدّ","وبدّلي":"وبدّل","تلفّي":"تلفّ","وارجعي":"وارجع","لفّي":"لفّ","وافتحي":"وافتح","ولفّي":"ولفّ","وسنّدي":"وسنّد","افردي":"افرد","تفردي":"تفرد","اثني":"اثنِ","ونزّلي":"ونزّل","وخدي":"وخود","انزلي":"انزل","وادفعي":"وادفع","ورجعي":"ورجع","تميلي":"تميل","رجليكي":"رجليك","لتتعلمي":"لتتعلم","سنّدي":"سنّد","فكّي":"فكّ","وانزلي":"وانزل","ابدئي":"ابدأ","لتتعوّدي":"لتتعوّد","ارجعي":"ارجع","ثبّتي":"ثبّت","وجيبي":"وجيب","وتأكدي":"وتأكد","عصري":"عصر","ربطي":"ربط","وواجهي":"وواجه","واطلعي":"واطلع","تعملي":"تعمل","ووقفي":"ووقف","تشدي":"تشدّ","وحطي":"وحطّ","تعصري":"تعصر","لتطلعي":"لتطلع","اركعي":"اركع","وارفعي":"وارفع","وكرري":"وكرر","تفرقي":"تفرق","واثبتي":"واثبت","لتحسّي":"لتحسّ","تفكّي":"تفكّ","تنزّلي":"تنزّل","مدّي":"مدّ","وميلي":"وميل","حافظي":"حافظ","انثني":"انثنِ","قرّبي":"قرّب","وافردي":"وافرد","بدّلي":"بدّل","جيبي":"جيب","ورجّعيها":"ورجّعها","وقرّبي":"وقرّب","والمسي":"والمس","حرّكي":"حرّك","ودوّري":"ودوّر","وقاومي":"وقاوم","تختاري":"تختار","وركّزي":"وركّز","زيدي":"زيد","وحاولي":"وحاول","توصلي":"توصل","خففي":"خفف","بتبلّشي":"بتبلّش","مستواكِ":"مستواك","شوفي":"شوف","اخترتيه":"اخترته","قارني":"قارن","تأجّلي":"تأجّل","ركّزي":"ركّز","كرّري":"كرّر","لتقدري":"لتقدر","تعوّضيه":"تعوّضه","شيلي":"شيل","بتقدري":"بتقدر","تعلّمي":"تعلّم","وتسجّلي":"وتسجّل","رفعتيه":"رفعته","نقّصي":"نقّص","اضغطي":"اضغط","اعمليلي":"اعملّي","حققتي":"حققت","لتكمّلي":"لتكمّل","تمرّنتي":"تمرّنت","رجّعي":"رجّع","خلّصتيه":"خلّصته","بلّشتي":"بلّشت","وأجّلي":"وأجّل","سجّلي":"سجّل","امسحي":"امسح","سجّلتي":"سجّلت","سجّليها":"سجّلها","بتسجّليها":"بتسجّلها","عوّضي":"عوّض","أجّليه":"أجّله","خلّصتي":"خلّصت","كمّلي":"كمّل","لتعلّمي":"لتعلّم","لتشوفي":"لتشوف","خدي":"خود","خلّصي":"خلّص","سبحي":"سبح","قصّريها":"قصّرها","استشيري":"استشير","تبلّشي":"تبلّش","بتخلّصيها":"بتخلّصها","دوّري":"دوّر","تصفّحي":"تصفّح","جربي":"جرّب","طوّلي":"طوّل","تمطّيها":"تمطّطها","بتعرفي":"بتعرف","عدّلي":"عدّل","حطّي":"حطّ","لتفوتي":"لتفوت","فيكِ":"فيك","اكتبي":"اكتب","تتمرّني":"تتمرّن","تغيّريها":"تغيّرها","احفظي":"احفظ","واعمليلي":"واعملّي","خلّصتيها":"خلّصتها","وصلتي":"وصلت","علّمي":"علّم","وسجّلي":"وسجّل","تشوفي":"تشوف","روحي":"روح","بتتمرني":"بتتمرن","بترفعيه":"بترفعه","تقدري":"تقدر","وقفتي":"وقفت","حسّيتي":"حسّيت","واشربي":"واشرب","توقفي":"توقف","وقّفي":"وقّف","اعملي":"اعمل","وكبّريها":"وكبّرها","غيّري":"غيّر","مرجحي":"مرجح","كبّري":"كبّر","تنزلي":"تنزل","ورفعي":"ورفع","تحرّكي":"تحرّك","ونزّليه":"ونزّله","ميّلي":"ميّل","لتزيدي":"لتزيد","اسحبيها":"اسحبها","واثني":"واثنِ","تدفشيه":"تدفشه","وراكِ":"وراك","تحسّي":"تحسّ","شبكي":"شبك","عكعبيكي":"عكعبيك","انحني":"انحنِ","ومدّي":"ومدّ","ريّحي":"ريّح","وتنفّسي":"وتنفّس","اسندي":"اسند","تضغطي":"تضغط","شدّي":"شدّ","تقوّسيه":"تقوّسه","بتحسّي":"بتحسّ","وسكّري":"وسكّر","وقعدي":"وقعد","بتوصلي":"بتوصل","وانحني":"وانحنِ","لتضلي":"لتضل","وريّحي":"وريّح","وتمرجحي":"وتمرجح","لتأكدي":"لتأكد","خديه":"خوده","ابعتيه":"ابعته","بتخسري":"بتخسر","بتشدّي":"بتشدّ","وبتحافظي":"وبتحافظ","وزيدي":"وزيد","وكلي":"وكول","تختاريها":"تختارها","وخلّصي":"وخلّص","ارتاحي":"ارتاح","بلّشي":"بلّش","شغّلي":"شغّل","نمتي":"نمت","جيتي":"جيت","تقربي":"تقرب","إيديكي":"إيديك","تدفعي":"تدفع","اكبسي":"اكبس","لتعرفي":"لتعرف","جرّبي":"جرّب","اسمعي":"اسمع","ذكّريني":"ذكّرني","قيسي":"قيس","وشوفي":"وشوف","تجمعي":"تجمع","تأكّدي":"تأكّد","جرّبتي":"جرّبت","استنّي":"استنّى","وجرّبي":"وجرّب","وفوتي":"وفوت","لتغيّري":"لتغيّر","طلعتي":"طلعت","فوتي":"فوت","امسحيه":"امسحه","غيّرتي":"غيّرت","فتحتي":"فتحت","نسيتي":"نسيت","لتغيّريها":"لتغيّرها","بتعمليه":"بتعمله","تفوتي":"تفوت","ابعتيلي":"ابعتلي","مبتدئة":"مبتدئ","متوسطة":"متوسط","متقدّمة":"متقدّم","حاسّة":"حاسس","تعبانة":"تعبان"};   // كلمات المؤنث ← المذكر (بتنعبّى تحت)
 const gA = (v) => gender !== "m" ? v : Array.isArray(v) ? v.map(gA) : typeof v === "string" ? v.replace(/[\u0621-\u064A\u064B-\u0652\u0640]+/g, w => MASC[w] || w) : v;
 const L = (ar, en) => lang === "en" ? en : gA(ar);
 const MUSCLES = {
@@ -1897,6 +1914,7 @@ function renderMe() {
   if (profile.saved && !meEdit) {
     const g = GOALS[profile.goal], nm = (profile.name || "").trim();
     return `<header class="hdr"><div><span class="eyebrow">${L("حسابي", "My account")}</span><h1>${nm ? L(`أهلا ${esc(nm)}`, `Hi ${esc(nm)}`) : L("حسابي", "Account")}</h1></div></header>
+      ${authUser ? "" : authBlock()}
       ${justSaved ? `<div class="banner ok"><span>${L("✓ جهز جدولك! عملناه حسب هدفك وأيامك. فيكِ تبلّشي من «اليوم».", "✓ Your schedule is ready, built from your goal and days. Start from “Today”.")}</span><button data-tab="plan">${L("ابدئي", "Start")}</button></div>` : ""}
       <section class="acct">
         <div class="acct-top">
@@ -1911,12 +1929,14 @@ function renderMe() {
         <button class="save" data-me-edit="1">${L("عدّلي بياناتي وهدفي", "Edit my details & goal")}</button>
       </section>
       <button class="slink" data-tab="sched"><span class="sl-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 14h3M8 17.5h6"/></svg></span><span class="sinfo"><b>${L("جدولي", "My schedule")}</b><small>${L("أيامك وتمارين كل يوم بالترتيب", "Your days and each day's exercises in order")}</small></span><span class="chev" aria-hidden="true">‹</span></button>
+      ${authUser ? authBlock() : ""}
       ${settingsBlock()}`;
   }
   draft ||= JSON.parse(JSON.stringify(profile));
   const d = draft;
   return `<header class="hdr"><div><span class="eyebrow">${L("حسابي", "My account")}</span><h1>${profile.saved ? L("عدّلي بياناتك", "Edit your details") : L("خلّينا نعملك جدولك", "Let's build your schedule")}</h1></div>
       ${profile.saved ? `<button class="lang-btn" data-me-cancel="1">${L("إلغاء", "Cancel")}</button>` : ""}</header>
+  ${profile.saved ? "" : authBlock()}
   <p class="muted">${L("عبّي معلوماتك وهدفك، والتطبيق بيعملك جدول تمارين أسبوعي منوّع وفيه كور كل يوم.", "Fill in your details and goal, and the app builds a varied weekly schedule with core work every day.")}</p>
   <form id="me-form" novalidate>
     <div class="field"><label for="f-name">${L("اسمك (اختياري)", "Your name (optional)")}</label><input id="f-name" class="num" type="text" autocomplete="given-name" maxlength="24" value="${esc(d.name || "")}"></div>
@@ -2888,6 +2908,18 @@ function renderSheet() {
 
 /* ===================== الأحداث ===================== */
 document.addEventListener("click", (e) => {
+  const au = e.target.closest && e.target.closest("[data-auth]");
+  if (au) {
+    const a = au.dataset.auth; auth.err = ""; auth.msg = "";
+    if (a.startsWith("mode-")) auth.mode = a.slice(5);
+    else if (a === "openup" || a === "openin") { auth.open = true; auth.mode = a === "openup" ? "up" : "in"; }
+    else if (a === "close") auth.open = false;
+    else if (a === "delask") auth.mode = "del";
+    else if (a === "delno") auth.mode = "in";
+    else return void authDo(a);
+    render(); const el = document.getElementById("a-email"); if (el && (a.startsWith("open") || a.startsWith("mode-"))) el.focus();
+    return;
+  }
   const tipEl = e.target.closest("[data-tip]");
   if (tipEl) { tipEl.classList.contains("on") && !$tip.hidden ? hideTip() : showTip(tipEl); return; }
   hideTip();
@@ -3053,6 +3085,8 @@ document.addEventListener("input", (e) => {
   if (e.target.dataset.actShift !== undefined) { actDraft.shift = e.target.checked; return; }
   if (e.target.id === "f-voice") { voiceName = e.target.value; store.set("tamrini.voiceName", voiceName); say(L("أهلا، هيدا صوتي.", "Hi, this is my voice."), true, true); return; }
   if (e.target.id === "f-remind") { remindAt = e.target.value || "18:00"; store.set("tamrini.remind", remindAt); return; }
+  if (e.target.id === "a-email") { auth.email = e.target.value; return; }
+  if (e.target.id === "a-pass") { auth.pass = e.target.value; return; }
   if (e.target.id === "f-name") draft.name = e.target.value.slice(0, 24);
   if (e.target.id === "f-goaltext") draft.goalText = e.target.value.slice(0, 140);
   if (e.target.id === "f-age") draft.age = +e.target.value;
@@ -3060,6 +3094,7 @@ document.addEventListener("input", (e) => {
 });
 document.addEventListener("change", (e) => { if (e.target.dataset && e.target.dataset.photo && e.target.files && e.target.files[0]) addPhoto(e.target.files[0]).catch(() => {}); });
 document.addEventListener("submit", (e) => {
+  if (e.target.id === "auth-form") { e.preventDefault(); authDo(auth.mode === "reset" ? "reset" : auth.mode); return; }
   if (e.target.id !== "me-form") return;
   e.preventDefault();
   const err = document.getElementById("me-err");
@@ -3113,30 +3148,146 @@ function reloadState() {
   theme = store.get("tamrini.theme", "auto"); lang = store.get("tamrini.lang", "ar");
   applyTheme(); applyLang(); render();
 }
+// يدمج بيانات الجهاز مع الحساب. أوّل مرة هالحساب عهالجهاز: اللي بالحساب بيربح (لتنزل معلوماتك كلّها عموبايل جديد)،
+// وبعدها الأحدث بيربح. col = { doc(k) → { get() → {exists, data()→{v,t}}, set({v,t}) } }
+async function syncWith(col, acct) {
+  const snaps = await Promise.all(SYNC_KEYS.map(k => col.doc(k).get().catch(() => null)));
+  let mark = null; try { mark = localStorage.getItem("tamrini.acct"); } catch {}
+  const first = acct && mark !== acct;
+  let changed = false;
+  snaps.forEach((sn, i) => {
+    const k = "tamrini." + SYNC_KEYS[i];
+    let localT = 0; try { localT = +localStorage.getItem(k + "@t") || 0; } catch {}
+    const remote = sn && sn.exists ? sn.data() : null;
+    if (remote && remote.v !== undefined && (first || (remote.t || 0) > localT)) {   // الحساب → الجهاز
+      try { localStorage.setItem(k, JSON.stringify(remote.v)); localStorage.setItem(k + "@t", String(remote.t || Date.now())); } catch {}
+      changed = true;
+    } else if (!remote || (remote.t || 0) < localT) {                               // الجهاز → الحساب
+      const v = store.get(k, undefined); if (v !== undefined) cloudPending[SYNC_KEYS[i]] = v;
+    }
+  });
+  if (acct) try { localStorage.setItem("tamrini.acct", acct); } catch {}
+  cloudCol = col;
+  if (changed) reloadState();
+  cloudFlush();
+}
 async function cloudSync() {
   try {
-    if (!window.claude || typeof window.claude.use !== "function") return;
+    if (!window.claude || typeof window.claude.use !== "function") return fbStart();
     const [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
     if (!db || !user) return;
     const id = await user.id(); if (!id) return;
-    const col = db.collection("data/users/" + id);
-    const snaps = await Promise.all(SYNC_KEYS.map(k => col.doc(k).get().catch(() => null)));
-    let changed = false;
-    snaps.forEach((sn, i) => {
-      const k = "tamrini." + SYNC_KEYS[i];
-      let localT = 0; try { localT = +localStorage.getItem(k + "@t") || 0; } catch {}
-      const remote = sn && sn.exists ? sn.data() : null;
-      if (remote && (remote.t || 0) > localT) {          // الأحدث بالحساب → خديه
-        try { localStorage.setItem(k, JSON.stringify(remote.v)); localStorage.setItem(k + "@t", String(remote.t)); } catch {}
-        changed = true;
-      } else {                                          // الأحدث هون → ابعتيه
-        const v = store.get(k, undefined); if (v !== undefined) cloudPending[SYNC_KEYS[i]] = v;
-      }
-    });
-    cloudCol = col;
-    if (changed) reloadState();
-    cloudFlush();
+    authUser = { claude: true };
+    await syncWith(db.collection("data/users/" + id), null);
   } catch {}
+}
+
+/* ===================== الحساب: دخول بالإيميل (Firebase) ===================== */
+// عالموقع وبتطبيق الآيفون. حطّي هون إعدادات مشروع Firebase (مش سرّية، عادي تكون بالكود).
+// الحماية من قواعد Firestore: كل حساب بيقرا ويكتب بس users/<uid>/... تبعو.
+const FB_CONFIG = null;
+const FB_V = "10.14.1";
+let fb = null, authUser = null, authReady = false;
+let auth = { mode: "in", email: "", pass: "", busy: false, err: "", msg: "", open: false };
+const fbOn = () => !!(FB_CONFIG || window.__FB_MOCK);
+async function fbLoad() {
+  if (fb) return fb;
+  if (window.__FB_MOCK) return (fb = window.__FB_MOCK);
+  const u = (m) => `https://www.gstatic.com/firebasejs/${FB_V}/firebase-${m}.js`;
+  const [App, A, F] = await Promise.all([import(u("app")), import(u("auth")), import(u("firestore"))]);
+  const app = App.initializeApp(FB_CONFIG);
+  // initializeAuth بدل getAuth: بتشتغل جوّا تطبيق الآيفون (WKWebView) بلا popups
+  const a = A.initializeAuth(app, { persistence: [A.indexedDBLocalPersistence, A.browserLocalPersistence] });
+  const d = F.getFirestore(app);
+  const ref = (uid, k) => F.doc(d, "users", uid, "data", k);
+  return (fb = {
+    onUser: (fn) => A.onAuthStateChanged(a, fn),
+    signIn: (e, p) => A.signInWithEmailAndPassword(a, e, p),
+    signUp: (e, p) => A.createUserWithEmailAndPassword(a, e, p),
+    reset: (e) => A.sendPasswordResetEmail(a, e),
+    signOut: () => A.signOut(a),
+    remove: async (uid) => { await Promise.all(SYNC_KEYS.map(k => F.deleteDoc(ref(uid, k)).catch(() => {}))); await A.deleteUser(a.currentUser); },
+    // منخزّن JSON كنص: Firestore ما بيقبل array جوّا array
+    col: (uid) => ({ doc: (k) => ({
+      get: async () => { const sn = await F.getDoc(ref(uid, k)); const x = sn.exists() ? sn.data() : null; return { exists: !!x, data: () => ({ v: x && x.s ? JSON.parse(x.s) : undefined, t: x ? x.t : 0 }) }; },
+      set: ({ v, t }) => F.setDoc(ref(uid, k), { s: JSON.stringify(v), t }),
+    }) }),
+  });
+}
+async function fbStart() {
+  if (!fbOn()) return;
+  try {
+    const f = await fbLoad();
+    f.onUser(async (u) => {
+      authReady = true;
+      authUser = u ? { uid: u.uid, email: u.email || "" } : null;
+      if (u) { auth.open = false; auth.pass = ""; try { await syncWith(f.col(u.uid), u.uid); } catch {} }
+      else cloudCol = null;
+      render();
+    });
+  } catch { authReady = true; auth.err = L("ما قدرنا نوصل للحساب. تأكّدي من الإنترنت.", "Couldn't reach your account. Check your internet."); render(); }
+}
+// لما ترجعي عالتطبيق، جيبي آخر شي انحفظ من جهاز تاني
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && fb && authUser && authUser.uid && !ses) syncWith(fb.col(authUser.uid), authUser.uid).catch(() => {});
+});
+const AUTH_ERR = {
+  "auth/invalid-email": ["الإيميل مش مكتوب صح.", "That email doesn't look right."],
+  "auth/invalid-credential": ["الإيميل أو كلمة السر غلط.", "Wrong email or password."],
+  "auth/wrong-password": ["الإيميل أو كلمة السر غلط.", "Wrong email or password."],
+  "auth/user-not-found": ["ما في حساب بهالإيميل. اعملي حساب جديد.", "No account with this email. Create one."],
+  "auth/email-already-in-use": ["في حساب بهالإيميل. سجّلي دخول.", "An account with this email exists. Sign in."],
+  "auth/weak-password": ["كلمة السر لازم تكون ٦ أحرف أو أكتر.", "Password needs 6+ characters."],
+  "auth/too-many-requests": ["جرّبتي كتير. استنّي شوي وجرّبي كمان مرّة.", "Too many tries. Wait a bit and try again."],
+  "auth/network-request-failed": ["ما في إنترنت. جرّبي كمان مرّة.", "No internet. Try again."],
+  "auth/requires-recent-login": ["لأمانك، اطلعي وفوتي كمان مرّة، وبعدين امسحي الحساب.", "For safety, sign out and in again, then delete."],
+};
+const authErr = (e) => { const m = AUTH_ERR[e && e.code]; return m ? L(m[0], m[1]) : L("صار في مشكلة. جرّبي كمان مرّة.", "Something went wrong. Try again."); };
+async function authDo(kind) {
+  if (auth.busy) return;
+  const f = await fbLoad().catch(() => null); if (!f) return;
+  const email = auth.email.trim();
+  auth.err = ""; auth.msg = "";
+  if (kind !== "out" && kind !== "del" && !/^\S+@\S+\.\S+$/.test(email)) { auth.err = L("اكتبي إيميلك.", "Enter your email."); return render(); }
+  if ((kind === "in" || kind === "up") && auth.pass.length < 6) { auth.err = L("كلمة السر لازم تكون ٦ أحرف أو أكتر.", "Password needs 6+ characters."); return render(); }
+  auth.busy = true; render();
+  try {
+    if (kind === "in") await f.signIn(email, auth.pass);
+    else if (kind === "up") await f.signUp(email, auth.pass);
+    else if (kind === "reset") { await f.reset(email); auth.msg = L("بعتنالك إيميل لتغيّري كلمة السر. شوفي الـ inbox (أو الـ spam).", "We sent you an email to reset your password. Check your inbox (or spam)."); auth.mode = "in"; }
+    else if (kind === "out") { await cloudFlush(); await f.signOut(); auth.msg = L("طلعتي من حسابك. معلوماتك محفوظة فيه.", "Signed out. Your data is saved in your account."); }
+    else if (kind === "del") { await f.remove(authUser.uid); try { localStorage.removeItem("tamrini.acct"); } catch {} auth.msg = L("انمسح حسابك ومعلوماتو.", "Your account and its data were deleted."); }
+  } catch (e) { auth.err = authErr(e); }
+  auth.busy = false; render();
+}
+function authBlock() {
+  if (authUser && authUser.claude) return `<p class="note acct-note">✓ ${L("معلوماتك محفوظة بحسابك على Claude.", "Your data is saved in your Claude account.")}</p>`;
+  if (!fbOn()) return "";
+  if (!authReady) return `<section class="auth"><p class="muted small">${L("عم نشوف حسابك…", "Checking your account…")}</p></section>`;
+  const msg = (auth.err ? `<p class="err" role="alert">${esc(auth.err)}</p>` : "") + (auth.msg ? `<p class="auth-ok" role="status">${esc(auth.msg)}</p>` : "");
+  if (authUser) return `<section class="auth in">
+      <div class="auth-top"><span class="auth-ic" aria-hidden="true">✓</span><div><b>${L("معلوماتك محفوظة", "Your data is saved")}</b><span class="muted small" dir="ltr">${esc(authUser.email)}</span></div></div>
+      <p class="muted small">${L("فوتي بنفس الإيميل من أي موبايل أو لابتوب، وبيطلعلك كل شي.", "Sign in with this email on any phone or laptop and everything comes back.")}</p>
+      ${msg}
+      <div class="auth-row"><button class="ghost" data-auth="out" ${auth.busy ? "disabled" : ""}>${L("تسجيل خروج", "Sign out")}</button>
+      <button class="linkbtn danger" data-auth="delask">${L("امسحي الحساب", "Delete account")}</button></div>
+      ${auth.mode === "del" ? `<div class="auth-del"><p class="small">${L("أكيد؟ رح ينمسح الحساب وكل المعلومات المحفوظة فيه، وما فينا نرجّعها.", "Sure? Your account and all its saved data will be deleted for good.")}</p>
+        <div class="auth-row"><button class="ghost" data-auth="delno">${L("لا", "No")}</button><button class="save danger" data-auth="del">${L("إيه، امسحيه", "Yes, delete")}</button></div></div>` : ""}
+    </section>`;
+  const m = auth.mode, closed = !auth.open && profile.saved;
+  if (closed) return `<section class="auth"><div class="auth-top"><span class="auth-ic off" aria-hidden="true">☁</span><div><b>${L("احفظي معلوماتك بحساب", "Save your data to an account")}</b><span class="muted small">${L("لتلاقي كل شي إذا غيّرتي الموبايل أو فتحتي من اللابتوب", "So everything's there on a new phone or your laptop")}</span></div></div>
+      ${msg}<div class="auth-row"><button class="save" data-auth="openup">${L("اعملي حساب", "Create account")}</button><button class="ghost" data-auth="openin">${L("عندي حساب", "I have an account")}</button></div></section>`;
+  return `<section class="auth"><form id="auth-form" novalidate>
+      <h2>${m === "up" ? L("اعملي حساب", "Create your account") : m === "reset" ? L("نسيتي كلمة السر؟", "Forgot your password?") : L("سجّلي دخول", "Sign in")}</h2>
+      <p class="muted small">${m === "reset" ? L("اكتبي إيميلك ومنبعتلك رابط لتغيّريها.", "Enter your email and we'll send you a reset link.") : L("كل شي بتعمليه بينحفظ بحسابك، وبيرجع لما تفوتي من أي جهاز.", "Everything you do is saved to your account and comes back on any device.")}</p>
+      <div class="field"><label for="a-email">${L("الإيميل", "Email")}</label><input id="a-email" class="num" type="email" inputmode="email" autocomplete="email" dir="ltr" value="${esc(auth.email)}" autocapitalize="off" spellcheck="false"></div>
+      ${m !== "reset" ? `<div class="field"><label for="a-pass">${L("كلمة السر", "Password")}</label><input id="a-pass" class="num" type="password" autocomplete="${m === "up" ? "new-password" : "current-password"}" dir="ltr" value="${esc(auth.pass)}">${m === "up" ? `<span class="note">${L("٦ أحرف أو أكتر", "6+ characters")}</span>` : ""}</div>` : ""}
+      ${msg}
+      <button class="save" type="submit" ${auth.busy ? "disabled" : ""}>${auth.busy ? L("لحظة…", "One moment…") : m === "up" ? L("اعملي الحساب", "Create account") : m === "reset" ? L("ابعتيلي الرابط", "Send me the link") : L("فوتي", "Sign in")}</button>
+      <div class="auth-row">${m === "in" ? `<button type="button" class="linkbtn" data-auth="mode-up">${L("ما عندك حساب؟ اعملي واحد", "No account? Create one")}</button><button type="button" class="linkbtn" data-auth="mode-reset">${L("نسيتي كلمة السر؟", "Forgot password?")}</button>`
+        : `<button type="button" class="linkbtn" data-auth="mode-in">${L("عندك حساب؟ فوتي", "Have an account? Sign in")}</button>`}
+        ${profile.saved ? `<button type="button" class="linkbtn" data-auth="close">${L("بعدين", "Later")}</button>` : ""}</div>
+    </form></section>`;
 }
 applyLang();
 render();
