@@ -295,6 +295,11 @@ body.playing { overflow: hidden; }
 .banner.ok { background: var(--soft); border: 1px solid var(--accent); }
 .acct { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); }
 .auth { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow); }
+body.gated .tabs, body.gated .startbar { display: none; }
+.gate { min-height: 86vh; display: flex; flex-direction: column; justify-content: center; gap: 14px; max-width: 420px; margin: 0 auto; }
+.gate-logo { font-family: var(--display); font-size: 2.2rem; font-weight: 700; color: var(--accent); text-align: center; }
+.gate-sub { text-align: center; margin: 0; }
+.gate-lang { text-align: center; }
 .auth form { display: flex; flex-direction: column; gap: 10px; }
 .auth h2 { margin: 0; }
 .auth p { margin: 0; }
@@ -2019,6 +2024,9 @@ function render() {
   gender = (tab === "me" && draft ? draft.gender : profile.gender) || "f";
   hideTip();
   if (typeof renderSheet === "function" && sheet) setTimeout(renderSheet, 0);
+  const gate = typeof authGate === "function" && authGate();   // بالموقع والتطبيق: لازم تسجّلي دخول قبل أي شي
+  document.body.classList.toggle("gated", !!gate);
+  if (gate) { $app.innerHTML = gate; return; }
   $app.innerHTML = tab === "body" ? renderBody() : tab === "sched" ? renderSched() : tab === "plan" ? renderPlan() : tab === "prog" ? renderProgress() : tab === "lib" ? renderLib() : tab === "str" ? renderStretch() : renderMe();
   document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.tab === tab || (tab === "lib" && b.dataset.tab === "body")));
   document.body.classList.toggle("has-start", !!$app.querySelector(".startbar"));
@@ -3373,6 +3381,15 @@ async function authDo(kind) {
   } catch (e) { auth.err = authErr(e); }
   auth.busy = false; render();
 }
+// شاشة الدخول أوّل ما ينفتح التطبيق (مش جوّا claude.ai)
+function authGate() {
+  if (!fbOn() || (authUser && !authUser.claude) || (window.claude && typeof window.claude.use === "function")) return "";
+  if (authUser && authUser.claude) return "";
+  if (!authReady) return `<section class="gate"><div class="gate-logo">${L("شوشي فِت", "Shushy's Fit")}</div><p class="muted">${L("لحظة…", "One moment…")}</p></section>`;
+  auth.open = true; if (auth.mode === "del") auth.mode = "in";
+  return `<section class="gate"><div class="gate-logo">${L("شوشي فِت", "Shushy's Fit")}</div><p class="muted gate-sub">${L("فوتي بإيميلك لتنحفظ تمارينك وتلاقيها عأي جهاز.", "Sign in with your email to save your workouts on every device.")}</p>${authBlock()}
+    <div class="gate-lang">${[["ar","العربية"],["en","English"]].map(([k,l]) => `<button type="button" class="linkbtn" data-lang="${k}" lang="${k}">${l}</button>`).join(" · ")}</div></section>`;
+}
 function authBlock() {
   if (authUser && authUser.claude) return `<p class="note acct-note">✓ ${L("معلوماتك محفوظة بحسابك على Claude.", "Your data is saved in your Claude account.")}</p>`;
   if (!fbOn()) return "";
@@ -3399,7 +3416,7 @@ function authBlock() {
       <button class="save" type="submit" ${auth.busy ? "disabled" : ""}>${auth.busy ? L("لحظة…", "One moment…") : m === "up" ? L("اعملي الحساب", "Create account") : m === "reset" ? L("ابعتيلي الرابط", "Send me the link") : L("فوتي", "Sign in")}</button>
       <div class="auth-row">${m === "in" ? `<button type="button" class="linkbtn" data-auth="mode-up">${L("ما عندك حساب؟ اعملي واحد", "No account? Create one")}</button><button type="button" class="linkbtn" data-auth="mode-reset">${L("نسيتي كلمة السر؟", "Forgot password?")}</button>`
         : `<button type="button" class="linkbtn" data-auth="mode-in">${L("عندك حساب؟ فوتي", "Have an account? Sign in")}</button>`}
-        ${profile.saved ? `<button type="button" class="linkbtn" data-auth="close">${L("بعدين", "Later")}</button>` : ""}</div>
+        ${profile.saved && authUser ? `<button type="button" class="linkbtn" data-auth="close">${L("بعدين", "Later")}</button>` : ""}</div>
     </form></section>`;
 }
 applyLang();
