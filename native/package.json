@@ -1,0 +1,15 @@
+{
+  "name": "shushys-fit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shushy's Fit as an iPhone app (Capacitor wrapper around the web app)",
+  "scripts": {
+    "copy": "node copy-web.js",
+    "sync": "node copy-web.js && npx cap sync ios"
+  },
+  "dependencies": {
+    "@capacitor/cli": "^6.2.3",
+    "@capacitor/core": "^6.2.3",
+    "@capacitor/ios": "^6.2.3"
+  }
+}
