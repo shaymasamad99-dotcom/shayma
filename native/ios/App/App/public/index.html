@@ -3044,8 +3044,8 @@ function coolFor(items) {
 }
 const moveSec = (items) => items.reduce((a, it) => a + it.ex.sec * (it.ex.uni ? 2 : 1), 0);
 
-// فيديوهات حقيقية قصيرة (٤–٦ ثواني) من Pexels، محفوظة جوّا التطبيق بـ v/
-const CLIPS = Object.fromEntries(["bicycle", "bw-squat", "crunch", "db-bench", "db-lunge", "db-sumo", "donkey-kick", "flutter", "glute-bridge", "incline-pushup", "m-captain", "plank", "pushup", "s-fold", "s-hamseated", "s-hipflexor", "s-side", "w-armcircles", "w-march", "w-shoulderrolls", "w-squat"].map(id => [id, { by: "Pexels" }]));
+// فيديوهات حقيقية قصيرة (٤–٦ ثواني) من Pexels و Pixabay، محفوظة جوّا التطبيق بـ v/
+const CLIPS = Object.fromEntries([...["bicycle", "bw-squat", "crunch", "db-bench", "db-lunge", "db-sumo", "donkey-kick", "flutter", "glute-bridge", "incline-pushup", "m-captain", "plank", "pushup", "s-fold", "s-hamseated", "s-hipflexor", "s-side", "w-armcircles", "w-march", "w-shoulderrolls", "w-squat"].map(id => [id, { by: "Pexels" }]), ...["s-child", "db-overhead", "m-pulldown", "side-lunge", "ctrl-march", "db-curl", "db-row", "s-butterfly", "s-shoulder"].map(id => [id, { by: "Pixabay" }])]);
 const clipOf = (ex) => ex && CLIPS[ex.id] ? `v/${ex.id}` : null;
 const clipTag = (ex, cls = "") => `<video class="clip ${cls}" src="${clipOf(ex)}.mp4" poster="${clipOf(ex)}.jpg" autoplay muted loop playsinline preload="auto" aria-label="${esc(exN(ex))}"></video>`;
 const demoCircle = (ex, cls = "") => clipOf(ex) ? `<div class="demo-c vid ${cls}" style="--c:${MCOL[ex.m]}">${clipTag(ex)}</div>` : `<div class="demo-c ${cls}" style="--c:${MCOL[ex.m]}">${demoSVG(ex.id, ex.eq)}</div>`;
