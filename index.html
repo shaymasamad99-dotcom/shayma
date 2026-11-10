@@ -402,14 +402,31 @@ body.playing { overflow: hidden; }
 .pl-ring.with-demo .demo-c { position: absolute; inset: 9%; width: auto; }
 .pl-under { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: -4px; }
 .pl-under span { color: var(--muted); font-size: .85rem; }
+.f-skin { fill: #EDB497; stroke: #EDB497; stroke-width: .25; stroke-linejoin: round; }
+.f-skin2 { fill: #D69A7C; stroke: #D69A7C; stroke-width: .25; stroke-linejoin: round; }
+.f-leg { fill: #4A2B3E; stroke: #4A2B3E; stroke-width: .25; stroke-linejoin: round; }
+.f-leg2 { fill: #2E1A27; stroke: #2E1A27; stroke-width: .25; stroke-linejoin: round; }
+.f-top { fill: #D2648F; stroke: #D2648F; stroke-width: .25; stroke-linejoin: round; }
+.f-band { fill: #A8436C; }
+.f-shoe { fill: #FBF4F6; stroke: #E4C9D3; stroke-width: .35; }
+.f-shoe2 { fill: #E3D3D9; }
+.f-sole { stroke: #D2648F; stroke-width: .9; stroke-linecap: round; fill: none; }
+.d-hairhi { stroke: #7A4A3A; stroke-width: .5; fill: none; stroke-linecap: round; opacity: .7; }
+.d-tie { fill: #D2648F; }
+.d-blush { fill: #F08A97; opacity: .35; }
+.d-lash { stroke: #3A2630; stroke-width: .32; stroke-linecap: round; }
+.male .f-top { fill: #3F5F7F; stroke: #3F5F7F; }
+.male .f-leg { fill: #2F3440; stroke: #2F3440; }
+.male .f-leg2 { fill: #1F232C; stroke: #1F232C; }
+.male .f-sole { stroke: #3F5F7F; }
 .d-skin, .d-skin2 { stroke: #E6A989; stroke-linecap: round; fill: none; }
 .d-skin2 { stroke: #C98A6C; }
-.d-skin-f { fill: #E6A989; }
+.d-skin-f { fill: #EDB497; }
 .d-leg { stroke: #3B2433; stroke-linecap: round; }
 .d-leg2 { stroke: #26161F; stroke-linecap: round; }
 .d-top { stroke: #B83A6B; stroke-linecap: round; }
 .d-hair { fill: #4A2A22; }
-.d-ear { fill: #D99878; }
+.d-ear { fill: #DFA083; }
 .d-eye { fill: #3A2630; }
 .d-brow { stroke: #4A2A22; stroke-width: .38; fill: none; stroke-linecap: round; }
 .d-lip { stroke: #B25D66; stroke-width: .32; fill: none; stroke-linecap: round; }
@@ -2637,6 +2654,56 @@ function poseAt(P, k) {
   return { hip, sh, hc, knee, ank: ik(hip, ank, DM.thigh, DM.shin, kb)[1], toe, knee2, ank2: ik(hip, ank2, DM.thigh, DM.shin, kb)[1], toe2, elb, hand: hand1, up };
 }
 const L2 = (a, b, cls, w) => `<line class="${cls}" x1="${a[0].toFixed(2)}" y1="${a[1].toFixed(2)}" x2="${b[0].toFixed(2)}" y2="${b[1].toFixed(2)}" stroke-width="${w}"/>`;
+// جسم ناعم: إيدين وإجرين مستدقّين، خصر وورك، صدرية رياضية وليغنغز، وسنيكرز
+const f2 = (v) => v.toFixed(2);
+function limb(a, b, wa, wb, cls) {            // كبسولة مستدقّة من a لـ b
+  const dx = b[0] - a[0], dy = b[1] - a[1], d = Math.hypot(dx, dy) || 0.001, nx = -dy / d, ny = dx / d, ra = wa / 2, rb = wb / 2;
+  return `<path class="${cls}" d="M${f2(a[0] + nx * ra)},${f2(a[1] + ny * ra)}L${f2(b[0] + nx * rb)},${f2(b[1] + ny * rb)}A${f2(rb)},${f2(rb)} 0 0 0 ${f2(b[0] - nx * rb)},${f2(b[1] - ny * rb)}L${f2(a[0] - nx * ra)},${f2(a[1] - ny * ra)}A${f2(ra)},${f2(ra)} 0 0 0 ${f2(a[0] + nx * ra)},${f2(a[1] + ny * ra)}Z"/>`;
+}
+function curvy(a, b, wa, wm, wb, bulge, cls) {  // فخد / سمانة: عريضة فوق وبتضعف، مع انحناية ناعمة
+  const dx = b[0] - a[0], dy = b[1] - a[1], d = Math.hypot(dx, dy) || 0.001, nx = -dy / d, ny = dx / d, ra = wa / 2, rb = wb / 2;
+  const m = [a[0] + dx * bulge, a[1] + dy * bulge], rm = wm / 2;
+  const P = (q, r) => `${f2(q[0] + nx * r)},${f2(q[1] + ny * r)}`;
+  return `<path class="${cls}" d="M${P(a, ra)}Q${P(m, rm * 1.25)} ${P(b, rb)}A${f2(rb)},${f2(rb)} 0 0 0 ${P(b, -rb)}Q${P(m, -rm * 1.25)} ${P(a, -ra)}A${f2(ra)},${f2(ra)} 0 0 0 ${P(a, ra)}Z"/>`;
+}
+// عرض الجسم من جنب (قدّام / ورا) على طول الجذع: 0 = الورك، 22 = الكتف
+const TORSO_W = {
+  f: { fr: [[-5, .3], [-3.6, 2.1], [-1.5, 3], [2, 3.2], [5.5, 2.5], [9, 2.25], [12.2, 3.1], [15, 4.5], [17.6, 3.9], [20, 2.7], [22.2, 2.1]],
+       bk: [[-5, .3], [-4.3, 2.9], [-2.5, 4.6], [0, 5.1], [2.7, 4.3], [5.7, 2.8], [9, 2.35], [13, 2.9], [17, 3.4], [20, 3], [22.2, 2.3]] },
+  m: { fr: [[-5, .3], [-3.6, 2.1], [-1.5, 3], [2, 3], [6, 2.9], [9, 2.9], [14, 3.4], [17, 3.6], [20, 3.1], [22.2, 2.4]],
+       bk: [[-5, .3], [-4, 2.6], [-2.2, 3.5], [.4, 3.7], [3, 3.3], [6, 2.9], [9, 2.9], [14, 3.5], [17, 3.9], [20, 3.4], [22.2, 2.6]] },
+};
+function wAt(keys, u) {
+  if (u <= keys[0][0]) return keys[0][1];
+  for (let i = 1; i < keys.length; i++) if (u <= keys[i][0]) { const [u0, w0] = keys[i - 1], [u1, w1] = keys[i], k = (u - u0) / (u1 - u0); return w0 + (w1 - w0) * (1 - Math.cos(k * Math.PI)) / 2; }
+  return keys[keys.length - 1][1];
+}
+function torsoPart(p, u0f, u1f, u0b, u1b, cls, ext = 0) {   // قطعة من الجذع بين ارتفاعين (قدّام وورا)
+  const W = TORSO_W[gender === "m" ? "m" : "f"], fx = -p.up[1], fy = p.up[0];   // fx,fy = لقدّام
+  const at = (u, w) => `${f2(p.hip[0] + p.up[0] * u + fx * w)},${f2(p.hip[1] + p.up[1] * u + fy * w)}`;
+  const pts = [], N = 14;
+  for (let i = 0; i <= N; i++) { const u = u0f + (u1f - u0f) * i / N; pts.push(at(u, wAt(W.fr, u) + ext)); }
+  for (let i = 0; i <= N; i++) { const u = u1b + (u0b - u1b) * i / N; pts.push(at(u, -(wAt(W.bk, u) + ext))); }
+  return `<path class="${cls}" d="M${pts.join("L")}Z"/>`;
+}
+function shoe(ank, toe, cls) {
+  const dx = toe[0] - ank[0], dy = toe[1] - ank[1], d = Math.hypot(dx, dy) || 0.001, ux = dx / d, uy = dy / d;
+  const a = [ank[0] - ux * 1.6, ank[1] - uy * 1.6], t = [toe[0] + ux * .4, toe[1] + uy * .4];
+  return limb(a, t, 3.6, 2.6, cls) + `<path class="f-sole" d="M${f2(a[0] - uy * 1.75)},${f2(a[1] + ux * 1.75)}L${f2(t[0] - uy * 1.25)},${f2(t[1] + ux * 1.25)}"/>`;
+}
+function figBody(p) {
+  const m = gender === "m", nk = [p.sh[0] + p.up[0] * (DM.neck + 1.2), p.sh[1] + p.up[1] * (DM.neck + 1.2)];
+  const hand = (h, cls) => `<circle class="${cls}" cx="${f2(h[0])}" cy="${f2(h[1])}" r="1.45"/>`;
+  return `${limb(p.sh, p.elb, 3.5, 2.9, "f-skin2")}${limb(p.elb, p.hand, 2.9, 2.2, "f-skin2")}${hand(p.hand, "f-skin2")}
+    ${curvy(p.hip, p.knee2, 7.6, 6.2, 4.4, .38, "f-leg2")}${curvy(p.knee2, p.ank2, 4.4, 4.6, 2.6, .3, "f-leg2")}${shoe(p.ank2, p.toe2, "f-shoe2")}
+    ${curvy(p.hip, p.knee, 7.8, 6.4, 4.5, .38, "f-leg")}${curvy(p.knee, p.ank, 4.5, 4.8, 2.7, .3, "f-leg")}${shoe(p.ank, p.toe, "f-shoe")}
+    ${limb(p.sh, nk, 2.6, 2.4, "f-skin")}
+    ${torsoPart(p, -5, 22.2, -5, 22.2, "f-skin")}
+    ${m ? torsoPart(p, 4.8, 22.2, 4.8, 22.2, "f-top") : torsoPart(p, 12.1, 19.9, 12.1, 21, "f-top") + torsoPart(p, 12.1, 13.1, 12.1, 13.1, "f-band", .05)}
+    ${torsoPart(p, -5, m ? 6 : 6.6, -5, m ? 6 : 6.2, "f-leg", .02)}${m ? "" : torsoPart(p, 5.6, 6.6, 5.2, 6.2, "f-band", .03)}
+    ${demoHead(p)}
+    ${limb(p.sh, p.elb, 3.7, 3.0, "f-skin")}${limb(p.elb, p.hand, 3.0, 2.3, "f-skin")}${hand(p.hand, "f-skin")}`;
+}
 function demoFrame(P, k, eq) {
   const p = poseAt(P, k);
   const back = [p.hc[0] - p.up[0] * 0 - 4.4 * Math.cos(Math.atan2(p.up[1], p.up[0]) + Math.PI / 2) * 0, p.hc[1]];
@@ -2652,21 +2719,18 @@ function demoFrame(P, k, eq) {
   const db = (h) => `<rect class="d-db" x="${(h[0] - 3.2).toFixed(2)}" y="${(h[1] - 1.4).toFixed(2)}" width="6.4" height="2.8" rx="1.2"/><rect class="d-db" x="${(h[0] - 3.8).toFixed(2)}" y="${(h[1] - 2.4).toFixed(2)}" width="1.8" height="4.8" rx=".7"/><rect class="d-db" x="${(h[0] + 2).toFixed(2)}" y="${(h[1] - 2.4).toFixed(2)}" width="1.8" height="4.8" rx=".7"/>`;
   const hold = eq !== "body" && (P.prop === "db1" || P.prop === "db2") ? db(p.hand) : "";
   return `<rect class="d-floor" x="-60" y="88.6" width="220" height="80"/><rect class="d-mat" x="${P.mat || P.lie ? -2 : 26}" y="87" width="${P.mat || P.lie ? 104 : 48}" height="3.2" rx="1.6"/>${props}
-    ${L2(p.sh, p.elb, "d-skin2", 4)}${L2(p.elb, p.hand, "d-skin2", 3.6)}
-    ${L2(p.hip, p.knee2, "d-leg2", 6.4)}${L2(p.knee2, p.ank2, "d-leg2", 5.2)}${L2(p.ank2, p.toe2, "d-skin2", 3)}
-    ${L2(p.hip, p.knee, "d-leg", 6.6)}${L2(p.knee, p.ank, "d-leg", 5.4)}${L2(p.ank, p.toe, "d-skin", 3.2)}
-    ${L2([p.hip[0] + p.up[0] * 2, p.hip[1] + p.up[1] * 2], [p.sh[0] - p.up[0] * 1.5, p.sh[1] - p.up[1] * 1.5], "d-top", 9)}
-    ${L2(p.sh, [p.sh[0] + p.up[0] * (DM.neck + 1), p.sh[1] + p.up[1] * (DM.neck + 1)], "d-skin", 3.4)}
-    ${demoHead(p)}
-    ${L2(p.sh, p.elb, "d-skin", 4.2)}${L2(p.elb, p.hand, "d-skin", 3.8)}${hold}`;
+    ${figBody(p)}${hold}`;
 }
 // راس جانبي طبيعي: جبين، أنف، شفايف، دقن، أذن، عين، وشعر (كعكة للبنت، قصير للشب)
 const HEAD_P = "M0,-5.3C2.8,-5.3 4.5,-3.7 4.7,-1.3L4.66,-0.5C5.15,0.15 5.75,0.75 5.8,1.1C5.62,1.48 5.15,1.58 4.86,1.72C5.06,2.05 5.06,2.42 4.86,2.68C5.0,3.05 4.98,3.55 4.62,3.95C3.86,4.8 2.5,4.95 1.3,4.6C0.1,4.3 -1.4,4.5 -2.6,3.95C-4.35,3.0 -5.2,1.05 -5.2,-0.8C-5.2,-3.55 -2.9,-5.3 0,-5.3Z";
 const HAIR_W = "M4.35,-2.7C4.1,-4.9 2.0,-6.05 -0.4,-5.95C-3.45,-5.85 -5.6,-3.6 -5.5,-0.6C-5.45,1.25 -4.7,2.7 -3.55,3.5C-3.35,1.7 -2.75,0.05 -1.45,-1.0C0.05,-2.15 2.2,-2.3 4.35,-2.7Z";
 const HAIR_MN = "M4.25,-2.95C3.95,-4.95 2.0,-5.85 -0.3,-5.8C-3.25,-5.75 -5.3,-3.75 -5.25,-1.05C-5.2,0.35 -4.8,1.45 -4.1,2.15C-3.7,0.85 -3.05,-0.55 -1.7,-1.45C-0.1,-2.4 2.15,-2.55 4.25,-2.95Z";
+const TAIL_UP = "M-3.1,-4.9C-6.6,-6.3 -9.6,-3.6 -9.3,0.6C-9.1,3.4 -8,5.6 -6.6,7.1C-7.1,4.7 -7.2,2.2 -6.3,0C-5.6,-1.7 -4.6,-2.8 -3.4,-3.4Z";
+// لما تكون مستلقية عضهرها، الشعر بينفرش عالأرض فوق راسها
+const TAIL_LIE = "M-3.9,-4.1C-5.6,-7.4 -4.3,-11 -1.2,-12.2C-2.2,-10.2 -1.8,-7.9 -0.3,-5.7Z";
 function demoHead(p) {
-  const a = Math.atan2(p.up[0], -p.up[1]) * 180 / Math.PI, k = (DM.head / 5.1).toFixed(3), m = gender === "m";
-  return `<g transform="translate(${p.hc[0].toFixed(2)} ${p.hc[1].toFixed(2)}) rotate(${a.toFixed(1)}) scale(${k})">${m ? "" : `<ellipse class="d-hair" cx="-5.2" cy="-2.2" rx="2.2" ry="2.1"/>`}<path class="d-skin-f" d="${HEAD_P}"/><ellipse class="d-ear" cx="-0.7" cy="0.75" rx="0.85" ry="1.25"/><path class="d-hair" d="${m ? HAIR_MN : HAIR_W}"/><path class="d-brow" d="M2.55,-1.45Q3.3,-1.75 4.05,-1.42"/><path class="d-eye" d="M2.75,-0.42Q3.25,-0.75 3.75,-0.42Q3.25,-0.15 2.75,-0.42Z"/><path class="d-lip" d="M4.5,2.55Q4.72,2.66 4.95,2.52"/></g>`;
+  const a = Math.atan2(p.up[0], -p.up[1]) * 180 / Math.PI, k = (DM.head / 5.1).toFixed(3), m = gender === "m", TAIL = a < -50 ? TAIL_LIE : TAIL_UP;
+  return `<g transform="translate(${p.hc[0].toFixed(2)} ${p.hc[1].toFixed(2)}) rotate(${a.toFixed(1)}) scale(${k})">${m ? "" : `<path class="d-hair" d="${TAIL}"/>${a < -50 ? "" : `<path class="d-hairhi" d="M-5,-5.2C-7.3,-5.3 -8.6,-3 -8.4,-.6"/>`}`}<path class="d-skin-f" d="${HEAD_P}"/><ellipse class="d-ear" cx="-0.7" cy="0.75" rx="0.85" ry="1.25"/><path class="d-hair" d="${m ? HAIR_MN : HAIR_W}"/>${m ? "" : `<rect class="d-tie" x="-4.1" y="-5.35" width="1.5" height="1.9" rx=".6" transform="rotate(-28 -3.35 -4.4)"/><ellipse class="d-blush" cx="2.7" cy="1.35" rx="1.15" ry=".7"/>`}<path class="d-brow" d="M2.55,-1.45Q3.3,-1.75 4.05,-1.42"/><path class="d-eye" d="M2.75,-0.42Q3.25,-0.75 3.75,-0.42Q3.25,-0.15 2.75,-0.42Z"/>${m ? "" : `<path class="d-lash" d="M3.7,-0.5L4.15,-0.8"/>`}<path class="d-lip" d="M4.5,2.55Q4.72,2.66 4.95,2.52"/></g>`;
 }
 const DEMO_VB = {};
 function demoVB(pat) {                      // مربّع على قدّ الحركة، لتطلع الرسمة كبيرة بالدائرة
