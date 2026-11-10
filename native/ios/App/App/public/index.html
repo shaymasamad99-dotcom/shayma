@@ -364,7 +364,11 @@ body.gated .tabs, body.gated .startbar { display: none; }
 .pill.act { background: var(--soft); color: var(--accent); border-color: transparent; font-size: .82rem; padding: 4px 4px 4px 12px; display: inline-flex; align-items: center; gap: 4px; }
 .pill.act .x { border: 0; background: none; color: inherit; width: 28px; height: 28px; font-size: 1rem; }
 .act-tag { color: var(--accent); font-weight: 600; }
-.rcard.restc { flex-basis: 60%; }
+.rcard.restc { flex-basis: 60%; position: relative; overflow: hidden; background: #2A1730; color: #F7E8EF; border-color: #E9A6C4; min-height: 230px; }
+.rcard.restc .eyebrow, .rcard.restc .muted { color: #F2B8CF; position: relative; z-index: 1; }
+.rcard.restc .rc-t { position: relative; z-index: 1; color: #fff; }
+.rest-art { position: absolute; inset: auto 0 0 0; width: 100%; height: 72%; object-fit: cover; object-position: 50% 30%; pointer-events: none; -webkit-mask-image: linear-gradient(to bottom, transparent, #000 22%); mask-image: linear-gradient(to bottom, transparent, #000 22%); }
+.restday .rest-hero { width: 100%; max-height: 340px; object-fit: cover; object-position: 50% 32%; border-radius: 18px; display: block; }
 .pkgs .pkg { flex: 0 0 auto; min-width: 128px; max-width: 170px; text-align: start; border: 1px solid var(--line); background: var(--surface); border-radius: 16px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; color: var(--ink); scroll-snap-align: start; }
 .pkgs .pkg small { color: var(--muted); font-size: .74rem; line-height: 1.35; }
 .pkgs .pkg[aria-pressed="true"] { border-color: var(--accent); background: var(--soft); box-shadow: inset 0 0 0 1px var(--accent); }
@@ -1674,7 +1678,7 @@ function renderPlan() {
           <b class="rc-t">${d ? d.typeName : sw ? L("سباحة", "Swim") : L("راحة", "Rest")}</b>${sw ? `<small>${phaseName()}</small>` : ""}${d ? `<small>${d.pkgName} + ${L("كور", "core")}${isCombo(i) ? L(" · + سباحة", " · + swim") : ""}</small>` : ""}
           ${at ? `<small class="act-tag">${at}</small>` : ""}
           ${st === "full" ? `<span class="rc-badge">${L("✓ خلّصتيه", "✓ Done")}</span>` : st === "part" ? `<span class="rc-badge part">${L("بلّشتي", "Started")}</span>` : ""}
-          ${d ? bubbles(d.items) : sw ? WAVES : `<p class="muted small">${L("العضل بيكبر وقت الراحة", "Muscles grow while you rest")}</p>`}
+          ${d ? bubbles(d.items) : sw ? WAVES : `<p class="muted small">${L("العضل بيكبر وقت الراحة", "Muscles grow while you rest")}</p>${gender !== "m" ? `<img class="rest-art" src="a/rest.webp" alt="" aria-hidden="true">` : ""}`}
         </button>`;
       }).join("")}</div>
     </section>`;
@@ -1707,7 +1711,8 @@ function dayDetail() {
       </section>`;
   } else if (!day) {
     const nx = pullFrom(selDay);
-    html += `<section class="checkin">
+    html += `<section class="checkin restday">
+        ${gender !== "m" ? `<img class="rest-hero" src="a/rest.webp" alt="${L("بنت مرتاحة عالكنباية مع كاسة شاي", "Girl relaxing on the sofa with a cup of tea")}">` : ""}
         <h2>${dayN(selDay)}: ${L("يوم راحة", "Rest day")}</h2>
         <p class="muted small">${L("العضل بيكبر وقت الراحة. مشي خفيف أو تمطيط بيكفّي، أو سجّلي سباحة.", "Muscles grow while you rest. A light walk or stretching is enough, or log a swim.")}</p>
         ${actList}
