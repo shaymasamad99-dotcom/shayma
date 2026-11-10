@@ -2937,10 +2937,10 @@ if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol) && !/cla
   window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 const canEmbed = () => /^https?:$/.test(location.protocol) && !(window.claude && typeof window.claude.use === "function") && !/claude|anthropic/i.test(location.hostname);
 function vidBtn(ex) {
-  if (ex.yt && canEmbed()) return `<button class="video" data-vid="${ex.id}" aria-expanded="${vidOpen === ex.id}">▶ ${vidOpen === ex.id ? L("سكّري الفيديو", "Close video") : L("فيديو الشرح", "Watch video")}</button>`;
+  if (ex.yt && false) return `<button class="video" data-vid="${ex.id}" aria-expanded="${vidOpen === ex.id}">▶ ${vidOpen === ex.id ? L("سكّري الفيديو", "Close video") : L("فيديو الشرح", "Watch video")}</button>`;
   return "";   // جوّا claude.ai: بلا روابط لبرّا
 }
-const vidBox = (ex) => vidOpen === ex.id && ex.yt && canEmbed() ? `<div class="vbox"><iframe src="https://www.youtube-nocookie.com/embed/${ex.yt}?autoplay=1&playsinline=1&rel=0&modestbranding=1" title="${esc(exN(ex))}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>` : "";
+const vidBox = (ex) => vidOpen === ex.id && ex.yt && false ? `<div class="vbox"><iframe src="https://www.youtube-nocookie.com/embed/${ex.yt}?autoplay=1&playsinline=1&rel=0&modestbranding=1" title="${esc(exN(ex))}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>` : "";
 
 /* ===================== صفحة التمرين ===================== */
 let sheet = null;                       // { id, ctx: "plan:i" | "lib" | "routine:key" | "move:sec" }
@@ -2954,13 +2954,13 @@ function sheetData() {
   return { ex, ctx, a, g, plan, key: ctx === "plan" ? selDay : ctx === "routine" ? a : null };
 }
 function sheetMedia(ex) {
-  if (vidOpen === ex.id && ex.yt && canEmbed()) return `<div class="vbox sh-vid"><iframe src="https://www.youtube-nocookie.com/embed/${ex.yt}?autoplay=1&playsinline=1&rel=0&modestbranding=1" title="${esc(exN(ex))}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`;
+  if (vidOpen === ex.id && ex.yt && false) return `<div class="vbox sh-vid"><iframe src="https://www.youtube-nocookie.com/embed/${ex.yt}?autoplay=1&playsinline=1&rel=0&modestbranding=1" title="${esc(exN(ex))}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`;
   // جوّا claude.ai فيديو يوتيوب ما بيشتغل جوّا الصفحة، فالشرح بيفتح جوّا التطبيق (الحركة + الخطوات)
-  const play = ex.yt && canEmbed() ? `<button class="sh-play" data-vid="${ex.id}">▶ ${L("شوفي الفيديو", "Watch video")}</button>`
+  const play = ex.yt && false ? `<button class="sh-play" data-vid="${ex.id}">▶ ${L("شوفي الفيديو", "Watch video")}</button>`
     : `<button class="sh-play" data-how="${ex.id}">▶ ${L("شوفي كيف بتنعمل", "See how it's done")}</button>`;
   if (howOpen === ex.id) return `<div class="sh-demo how" style="--c:${MCOL[ex.m]}">${clipOf(ex) ? clipTag(ex) : demoSVG(ex.id, ex.eq)}</div>${howCap(ex)}`;
   if (clipOf(ex)) return `<div class="sh-clip" style="--c:${MCOL[ex.m]}">${clipTag(ex)}<span class="sh-ctag">${L("فيديو حقيقي", "Real video")} · ${CLIPS[ex.id].by}</span></div>`;
-  return `<button class="sh-demo" style="--c:${MCOL[ex.m]}" ${ex.yt && canEmbed() ? `data-vid="${ex.id}"` : `data-how="${ex.id}"`} aria-label="${L("شوفي كيف بتنعمل", "See how it's done")}">${demoSVG(ex.id, ex.eq)}</button>${play}`;
+  return `<button class="sh-demo" style="--c:${MCOL[ex.m]}" ${ex.yt && false ? `data-vid="${ex.id}"` : `data-how="${ex.id}"`} aria-label="${L("شوفي كيف بتنعمل", "See how it's done")}">${demoSVG(ex.id, ex.eq)}</button>${play}`;
 }
 let howOpen = null, howStep = 0, howTimer = 0;
 function howCap(ex) {
@@ -3000,7 +3000,7 @@ function sheetBody(d) {
     ${ctx === "plan" && plan ? logBox(ex, e, date, canLog) : ""}
     ${ctx === "plan" && plan ? `<button class="ghost wide" data-alt="sheet" aria-expanded="${altOpen === "sheet"}">${L("غيّري التمرين", "Change exercise")}</button>
       ${altOpen === "sheet" ? `<div class="alts">${plan.alts.length ? plan.alts.map(x => `<button class="alt" data-pick="${x.id}" data-pslot="${buildDay(selDay).pkg.id}-${a}">${avatar(x, { size: 36 })}<span><b>${esc(exN(x))}</b><small class="muted">${eqN(x.eq)}${UNI.has(x.id) ? L(" · لكل جهة", " · each side") : ""}</small></span></button>`).join("") : `<span class="small muted">${L("ما في بديل تاني بهالمعدات.", "No other option with this equipment.")}</span>`}</div>` : ""}` : ""}
-    ${canEmbed() ? `<a class="ghost wide link" href="${search(ex)}" target="_blank" rel="noopener">${L("فيديوهات تانية عاليوتيوب", "More videos on YouTube")}</a>` : ""}`;
+`;
 }
 function renderSheet() {
   if (!sheet) { $sheet.hidden = true; $sheet.innerHTML = ""; document.body.classList.remove("sheet-open"); return; }
