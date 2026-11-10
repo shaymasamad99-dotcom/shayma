@@ -3291,7 +3291,14 @@ async function cloudSync() {
 /* ===================== الحساب: دخول بالإيميل (Firebase) ===================== */
 // عالموقع وبتطبيق الآيفون. حطّي هون إعدادات مشروع Firebase (مش سرّية، عادي تكون بالكود).
 // الحماية من قواعد Firestore: كل حساب بيقرا ويكتب بس users/<uid>/... تبعو.
-const FB_CONFIG = null;
+const FB_CONFIG = {
+  apiKey: "AIzaSyCe_0ISs14-pdscNQnddja4nsMEQZAP4aI",
+  authDomain: "shushy-s-fit.firebaseapp.com",
+  projectId: "shushy-s-fit",
+  storageBucket: "shushy-s-fit.firebasestorage.app",
+  messagingSenderId: "586622641402",
+  appId: "1:586622641402:web:418988245a59c859535543",
+};
 const FB_V = "10.14.1";
 let fb = null, authUser = null, authReady = false;
 let auth = { mode: "in", email: "", pass: "", busy: false, err: "", msg: "", open: false };
