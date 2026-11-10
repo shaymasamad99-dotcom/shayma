@@ -1,0 +1,6 @@
+{
+  "appId": "com.shushysfit.app",
+  "appName": "Shushy's Fit",
+  "webDir": "www",
+  "ios": { "contentInset": "never", "backgroundColor": "#FBF6F4" }
+}
