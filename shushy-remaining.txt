@@ -33,14 +33,14 @@ Image 1: [Start]   ·   Image 2: [End]
    Image 1: arms straight up   ·   Image 2: weights lowered to the chest
 
 4. Machine Chest Press  |  جهاز ضغط الصدر
-   🦵 الإجرين: نايمة عالبنش، القدمين عالأرض بعرض الكتاف للثبات.
-   Stance: lying on the bench, feet flat on the floor shoulder-width apart for stability
-   Image 1: arms straight up   ·   Image 2: weights lowered to the chest
+   🦵 الإجرين: قاعدة مستقيمة، القدمين عالأرض بعرض الورك، الركب بزاوية ٩٠°.
+   Stance: seated upright, feet flat hip-width apart, knees at 90 degrees
+   Image 1: handles at the chest   ·   Image 2: arms pushed forward
 
 5. Pec Deck Machine  |  جهاز الفراشة
-   🦵 الإجرين: نايمة عالبنش، القدمين عالأرض بعرض الكتاف للثبات.
-   Stance: lying on the bench, feet flat on the floor shoulder-width apart for stability
-   Image 1: arms straight up   ·   Image 2: weights lowered to the chest
+   🦵 الإجرين: قاعدة مستقيمة، القدمين عالأرض بعرض الورك، الركب بزاوية ٩٠°.
+   Stance: seated upright, feet flat hip-width apart, knees at 90 degrees
+   Image 1: arms open wide   ·   Image 2: arms squeezed together in front
 
 6. Cable Crossover  |  كروس أوفر بالكيبل
    🦵 الإجرين: واقفة مستقيمة، الإجرين بعرض الورك، الركب مفرودة شوي (مش مقفولة). الإجرين ثابتين طول التمرين.
@@ -75,9 +75,9 @@ Image 1: [Start]   ·   Image 2: [End]
    Image 1: arms straight up on the bar   ·   Image 2: bar pulled to the upper chest
 
 12. Seated Cable Row  |  سحب أرضي بالكيبل
-   🦵 الإجرين: الإجرين بعرض الورك، الركب مثنية شوي، منحنية لقدّام من الورك بضهر مستقيم. الإجرين ثابتين.
-   Stance: feet hip-width apart, knees soft, hinged forward from the hips with a flat back; feet stay planted
-   Image 1: arms hanging down   ·   Image 2: elbows pulled back
+   🦵 الإجرين: قاعدة مستقيمة، القدمين عالأرض بعرض الورك، الركب بزاوية ٩٠°.
+   Stance: seated upright, feet flat hip-width apart, knees at 90 degrees
+   Image 1: arms straight forward   ·   Image 2: handle pulled to the waist
 
 13. Assisted Pull Up Machine  |  عقلة بالمساعدة
    🦵 الإجرين: قاعدة مستقيمة، القدمين عالأرض بعرض الورك، الركب بزاوية ٩٠°.
@@ -147,9 +147,9 @@ Image 1: [Start]   ·   Image 2: [End]
    Image 1: arms hanging down   ·   Image 2: elbows pulled back
 
 26. Machine Shoulder Press  |  جهاز ضغط الكتف
-   🦵 الإجرين: واقفة مستقيمة، الإجرين بعرض الورك، الركب مفرودة شوي (مش مقفولة). الإجرين ثابتين طول التمرين.
-   Stance: standing tall, feet hip-width apart, knees soft; feet stay planted the whole time
-   Image 1: weights at the shoulders   ·   Image 2: arms straight overhead
+   🦵 الإجرين: قاعدة مستقيمة، القدمين عالأرض بعرض الورك، الركب بزاوية ٩٠°.
+   Stance: seated upright, feet flat hip-width apart, knees at 90 degrees
+   Image 1: handles at the shoulders   ·   Image 2: arms pressed overhead
 
 27. Cable Lateral Raise  |  رفرفة جانبي بالكيبل
    🦵 الإجرين: واقفة مستقيمة، الإجرين بعرض الورك، الركب مفرودة شوي (مش مقفولة). الإجرين ثابتين طول التمرين.
@@ -157,9 +157,9 @@ Image 1: [Start]   ·   Image 2: [End]
    Image 1: arms by the sides   ·   Image 2: arms raised to shoulder height
 
 28. Reverse Pec Deck  |  فراشة عكسي
-   🦵 الإجرين: الإجرين بعرض الورك، الركب مثنية شوي، منحنية لقدّام من الورك بضهر مستقيم. الإجرين ثابتين.
-   Stance: feet hip-width apart, knees soft, hinged forward from the hips with a flat back; feet stay planted
-   Image 1: arms hanging down   ·   Image 2: elbows pulled back
+   🦵 الإجرين: قاعدة مستقيمة، القدمين عالأرض بعرض الورك، الركب بزاوية ٩٠°.
+   Stance: seated upright, feet flat hip-width apart, knees at 90 degrees
+   Image 1: arms forward   ·   Image 2: arms opened back
 
 29. Arnold Press  |  أرنولد برس
    🦵 الإجرين: واقفة مستقيمة، الإجرين بعرض الورك، الركب مفرودة شوي (مش مقفولة). الإجرين ثابتين طول التمرين.
@@ -199,14 +199,14 @@ Image 1: [Start]   ·   Image 2: [End]
    Image 1: arms straight down   ·   Image 2: weights curled up
 
 36. Machine Preacher Curl  |  جهاز باي بريتشر
-   🦵 الإجرين: واقفة مستقيمة، الإجرين بعرض الورك، الركب مفرودة شوي (مش مقفولة). الإجرين ثابتين طول التمرين.
-   Stance: standing tall, feet hip-width apart, knees soft; feet stay planted the whole time
-   Image 1: arms straight down   ·   Image 2: weights curled to the shoulders
+   🦵 الإجرين: قاعدة مستقيمة، القدمين عالأرض بعرض الورك، الركب بزاوية ٩٠°.
+   Stance: seated upright, feet flat hip-width apart, knees at 90 degrees
+   Image 1: arms straight on the pad   ·   Image 2: weight curled up
 
 37. Concentration Curl  |  باي تركيز
-   🦵 الإجرين: واقفة مستقيمة، الإجرين بعرض الورك، الركب مفرودة شوي (مش مقفولة). الإجرين ثابتين طول التمرين.
-   Stance: standing tall, feet hip-width apart, knees soft; feet stay planted the whole time
-   Image 1: arms straight down   ·   Image 2: weights curled to the shoulders
+   🦵 الإجرين: قاعدة عطرف البنش، الإجرين بعاد عن بعض والقدمين عالأرض، والكوع مسنود عجوّا الفخد.
+   Stance: seated on the bench edge, feet wide and flat, elbow resting on the inner thigh
+   Image 1: arm straight down   ·   Image 2: weight curled up
 
 38. Wrist Curl  |  ثني الرسغ
    🦵 الإجرين: واقفة مستقيمة، الإجرين بعرض الورك، الركب مفرودة شوي (مش مقفولة). الإجرين ثابتين طول التمرين.
