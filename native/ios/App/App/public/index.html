@@ -1672,7 +1672,8 @@ function renderPlan() {
       <span class="eyebrow">${profile.name ? L(`أهلا ${esc(profile.name)} · `, `Hi ${esc(profile.name)} · `) : ""}${dayN(todayIdx)} · ${L("هدفك", "Goal")}: ${goalTitle()}</span>
       <h1>${L("تمرين اليوم", "Today")}</h1></div>
       <button class="lang-btn" data-lang="${L("en", "ar")}" lang="${L("en", "ar")}">${L("English", "العربية")}</button>
-    </header>`;
+    </header>
+    <button class="search sbtn" data-gosearch="1">🔍 ${L("دوّري على تمرين…", "Search for an exercise…")}</button>`;
   if (!profile.saved) html += `<div class="banner"><span>${L("هيدا برنامج مثال. عبّي عمرك ووزنك وهدفك ليتظبط إلك.", "This is a sample plan. Add your age, weight and goal to tailor it.")}</span><button data-tab="me">${L("اعمليلي جدولي", "Build my schedule")}</button></div>`;
   const ws = weekStats(), goalDays = profile.days.length;
   const heroTitle = ws.days >= goalDays ? L("حققتي هدف الأسبوع، برافو!", "Weekly goal reached. Well done!") : ws.days ? L(`باقي ${daysWord(goalDays - ws.days)} لتكمّلي أسبوعك`, `${daysWord(goalDays - ws.days)} left this week`) : L("يلا نبلّش الأسبوع", "Let's start the week");
