@@ -307,6 +307,7 @@ body.gated .tabs, body.gated .startbar { display: none; }
 .gate-logo { font-family: var(--display); font-size: 2.2rem; font-weight: 700; color: var(--accent); text-align: center; }
 .gate-sub { text-align: center; margin: 0; }
 .gate-lang { text-align: center; }
+.sbtn { text-align: start; color: var(--muted); cursor: text; display: flex; align-items: center; gap: 8px; }
 .auth form { display: flex; flex-direction: column; gap: 10px; }
 .auth h2 { margin: 0; }
 .auth p { margin: 0; }
@@ -1440,6 +1441,7 @@ let bodyArea = null, bodyPart = null, bodyClosed = new Set();
 function renderBody() {
   const head = (t, sub, back) => `<header class="hdr sday">${back ? `<button class="back" data-bodyback="1">${L("› رجوع", "‹ Back")}</button>` : ""}<div><span class="eyebrow">${sub}</span><h1>${t}</h1></div></header>`;
   if (!bodyArea) return `${head(L("عضلاتي", "Know your body"), L("اكبسي على منطقة لتعرفي أجزاءها وتمارينها", "Tap an area to see its parts and exercises"), false)}
+    <button class="search sbtn" data-gosearch="1">🔍 ${L("دوّري على تمرين…", "Search for an exercise…")}</button>
     <div class="bgrid">${BODY_MAP.map(a => `<button class="barea" data-barea="${a.id}"><span class="av big" style="--c:${MCOL[a.ic]}">${a.img ? `<i class="refimg" style="background-image:var(--bp-${a.img})" aria-hidden="true"></i>` : bodyIcon(a.ic, true)}</span><b>${L(a.ar, a.en)}</b><small>${a.parts.length} ${L("أجزاء", "parts")}</small></button>`).join("")}</div>
     <button class="slink" data-tab="lib"><span class="sl-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><span class="sinfo"><b>${L("كل التمارين والروتينات", "All exercises & routines")}</b><small>${L("دوّري على أي تمرين", "Search any exercise")}</small></span><span class="chev" aria-hidden="true">‹</span></button>`;
   const a = BODY_MAP.find(x => x.id === bodyArea);
@@ -1849,12 +1851,13 @@ function renderLib() {
         </div></section>`;
     return html;
   }
-  const match = EX.filter(ex => {
+  const pool = q ? [...EX, ...EX2, ...MOVES.filter(m => MUSCLES[m.m])] : EX;
+  const match = pool.filter(ex => {
     const M = MUSCLES[ex.m];
     if (lib.area && lib.area !== "all" && ex.m !== lib.area) return false;
     if (lib.eq !== "all" && ex.eq !== lib.eq) return false;
     if (!q) return true;
-    const hay = norm(`${ex.ar} ${ex.en} ${M.ar} ${M.en} ${M.kw} ${M.kwEn} ${PARTS[M.part]} ${EQ[ex.eq]} ${EQ_EN[ex.eq]}`);
+    const hay = norm(`${ex.ar} ${ex.en} ${ex.mAr || ""} ${ex.mEn || ""} ${ex.kind === "warm" ? "إحماء warm up" : ex.kind ? "تمطيط stretch" : ""} ${M.ar} ${M.en} ${M.kw} ${M.kwEn} ${PARTS[M.part]} ${EQ[ex.eq] || ""} ${EQ_EN[ex.eq] || ""}`);
     return q.split(/\s+/).every(w => hay.includes(w));
   });
   const groups = {};
@@ -3176,6 +3179,7 @@ function renderSheet() {
 
 /* ===================== الأحداث ===================== */
 document.addEventListener("click", (e) => {
+  if (e.target.closest && e.target.closest("[data-gosearch]")) { tab = "lib"; lib.area = null; lib.routine = null; render(); window.scrollTo(0, 0); const q = document.getElementById("lib-q"); if (q) q.focus(); return; }
   const au = e.target.closest && e.target.closest("[data-auth]");
   if (au) {
     const a = au.dataset.auth; auth.err = ""; auth.msg = "";
