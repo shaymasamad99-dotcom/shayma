@@ -290,6 +290,24 @@ body.playing { overflow: hidden; }
 .area { border: 1px solid var(--line); background: var(--surface); border-radius: 18px; padding: 14px 6px 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0;  box-shadow: var(--shadow);}
 .area b { font-size: .88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .area small { font-size: .72rem; color: var(--muted); margin-top: -4px; }
+.mstrip { display: flex; gap: 10px; overflow-x: auto; margin-inline: -16px; padding: 2px 16px 4px; scrollbar-width: none; overscroll-behavior-x: contain; scroll-snap-type: x proximity; }
+.mstrip::-webkit-scrollbar { display: none; }
+.mtile { flex: none; width: 66px; display: flex; flex-direction: column; align-items: center; gap: 5px; background: none; border: 0; padding: 0; color: var(--ink); scroll-snap-align: start; }
+.mt-img { width: 62px; height: 62px; border-radius: 16px; border: 2px solid var(--line); background: var(--surface) center / cover no-repeat; display: grid; place-items: center; box-shadow: var(--shadow, none); transition: border-color .15s, transform .15s; }
+.mt-all { background: var(--soft); color: var(--accent); }
+.mt-all svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+.mtile small { font-size: .74rem; color: var(--muted); white-space: nowrap; }
+.mtile[aria-pressed="true"] .mt-img { border-color: var(--accent); transform: translateY(-1px); }
+.mtile[aria-pressed="true"] small { color: var(--accent); font-weight: 700; }
+.xgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.xcard { display: flex; flex-direction: column; border: 1px solid var(--line); background: var(--surface); border-radius: 18px; overflow: hidden; padding: 0; text-align: start; color: var(--ink); min-width: 0; }
+.xc-media { position: relative; display: block; aspect-ratio: 1; background: color-mix(in srgb, var(--c) 35%, var(--surface)); overflow: hidden; }
+.xc-media img, .xc-media svg { width: 100%; height: 100%; object-fit: cover; display: block; }
+.xc-play { position: absolute; inset-block-end: 8px; inset-inline-end: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(0,0,0,.55); color: #fff; font-size: .7rem; display: grid; place-items: center; padding-inline-start: 2px; }
+.xc-uni { position: absolute; inset-block-start: 8px; inset-inline-start: 8px; min-width: 24px; height: 24px; border-radius: 12px; background: var(--surface); color: var(--ink); font-size: .8rem; display: grid; place-items: center; }
+.xc-body { display: flex; flex-direction: column; gap: 2px; padding: 9px 11px 11px; min-width: 0; }
+.xc-body b { font-size: .9rem; font-weight: 700; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.xc-body small { font-size: .74rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .back { align-self: flex-start; border: 0; background: none; color: var(--accent); font-weight: 600; padding: 8px 0; min-height: 40px; }
 .pl-title { display: flex; flex-direction: column; align-items: center; line-height: 1.3; }
 .pl-title small { font-family: var(--body); color: var(--muted); font-size: .8rem; }
@@ -1836,26 +1854,38 @@ function renderRoutine(r) {
     <div class="startbar"><button class="start" data-start="${key}">▶ ${L("ابدئي", "Start")}<small>${est} ${L("د", "min")}</small></button></div>`;
   return html;
 }
+function libMedia(ex) {
+  const v = cvidOf(ex.id), a = artOf(ex.id);
+  if (v) return `<img src="${v}.jpg" loading="lazy" decoding="async" alt="">`;
+  if (a) return `<img src="${a}-1.webp" loading="lazy" decoding="async" alt="">`;
+  return demoStatic(ex);
+}
+function libCard(ex) {
+  const vid = !!cvidOf(ex.id);
+  return `<button class="xcard" data-sheet="${ex.id}" data-sctx="lib" style="--c:${MCOL[ex.m] || "var(--soft)"}">
+      <span class="xc-media">${libMedia(ex)}${vid ? `<span class="xc-play" aria-label="${L("فيه فيديو", "Has video")}">▶</span>` : ""}${UNI.has(ex.id) ? `<span class="xc-uni" aria-hidden="true">⇄</span>` : ""}</span>
+      <span class="xc-body"><b>${esc(exN(ex))}</b><small>${ex.mAr ? L(ex.mAr, ex.mEn) : mN(ex.m)} · ${eqN(ex.eq)}</small></span>
+    </button>`;
+}
 function renderLib() {
   if (lib.routine) { const r = ROUTINES.find(x => x.id === lib.routine); if (r) return renderRoutine(r); lib.routine = null; }
-  const q = norm(lib.q);
+  if (lib.area === "all") lib.area = null;
+  const q = norm(lib.q), browse = [...EX, ...EX2];
   let html = `<header style="display:flex;flex-direction:column;gap:4px">
-      <span class="eyebrow">${L(`${EX.length} تمرين قوة · ${ROUTINES.length} روتينات جاهزة`, `${EX.length} strength exercises · ${ROUTINES.length} ready routines`)}</span><h1>${L("التمارين", "Exercises")}</h1></header>
-    <input id="lib-q" class="search" type="search" placeholder="${L("دوّري: أرداف، بطن، سمانة، دمبل…", "Search: glutes, abs, calves, dumbbell…")}" value="${esc(lib.q)}" aria-label="${L("دوّري عتمرين", "Search exercises")}">`;
-  if (!q && !lib.area) {
-    html += `<section class="group"><h3 class="sec">${L("روتينات جاهزة", "Ready routines")}</h3>
-        <div class="carousel">${ROUTINES.map(routineCard).join("")}</div></section>
-      <section class="group"><h3 class="sec">${L("تصفّحي حسب المنطقة", "Browse by area")}</h3>
-        <div class="areas">${AREA_ORDER.map(m => `<button class="area" data-area="${m}">${avatar({ m, id: "" }, { size: 48 })}<b>${shortM(m)}</b><small>${EX.filter(e => e.m === m).length} ${L("تمرين", "exercises")}</small></button>`).join("")}
-          <button class="area" data-area="all" data-aeq="body"><span class="av all" style="--s:48px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7M5 10v10h14V10"/></svg></span><b>${L("بلا معدات", "No equipment")}</b><small>${EX.filter(e => e.eq === "body").length} ${L("تمرين", "exercises")}</small></button>
-          <button class="area" data-area="all" data-aeq="all"><span class="av all" style="--s:48px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><b>${L("كل التمارين", "All exercises")}</b><small>${EX.length} ${L("تمرين", "exercises")}</small></button>
-        </div></section>`;
-    return html;
-  }
-  const pool = q ? [...EX, ...EX2, ...MOVES.filter(m => MUSCLES[m.m])] : EX;
+      <span class="eyebrow">${L(`${browse.length} تمرين · ${ROUTINES.length} روتينات جاهزة`, `${browse.length} exercises · ${ROUTINES.length} ready routines`)}</span><h1>${L("التمارين", "Exercises")}</h1></header>
+    <input id="lib-q" class="search" type="search" placeholder="${L("دوّري: أرداف، بطن، سمانة، دمبل…", "Search: glutes, abs, calves, dumbbell…")}" value="${esc(lib.q)}" aria-label="${L("دوّري عتمرين", "Search exercises")}">
+    <div class="mstrip" role="group" aria-label="${L("اختاري العضلة", "Pick a muscle")}">
+      <button class="mtile" data-larea="all" aria-pressed="${!lib.area}"><span class="mt-img mt-all"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg></span><small>${L("الكل", "All")}</small></button>
+      ${AREA_ORDER.map(m => `<button class="mtile" data-larea="${m}" aria-pressed="${lib.area === m}"><span class="mt-img" style="background-image:var(--rf-${m})"></span><small>${shortM(m)}</small></button>`).join("")}
+    </div>
+    <div class="chips">${[["all",L("كل المعدات","All equipment")],["db",eqN("db")],["machine",eqN("machine")],["body",eqN("body")]].map(([k,l]) => `<button class="chip" data-leq="${k}" aria-pressed="${lib.eq===k}">${l}</button>`).join("")}</div>`;
+  if (!q && !lib.area && lib.eq === "all") html += `<section class="group"><h3 class="sec">${L("روتينات جاهزة", "Ready routines")}</h3>
+        <div class="carousel">${ROUTINES.map(routineCard).join("")}</div></section>`;
+  const pool = q ? [...browse, ...MOVES.filter(m => MUSCLES[m.m])] : browse;
   const match = pool.filter(ex => {
     const M = MUSCLES[ex.m];
-    if (lib.area && lib.area !== "all" && ex.m !== lib.area) return false;
+    if (!M) return false;
+    if (lib.area && ex.m !== lib.area) return false;
     if (lib.eq !== "all" && ex.eq !== lib.eq) return false;
     if (!q) return true;
     const hay = norm(`${ex.ar} ${ex.en} ${ex.mAr || ""} ${ex.mEn || ""} ${ex.kind === "warm" ? "إحماء warm up" : ex.kind ? "تمطيط stretch" : ""} ${M.ar} ${M.en} ${M.kw} ${M.kwEn} ${PARTS[M.part]} ${EQ[ex.eq] || ""} ${EQ_EN[ex.eq] || ""}`);
@@ -1863,15 +1893,11 @@ function renderLib() {
   });
   const groups = {};
   match.forEach(ex => (groups[ex.m] ||= []).push(ex));
-  html += `<div style="display:flex;flex-direction:column;gap:8px">
-      ${lib.area ? `<button class="back" data-libback="1">${L("→ كل المناطق", "← All areas")}</button><h2>${lib.area === "all" ? (lib.eq === "body" ? L("بلا معدات", "No equipment") : L("كل التمارين", "All exercises")) : mN(lib.area)}</h2>` : ""}
-      <div class="chips">${[["all",L("كل المعدات","All equipment")],["db",eqN("db")],["machine",eqN("machine")],["body",eqN("body")]].map(([k,l]) => `<button class="chip" data-leq="${k}" aria-pressed="${lib.eq===k}">${l}</button>`).join("")}</div>
-    </div>`;
   const keys = AREA_ORDER.filter(k => groups[k]);
   if (!keys.length) html += `<p class="empty">${L("ما في تمارين بهالاسم. جربي «أرداف» أو «بطن».", "No exercises found. Try “glutes” or “abs”.")}</p>`;
   keys.forEach(k => {
-    html += `<section class="group">${lib.area && lib.area !== "all" ? "" : `<h3>${mN(k)} <span class="small muted">· ${groups[k].length}</span></h3>`}
-      <div class="list">${groups[k].map(ex => exRow(ex)).join("")}</div></section>`;
+    html += `<section class="group"><h3 class="sec">${mN(k)} <span class="small muted">· ${groups[k].length}</span></h3>
+      <div class="xgrid">${groups[k].map(libCard).join("")}</div></section>`;
   });
   return html;
 }
@@ -3233,6 +3259,7 @@ document.addEventListener("click", (e) => {
     setEntry(date, id, { w: Math.max(0, Math.round((cur + +ds.wstep) * 10) / 10) });
     render(); return;
   }
+  if (ds.larea) { lib.area = ds.larea === "all" ? null : ds.larea; lib.routine = null; open = null; render(); const t2 = document.querySelector('.mtile[aria-pressed="true"]'); if (t2) t2.scrollIntoView({ inline: "center", block: "nearest" }); return; }
   if (ds.area) { lib.area = ds.area; lib.q = ""; if (ds.aeq) lib.eq = ds.aeq; open = null; render(); window.scrollTo(0, 0); return; }
   if (ds.routine) { lib.routine = ds.routine; open = null; render(); window.scrollTo(0, 0); return; }
   if (ds.libback) { lib.area = null; lib.routine = null; lib.eq = "all"; open = null; render(); window.scrollTo(0, 0); return; }
