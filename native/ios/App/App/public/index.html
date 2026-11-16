@@ -666,6 +666,19 @@ button.sh-demo { border: 0; padding: 0; cursor: pointer; }
 .tl li::after { content: ""; position: absolute; inset-inline-start: 11px; top: 20px; bottom: 0; width: 2px; background: var(--line); }
 .tl li:last-child::after { display: none; }
 .sh-tip { color: var(--warn); }
+.ex-why { display: block; font-size: .74rem; color: var(--muted); opacity: .9; margin-top: 2px; line-height: 1.35; }
+.str-ah { margin: 10px 2px 2px; font-size: .82rem; font-weight: 700; color: var(--accent); }
+.str-ah:first-child { margin-top: 0; }
+.focus { border: 1px solid var(--line); background: var(--surface); border-radius: 18px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.focus-h { font-size: .92rem; }
+.focus ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.focus li, .tgt > div { display: flex; gap: 9px; align-items: flex-start; }
+.focus li > span:last-child, .tgt > div > span:last-child { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.focus small, .tgt small { color: var(--muted); font-size: .76rem; line-height: 1.4; }
+.focus li b, .tgt b { font-size: .88rem; }
+.fdot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--c); margin-top: 5px; box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 30%, transparent); }
+.tgt { display: flex; flex-direction: column; gap: 10px; }
+.tgt .tg-a { display: inline; }
 .ghost.wide.link { justify-content: center; }
 /* جدول الأيام والتمطيط */
 .sdcs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -1404,7 +1417,7 @@ const BODY_MAP = [
     ["ext", "المائلة الخارجية", "External obliques", "عجنبي البطن. بتلفّ الجسم وبتميّلو عالجنب، وبتعطي شكل للخصر.", "On both sides of the belly. Twists and side-bends the body and shapes the waist.", ["bicycle", "db-twist", "db-woodchop", "m-woodchop", "db-sidebend", "heel-taps"], "abs-ext"],
     ["int", "المائلة الداخلية", "Internal obliques", "تحت الخارجية. بتساعد بالدوران وبتثبّت الجذع.", "Under the external obliques. Help with rotation and keep the trunk steady.", ["side-plank", "m-pallof", "bicycle", "db-woodchop"], "abs-int"]] },
   { id: "glutes", ic: "glutes", ar: "الأرداف", en: "Glutes", aboutAr: "أكبر عضلة بالجسم: بتمدّ الورك، بتحمي الركبة والضهر، وبتعطي الشكل.", aboutEn: "The biggest muscle in the body: extends the hip, protects knees and back, and gives shape.", parts: [
-    ["max", "الألوية الكبرى", "Gluteus maximus", "أكبر وأقوى عضلة بالمؤخرة، هي اللي بتعطي الشكل والحجم. بتمدّ الورك وبتوقّفك من القعدة.", "The biggest, strongest glute and the one that gives shape and size. Extends the hip and stands you up from sitting.", ["db-hipthrust", "m-hipthrust", "glute-bridge", "sl-bridge", "frog-pump", "m-pullthrough", "db-bulgarian", "m-kickback", "m-glutekick", "donkey-kick"], "glute-max"],
+    ["max", "الألوية الكبرى", "Gluteus maximus", "أكبر وأقوى عضلة بالمؤخرة، هي اللي بتعطي الشكل والحجم. بتمدّ الورك وبتوقّفك من القعدة.", "The biggest, strongest glute and the one that gives shape and size. Extends the hip and stands you up from sitting.", ["db-hipthrust", "m-hipthrust", "glute-bridge", "sl-bridge", "frog-pump", "m-pullthrough", "db-bulgarian", "db-revlunge", "m-kickback", "m-glutekick", "donkey-kick"], "glute-max"],
     ["med", "الألوية المتوسطة", "Gluteus medius", "عالجنب الفوقاني للمؤخرة. بتثبّت الحوض والورك، وبتعطي استدارة عالجنب.", "The upper side of the glutes. Steadies the pelvis and hip and gives a rounder side.", ["m-abduction", "fire-hydrant", "clamshell", "db-curtsy"], "glute-med"],
     ["min", "الألوية الصغرى", "Gluteus minimus", "أصغر وحدة، تحت المتوسطة. بتثبّت الورك وبتساعد بالتوازن والحركة عالجنب.", "The smallest, under the medius. Steadies the hip and helps balance and side moves.", ["m-abduction", "fire-hydrant", "db-stepup", "db-bulgarian"], "glute-min"]] },
   { id: "legs", ic: "quads", ar: "الفخاد", en: "Thighs", aboutAr: "قدّام بيفردوا الركبة، ومن جوّا بيجمعوا الإجرين.", aboutEn: "The front straightens the knee; the inner thigh brings the legs together.", parts: [
@@ -1437,7 +1450,7 @@ const BODY_MAP = [
     ["ehl", "باسطة الإبهام الطويلة", "Extensor hallucis longus", "بترفع إصبع القدم الكبير.", "Lifts the big toe.", ["bigtoe"], "shin-ehl"],
     ["peroneus", "الشظوية", "Peroneus (fibularis)", "بتثبّت الكاحل وبتميّل القدم لبرّا.", "Steadies the ankle and turns the foot out.", ["band-ever"], "shin-peroneus"]] },
   { id: "core", ic: "abs", img: "abs-tva", ar: "الجذع العميق", en: "Deep core", aboutAr: "طبقة داخلية بتشدّ البطن، بتحمي الضهر، وبتضبط الضغط جوّا الجسم.", aboutEn: "An inner layer that draws the belly in, protects the back and controls pressure inside the trunk.", parts: [
-    ["tva", "المستعرضة البطنية", "Transverse abdominis", "بتضغط جدار البطن وبتثبّت الجذع.", "Draws in the belly wall and steadies the trunk.", ["deadbug", "plank", "hollow"], "abs-tva"],
+    ["tva", "المستعرضة البطنية", "Transverse abdominis", "بتضغط جدار البطن وبتثبّت الجذع.", "Draws in the belly wall and steadies the trunk.", ["deadbug", "plank", "hollow", "mountain"], "abs-tva"],
     ["diaphragm", "الحجاب الحاجز", "Diaphragm", "عضلة التنفّس الأساسية، وبتشارك بضبط الضغط الداخلي.", "The main breathing muscle; helps control pressure inside the trunk.", ["dia-breath"], null],
     ["multifidus", "متعدّدة الشوك", "Multifidus", "بتثبّت الفقرات وقت الحركة.", "Keeps the vertebrae steady as you move.", ["bird-dog"], "back-lower"],
     ["pelvic", "عضلات قاع الحوض", "Pelvic floor", "بتدعم أعضاء الحوض وبتشارك بضبط الضغط.", "Supports the pelvic organs and helps control pressure.", ["pelvic-floor"], null]] },
@@ -1447,7 +1460,7 @@ const BODY_MAP = [
     ["brd", "العضدية الكعبرية", "Brachioradialis", "بتثني الكوع، خصوصاً بالمسكة المحايدة.", "Bends the elbow, especially with a neutral grip.", ["db-hammer"], "arm-fore"],
     ["pronators", "الكابّة والمستلقية", "Pronators & supinator", "بتلفّ الساعد لجوّا ولبرّا.", "Turn the forearm in and out.", ["forearm-rot"], null]] },
   { id: "hipfront", ic: "quads", img: "leg-rf", ar: "الورك الأمامي", en: "Front of hip", aboutAr: "بيرفعوا الركبة لقدّام وبيثنوا الورك. مهمّين للمشي، الركض والطلوع.", aboutEn: "Lift the knee and bend the hip; key for walking, running and climbing.", parts: [
-    ["iliopsoas", "الحرقفية القطنية", "Iliopsoas", "العضلة الأساسية لثني الورك.", "The main hip-flexing muscle.", ["knee-drive", "m-captain", "legraise"], null],
+    ["iliopsoas", "الحرقفية القطنية", "Iliopsoas", "العضلة الأساسية لثني الورك.", "The main hip-flexing muscle.", ["knee-drive", "m-captain", "legraise", "mountain"], null],
     ["rf", "المستقيمة الفخذية", "Rectus femoris", "بتثني الورك وبتفرد الركبة.", "Bends the hip and straightens the knee.", ["db-stepup", "m-legext"], "leg-rf"],
     ["sartorius", "الخياطية", "Sartorius", "بتساعد بثني الورك والركبة وبتدوير الفخد.", "Helps bend the hip and knee and turn the thigh.", ["ctrl-march"], null]] },
   { id: "neck", ic: "back", img: "back-traps", ar: "الرقبة وأعلى الضهر", en: "Neck & upper back", aboutAr: "بيرفعوا لوح الكتف، بيحرّكوا الرقبة، وبيصلّحوا الوقفة.", aboutEn: "Lift the shoulder blades, move the neck and improve posture.", parts: [
@@ -1455,6 +1468,23 @@ const BODY_MAP = [
     ["levator", "رافعة لوح الكتف", "Levator scapulae", "بترفع لوح الكتف.", "Lifts the shoulder blade.", ["scap-ctrl", "db-shrug"], null],
     ["scm", "القصّية الترقوية الخشّائية", "Sternocleidomastoid", "بتثني الرقبة وبتدوّر الراس.", "Bends the neck and turns the head.", ["neck-iso"], null]] },
 ];
+// كل تمرين شو بيشغّل بالزبط (من «اعرفي جسمك»): العضلة الأساسية أوّل
+const TGT = {};
+BODY_MAP.forEach(a => a.parts.forEach(p => p[5].forEach(id => { const l = (TGT[id] ||= []); if (!l.some(x => x.en === p[2])) l.push({ area: a, ar: p[1], en: p[2], dAr: p[3], dEn: p[4] }); })));
+function tgtOf(ex) {
+  const l = TGT[ex.id] || [], main = (t) => t.area.id === ex.m || t.area.ic === ex.m || (ex.m === "triceps" && t.area.id === "arms");
+  return [...l.filter(main), ...l.filter(t => !main(t))];
+}
+const tgtShort = (ex) => { const t = tgtOf(ex)[0]; return t ? `${mN(ex.m)} · ${L(t.ar, t.en).replace(/ \(.*\)/, "")}` : mN(ex.m); };
+// «شو بيشغّل هالتمرين»: العضلات اللي بيركّز عليها التمرين كلّو، مع شرح كل وحدة
+function focusCard(items) {
+  const cnt = new Map();
+  items.forEach(it => tgtOf(it.ex).forEach((t, i) => { const c = cnt.get(t.en) || { t, n: 0, w: 0 }; c.n++; c.w += i ? 1 : 2.5; cnt.set(t.en, c); }));
+  const top = [...cnt.values()].sort((a, b) => b.w - a.w).slice(0, 5);
+  if (!top.length) return "";
+  return `<div class="focus"><b class="focus-h">${L("شو بيشغّل هالتمرين؟", "What this workout targets")}</b>
+    <ul>${top.map(({ t, n }) => `<li style="--c:${MCOL[t.area.ic]}"><span class="fdot" aria-hidden="true"></span><span><b>${L(t.ar, t.en)}</b> <small>${L(t.area.ar, t.area.en)} · ${n} ${n === 1 ? L("تمرين", "exercise") : L("تمارين", "exercises")}</small><small class="fd">${L(t.dAr, t.dEn)}</small></span></li>`).join("")}</ul></div>`;
+}
 let bodyArea = null, bodyPart = null, bodyClosed = new Set();
 function renderBody() {
   const head = (t, sub, back) => `<header class="hdr sday">${back ? `<button class="back" data-bodyback="1">${L("› رجوع", "‹ Back")}</button>` : ""}<div><span class="eyebrow">${sub}</span><h1>${t}</h1></div></header>`;
@@ -1651,7 +1681,7 @@ function planRow(it, idx, key, swapKey, date, canLog) {
     <div class="ex-row">
       ${avatar(ex, { done, attrs: `data-sheet="${ex.id}" data-sctx="${sctx}" aria-label="${esc(exN(ex))}: ${L("كيف بتنعمل", "how to do it")}"` })}
       <button class="ex-head" data-sheet="${ex.id}" data-sctx="${sctx}">
-        <span class="ex-main"><b>${esc(exN(ex))}</b><span class="ex-meta">${mN(ex.m)} · ${eqN(ex.eq)}${UNI.has(ex.id) ? L(" · لكل جهة", " · each side") : ""}${e.w ? ` · <span class="wtag">${fmtW(e.w)}</span>` : suggestW(ex) ? ` · <span class="sugg">${fmtW(suggestW(ex))}</span>` : ""}</span></span>
+        <span class="ex-main"><b>${esc(exN(ex))}</b><span class="ex-meta">${tgtShort(ex)} · ${eqN(ex.eq)}${UNI.has(ex.id) ? L(" · لكل جهة", " · each side") : ""}${e.w ? ` · <span class="wtag">${fmtW(e.w)}</span>` : suggestW(ex) ? ` · <span class="sugg">${fmtW(suggestW(ex))}</span>` : ""}</span></span>
       </button>
       ${rowStepper(it, selDay)}
     </div>
@@ -1661,7 +1691,7 @@ function moveRow(it) {
   const ex = it.ex, sec = it.h || ex.sec;
   return `<div class="ex mv"><div class="ex-row">
       <button class="mv-av" data-sheet="${ex.id}" data-sctx="move:${sec}" style="--c:${MCOL[ex.m]}" aria-label="${esc(exN(ex))}">${demoStatic(ex)}</button>
-      <button class="ex-head" data-sheet="${ex.id}" data-sctx="move:${sec}"><span class="ex-main"><b>${esc(exN(ex))}</b><span class="ex-meta">${ex.kind === "warm" ? L("إحماء", "Warm-up") : L("تمطيط", "Stretch")}${ex.uni ? L(" · لكل جهة", " · each side") : ""}</span></span></button>
+      <button class="ex-head" data-sheet="${ex.id}" data-sctx="move:${sec}"><span class="ex-main"><b>${esc(exN(ex))}</b><span class="ex-meta">${ex.kind === "warm" ? L("إحماء", "Warm-up") : L("تمطيط", "Stretch")}${ex.uni ? L(" · لكل جهة", " · each side") : ""}</span>${ex.tg ? `<span class="ex-why">${L("بيمطّ: ", "Stretches: ")}${L(ex.tg[0], ex.tg[1])}</span>` : ""}</span></button>
       <span class="mv-t"><bdi dir="ltr">${mmss(sec)}</bdi></span>
     </div></div>`;
 }
@@ -1779,6 +1809,7 @@ function dayDetail() {
         <p class="cover">${[...new Set(day.items.map(it => it.ex.m))].map(m => `<span class="pill">${shortM(m)}</span>`).join("")}</p>
         <p class="phase-line"><b>${L(`الأسبوع ${progWeek()} · ${phaseName()}`, `Week ${progWeek()} · ${phaseName()}`)}</b> ${phaseTip()}</p>
       </div>
+      ${focusCard(day.items)}
       <div class="field"><span class="lbl">${L(TYPES[day.type].pickAr, `Choose your ${TYPES[day.type].en.toLowerCase()} package`)}</span>
         <div class="carousel pkgs">${PKGS[day.type].map(pk => {
           const sel = pk.id === day.pkg.id;
@@ -1844,9 +1875,10 @@ function renderRoutine(r) {
         <h2>${rN(r)}</h2>
         <p class="small muted">${rSub(r)} · ${items.length} ${L("تمارين", "exercises")} · ${L("راحة", "rest")} ${r.rest ? `${r.rest} ${L("ث", "s")}` : rng(gRest(g))}</p>
       </div>
+      ${focusCard(items)}
       ${dayBlocks(warmFor(routineType(items)), items.map((it, i) => `<div class="ex"><div class="ex-row">
             ${avatar(it.ex, { attrs: `data-sheet="${it.ex.id}" data-sctx="routine:${key}" aria-label="${esc(exN(it.ex))}"` })}
-            <button class="ex-head" data-sheet="${it.ex.id}" data-sctx="routine:${key}"><span class="ex-main"><b>${esc(exN(it.ex))}</b><span class="ex-meta">${mN(it.ex.m)} · ${eqN(it.ex.eq)}${UNI.has(it.ex.id) ? L(" · لكل جهة", " · each side") : ""}${suggestW(it.ex) ? ` · <span class="sugg">${fmtW(suggestW(it.ex))}</span>` : ""}</span></span></button>
+            <button class="ex-head" data-sheet="${it.ex.id}" data-sctx="routine:${key}"><span class="ex-main"><b>${esc(exN(it.ex))}</b><span class="ex-meta">${tgtShort(it.ex)} · ${eqN(it.ex.eq)}${UNI.has(it.ex.id) ? L(" · لكل جهة", " · each side") : ""}${suggestW(it.ex) ? ` · <span class="sugg">${fmtW(suggestW(it.ex))}</span>` : ""}</span></span></button>
             ${rowStepper(it, key)}
           </div></div>`).join(""), items.length, coolFor(items))}
       <p class="note">${L("اضغطي عاسم أي تمرين لتشوفي الشرح. التمارين اللي بتخلّصيها بتنحسب بتقدّمك.", "Tap an exercise for steps. Everything you finish counts toward your progress.")}</p>
@@ -1908,26 +1940,34 @@ const AREA_PIC = { neck: "s-neck", shoulders: "s-shoulder", chest: "s-chest", ar
 const STR_PRESETS = [["all", "كل الجسم", "Full body", "ALL"], ["desk", "بعد القعدة الطويلة", "After sitting all day", ["neck", "back", "hips", "chest"]], ["sleep", "قبل النوم", "Before bed", ["back", "hips", "glutes", "hamstrings"]], ["legs", "بعد الرجلين", "After leg day", ["glutes", "hamstrings", "quads", "calves"]]];
 const presetAreas = (pr) => pr[3] === "ALL" ? Object.keys(STRETCH_AREAS) : pr[3];
 function stretchItems() {
-  const want = strSel.areas.length ? strSel.areas : Object.keys(STRETCH_AREAS), goal = strSel.min * 60;
-  const pool = STRETCH.map(st => ({ st, score: st.area.filter(a => want.includes(a)).length })).filter(x => x.score).sort((a, b) => b.score - a.score);
-  const out = []; let t = 0;
-  for (const { st } of pool) { if (t >= goal) break; out.push(st); t += st.sec * (st.uni ? 2 : 1); }
-  const scale = t ? Math.max(1, goal / t) : 1;            // إذا ما في كفاية حركات، طوّلي الثبات
-  return out.map(st => ({ ex: st, isTime: true, kind: "stretch", h: Math.round(st.sec * scale / 5) * 5 }));
+  const want = strSel.areas.length ? strSel.areas : Object.keys(STRETCH_AREAS), goal = strSel.min * 60, one = want.length === 1;
+  // لكل منطقة: التمطيطات اللي هي أساساً إلها أوّل، بعدين اللي بتمطّها كمان
+  const lists = want.map(a => [...STRETCH.filter(st => st.area[0] === a), ...STRETCH.filter(st => st.area.indexOf(a) > 0)].map(st => ({ st, a, main: st.area[0] === a })));
+  const out = [], seen = new Set(); let t = 0;
+  const add = (x) => { if (seen.has(x.st.id)) return; seen.add(x.st.id); out.push(x); t += x.st.sec * (x.st.uni ? 2 : 1); };
+  if (one) lists[0].forEach(x => { if (x.main || t < goal) add(x); });
+  else for (let r = 0, more = true; more; r++) {             // بالدور: كل منطقة بتاخد حصّتها
+    more = false;
+    for (const l of lists) { if (!l[r]) continue; more = true; if (r === 0 || t < goal) add(l[r]); }
+    if (t >= goal) break;
+  }
+  out.sort((x, y) => want.indexOf(x.a) - want.indexOf(y.a));
+  const scale = t ? Math.max(1, goal / t) : 1;            // إذا ما في كفاية حركات، طوّلي الثبات (لحدّ دقيقة)
+  return out.map(({ st, a }) => ({ ex: st, isTime: true, kind: "stretch", a, h: Math.min(Math.max(st.sec, 60), Math.round(st.sec * scale / 5) * 5) }));
 }
 function renderStretch() {
   const items = stretchItems(), total = Math.round(items.reduce((a, it) => a + it.h * (it.ex.uni ? 2 : 1), 0) / 60);
   return `<header style="display:flex;flex-direction:column;gap:4px"><span class="eyebrow">${L("اختاري الأماكن اللي بدّك تمطّيها", "Pick the areas you want to stretch")}</span><h1>${L("تمطيط", "Stretch")}</h1></header>
     <section class="group"><h3 class="sec">${L("جاهزين", "Quick picks")}</h3>
       <div class="carousel">${STR_PRESETS.map(pr => [pr[0], pr[1], pr[2], presetAreas(pr)]).map(([k, ar, en, areas]) => `<button class="rcard sm str-p" data-strp="${k}"><b class="rc-t">${L(ar, en)}</b><small>${areas.slice(0, 4).map(a => L(...STRETCH_AREAS[a])).join(L("، ", ", "))}</small><div class="bubbles">${areas.slice(0, 4).map(a => `<span class="mv-av sm" style="--c:${MCOL[anyEx(AREA_PIC[a]).m]}">${demoStatic(anyEx(AREA_PIC[a]))}</span>`).join("")}</div></button>`).join("")}</div></section>
-    <section class="group"><h3 class="sec">${L("حسب المنطقة", "By area")}</h3>
+    <section class="group"><h3 class="sec">${L("حسب المنطقة", "By area")}</h3><p class="small muted">${L("اختاري منطقة لتطلعلك تمطيطاتها بس، كل وحدة مع العضلة اللي بتمطّها.", "Pick an area to see only its stretches, each with the muscle it lengthens.")}</p>
       <div class="areas">${Object.entries(STRETCH_AREAS).map(([k, [ar, en]]) => { const mv = anyEx(AREA_PIC[k]); return `<button class="area" data-stra="${k}" aria-pressed="${strSel.areas.includes(k)}"><span class="mv-av big" style="--c:${MCOL[mv.m]}">${demoStatic(mv)}</span><b>${L(ar, en)}</b></button>`; }).join("")}
         <button class="area" data-strall="1" aria-pressed="${strSel.areas.length === Object.keys(STRETCH_AREAS).length}"><span class="mv-av big" style="--c:var(--soft)">${demoStatic(anyEx("s-fold"))}</span><b>${L("كل الجسم", "Full body")}</b></button></div></section>
     <div class="field"><span class="lbl">${L("قدّيش وقت؟", "How long?")}</span>
       <div class="seg">${[5, 10, 15, 20].map(m => `<button data-strm="${m}" aria-pressed="${strSel.min === m}">${m} ${L("د", "min")}</button>`).join("")}</div></div>
     <section class="routine">
-      <div class="routine-h"><span class="eyebrow">${L(`${total} دقيقة تقريباً`, `About ${total} min`)}</span><h2>${L("روتين التمطيط", "Your stretch routine")}</h2><p class="small muted">${L(`${items.length} حركات · اضغطي عالصورة لتشوفي كيف`, `${items.length} moves · tap a picture to see how`)}</p></div>
-      ${items.length ? `<div class="list">${items.map(moveRow).join("")}</div>` : `<p class="empty">${L("اختاري منطقة وحدة عالأقل.", "Pick at least one area.")}</p>`}
+      <div class="routine-h"><span class="eyebrow">${L(`${total} دقيقة تقريباً`, `About ${total} min`)}</span><h2>${strSel.areas.length === 1 ? L(`تمطيط ${STRETCH_AREAS[strSel.areas[0]][0]}`, `${STRETCH_AREAS[strSel.areas[0]][1]} stretches`) : L("روتين التمطيط", "Your stretch routine")}</h2><p class="small muted">${L(`${items.length} حركات · اضغطي عالصورة لتشوفي كيف`, `${items.length} moves · tap a picture to see how`)}</p></div>
+      ${items.length ? `<div class="list">${items.map((it, i) => (strSel.areas.length !== 1 && (!i || items[i - 1].a !== it.a) ? `<h4 class="str-ah">${L(...STRETCH_AREAS[it.a])}</h4>` : "") + moveRow(it)).join("")}</div>` : `<p class="empty">${L("اختاري منطقة وحدة عالأقل.", "Pick at least one area.")}</p>`}
     </section>
     ${items.length ? `<div class="startbar"><button class="start" data-start="stretch">▶ ${L("ابدئي التمطيط", "Start stretching")}<small>${total} ${L("د", "min")}</small></button></div>` : ""}`;
 }
@@ -2949,6 +2989,16 @@ Object.assign(DEMO, {
   neck:     { A: { hip: [48, 51], t: 0, ank: [50, 86], hand: "head", eb: 1 }, B: { hip: [48, 51], t: 3, ank: [50, 86], hand: "head", eb: 1 }, hold: 1 },
   tristr:   { A: { hip: [48, 51], t: 0, ank: [50, 86], hand: [44, 17], eb: 1 }, B: { hip: [48, 51], t: 0, ank: [50, 86], hand: [43, 19], eb: 1 }, hold: 1 },
   bicwall:  { A: { hip: [48, 51], t: 4, ank: [50, 86], hand: [26, 32], eb: -1 }, B: { hip: [48, 51], t: 9, ank: [50, 86], hand: [26, 32], eb: -1 }, hold: 1, wallL: 1 },
+  levator:  { A: { hip: [48, 51], t: 6, ank: [50, 86], hand: [45, 15], eb: 1 }, B: { hip: [48, 51], t: 12, ank: [50, 86], hand: [47, 15], eb: 1 }, hold: 1 },
+  chintuck: { A: { hip: [48, 51], t: 3, ank: [50, 86], hand: [57, 24], eb: -1 }, B: { hip: [48, 51], t: -2, ank: [50, 86], hand: [55, 24], eb: -1 }, hold: 1 },
+  thread:   { A: { hip: [38, 63], t: 82, ank: [22, 86], ank2: [23, 86], toe: [17, 88], kb: 1, hand: [60, 86], eb: -1 }, B: { hip: [38, 64], t: 100, ank: [22, 86], ank2: [23, 86], toe: [17, 88], kb: 1, hand: [42, 87], eb: 1 }, mat: 1, hold: 1 },
+  doorway:  { A: { hip: [50, 51], t: 6, ank: [56, 86], ank2: [44, 86], hand: [32, 27], eb: -1 }, B: { hip: [52, 52], t: 10, ank: [58, 86], ank2: [44, 86], hand: [32, 27], eb: -1 }, hold: 1, wallL: 1 },
+  wriststr: { A: { hip: [48, 51], t: 0, ank: [50, 86], hand: [74, 36], eb: -1 }, B: { hip: [48, 51], t: 0, ank: [50, 86], hand: [73, 38], eb: -1 }, hold: 1 },
+  kneechest:{ A: { hip: [52, 84], t: -92, ank: [66, 70], toe: [70, 72], kb: 1, hand: [58, 66], eb: 1 }, B: { hip: [52, 84], t: -92, ank: [62, 66], toe: [66, 68], kb: 1, hand: [55, 62], eb: 1 }, mat: 1 },
+  kneeopp:  { A: { hip: [50, 84], t: -92, ank: [62, 70], toe: [66, 72], ank2: [84, 86], toe2: [88, 82], kb: 1, hand: [56, 66], eb: 1 }, B: { hip: [50, 84], t: -92, ank: [58, 66], toe: [62, 68], ank2: [84, 86], toe2: [88, 82], kb: 1, hand: [52, 62], eb: 1 }, mat: 1, hold: 1 },
+  quadprone:{ A: { hip: [46, 84], t: 88, ank: [36, 70], toe: [38, 66], ank2: [12, 86], toe2: [8, 88], kb: 1, hand: [37, 70], eb: 1 }, B: { hip: [46, 84], t: 86, ank: [39, 68], toe: [41, 64], ank2: [12, 86], toe2: [8, 88], kb: 1, hand: [40, 68], eb: 1 }, mat: 1, hold: 1 },
+  soleus:   { A: { hip: [46, 60], t: 20, ank: [60, 86], ank2: [30, 86], toe2: [36, 88], kb: 1, hand: [74, 44], eb: -1 }, B: { hip: [47, 63], t: 22, ank: [60, 86], ank2: [30, 86], toe2: [36, 88], kb: 1, hand: [74, 46], eb: -1 }, wallR: 1 },
+  downdog:  { A: { hip: [42, 50], t: 132, ank: [22, 86], toe: [28, 88], kb: -1, hand: [74, 86], eb: 1 }, B: { hip: [40, 50], t: 136, ank: [22, 86], toe: [28, 88], kb: -1, hand: [72, 86], eb: 1 }, mat: 1 },
 });
 
 const MOVE = (id, ar, en, yt, demo, sec, extra, sAr, sEn, tAr, tEn) => ({ id, ar, en, yt, demo, sec, ...extra, steps: sAr, stepsEn: sEn, tip: tAr, tipEn: tEn, eq: "body", time: true, kind: extra.kind });
@@ -2981,15 +3031,15 @@ const STRETCH = [
     ["حطّي كفّك عالحيط وراكِ وإيدك مفرودة.", "لفّي جسمك بعيد عن الحيط ببطء.", "اثبتي لمّا تحسّي بشد قدّام الإيد وبدّلي."], ["Place your palm on the wall behind you, arm straight.", "Slowly turn your body away from the wall.", "Hold when you feel a stretch in the front of the arm, then switch."], "شد خفيف بس، بلا وجع بالكتف.", "Gentle only; no shoulder pain."),
   MOVE("s-chest", "فتح الصدر", "Chest Opener", "UdU4XnU855Q", "chestop", 30, { kind: "stretch", area: ["chest", "shoulders"], m: "chest" },
     ["شبكي إيديك ورا ضهرك.", "افردي إيديك وارفعيهن شوي لورا.", "افتحي صدرك وخدي نفس عميق."], ["Clasp your hands behind your back.", "Straighten your arms and lift them slightly.", "Open your chest and breathe deeply."], "ممتاز للوقفة بعد القعدة الطويلة.", "Great for posture after long sitting."),
-  MOVE("s-child", "وضعية الطفل", "Child's Pose", "4wjV4HdJG8Y", "child", 45, { kind: "stretch", area: ["back", "hips"], m: "back" },
+  MOVE("s-child", "وضعية الطفل", "Child's Pose", "4wjV4HdJG8Y", "child", 45, { kind: "stretch", area: ["back", "shoulders"], m: "back" },
     ["اركعي واقعدي عكعبيكي.", "انحني لقدّام ومدّي إيديك عالأرض.", "ريّحي جبينك وتنفّسي ببطء."], ["Kneel and sit back on your heels.", "Fold forward and stretch your arms on the floor.", "Rest your forehead and breathe slowly."], "إذا ركبك بتوجعك، حطي مخدّة تحت وركك.", "If your knees hurt, put a cushion under your hips."),
-  MOVE("s-catcow", "قطة وجمل", "Cat-Cow", "Fa4ZMS5M7xA", "catcow", 45, { kind: "stretch", area: ["back", "core"], m: "back" },
+  MOVE("s-catcow", "قطة وجمل", "Cat-Cow", "Fa4ZMS5M7xA", "catcow", 45, { kind: "stretch", area: ["back"], m: "back" },
     ["اركعي عإيديك وركبك.", "دوّري ضهرك لفوق مع الزفير.", "نزّلي بطنك ورفعي راسك مع الشهيق."], ["Get on your hands and knees.", "Round your back as you exhale.", "Drop your belly and lift your head as you inhale."], "حركة بطيئة مع النفس.", "Slow, with your breath."),
-  MOVE("s-cobra", "الكوبرا", "Cobra Stretch", "5OEGMRnxA1I", "cobra", 30, { kind: "stretch", area: ["core", "back"], m: "abs" },
+  MOVE("s-cobra", "الكوبرا", "Cobra Stretch", "5OEGMRnxA1I", "cobra", 30, { kind: "stretch", area: ["core"], m: "abs" },
     ["نامي عبطنك وإيديك تحت كتافك.", "ادفعي وارفعي صدرك، وركك عالأرض.", "كتافك لتحت واثبتي."], ["Lie on your stomach with hands under your shoulders.", "Press up and lift your chest; hips stay down.", "Shoulders down, then hold."], "إذا في وجع بالضهر، ارفعي أقل أو اسندي عكوعك.", "If your back hurts, lift less or rest on your forearms."),
   MOVE("s-side", "تمطيط الجنب", "Standing Side Stretch", "6ybJI7jsAK4", "sidebend", 30, { kind: "stretch", area: ["core", "back"], m: "abs", uni: 1 },
     ["وقفي منتصبة وارفعي إيد فوق راسك.", "ميلي عالجنب التاني ببطء.", "اثبتي وبدّلي."], ["Stand tall and raise one arm overhead.", "Slowly lean to the opposite side.", "Hold, then switch."], "وركك ثابت، الميلة من الخصر.", "Hips stay still; bend from the waist."),
-  MOVE("s-twist", "لفّة الضهر نايمة", "Supine Spinal Twist", "gI9BdrBvYn8", "twistl", 30, { kind: "stretch", area: ["back", "hips"], m: "back", uni: 1 },
+  MOVE("s-twist", "لفّة الضهر نايمة", "Supine Spinal Twist", "gI9BdrBvYn8", "twistl", 30, { kind: "stretch", area: ["back", "core"], m: "back", uni: 1 },
     ["نامي عضهرك وركبك مثنية.", "نزّلي ركبك سوا عجنب وإيديك مفتوحين.", "كتافك عالأرض، وبعدين بدّلي."], ["Lie on your back with knees bent.", "Drop both knees to one side with arms open.", "Keep your shoulders down, then switch."], "ريّحي وتنفّسي، ما في داعي تضغطي.", "Relax and breathe; no need to push."),
   MOVE("s-hipflexor", "تمطيط مقدّمة الورك", "Kneeling Hip Flexor Stretch", "UU7Nqd_Dric", "hipflex", 30, { kind: "stretch", area: ["hips", "quads"], m: "quads", uni: 1 },
     ["اركعي عركبة والرجل التانية لقدّام.", "شدّي الأرداف وادفعي وركك لقدّام شوي.", "اثبتي وبدّلي."], ["Kneel on one knee with the other foot forward.", "Squeeze your glute and shift your hips slightly forward.", "Hold, then switch."], "ضهرك منتصب، ما تقوّسيه.", "Keep your back upright; don't arch."),
@@ -3007,10 +3057,63 @@ const STRETCH = [
     ["وقفي عرجل وامسكي حيط إذا لزم.", "اثني الرجل التانية وامسكي كاحلك.", "قرّبي كعبك لأردافك والركب جنب بعض، وبدّلي."], ["Stand on one leg; hold a wall if needed.", "Bend the other knee and hold your ankle.", "Bring your heel toward your glute, knees together, then switch."], "شدّي بطنك لتضلي منتصبة.", "Brace your core to stay upright."),
   MOVE("s-calf", "تمطيط السمانة عالحيط", "Wall Calf Stretch", "4fwN8uiF7z8", "calfwall", 30, { kind: "stretch", area: ["calves"], m: "calves", uni: 1 },
     ["حطي إيديك عالحيط ورجل لورا مفرودة.", "كعب الرجل الورانية عالأرض.", "ميلي لقدّام لتحسّي بالشد وبدّلي."], ["Hands on the wall, one leg stretched back.", "Keep the back heel on the floor.", "Lean in until you feel the stretch, then switch."], "أصابع الرجل الورانية لقدّام.", "Point the back toes forward."),
-  MOVE("s-fold", "انحناء لقدّام (راج دول)", "Ragdoll Forward Fold", "2W7Dhf6n5aM", "fold", 45, { kind: "stretch", area: ["back", "hamstrings", "neck"], m: "hamstrings" },
+  MOVE("s-fold", "انحناء لقدّام (راج دول)", "Ragdoll Forward Fold", "2W7Dhf6n5aM", "fold", 45, { kind: "stretch", area: ["hamstrings", "back"], m: "hamstrings" },
     ["وقفي ورجليكي بعرض الورك وركبك مثنية شوي.", "انحني لقدّام وخلّي جسمك يتدلّى.", "امسكي كوعك وريّحي راسك، وتمرجحي بهدوء."], ["Stand with feet hip-width and knees slightly bent.", "Fold forward and let your upper body hang.", "Hold opposite elbows, relax your head and sway gently."], "اطلعي ببطء فقرة فقرة.", "Roll up slowly, one vertebra at a time."),
+  MOVE("s-levator", "تمطيط ورا الرقبة (رافعة الكتف)", "Levator Scapulae Stretch", "", "levator", 30, { kind: "stretch", area: ["neck"], m: "shoulders", uni: 1 },
+    ["اقعدي منتصبة وامسكي طرف الكرسي بإيد.", "لفّي راسك صوب الإبط التاني وطلّعي لتحت.", "حطّي إيدك التانية ورا راسك ونزّليه بخفّة، وبدّلي."], ["Sit tall and hold the edge of the chair with one hand.", "Turn your head toward the opposite armpit and look down.", "Rest the other hand on the back of your head, ease it down gently, then switch."], "بتحسّي بالشد ورا الرقبة لحدّ أعلى لوح الكتف.", "You feel it along the back of the neck down to the top of the shoulder blade."),
+  MOVE("s-chintuck", "سحب الدقن لورا", "Chin Tuck", "", "chintuck", 30, { kind: "stretch", area: ["neck"], m: "shoulders" },
+    ["وقفي أو اقعدي منتصبة وعيونك لقدّام.", "اسحبي دقنك لورا عخط مستقيم (متل كأنّك عم تعملي دبل دقن).", "اثبتي ٥ ثواني وارجعي، وكرّري."], ["Stand or sit tall, eyes forward.", "Glide your chin straight back (like making a double chin).", "Hold 5 seconds, release and repeat."], "ما تنزّلي راسك لتحت، الحركة لورا بس.", "Don't drop your head; the move is straight back."),
+  MOVE("s-thread", "الإبرة والخيط", "Thread the Needle", "", "thread", 30, { kind: "stretch", area: ["shoulders", "back"], m: "back", uni: 1 },
+    ["اركعي عإيديك وركبك.", "مرّقي إيد من تحت جسمك للجهة التانية.", "نزّلي كتفك وخدّك عالأرض واثبتي، وبدّلي."], ["Start on your hands and knees.", "Slide one arm under your body to the other side.", "Lower that shoulder and your cheek to the floor and hold, then switch."], "وركك فوق ركبك، اللفّة من أعلى الضهر.", "Hips stay over your knees; the twist comes from the upper back."),
+  MOVE("s-doorway", "تمطيط الصدر عالباب", "Doorway Chest Stretch", "", "doorway", 30, { kind: "stretch", area: ["chest", "shoulders"], m: "chest", uni: 1 },
+    ["حطّي ساعدك عحفّة الباب، الكوع بمستوى الكتف.", "خطوة لقدّام بالرجل من نفس الجهة.", "لفّي صدرك لبرّا لتحسّي بالشد، وبدّلي."], ["Place your forearm on the door frame, elbow at shoulder height.", "Step forward with the same-side foot.", "Turn your chest away until you feel the stretch, then switch."], "كتفك لتحت، ما تشدّي لحدّ الوجع.", "Keep the shoulder down; never push into pain."),
+  MOVE("s-wrist", "تمطيط الساعد", "Wrist Flexor Stretch", "", "wriststr", 30, { kind: "stretch", area: ["arms"], m: "biceps", uni: 1 },
+    ["مدّي إيدك لقدّام والكف لفوق.", "بالإيد التانية اسحبي أصابعك لتحت ولورا.", "اثبتي وبعدين بدّلي."], ["Stretch one arm forward, palm up.", "With the other hand, pull the fingers down and back.", "Hold, then switch."], "ممتاز بعد التمارين اللي فيها مسكة قوية.", "Great after workouts with a lot of gripping."),
+  MOVE("s-kneechest", "الركب عالصدر", "Knees to Chest", "", "kneechest", 40, { kind: "stretch", area: ["back", "glutes"], m: "back" },
+    ["نامي عضهرك.", "جيبي ركبك لصدرك وحضنيهن بإيديك.", "ريّحي أسفل ضهرك عالأرض وتنفّسي."], ["Lie on your back.", "Bring your knees to your chest and hug them.", "Let your lower back relax into the floor and breathe."], "فيكي تتمرجحي شوي يمين وشمال لتدلّكي الضهر.", "You can rock gently side to side to massage the back."),
+  MOVE("s-kneeopp", "الركبة للكتف المعاكس", "Knee to Opposite Shoulder", "", "kneeopp", 30, { kind: "stretch", area: ["glutes", "hips"], m: "glutes", uni: 1 },
+    ["نامي عضهرك والرجلين مفرودين.", "امسكي ركبة بإيديك واسحبيها صوب الكتف المعاكس.", "اثبتي لمّا تحسّي بالشد بالرِدف، وبدّلي."], ["Lie on your back, legs straight.", "Hold one knee and pull it toward the opposite shoulder.", "Hold when you feel it in the glute, then switch."], "الرجل التانية تضل مفرودة ومرتاحة.", "Keep the other leg long and relaxed."),
+  MOVE("s-quadprone", "تمطيط الفخد الأمامي نايمة", "Lying Quad Stretch", "", "quadprone", 30, { kind: "stretch", area: ["quads", "hips"], m: "quads", uni: 1 },
+    ["نامي عبطنك وراسك عإيدك.", "اثني ركبة وامسكي كاحلك.", "قرّبي الكعب من الرِدف بهدوء، وبدّلي."], ["Lie on your stomach, head resting on one hand.", "Bend one knee and hold your ankle.", "Gently bring the heel toward your glute, then switch."], "خلّي وركك لازق بالأرض لتمطّي مقدّمة الورك كمان.", "Keep your hips pressed down to also stretch the front of the hip."),
+  MOVE("s-soleus", "تمطيط السمانة والركبة مثنية", "Bent-Knee Calf Stretch", "", "soleus", 30, { kind: "stretch", area: ["calves"], m: "calves", uni: 1 },
+    ["إيديك عالحيط ورجل لورا.", "اثني الركبتين شوي وكعب الرجل الورانية عالأرض.", "نزّلي وركك لتحسّي الشد أوطى بالسمانة، وبدّلي."], ["Hands on the wall, one leg back.", "Bend both knees slightly with the back heel down.", "Sink your hips until you feel it lower in the calf, then switch."], "الركبة المثنية بتنقل الشد للعضلة النعلية تحت.", "The bent knee moves the stretch to the deeper soleus."),
+  MOVE("s-downdog", "الكلب لتحت", "Downward Dog", "", "downdog", 40, { kind: "stretch", area: ["calves", "hamstrings"], m: "calves" },
+    ["ابدئي عإيديك وركبك.", "ارفعي وركك لفوق لتعملي شكل V مقلوب.", "ادفشي كعابك صوب الأرض، وفيكي تثني ركبة بعد التانية."], ["Start on hands and knees.", "Lift your hips up into an upside-down V.", "Press your heels toward the floor; pedal your knees one at a time if you like."], "ضهرك طويل أهم من إنّو الكعب يوصل للأرض.", "A long back matters more than heels touching the floor."),
 ];
 const MOVES = [...WARMS, ...STRETCH];
+// شو بيمطّ كل تمطيط بالزبط (العضلة، وليش)
+const STR_TG = {
+  "s-neck": ["شبه المنحرفة العليا والأخمعية (جنب الرقبة)", "Upper trapezius & scalenes (side of the neck)", "بيفكّ الشد اللي بيتجمّع من التلفون والقعدة عالشاشة.", "Eases tension that builds up from phones and screens."],
+  "s-levator": ["رافعة لوح الكتف (ورا الرقبة)", "Levator scapulae (back of the neck)", "هيدي العضلة بتشدّ وبتوجع لمّا الراس يكون لقدّام.", "This muscle tightens and aches when the head sits forward."],
+  "s-chintuck": ["عضلات تحت الجمجمة وأعلى الرقبة من ورا", "Suboccipitals & upper neck extensors", "بيرجّع الراس فوق الكتاف وبيخفّف وجع الراس من القعدة.", "Brings the head back over the shoulders and eases sitting headaches."],
+  "s-shoulder": ["الكتف الخلفي والكفّة المدوّرة من ورا", "Rear delts & posterior rotator cuff", "بيفكّ ورا الكتف بعد السحب والرفرفة.", "Loosens the back of the shoulder after pulling and raises."],
+  "s-triceps": ["الترايسبس واللاتس", "Triceps & lats", "بيمطّ ورا الإيد وجنب الضهر سوا.", "Stretches the back of the arm and the side of the back together."],
+  "s-biceps": ["البايسبس ومقدّمة الكتف والصدر", "Biceps, front delts & chest", "بيفتح قدّام الإيد والكتف بعد تمارين الباي والضغط.", "Opens the front of the arm and shoulder after curls and presses."],
+  "s-chest": ["الصدر الكبيرة ومقدّمة الكتف", "Pecs & front delts", "بيفتح الصدر وبيصلّح الكتاف المدوّرة لقدّام.", "Opens the chest and counters rounded shoulders."],
+  "s-doorway": ["الصدر الكبيرة والصغيرة", "Pectoralis major & minor", "أقوى تمطيط للصدر، وبيرجّع الكتاف لورا.", "The most effective chest stretch; draws the shoulders back."],
+  "s-thread": ["أعلى الضهر (المعيّنات) وورا الكتف", "Upper back (rhomboids) & rear shoulder", "بيلفّ أعلى الضهر وبيفكّ بين لوحَي الكتف.", "Rotates the upper back and loosens between the shoulder blades."],
+  "s-wrist": ["مثنيات الرسغ والأصابع (الساعد)", "Wrist & finger flexors (forearm)", "بيريّح الساعد بعد المسكة والكتابة.", "Relaxes the forearm after gripping and typing."],
+  "s-child": ["اللاتس وأسفل الضهر", "Lats & lower back", "بيطوّل الضهر وبيريّح الجسم كلّو.", "Lengthens the back and calms the whole body."],
+  "s-catcow": ["عضلات العمود الفقري (حركة الضهر)", "Spinal muscles (back mobility)", "بيحرّك كل فقرة وبيفكّ تيبّس الضهر.", "Moves each vertebra and loosens a stiff back."],
+  "s-kneechest": ["أسفل الضهر (ناصبات الفقار) والأرداف", "Lower back (erector spinae) & glutes", "بيريّح أسفل الضهر بعد القعدة الطويلة أو تمارين الرجلين.", "Relaxes the lower back after long sitting or leg day."],
+  "s-twist": ["أسفل الضهر والخواصر (المائلة)", "Lower back & obliques", "بيفكّ أسفل الضهر بلفّة لطيفة.", "Releases the lower back with a gentle twist."],
+  "s-cobra": ["عضلات البطن الأمامية ومقدّمة الورك", "Abs (rectus abdominis) & hip flexors", "بيمطّ البطن بعد تمارين البطن وبيحرّك الضهر لورا.", "Stretches the abs after core work and extends the spine."],
+  "s-side": ["الخاصرة (المائلة) والمربّعة القطنية واللاتس", "Obliques, quadratus lumborum & lats", "بيطوّل جنب الجسم من الورك للإيد.", "Lengthens the whole side from hip to hand."],
+  "s-hipflexor": ["مقدّمة الورك (الحرقفية القطنية) والمستقيمة الفخذية", "Hip flexors (iliopsoas) & rectus femoris", "بتقصر من القعدة؛ تمطيطها بيريّح أسفل الضهر.", "They shorten from sitting; stretching them eases the lower back."],
+  "s-butterfly": ["الفخد الداخلي (المقرّبات)", "Inner thighs (adductors)", "بيفتح الورك من جوّا.", "Opens the hips from the inside."],
+  "s-pigeon": ["الأرداف والدوّارات العميقة بالورك (الكمّثرية)", "Glutes & deep hip rotators (piriformis)", "تمطيط عميق للرِدف والورك.", "A deep stretch for the glute and hip."],
+  "s-figure4": ["الكمّثرية والألوية الكبرى", "Piriformis & gluteus maximus", "نسخة أخفّ من الحمامة، مريحة للركبة.", "A gentler, knee-friendly version of pigeon."],
+  "s-kneeopp": ["الألوية الكبرى والكمّثرية", "Gluteus maximus & piriformis", "بيوصل للرِدف من فوق ومن ورا.", "Reaches the upper and back part of the glute."],
+  "s-hamseated": ["الفخد الخلفي وأسفل الضهر", "Hamstrings & lower back", "بيطوّل ورا الرجلين التنتين سوا.", "Lengthens the back of both legs at once."],
+  "s-hamstand": ["الفخد الخلفي", "Hamstrings", "بيمطّ ورا الفخد وأنتي واقفة.", "Stretches the back of the thigh while standing."],
+  "s-fold": ["الفخد الخلفي وأسفل الضهر", "Hamstrings & lower back", "بيرخّي الضهر كلّو مع الجاذبية.", "Lets gravity relax the whole back."],
+  "s-quad": ["الفخد الأمامي (رباعية الرؤوس)", "Front thigh (quadriceps)", "بيمطّ قدّام الفخد بعد السكوات واللانج.", "Stretches the front thigh after squats and lunges."],
+  "s-quadprone": ["الفخد الأمامي ومقدّمة الورك", "Quadriceps & hip flexors", "نسخة نايمة أسهل للتوازن.", "A lying version with no balance needed."],
+  "s-calf": ["عضلة السمانة (التوأمية)", "Calf (gastrocnemius)", "الركبة مفرودة = الشد بالسمانة الكبيرة.", "Straight knee targets the big calf muscle."],
+  "s-soleus": ["العضلة النعلية (تحت السمانة)", "Soleus (deep calf)", "الركبة مثنية = الشد بالعضلة العميقة فوق الكاحل.", "Bent knee targets the deep muscle above the ankle."],
+  "s-downdog": ["السمانة والفخد الخلفي والكتاف", "Calves, hamstrings & shoulders", "بيمطّ كل ورا الجسم بحركة وحدة.", "Stretches the whole back of the body in one pose."],
+};
+STRETCH.forEach(st => { if (STR_TG[st.id]) st.tg = STR_TG[st.id]; });
 // تمارين إضافية لعضلات «اعرفي جسمك» (من دليل العضلات). مش داخلة بالبرامج الأسبوعية.
 const EX2 = [
   { id:"m-latmachine", m:"shoulders", eq:"machine", ar:"جهاز الرفرفة الجانبي", en:"Machine Lateral Raise", mAr:"الكتف الجانبي", mEn:"Side delts",
@@ -3170,6 +3273,12 @@ function setHow(id) {
   howOpen = howOpen === id ? null : id; howStep = 0; clearInterval(howTimer);
   if (howOpen) howTimer = setInterval(() => { if (!sheet || howOpen !== sheet.id) { clearInterval(howTimer); howOpen = null; return; } howStep++; renderSheet(); }, 3500);
 }
+function tgtBlock(ex) {
+  if (ex.tg) return `<h3 class="sec">${L("شو بيمطّ؟", "What it stretches")}</h3><div class="tgt"><div style="--c:${MCOL[ex.m]}"><span class="fdot" aria-hidden="true"></span><span><b>${L(ex.tg[0], ex.tg[1])}</b><small>${L(ex.tg[2], ex.tg[3])}</small></span></div></div>`;
+  const l = ex.kind ? [] : tgtOf(ex);
+  if (!l.length) return "";
+  return `<h3 class="sec">${L("شو بيشغّل؟", "What it works")}</h3><div class="tgt">${l.map((t, i) => `<div style="--c:${MCOL[t.area.ic]}"><span class="fdot" aria-hidden="true"></span><span><b>${L(t.ar, t.en)}</b> <small class="tg-a">${L(t.area.ar, t.area.en)}${i ? "" : L(" · الأساسية", " · main")}</small><small>${L(t.dAr, t.dEn)}</small></span></div>`).join("")}</div>`;
+}
 function sheetBody(d) {
   const { ex, ctx, a, g, plan, key } = d, isMove = !!ex.kind;
   const date = ymd(dateOfDay(selDay)), canLog = dateOfDay(selDay) <= TODAY, e = entry(date, ex.id) || {};
@@ -3189,6 +3298,7 @@ function sheetBody(d) {
     </div>
     <div class="sh-target">${target.map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join("")}</div>
     ${!isMove && suggestW(ex) ? `<p class="phase-line"><b>${L(`الأسبوع ${progWeek()} · ${phaseName()}`, `Week ${progWeek()} · ${phaseName()}`)}</b> ${phaseTip()}</p>` : ""}
+    ${tgtBlock(ex)}
     <h3 class="sec">${L("التعليمات", "Instructions")}</h3>
     <ol class="tl">${exSteps(ex).map(st => `<li><span>${esc(st)}</span></li>`).join("")}</ol>
     <h3 class="sec">${L("نصيحة", "Tip")}</h3>
@@ -3271,7 +3381,7 @@ document.addEventListener("click", (e) => {
     const v = ds.adj === "sets" ? Math.min(8, Math.max(1, setsFor(key, ex) + dir)) : Math.min(180, Math.max(10, holdFor(key, ex) + dir * 5));
     adj[k] = { ...(adj[k] || {}), [ds.adj]: v }; store.set("tamrini.adj", adj); render(); return;
   }
-  if (ds.stra) { const set = new Set(strSel.areas); set.has(ds.stra) ? set.delete(ds.stra) : set.add(ds.stra); strSel.areas = [...set]; store.set("tamrini.stretch", strSel); render(); return; }
+  if (ds.stra) { strSel.areas = [ds.stra]; store.set("tamrini.stretch", strSel); render(); return; }
   if (ds.strall) { const all = Object.keys(STRETCH_AREAS); strSel.areas = strSel.areas.length === all.length ? [] : all.slice(); store.set("tamrini.stretch", strSel); render(); return; }
   if (ds.strm) { strSel.min = +ds.strm; store.set("tamrini.stretch", strSel); render(); return; }
   if (ds.strp) { const pr = STR_PRESETS.find(x => x[0] === ds.strp); strSel.areas = presetAreas(pr).slice(); store.set("tamrini.stretch", strSel); render(); return; }
