@@ -1857,10 +1857,45 @@ const swimTip = () => L({ 1: "سباحة مريحة: ٥ د إحماء، ركّز
 if (!wk || wk.start !== weekKey() || wk.sig !== weekSig() || !Array.isArray(wk.assign)) freshWeek();
 const saveWk = () => store.set("tamrini.week", wk);
 const isMovedWeek = () => wk.assign.join() !== defaultAssign().join();
-function postpone(d) {            // التمرين بيترحّل لليوم اللي بعدو، واللي بعدو كمان إذا لزم
-  let carry = wk.assign[d]; wk.assign[d] = null;
-  for (let i = d + 1; carry != null && i < 7; i++) { if (isSwimDay(i) && wk.assign[i] == null) continue; const nx = wk.assign[i]; wk.assign[i] = carry; carry = nx; }
-  saveWk(); return carry;         // إذا رجع رقم، يعني ما في محل هالأسبوع
+// «مش اليوم»: منرجع منوزّع تمارين باقي الأسبوع بطريقة علمية (مش منزحّلهن كلّن يوم لقدّام)
+function postpone(d) {
+  const keep = wk.assign[d]; wk.assign[d] = null;
+  return replanFrom(d + 1, keep != null ? [keep] : []);    // إذا رجع رقم، يعني ما في محل هالأسبوع
+}
+// توزيع صحّي: نفس العضلة ما بتتمرّن يومين ورا بعض (٤٨ ساعة راحة)، وما في أكتر من يومين تمرين ورا بعض، والتمارين بتضل قريبة من مكانها
+function replanFrom(from, extra = []) {
+  const trainedFixed = (i) => wk.assign[i] != null || !!(wk.extra || {})[i] || dayStatus(i) === "full";
+  const typeAt = (i) => wk.assign[i] != null ? typeOfK(wk.assign[i]) : ((wk.extra || {})[i] || {}).type || histType(i) || (dayStatus(i) === "full" ? "full" : null);
+  const pool = [...extra], free = [];
+  for (let i = Math.max(0, from); i < 7; i++) {
+    if (dateOfDay(i) < TODAY) continue;
+    if (wk.assign[i] != null) { if (dayStatus(i)) continue; pool.push(wk.assign[i]); wk.assign[i] = null; }
+    if (isSwimDay(i) || (wk.extra || {})[i] || dayStatus(i) === "full") continue;
+    free.push(i);
+  }
+  pool.sort((a, b) => a - b);
+  const K = Math.min(pool.length, free.length), use = pool.slice(0, K), carry = pool.length > K ? pool[K] : null;
+  if (!K) { saveWk(); return carry; }
+  const base = [...Array(7).keys()].map(i => free.includes(i) ? null : trainedFixed(i) ? (typeAt(i) || "full") : null);
+  const score = (t) => {
+    let sc = 0, run = 0;
+    for (let i = 0; i < 7; i++) {
+      if (t[i]) { run++; if (run >= 3) sc += 40 * (run - 2); } else run = 0;
+      if (i < 6 && t[i] && t[i + 1] && (t[i] === t[i + 1] || t[i] === "full" || t[i + 1] === "full")) sc += 100;
+    }
+    return sc;
+  };
+  const combos = (arr, k, st = 0, cur = [], out = []) => { if (cur.length === k) { out.push(cur.slice()); return out; } for (let i = st; i < arr.length; i++) { cur.push(arr[i]); combos(arr, k, i + 1, cur, out); cur.pop(); } return out; };
+  const perms = (arr) => arr.length <= 1 ? [arr] : arr.flatMap((x, i) => perms([...arr.slice(0, i), ...arr.slice(i + 1)]).map(p => [x, ...p]));
+  let best = null;
+  for (const days of combos(free, K)) for (const ord of perms(use)) {
+    const t = base.slice(); days.forEach((dd, n) => { t[dd] = typeOfK(ord[n]); });
+    const inv = ord.reduce((a, x, n) => a + ord.slice(n + 1).filter(y => y < x).length, 0);
+    const sc = score(t) * 1000 + inv * 10 + days.reduce((a, x) => a + x, 0);
+    if (!best || sc < best.sc) best = { sc, days, ord };
+  }
+  best.days.forEach((dd, n) => { wk.assign[dd] = best.ord[n]; });
+  saveWk(); return carry;
 }
 const roomAfter = (d) => wk.assign.some((x, i) => i > d && x == null && !isSwimDay(i));
 const nextWorkoutDay = (d) => { for (let i = d + 1; i < 7; i++) if (wk.assign[i] != null) return i; return -1; };
@@ -3369,6 +3404,8 @@ function renderMe() {
 }
 
 let lastTab = null, navStack = [];
+let renderJump = false;      // بتصير true لمّا نحنا بدنا نطلع لفوق (scrollTo 0) بعد الرسم
+const _scrollTo = window.scrollTo.bind(window); window.scrollTo = (...a) => { if (a[0] === 0 && a[1] === 0) renderJump = true; _scrollTo(...a); };
 function render() {
   gender = "f";                       // التطبيق للبنات بس
   hideTip();
@@ -3377,7 +3414,10 @@ function render() {
   document.body.classList.toggle("gated", !!gate);
   if (gate) { $app.innerHTML = gate; return; }
   const keepX = lastTab === tab ? [...$app.querySelectorAll(".carousel, .mstrip")].map(c => c.scrollLeft) : []; lastTab = tab;
+  const keepY = window.scrollY;      // ما منخلّي الصفحة تنطّ لفوق لمّا تنرسم من جديد (خصوصاً عالآيفون)
   $app.innerHTML = tab === "body" ? renderBody() : tab === "sched" ? renderSched() : tab === "plan" ? renderPlan() : tab === "prog" ? renderProgress() : tab === "lib" ? renderLib() : tab === "food" ? renderFood() : tab === "str" ? renderStretch() : renderMe();
+  if (Math.abs(window.scrollY - keepY) > 2) window.scrollTo(0, keepY);
+  requestAnimationFrame(() => { if (window.scrollY < 5 && keepY > 40 && !renderJump) _scrollTo(0, keepY); renderJump = false; });      // الآيفون أوقات بينطّ لفوق بعد الرسم
   document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.tab === tab || (tab === "lib" && b.dataset.tab === "body")));
   if (navStack.length && !(tab === "body" && (bodyBuild || bodyArea)) && !(tab === "str" && strArea) && !(tab === "sched" && schedDay != null)) $app.insertAdjacentHTML("afterbegin", `<button type="button" class="back nav-back" data-navback="1">${L("› رجوع", "‹ Back")}</button>`);
   if (keepX.length) $app.querySelectorAll(".carousel, .mstrip").forEach((c, i) => { if (keepX[i]) c.scrollLeft = keepX[i]; });
@@ -5267,7 +5307,8 @@ document.addEventListener("click", (e) => {
   if (ds.schedback) { schedDay = null; render(); window.scrollTo(0, 0); return; }
   if (ds.meEdit) { tab = "me"; meEdit = true; justSaved = false; draft = null; render(); window.scrollTo(0, 0); return; }
   if (ds.meCancel) { meEdit = false; draft = null; render(); window.scrollTo(0, 0); return; }
-  if (ds.steps) { const a = ds.steps; if (a === "save") { const v = parseInt(document.getElementById("st-in")?.value, 10); if (v >= 0 && v < 100000) { steps[ymd(TODAY)] = v; store.set("tamrini.steps", steps); } stepsOpen = false; } else stepsOpen = stepsOpen === a ? false : a; render(); return; }
+  if (ds.steps) { const a = ds.steps; if (a === "save") { const v = parseInt(document.getElementById("st-in")?.value, 10); if (v >= 0 && v < 100000) { steps[ymd(TODAY)] = v; store.set("tamrini.steps", steps); } stepsOpen = false; render(); return; } else stepsOpen = stepsOpen === a ? false : a;
+    const card = e.target.closest(".steps-card"); if (card) { card.outerHTML = stepsCard(); if (stepsOpen === "manual") document.getElementById("st-in")?.focus({ preventScroll: true }); } else render(); return; }
   if (ds.dt) { dtOpen = dtOpen === ds.dt ? null : ds.dt; render(); return; }
   if (ds.dtpart) { dtPart = ds.dtpart; dtM = null; render(); return; }
   if (ds.dtm) { dtM = ds.dtm; render(); return; }
@@ -5376,13 +5417,13 @@ if (ds.food) {
       const dropped = postpone(selDay);
       const nx = nextWorkoutDay(selDay);
       planMsg = dropped != null ? L("تأجّل التمرين، وآخر تمرين بالأسبوع انشال.", "Workout moved; the last one of the week was dropped.")
-        : L(`تمام! «${name}» صار يوم ${DAYS[nx]}. خدي راحتك.`, `Done! “${name}” moved to ${DAYS_EN[nx]}. Enjoy your rest.`);
+        : L(`تمام، خدي راحتك 🤍 رتّبنا باقي الأسبوع بطريقة صحّية: ما في أكتر من يومين تمرين ورا بعض، ونفس العضلة بترتاح ٤٨ ساعة. تمرينك الجاي يوم ${DAYS[nx]}.`, `Done, enjoy your rest 🤍 We re-planned the week the healthy way: no more than 2 training days in a row, and each muscle gets 48 h to recover. Next workout: ${DAYS_EN[nx]}.`);
       actOpen = false; open = null; render(); return;
     }
 if (p === "extra") { (wk.extra ||= {})[selDay] = extraPlan(selDay); saveWk(); planMsg = L("زدنالك تمرين إضافي مدروس لهاليوم.", "Added a smart extra workout for today."); actOpen = false; render(); return; }
 if (p === "swap") { const ch = flipDay(selDay); if (ch && ch.length) planMsg = L("✓ تم التبديل! ", "✓ Swapped! ") + flipMsg(ch); render(); return; }
 if (p === "unextra") { if (wk.extra) delete wk.extra[selDay]; saveWk(); planMsg = ""; render(); return; }
-if (p === "pull") { const j = pullFrom(selDay); if (pullTo(selDay)) planMsg = j > selDay ? L(`يلا! تمرين ${DAYS[j]} صار اليوم، و${DAYS[j]} صار راحة.`, `Let's go! ${DAYS_EN[j]}'s workout is now today, and ${DAYS_EN[j]} is a rest day.`) : L("يلا! جبنا التمرين اللي فات لليوم.", "Let's go! The missed workout is now today."); actOpen = false; render(); return; }
+if (p === "pull") { const j = pullFrom(selDay); if (pullTo(selDay) && j > selDay) replanFrom(selDay + 1); if (j >= 0) planMsg = j > selDay ? L("يلا! 💪 جبنالك تمرين لليوم، ورتّبنا باقي الأسبوع بطريقة صحّية (ما في أكتر من يومين ورا بعض، ونفس العضلة بترتاح ٤٨ ساعة).", "Let's go! 💪 You have a workout today, and we re-planned the rest of the week the healthy way (max 2 days in a row, 48 h per muscle).") : L("يلا! جبنا التمرين اللي فات لليوم.", "Let's go! The missed workout is now today."); actOpen = false; render(); return; }
     if (p === "restore") { const def = defaultAssign(); for (let i = selDay; i < 7; i++) wk.assign[i] = def[i]; saveWk(); planMsg = L("✓ رجع اليوم يوم تمرين، والأيام اللي بعدو رجعت متل جدولك.", "✓ Today is a workout day again, and the next days are back to your plan."); render(); return; }
     if (p === "reset") { freshWeek(); planMsg = L("رجع الجدول متل ما كان.", "Week reset to your original schedule."); render(); return; }
   }
