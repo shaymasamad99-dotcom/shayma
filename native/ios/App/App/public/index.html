@@ -405,7 +405,7 @@ button.cal-d { border: 0; padding: 0; font: inherit; cursor: pointer; }
 .legal-links { margin: 0; text-align: center; font-size: .82rem; } .legal-links a { color: var(--accent); }
 .upnext { position: fixed; z-index: 6; top: calc(205px + env(safe-area-inset-top, 0px)); right: 12px; width: 128px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 8px; border-radius: 18px; background: var(--surface); border: 1px solid var(--accent); box-shadow: 0 10px 26px rgb(0 0 0 / .35); text-align: center; opacity: 0; transform: translateY(-8px) scale(.96); pointer-events: none; transition: opacity .3s, transform .3s; }
 .upnext.show { opacity: 1; transform: none; }
-.un-pic { display: block; width: 108px; height: 108px; border-radius: 14px; overflow: hidden; background: #81C3FC; } .un-pic img, .un-pic svg { width: 100%; height: 100%; object-fit: cover; display: block; }
+.un-pic { display: block; width: 108px; height: 108px; border-radius: 14px; overflow: hidden; background: #81C3FC; } .un-pic img, .un-pic svg, .un-pic video { width: 100%; height: 100%; object-fit: cover; display: block; }
 .upnext b { font-size: .8rem; color: var(--accent); } .upnext small { font-size: .72rem; line-height: 1.3; color: var(--ink); } .un-side { font-size: 1.8rem; line-height: 1.2; }
 .unfin { color: var(--warn); font-weight: 700; }
 .tw-line { margin: 0; font-size: .8rem; line-height: 1.5; color: var(--muted); }
@@ -4144,7 +4144,7 @@ function upNext(items, n) {
   if (ses.set < n) return `<div class="upnext" aria-live="polite"><span class="un-side">⇄</span><b>${L("الجهة التانية", "Other side")}</b></div>`;
   const nx = nextUndone(ses.idx); if (nx < 0) return `<div class="upnext" aria-live="polite"><span class="un-side">🏁</span><b>${L("آخر حركة!", "Last one!")}</b></div>`;
   const it = items[nx], sec = secOf(it) !== secOf(items[ses.idx]);
-  return `<div class="upnext" aria-live="polite"><span class="un-pic">${libMedia(it.ex)}</span><b>${sec ? L("بعدها: قسم جديد", "Then: new section") : L("الجاية", "Up next")}</b><small>${esc(exN(it.ex))}</small></div>`;
+  return `<div class="upnext" aria-live="polite"><span class="un-pic">${cvidOf(it.ex.id) ? `<video src="${cvidOf(it.ex.id)}.mp4" poster="${cvidOf(it.ex.id)}.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video>` : libMedia(it.ex)}</span><b>${sec ? L("بعدها: قسم جديد", "Then: new section") : L("الجاية", "Up next")}</b><small>${esc(exN(it.ex))}</small></div>`;
 }
 const PROUD_POOL = [
   ["Shushy is proud of you, {n} 💖", "Shushy is proud of you, {n} 💖"], ["You are doing this for you, {n} ✨", "You are doing this for you, {n} ✨"], ["Better you, {n}, bravooo! 🎉", "Better you, {n}, bravooo! 🎉"],
@@ -4441,7 +4441,7 @@ setInterval(() => {
   if (left <= 0) { beep(); ses.phase === "rest" ? afterRest() : finishSet(); return; }
   const tot = ses.phase === "rest" ? restFor(ses.key) : hS(sesItems()[ses.idx]);
   const t = $play.querySelector(".pl-time"); if (t) t.textContent = mmss(Math.ceil(left));
-  const un = $play.querySelector(".upnext"); if (un) un.classList.toggle("show", ses.phase === "hold" && left <= 10);
+  const un = $play.querySelector(".upnext"); if (un) { const on = ses.phase === "hold" && left <= 10; if (on && !un.classList.contains("show")) { const v = un.querySelector("video"); if (v) { v.playbackRate = typeof VID_RATE === "number" ? VID_RATE : 1; v.play().catch(() => {}); } } un.classList.toggle("show", on); }
   voiceTick(left, tot);
   const v = $play.querySelector(".pl-ring .val"); if (v) v.setAttribute("stroke-dashoffset", (100 * (1 - Math.min(1, left / tot))).toFixed(2));
 }, 250);
