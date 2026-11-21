@@ -1863,7 +1863,8 @@ function postpone(d) {            // التمرين بيترحّل لليوم ا
 const roomAfter = (d) => wk.assign.some((x, i) => i > d && x == null && !isSwimDay(i));
 const nextWorkoutDay = (d) => { for (let i = d + 1; i < 7; i++) if (wk.assign[i] != null) return i; return -1; };
 // تمرين فات وما انعمل (لتقدري تعوّضيه اليوم)
-const missedDay = (d) => { for (let i = d - 1; i >= 0; i--) { const w = wk.assign[i]; if (w != null && !dayStatus(i)) return i; } return -1; };
+// تمرين بيوم راحة بيعوّض يوم فات (ما منطلب منك تعوّضيه مرّتين)
+const missedDay = (d) => { let credit = 0; for (let i = d - 1; i >= 0; i--) { const w = wk.assign[i]; if (w == null) { if (dayStatus(i) === "full") credit++; continue; } if (!dayStatus(i)) { if (credit) { credit--; continue; } return i; } } return -1; };
 const WAVES = `<svg class="waves" viewBox="0 0 120 40" aria-hidden="true"><path d="M4 14q9-8 18 0t18 0 18 0 18 0 18 0 18 0"/><path d="M4 26q9-8 18 0t18 0 18 0 18 0 18 0 18 0" opacity=".6"/></svg>`;
 const pullFrom = (d) => { const j = nextWorkoutDay(d); return j >= 0 ? j : missedDay(d); };
 function pullTo(d) { const j = pullFrom(d); if (j < 0) return false; wk.assign[d] = wk.assign[j]; wk.assign[j] = null; saveWk(); return true; }
@@ -2949,8 +2950,9 @@ function dayDetail() {
         ${future && pullFrom(selDay) >= 0 && !swum ? `<div class="ci-btns"><button class="ci on" data-plan="pull"><b>${L("بدّي اتمرّن اليوم", "I want to train today")}</b><small>${L("منجيبلك تمرين من جدولك لليوم، ومنظبّط باقي الأسبوع لحالو", "We bring a workout from your plan to today and rebalance the week")}</small></button></div>` : ""}
         ${actOpen ? actForm() : ""}
       </section>`;
-  } else if (!day && hadWorkout(selDay)) {
-    const hs = hist.filter(h => h.d === dStr && h.rows && h.rows.length), kc = hs.reduce((a, h) => a + histKcal(h), 0), mn = hs.reduce((a, h) => a + (+h.min || 0), 0);
+  } else if (!day && (hadWorkout(selDay) || Object.values(log[dStr] || {}).some(e => e.done))) {
+    const hs0 = hist.filter(h => h.d === dStr && h.rows && h.rows.length), ticked = Object.keys(log[dStr] || {}).filter(id => log[dStr][id].done && anyEx(id));
+    const hs = hs0.length ? hs0 : [{ d: dStr, min: 0, rows: ticked.map(id => ({ id, s: 0 })), t: { ar: "تمرين", en: "Workout" } }], kc = hs.reduce((a, h) => a + histKcal(h), 0), mn = hs.reduce((a, h) => a + (+h.min || 0), 0);
     html += `<section class="checkin restday rdone">
         <div class="rd-hero"><span aria-hidden="true">🏆</span><b>${L("خلّصتي تمرين اليوم!", "Workout done!")}</b><em class="rd-what">${esc(hs.map(h => h.t ? L(h.t.ar, h.t.en) : L("تمرين", "Workout")).join(" + "))}</em><small>${L(CHEERS[TODAY.getDate() % CHEERS.length], CHEERS_EN[TODAY.getDate() % CHEERS_EN.length])}</small></div>
         ${(() => { const mu = tgtTop(hs.flatMap(h => h.rows.map(r => anyEx(r.id))).filter(x => x && !x.kind), 4); return mu.length ? `<div class="mchips rd-mus">${mu.map(k => `<span>${rgPic(k, "md")}${rgN(k).replace(/\s*\(.*\)\s*/, "")}</span>`).join("")}</div>` : ""; })()}
@@ -3951,6 +3953,7 @@ function skipCurrent() {
   ses.swap = false; saveSes(); renderPlay(); if (typeof ses.key === "number") render();
 }
 function startSession(key) {
+  if (typeof dayChanged === "function" && dayChanged()) { location.reload(); return; }      // يوم جديد: منحدّث أوّل ليتسجّل التمرين بتاريخو الصح
   try { audio ||= new (window.AudioContext || window.webkitAudioContext)(); audio.resume?.(); } catch {}
   let items, date, title, fin = [], skip = [];
   if (key === "plan") {
@@ -5678,6 +5681,12 @@ render();
 if (ses && ses.phase !== "done" && Date.now() - ses.started > 8 * 3600e3) { if (ses.sets || ses.fin.length) saveHist(); ses = null; saveSes(); }   // جلسة قديمة من يوم تاني
 if (ses && (ses.phase === "hold" || ses.phase === "rest") && !ses.paused && ses.until < Date.now()) { ses.phase = "work"; ses.until = 0; saveSes(); }   // الوقت خلص وهي برّا: منستنّاها
 if (ses) { renderPlay(); lockScreen(); }
+// إذا التطبيق ضلّ مفتوح لليوم التاني، منحدّثو ليصير «اليوم» صح (وإلّا التمرين بينحسب عاليوم الغلط)
+function dayChanged() { const n = new Date(); n.setHours(0, 0, 0, 0); return n.getTime() !== TODAY.getTime(); }
+function reloadIfNewDay() { if (dayChanged() && (!ses || ses.phase === "done")) { try { if (ses) { ses = null; saveSes(); } } catch {} location.reload(); } }
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") reloadIfNewDay(); });
+window.addEventListener("pageshow", reloadIfNewDay); window.addEventListener("focus", reloadIfNewDay);
+setInterval(reloadIfNewDay, 60e3);
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && sheet) { sheet = null; vidOpen = null; renderSheet(); } });
 cloudSync();
 </script>
