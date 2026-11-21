@@ -4033,7 +4033,8 @@ const secOf = (it) => !it ? "" : it.ex.kind === "warm" ? "w" : it.ex.kind ? "c" 
 function toSect(prev) { const nit = sesItems()[ses.idx]; if (prev && nit && secOf(nit) !== secOf(prev)) { ses.phase = "sect"; ses.until = 0; } }
 // تشجيع جديد كل مرّة، ومبني عالتمرين اللي عملتيه فعلاً (العضلات، المجموعات، الأوزان، أسبوعك)
 const PROUD_POOL = [
-  ["Shushy is proud of you 💖", "Shushy is proud of you 💖"], ["You are doing this for you ✨", "You are doing this for you ✨"], ["Better you, bravooo! 🎉", "Better you, bravooo! 🎉"],
+  ["Shushy is proud of you, {n} 💖", "Shushy is proud of you, {n} 💖"], ["You are doing this for you, {n} ✨", "You are doing this for you, {n} ✨"], ["Better you, {n}, bravooo! 🎉", "Better you, {n}, bravooo! 🎉"],
+  ["{n}، إنتِ أقوى مما بتفكّري 💕", "{n}, you're stronger than you think 💕"], ["كل يوم بتصيري أحلى وأقوى يا {n} 🌷", "Every day you get stronger and more beautiful, {n} 🌷"],
   ["كل تمرين بتعمليه هو وعد وفيتي فيه لحالك 🤍", "Every workout is a promise you kept to yourself 🤍"],
   ["ما في حدا جبرك، إنتِ اخترتي حالك اليوم 💪", "Nobody made you. You chose yourself today 💪"],
   ["القوّة ما بتجي بيوم، بتجي من أيام متل اليوم 🌱", "Strength isn't built in a day, it's built from days like today 🌱"],
@@ -4069,7 +4070,11 @@ function proudLines() {
   let seen = store.get("tamrini.proudSeen", []); if (seen.length >= PROUD_POOL.length) seen = [];
   const free = PROUD_POOL.map((x, i) => i).filter(i => !seen.includes(i)), pick = free[Math.floor(Math.random() * free.length)];
   store.set("tamrini.proudSeen", [...seen, pick]); out.push(L(...PROUD_POOL[pick]));
-  ses.proud = out; saveSes(); return out;
+  // اسمها بكل مرّة، بلمسة حلوة
+  const nm = (myName() || "").split(/\s+/)[0], fill = (t) => nm ? t.split("{n}").join(nm) : t.replace(/ ?يا \{n\}/g, "").replace(/,? ?\{n\}،? ?/g, " ").replace(/\s+([,،!])/g, "$1").trim();
+  const OPEN = [["برافو يا {n}! 💖", "Bravo, {n}! 💖"], ["{n} يا قمر،", "{n}, you star,"], ["يا {n} يا بطلة،", "{n}, champion,"], ["شو هالقوّة يا {n}! 🔥", "What strength, {n}! 🔥"], ["{n} حبيبتي،", "{n}, love,"], ["يا عيني عليكِ يا {n}! ✨", "Look at you, {n}! ✨"], ["{n}، فخورة فيكِ!", "{n}, so proud of you!"]];
+  if (nm) { const o = L(...OPEN[Math.floor(Math.random() * OPEN.length)]).split("{n}").join(nm); if (out.length > 1) out[0] = `${o} ${out[0]}`; else out.unshift(o); }
+  ses.proud = out.map(fill); saveSes(); return ses.proud;
 }
 const proudBox = () => `<div class="proud" role="status">${proudLines().map(t => `<b>${esc(t)}</b>`).join("")}</div>`;
 function sectBody(items) {
