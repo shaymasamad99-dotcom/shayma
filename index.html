@@ -400,6 +400,7 @@ button.cal-d { border: 0; padding: 0; font: inherit; cursor: pointer; }
 .wkstrip { display: flex; flex-direction: column; gap: 8px; }
 .wk-arr { width: 34px; height: 34px; margin: 0; flex: none; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--accent); font-size: 1.2rem; line-height: 1; display: grid; place-items: center; cursor: pointer; } .wk-arr:disabled { opacity: .3; }
 .wkstrip.past .wk-h { align-items: center; } .wkstrip.past .wk-h span { flex: 1; }
+.old-wk { align-self: flex-start; margin: 0; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--accent); background: var(--soft); color: var(--accent); font-weight: 700; font-size: .82rem; cursor: pointer; }
 .tw-line { margin: 0; font-size: .8rem; line-height: 1.5; color: var(--muted); }
 .pw-list { display: flex; flex-direction: column; gap: 10px; } .pw-day { display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
 .pw-w { display: flex; flex-direction: column; gap: 2px; } .pw-w .ov-list { margin-top: 4px; }
@@ -2735,12 +2736,24 @@ const WD_SHORT = (i) => L(["سبت", "أحد", "اثنين", "ثلاثاء", "أ
 let listOpen = false;
 // الأسابيع القديمة: شو عملتي كل يوم (للقراءة بس)
 let wkOff = 0;
+// أوّل أسبوع (من يوم ما بلّشتي)، أو أوّل تمرين بالسجل إذا أقدم
+function firstWkOff() {
+  const ds = [profile.start || weekKey(), ...hist.map(h => h.d), ...Object.keys(log)].filter(Boolean).sort(), first = parseD(ds[0] < weekKey() ? ds[0] : weekKey());
+  return Math.min(0, Math.floor((first - parseD(weekKey())) / (7 * 864e5)));
+}
+// لائحة الأسابيع اللي فاتت (بجدولي)
+function pastWeeksList() {
+  const f = firstWkOff(); if (f >= 0) return "";
+  const rows = []; for (let o = -1; o >= f; o--) { const d0 = dateOfDay(0, o), d6 = dateOfDay(6, o), n = [...Array(7).keys()].filter(i => { const k = ymd(dateOfDay(i, o)); return hist.some(h => h.d === k && (h.rows || []).length) || Object.values(log[k] || {}).some(e => e.done) || (acts[k] || []).length; }).length;
+    rows.push(`<button class="srow" data-wkoff="${o}"><span class="sdate"><small>${L("أسبوع", "Week")}</small><b>${o - f + 1}</b></span><span class="sinfo"><b>${dm(d0)} – ${dm(d6)}</b><small>${n ? L(n === 1 ? "يوم تمرين واحد" : `${n} أيام تمرين`, `${n} active day${n > 1 ? "s" : ""}`) : L("ما في تمارين", "No workouts")}</small></span><span class="chev" aria-hidden="true">${L("‹", "›")}</span></button>`); }
+  return `<section class="group"><h3 class="sec">📅 ${L("الأسابيع اللي فاتت", "Past weeks")}</h3><div class="srows">${rows.join("")}</div></section>`;
+}
 function pastWeek(off, firstOff) {
   const ws = weekStats(off), d0 = dateOfDay(0, off), d6 = dateOfDay(6, off), n = Math.round((d0 - parseD(profile.start || weekKey())) / (7 * 864e5)) + 1;
   const days = [...Array(7).keys()].map(i => { const k = ymd(dateOfDay(i, off)), hs = hist.filter(h => h.d === k && ((h.rows || []).length || h.moves)), did = hs.some(h => (h.rows || []).length) || Object.values(log[k] || {}).some(e => e.done), sw = (acts[k] || []).some(a => a.t === "swim");
     return { i, k, hs, did, sw }; });
   return `<section class="wkstrip past">
-      <div class="wk-h"><button class="wk-arr" data-wkoff="${off - 1}" ${off > firstOff ? "" : "disabled"} aria-label="${L("الأسبوع اللي قبل", "Previous week")}">${L("›", "‹")}</button><b>${L(`أسبوع ${n}`, `Week ${n}`)}</b><span>${dm(d0)} – ${dm(d6)} · ${L(`${days.filter(x => x.did || x.sw).length} أيام`, `${days.filter(x => x.did || x.sw).length} days`)}</span><button class="wk-arr" data-wkoff="${off + 1}" aria-label="${L("الأسبوع اللي بعد", "Next week")}">${L("‹", "›")}</button></div>
+      <div class="wk-h"><button class="wk-arr" data-wkoff="${off - 1}" ${off > firstOff ? "" : "disabled"} aria-label="${L("الأسبوع اللي قبل", "Previous week")}">${L("›", "‹")}</button><b>${L(`أسبوع ${n}`, `Week ${n}`)}</b><span>${dm(d0)} – ${dm(d6)} · ${((n) => L(n === 1 ? "يوم واحد" : `${n} أيام`, `${n} day${n === 1 ? "" : "s"}`))(days.filter(x => x.did || x.sw).length)}</span><button class="wk-arr" data-wkoff="${off + 1}" aria-label="${L("الأسبوع اللي بعد", "Next week")}">${L("‹", "›")}</button></div>
       <div class="wk-days">${days.map(x => `<span class="wd ${x.did ? "full" : x.sw ? "swimd" : "rs"}"><span>${WD_SHORT(x.i)}</span><i aria-hidden="true">${x.did ? "🏆" : x.sw ? "🌊" : ""}</i></span>`).join("")}</div>
     </section>
     <section class="group"><h3 class="sec">${L("شو عملتي هالأسبوع", "What you did that week")}</h3>
@@ -2758,10 +2771,11 @@ function renderPlan() {
     </header>`;
   if (!profile.saved) html += `<div class="banner"><span>${L("هيدا برنامج مثال. عبّي عمرك ووزنك وهدفك ليتظبط إلك.", "This is a sample plan. Add your age, weight and goal to tailor it.")}</span><button data-tab="me">${L("اعمليلي جدولي", "Build my schedule")}</button></div>`;
   const ws = weekStats(), goalDays = profile.days.length;
-  const firstOff = Math.min(0, Math.floor((parseD(profile.start || weekKey()) - parseD(weekKey())) / (7 * 864e5)));
+  const firstOff = firstWkOff();
   if (wkOff < 0) return html + pastWeek(Math.max(wkOff, firstOff), firstOff);
   html += `<section class="wkstrip" aria-label="${L("أيام هالأسبوع", "This week")}">
       <div class="wk-h"><button class="wk-arr" data-wkoff="-1" ${firstOff < 0 ? "" : "disabled"} aria-label="${L("الأسبوع اللي قبل", "Previous week")}">${L("›", "‹")}</button><b>${L("هالأسبوع", "This week")}</b><span>${ws.days >= goalDays ? L("✓ حققتي هدفك", "✓ Goal reached") : L(`${ws.days} من ${goalDays} أيام`, `${ws.days} of ${goalDays} days`)}</span>${isMovedWeek() ? `<button class="linkbtn" data-plan="reset">${L("رجّعي الجدول", "Reset")}</button>` : ""}</div>
+      ${firstOff < 0 ? `<button class="old-wk" data-wkoff="-1">📅 ${L("شوفي الأسابيع اللي فاتت", "See past weeks")}</button>` : ""}
       <p class="tw-line">${L(`📈 الأسبوع التدريبي ${progWeek()}: ${weekDaysDone()} من ${perWeek()} أيام. بتنتقلي للأسبوع الجاي بس تخلّصي ${perWeek()} أيام تمرين، مهما أخدوا وقت.`, `📈 Training week ${progWeek()}: ${weekDaysDone()} of ${perWeek()} days. You move on after ${perWeek()} workout days, however long they take.`)}</p>
       <div class="wk-days">${[...Array(7).keys()].map(i => {
         const d = buildDay(i), stt0 = dayStatus(i), sw = !d && isSwimDay(i);
@@ -3206,6 +3220,7 @@ function schedRow(i) {
 }
 function renderSched() {
   if (schedDay != null) { selDay = schedDay; return schedDayView(); }
+  if (wkOff < 0) { const f = firstWkOff(); return `<header class="hdr"><div><h1>${L("جدولي", "My schedule")}</h1></div></header>` + pastWeek(Math.max(wkOff, f), f); }
   const g = GOALS[profile.goal], nm = (profile.name || "").trim(), wkN = progWeek(), total = profile.goalWeeks || 0;
   const order = profile.days.slice().sort((x, y) => x - y), nSwim = order.filter(isSwimDay).length, nCombo = order.filter(isCombo).length;
   const upto = total ? Math.min(total, wkN + 3) : wkN + 3;
@@ -3215,6 +3230,7 @@ function renderSched() {
       <button class="lang-btn" data-lang="${L("en", "ar")}" lang="${L("en", "ar")}">${L("English", "العربية")}</button></header>
     ${justSaved ? `<div class="banner ok"><span>${L("✓ جهز جدولك! اضغطي على أي يوم لتشوفي تمارينه بالترتيب.", "✓ Your schedule is ready! Tap any day to see its exercises in order.")}</span></div>` : ""}
     ${profile.saved ? "" : `<div class="banner"><span>${L("هيدا جدول مثال. حطّي هدفك ومعلوماتك ليتظبط إلك.", "This is a sample. Add your goal and details to tailor it.")}</span><button data-me-edit="1">${L("حطّي هدفي", "Set my goal")}</button></div>`}
+    ${pastWeeksList()}
     <section class="sgoal">
       <span class="sg-eyebrow">🎯 ${L("هدفي", "My goal")}</span>
       <div><b>${goalTitle()}</b>${profile.goalText ? `<p class="goal-q">“${esc(profile.goalText)}”</p>` : ""}</div>
@@ -5226,7 +5242,7 @@ document.addEventListener("click", (e) => {
   if (ds.routine) { lib.routine = ds.routine; open = null; render(); window.scrollTo(0, 0); return; }
   if (ds.libback) { lib.area = null; lib.routine = null; lib.eq = "all"; open = null; render(); window.scrollTo(0, 0); return; }
   if (ds.navback) { const p = navStack.pop(); if (p) { tab = p.tab; open = null; render(); window.scrollTo(0, p.y); } return; }
-  if (ds.tab) { if (e.target.closest(".tabs")) navStack = []; else if (ds.tab !== tab) navStack.push({ tab, y: window.scrollY }); if (ds.tab === "lib" && tab === "lib") { lib = { q: "", part: "all", eq: "all", area: null, routine: null }; }
+  if (ds.tab) { wkOff = 0; if (e.target.closest(".tabs")) navStack = []; else if (ds.tab !== tab) navStack.push({ tab, y: window.scrollY }); if (ds.tab === "lib" && tab === "lib") { lib = { q: "", part: "all", eq: "all", area: null, routine: null }; }
     tab = ds.tab; open = null; schedDay = null; if (tab === "prog") loadPhotos(); if (tab === "me") { draft = null; meEdit = false; } if (tab !== "sched") justSaved = false; render(); window.scrollTo(0,0); return; }
   if (ds.start) { startSession(ds.start); return; }
   if (ds.adj) {
