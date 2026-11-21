@@ -1,31 +1,12 @@
-// Shushy's Fit: بيخلّي التطبيق يفتح بلا نت. الصفحة بتتحدّث من النت أول (إذا في)، والباقي من الذاكرة.
-const CACHE = "shushy-v2";
-const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png"];
-
-self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
-});
-self.addEventListener("activate", (e) => {
-  e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
-});
+// شوشي فِت: الصفحة والصور بتشتغل بلا نت بعد أول فتحة (الشبكة أولاً، والنسخة المحفوظة احتياط)
+const C = "sf-v1";
+self.addEventListener("install", () => self.skipWaiting());
+self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
 self.addEventListener("fetch", (e) => {
-  const req = e.request;
-  if (req.method !== "GET") return;
-  const url = new URL(req.url);
-  // version.json: دايماً من النت ليوصل التحديث دغري
-  if (/version\.json$/.test(url.pathname)) return;
-  // YouTube وغيرو: دايماً من النت
-  if (/youtube|ytimg|googlevideo/.test(url.hostname)) return;
-  if (req.mode === "navigate") {
-    e.respondWith(fetch(req.url, { cache: "no-store", credentials: "same-origin" }).then((res) => { const copy = res.clone(); caches.open(CACHE).then((c) => c.put("./index.html", copy)); return res; })
-      .catch(() => caches.match("./index.html")));
-    return;
-  }
-  e.respondWith(caches.match(req).then((hit) => {
-    const net = fetch(req).then((res) => {
-      if (res.ok && (url.origin === location.origin || /fonts\.(googleapis|gstatic)\.com/.test(url.hostname))) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); }
-      return res;
-    }).catch(() => hit);
-    return hit || net;
-  }));
+  const u = new URL(e.request.url);
+  if (e.request.method !== "GET" || u.origin !== location.origin || u.pathname.endsWith(".mp4")) return;
+  e.respondWith(fetch(e.request).then((r) => {
+    if (r.ok && r.status === 200) { const copy = r.clone(); caches.open(C).then((c) => c.put(e.request, copy)); }
+    return r;
+  }).catch(() => caches.match(e.request)));
 });

@@ -1,0 +1,32 @@
+# بينشر التطبيق عـ shushy-fit.pages.dev لحالو بعد كل دمج على main
+name: Deploy to Cloudflare Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build site folder
+        run: |
+          set -e
+          V=$(date -u +%Y%m%d%H%M%S)
+          mkdir -p dist
+          # نسخة جديدة كل نشرة: التطبيقات المفتوحة بتشوف version.json الجديد وبتتحدّث لحالها
+          { printf '<!doctype html>\n<html lang="ar" dir="rtl">\n'; sed -E "s/const APP_V = \"[0-9]+\"/const APP_V = \"$V\"/" index.html; } > dist/index.html
+          printf '{"v":"%s"}\n' "$V" > dist/version.json
+          cp sw.js manifest.webmanifest privacy.html terms.html dist/
+          cp -r icons a dist/
+          grep -q "const APP_V = \"$V\"" dist/index.html
+          du -sh dist
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 1a9b490819a3e33ee98ba981cd3ef32e
+          command: pages deploy dist --project-name=shushy-fit --branch=main --commit-dirty=true
