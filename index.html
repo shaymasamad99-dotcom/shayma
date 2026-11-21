@@ -406,6 +406,7 @@ button.cal-d { border: 0; padding: 0; font: inherit; cursor: pointer; }
 .upnext { position: fixed; z-index: 6; top: calc(150px + env(safe-area-inset-top, 0px)); inset-inline-end: 12px; width: 112px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 8px; border-radius: 18px; background: var(--surface); border: 1px solid var(--accent); box-shadow: 0 10px 26px rgb(0 0 0 / .35); text-align: center; opacity: 0; transform: translateY(-8px) scale(.96); pointer-events: none; transition: opacity .3s, transform .3s; }
 .upnext.show { opacity: 1; transform: none; }
 .upnext b { font-size: .8rem; color: var(--accent); } .upnext small { font-size: .72rem; line-height: 1.3; color: var(--ink); } .un-side { font-size: 1.8rem; line-height: 1.2; }
+.unfin { color: var(--warn); font-weight: 700; }
 .tw-line { margin: 0; font-size: .8rem; line-height: 1.5; color: var(--muted); }
 .pw-list { display: flex; flex-direction: column; gap: 10px; } .pw-day { display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
 .pw-w { display: flex; flex-direction: column; gap: 2px; } .pw-w .ov-list { margin-top: 4px; }
@@ -1722,12 +1723,20 @@ const bestOf = (id, before) => { const h = weightsOf(id).filter(x => !before || 
 const daysWord = (n) => lang === "en" ? (n === 1 ? "1 day" : `${n} days`) : n === 1 ? "يوم واحد" : n === 2 ? "يومين" : `${n} أيام`;
 const rng = (t) => String(t).replace(/(\d+–\d+)/g, '<bdi dir="ltr">$1</bdi>');
 const fmtW = (w) => `${Math.round(w * 10) / 10} ${L("كغ", "kg")}`;
+// يوم «مكتمل»: تمرين خلّصتيه (مش اللي طلعتي منو بالنص)، أو ٣ تمارين وأكتر علّمتيهن ✓ بإيدك
+function dayDoneKey(k) {
+  let hs = []; try { hs = hist.filter(h => h.d === k && (h.rows || []).length); } catch (e) {}
+  if (hs.some(h => h.full !== false)) return true;
+  if (hs.length) return false;                     // بس تمارين ما كمّلتيها
+  return Object.values(log[k] || {}).filter(e => e.done).length >= 3;
+}
+const dayStartedKey = (k) => Object.values(log[k] || {}).some(e => e.done);
 function weekStats(offset = 0) {
   let days = 0, ex = 0, actMin = 0;
   for (let i = 0; i < 7; i++) {
     const key = ymd(dateOfDay(i, offset)), d = log[key] || {}, a = acts[key] || [];
     const n = Object.values(d).filter(e => e.done).length, am = a.reduce((x, y) => x + y.min, 0);
-    ex += n; actMin += am; if (n || am) days++;
+    ex += n; actMin += am; if (dayDoneKey(key) || am) days++;
   }
   return { days, ex, actMin };
 }
@@ -1844,8 +1853,8 @@ if (!profile.start) { profile.start = weekKey(); store.set("tamrini.profile", pr
 const perWeek = () => Math.max(2, (profile.days || []).length || 3);
 function trainDates() {
   const st = profile.start || "", ds = new Set();
-  try { hist.forEach(h => { if (h.rows && h.rows.length && h.d >= st) ds.add(h.d); }); } catch (e) {}
-  Object.keys(log).forEach(d => { if (d >= st && Object.values(log[d] || {}).some(e => e.done)) ds.add(d); });
+  try { hist.forEach(h => { if (h.d >= st && dayDoneKey(h.d)) ds.add(h.d); }); } catch (e) {}
+  Object.keys(log).forEach(d => { if (d >= st && dayDoneKey(d)) ds.add(d); });
   return [...ds].sort();
 }
 const progWeek = () => 1 + Math.floor(trainDates().length / perWeek());
@@ -2353,7 +2362,7 @@ let calOff = 0;
 const dayIdxOf = (d) => (Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(dateOfDay(0).getFullYear(), dateOfDay(0).getMonth(), dateOfDay(0).getDate())) / 864e5) % 7 + 7) % 7;
 function actLevel(k) {
   const d = log[k] || {}, n = Object.values(d).filter(e => e.done).length;
-  if (n) return 3; if ((acts[k] || []).length) return 2; return 0;
+  if (n && dayDoneKey(k)) return 3; if (n || (acts[k] || []).length) return 2; return 0;
 }
 function dayStreak() {
   let n = 0; const d = new Date(TODAY);
@@ -2760,13 +2769,14 @@ function dayBlocks(warm, rowsHtml, nItems, cool) {
     <div class="blk">${blockH(L("٢ · التمرين", "2 · Workout"), `${nItems} ${L("تمارين", "exercises")}`)}<div class="list">${rowsHtml}</div></div>
     <div class="blk">${blockH(L("٣ · تمطيط", "3 · Stretch"), `${Math.max(1, Math.round(moveSec(cool) / 60))} ${L("د", "min")}`)}<div class="list">${cool.map(moveRow).join("")}</div></div>`;
 }
-const hadWorkout = (i) => hist.some(h => h.d === ymd(dateOfDay(i)) && h.rows && h.rows.length);
+const hadWorkout = (i) => hist.some(h => h.d === ymd(dateOfDay(i)) && h.rows && h.rows.length && h.full !== false);   // تمرين مكتمل بس
 function dayStatus(i) {
   const day = buildDay(i);
-  const d = ymd(dateOfDay(i)), any = hadWorkout(i) || Object.values(log[d] || {}).some(e => e.done);      // أي تمرين عملتيه هاليوم بينحسب
-  if (!day) return any || (isSwimDay(i) && actsOf(d).some(a => a.t === "swim")) ? "full" : "";
+  const d = ymd(dateOfDay(i)), full = dayDoneKey(d), started = dayStartedKey(d);      // تمرين مكتمل بينحسب؛ اللي طلعتي منو بالنص «◐»
+  if (!day) return full || (isSwimDay(i) && actsOf(d).some(a => a.t === "swim")) ? "full" : started ? "part" : "";
   const n = day.items.filter(it => (entry(d, it.ex.id) || {}).done).length, sk = day.items.filter(it => (entry(d, it.ex.id) || {}).skip).length;
-  return n === 0 ? (any ? "full" : "") : n + sk >= day.items.length ? "full" : "part";      // اللي تخطّيتيه ما بيوقّف اليوم
+  if (n + sk >= day.items.length && n) return "full";
+  return full ? "full" : n || started ? "part" : "";      // اللي تخطّيتيه ما بيوقّف اليوم
 }
 function ring(frac, label) {
   const r = 32, c = 2 * Math.PI * r, f = Math.max(0, Math.min(1, frac));
@@ -2791,7 +2801,7 @@ function pastWeeksList() {
 }
 function pastWeek(off, firstOff) {
   const ws = weekStats(off), d0 = dateOfDay(0, off), d6 = dateOfDay(6, off), n = Math.round((d0 - parseD(profile.start || weekKey())) / (7 * 864e5)) + 1;
-  const days = [...Array(7).keys()].map(i => { const k = ymd(dateOfDay(i, off)), hs = hist.filter(h => h.d === k && ((h.rows || []).length || h.moves)), did = hs.some(h => (h.rows || []).length) || Object.values(log[k] || {}).some(e => e.done), sw = (acts[k] || []).some(a => a.t === "swim");
+  const days = [...Array(7).keys()].map(i => { const k = ymd(dateOfDay(i, off)), hs = hist.filter(h => h.d === k && ((h.rows || []).length || h.moves)), did = dayDoneKey(k), sw = (acts[k] || []).some(a => a.t === "swim");
     return { i, k, hs, did, sw }; });
   return `<section class="wkstrip past">
       <div class="wk-h"><button class="wk-arr" data-wkoff="${off - 1}" ${off > firstOff ? "" : "disabled"} aria-label="${L("الأسبوع اللي قبل", "Previous week")}">${L("›", "‹")}</button><b>${L(`أسبوع ${n}`, `Week ${n}`)}</b><span>${dm(d0)} – ${dm(d6)} · ${((n) => L(n === 1 ? "يوم واحد" : `${n} أيام`, `${n} day${n === 1 ? "" : "s"}`))(days.filter(x => x.did || x.sw).length)}</span><button class="wk-arr" data-wkoff="${off + 1}" aria-label="${L("الأسبوع اللي بعد", "Next week")}">${L("‹", "›")}</button></div>
@@ -2821,7 +2831,7 @@ function renderPlan() {
       <div class="wk-days">${[...Array(7).keys()].map(i => {
         const d = buildDay(i), stt0 = dayStatus(i), sw = !d && isSwimDay(i);
         const did = !d && Object.values(log[ymd(dateOfDay(i))] || {}).some(e => e.done);      // تمرين من «صمّمي تمرينك» أو روتين بيوم راحة
-        const stt = stt0 === "full" || did || hadWorkout(i) ? "full" : stt0, swd = (acts[ymd(dateOfDay(i))] || []).some(a => a.t === "swim"), mk = stt === "full" ? "🏆" : swd ? "🌊" : stt === "part" ? "◐" : d ? "●" : sw ? "〰" : "";
+        const stt = stt0, swd = (acts[ymd(dateOfDay(i))] || []).some(a => a.t === "swim"), mk = stt === "full" ? "🏆" : swd ? "🌊" : stt === "part" ? "◐" : d ? "●" : sw ? "〰" : "";
         return `<button class="wd ${d || sw ? "tr" : "rs"} ${stt}${swd && stt !== "full" ? " swimd" : ""}${i === selDay ? " sel" : ""}${i === todayIdx ? " now" : ""}" data-day="${i}" aria-pressed="${i === selDay}" aria-label="${dayN(i)}: ${d ? d.typeName : sw ? L("سباحة", "Swim") : L("راحة", "Rest")}"><span>${i === todayIdx ? L("اليوم", "Today") : WD_SHORT(i)}</span><i aria-hidden="true">${mk}</i></button>`;
       }).join("")}</div>
     </section>`;
@@ -2994,7 +3004,7 @@ function dayDetail() {
     const hs0 = hist.filter(h => h.d === dStr && h.rows && h.rows.length), ticked = Object.keys(log[dStr] || {}).filter(id => log[dStr][id].done && anyEx(id));
     const hs = hs0.length ? hs0 : [{ d: dStr, min: 0, rows: ticked.map(id => ({ id, s: 0 })), t: { ar: "تمرين", en: "Workout" } }], kc = hs.reduce((a, h) => a + histKcal(h), 0), mn = hs.reduce((a, h) => a + (+h.min || 0), 0);
     html += `<section class="checkin restday rdone">
-        <div class="rd-hero"><span aria-hidden="true">🏆</span><b>${L("خلّصتي تمرين اليوم!", "Workout done!")}</b><em class="rd-what">${esc(hs.map(h => h.t ? L(h.t.ar, h.t.en) : L("تمرين", "Workout")).join(" + "))}</em><small>${L(CHEERS[TODAY.getDate() % CHEERS.length], CHEERS_EN[TODAY.getDate() % CHEERS_EN.length])}</small></div>
+        <div class="rd-hero"><span aria-hidden="true">${dayDoneKey(dStr) ? "🏆" : "◐"}</span><b>${dayDoneKey(dStr) ? L("خلّصتي تمرين اليوم!", "Workout done!") : L("بلّشتي تمرين وما كمّلتيه", "Workout started, not finished")}</b><em class="rd-what">${esc(hs.map(h => h.t ? L(h.t.ar, h.t.en) : L("تمرين", "Workout")).join(" + "))}</em><small>${L(CHEERS[TODAY.getDate() % CHEERS.length], CHEERS_EN[TODAY.getDate() % CHEERS_EN.length])}</small></div>
         ${(() => { const mu = tgtTop(hs.flatMap(h => h.rows.map(r => anyEx(r.id))).filter(x => x && !x.kind), 4); return mu.length ? `<div class="mchips rd-mus">${mu.map(k => `<span>${rgPic(k, "md")}${rgN(k).replace(/\s*\(.*\)\s*/, "")}</span>`).join("")}</div>` : ""; })()}
         <h2>${dayN(selDay)}: ${L("تمرّنتي اليوم", "You trained today")} 💪</h2>
         <p class="muted small">${L("تمرينك انحسب بتقدّمك. ارتاحي منيح الليلة وخلّي في بروتين ومي.", "Your workout counts in your progress. Rest well tonight with protein and water.")}</p>
@@ -3525,7 +3535,7 @@ function histBlock() {
   if (!hist.length) return "";
   return `<section class="group"><h3 class="sec">${L("سجل تماريني", "My workout log")}</h3><div class="srows">${hist.slice(0, 20).map((h, i) => {
     const dt = new Date(h.at), open = histOpen === i;
-    return `<button class="srow" data-hist="${i}" aria-expanded="${open}"><span class="sdate"><small>${L(DAYS[(dt.getDay() + 1) % 7], DAYS_EN[(dt.getDay() + 1) % 7].slice(0, 3))}</small><b>${dt.getDate()}</b></span><span class="sinfo"><b>${esc(L(h.t.ar, h.t.en))}</b><small>${h.min} ${L("د", "min")} · ${h.rows.length} ${L("تمارين", "exercises")} · ${h.sets} ${L("مجموعات", "sets")}${h.prs ? L(` · ${h.prs} رقم قياسي`, ` · ${h.prs} PR`) : ""}${histKcal(h) ? ` · 🔥 ~${histKcal(h)} ${L("سعرة", "kcal")}` : ""}${h.mood != null ? ` · ${["😫", "😕", "😐", "🙂", "🤩"][h.mood]}` : ""}${h.diff ? ` · ${{ easy: L("هيّن", "Easy"), mid: L("متوسط", "Medium"), hard: L("صعب", "Hard") }[h.diff]}` : ""}</small></span><span class="chev" aria-hidden="true">${open ? "⌄" : "‹"}</span></button>${open ? `<div class="ov-in">${overviewRows(h, false, true)}</div>` : ""}`;
+    return `<button class="srow" data-hist="${i}" aria-expanded="${open}"><span class="sdate"><small>${L(DAYS[(dt.getDay() + 1) % 7], DAYS_EN[(dt.getDay() + 1) % 7].slice(0, 3))}</small><b>${dt.getDate()}</b></span><span class="sinfo"><b>${esc(L(h.t.ar, h.t.en))}</b><small>${h.full === false ? `<span class="unfin">◐ ${L("ما كمّلتيه", "Not finished")}</span> · ` : ""}${h.min} ${L("د", "min")} · ${h.rows.length} ${L("تمارين", "exercises")} · ${h.sets} ${L("مجموعات", "sets")}${h.prs ? L(` · ${h.prs} رقم قياسي`, ` · ${h.prs} PR`) : ""}${histKcal(h) ? ` · 🔥 ~${histKcal(h)} ${L("سعرة", "kcal")}` : ""}${h.mood != null ? ` · ${["😫", "😕", "😐", "🙂", "🤩"][h.mood]}` : ""}${h.diff ? ` · ${{ easy: L("هيّن", "Easy"), mid: L("متوسط", "Medium"), hard: L("صعب", "Hard") }[h.diff]}` : ""}</small></span><span class="chev" aria-hidden="true">${open ? "⌄" : "‹"}</span></button>${open ? `<div class="ov-in">${overviewRows(h, false, true)}</div>` : ""}`;
   }).join("")}</div></section>`;
 }
 /* ===================== قياساتي وصور التقدّم ===================== */
@@ -4062,6 +4072,9 @@ function sesSummary() {
 }
 function saveHist() {
   if (!ses || ses.saved) return; const sm = sesSummary(); if (!sm.rows.length && !sm.moves) return;
+  // مكتمل: خلّصتي (أو تخطّيتي) كل التمارين، أو ٦٠٪ منها عالأقل. إذا طلعتي قبل، بينحفظ «ما كمّلتيه» وما بينحسب يوم
+  { const its = sesItems(), main = its.map((x, i) => i).filter(i => !its[i].ex.kind), fin = main.filter(i => ses.fin.includes(i)).length, sk = main.filter(i => !ses.fin.includes(i) && (ses.skip || []).includes(i)).length;
+    sm.full = !main.length || fin + sk >= main.length || fin >= Math.ceil(main.length * 0.6); }
   ses.saved = true; hist = [sm, ...hist.filter(h => h.at !== sm.at)].slice(0, 120); store.set("tamrini.hist", hist);
   // أي تمرين اشتغلتي فيه (ولو مجموعة وحدة) بينحسب بالتقدّم، حتى لو وقّفتي قبل الآخر
   sm.rows.forEach(r => { if (!(entry(ses.date, r.id) || {}).done) setEntry(ses.date, r.id, { done: true }); });
