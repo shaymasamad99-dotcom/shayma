@@ -4165,20 +4165,37 @@ const PROUD_POOL = [
   ["هيك بتنبنى الثقة: تمرين ورا تمرين 👑", "This is how confidence is built: one workout after another 👑"],
 ];
 const GRP = { glutes: ["أردافك", "your glutes", "🍑"], quads: ["فخادك", "your thighs", "🦵"], hamstrings: ["ورا فخادك", "your hamstrings", "🦵"], calves: ["سمانتك", "your calves", "🦵"], chest: ["صدرك", "your chest", "💪"], back: ["ضهرك", "your back", "🦋"], shoulders: ["كتافك", "your shoulders", "💪"], biceps: ["زنودك", "your arms", "💪"], triceps: ["ورا إيديك", "the backs of your arms", "💪"], abs: ["بطنك وخصرك", "your core", "🔥"] };
+// تنويع الكلام: قالب مختلف عن المرّة الماضية، وإيموجي متغيّر
+function pickVar(key, arr) { const k = "tamrini.var." + key; let last = -1; try { last = store.get(k, -1); } catch (e) {} let i; do { i = Math.floor(Math.random() * arr.length); } while (arr.length > 1 && i === last); try { store.set(k, i); } catch (e) {} return arr[i]; }
+const rndE = () => ["💪", "🔥", "✨", "🌸", "💖", "⚡", "🎯", "👏", "🌟", "🍑", "🦋", "💫"][Math.floor(Math.random() * 12)];
 function proudLines() {
   if (ses.proud) return ses.proud;
   const items = sesItems(), done = items.filter((it, i) => !it.ex.kind && (ses.fin.includes(i) || (ses.by || {})[i] > 0));
   const cnt = {}; done.forEach(it => { cnt[it.ex.m] = (cnt[it.ex.m] || 0) + 1; });
   const top = Object.entries(cnt).sort((a, b) => b[1] - a[1]).map(x => x[0]).filter(m => GRP[m]).slice(0, 2), out = [];
   // ١) شو اشتغل اليوم بالزبط
-  if (top.length) { const g = top.map(m => GRP[m]); out.push(L(`${g.map(x => x[0]).join(" و")} اشتغلوا منيح اليوم: ${done.length === 1 ? "تمرين واحد" : `${done.length} تمارين`}${ses.sets ? ` و${ses.sets} مجموعات` : ""} ${g[0][2]}`, `${g.map(x => x[1]).join(" and ")} worked hard today: ${done.length} exercise${done.length > 1 ? "s" : ""}${ses.sets ? `, ${ses.sets} sets` : ""} ${g[0][2]}`)); }
+  if (top.length) {
+    const g = top.map(m => GRP[m]), ga = g.map(x => x[0]).join(" و"), ge = g.map(x => x[1]).join(" and "), n = done.length, st = ses.sets;
+    const na = n === 1 ? "تمرين واحد" : `${n} تمارين`, sa = st ? `${st} مجموعات` : "", ne = `${n} exercise${n > 1 ? "s" : ""}`, se = st ? `${st} sets` : "";
+    const T1 = [
+      [`${ga} اشتغلوا منيح اليوم: ${na}${sa ? ` و${sa}` : ""}`, `${ge} worked hard today: ${ne}${se ? `, ${se}` : ""}`],
+      [`اليوم شغّلتي ${ga} بـ${na}${sa ? ` و${sa}` : ""}`, `Today you trained ${ge} with ${ne}${se ? ` and ${se}` : ""}`],
+      [`${ga} أخدوا حقّن اليوم${sa ? `: ${sa}` : ""}`, `${ge} got their full share today${se ? `: ${se}` : ""}`],
+      [`شغل نظيف على ${ga}، ${na} خلصوا`, `Clean work on ${ge}, ${ne} done`],
+      [`${sa || na} وما وقّفتي! ${ga} رح يشكروكِ`, `${se || ne} and you didn't stop! ${ge} will thank you`],
+      [`${ga} صاروا أقوى من الصبح، ${na} بجيبتك`, `${ge} are stronger than this morning, ${ne} in the bag`],
+    ];
+    out.push(L(...pickVar("t1", T1)) + " " + rndE());
+  }
   // ٢) رقم حقيقي من تقدّمك
   const facts = [], prev = hist.find(h => h.at !== ses.started && h.t && ses.title && L(h.t.ar, h.t.en) === L(ses.title.ar || ses.title, ses.title.en || ses.title) && h.sets);
   if (ses.prs) facts.push(L(`رفعتي وزن أتقل من قبل ${ses.prs > 1 ? `بـ${ses.prs} تمارين` : "بتمرين"}! هيدا تقدّم حقيقي 🏆`, `You lifted heavier than before on ${ses.prs} exercise${ses.prs > 1 ? "s" : ""}! Real progress 🏆`));
   if (prev && ses.sets > prev.sets) facts.push(L(`عملتي ${ses.sets - prev.sets} مجموعات أكتر من آخر مرّة بنفس التمرين 📈`, `${ses.sets - prev.sets} more sets than last time on this workout 📈`));
   if (ses.easy) facts.push(L("كنتي تعبانة اليوم وجيتي عالرغم من هيك، هيدي القوّة الحقيقية 🤍", "You were tired today and still showed up. That's real strength 🤍"));
   try { const today = ymd(TODAY), n = trainDates().length + (trainDates().includes(today) ? 0 : 1), k = n % perWeek(), per = perWeek();
-    facts.push(k === 0 ? L(`خلّصتي أيام أسبوعك التدريبي كلّها (${per} من ${per}) 🎉`, `That completes your training week (${per} of ${per}) 🎉`) : L(`هيدا يومك ${k} من ${per} بهالأسبوع التدريبي، ${per - k === 1 ? "باقي يوم واحد" : `باقي ${per - k} أيام`} 💪`, `Day ${k} of ${per} this training week, ${per - k} to go 💪`)); } catch (e) {}
+    const r = per - k, ra = r === 1 ? "يوم واحد" : `${r} أيام`;
+    facts.push(k === 0 ? L(...pickVar("t2done", [[`خلّصتي أيام أسبوعك التدريبي كلّها (${per} من ${per})، بلّش أسبوع أقوى`, `Training week complete (${per} of ${per}), a stronger week starts`], [`أسبوع تدريبي كامل بجيبتك! ${per} من ${per}`, `A full training week done! ${per} of ${per}`], [`${per} أيام من ${per}، المرحلة الجاية إلك`, `${per} of ${per} days, the next phase is yours`]])) + " " + rndE()
+      : L(...pickVar("t2", [[`هيدا يومك ${k} من ${per} بهالأسبوع التدريبي، باقي ${ra}`, `Day ${k} of ${per} this training week, ${r} to go`], [`${k} من ${per} أيام خلصوا، ${ra} وبيبلّش أسبوع جديد`, `${k} of ${per} days done, ${r} more and a new week begins`], [`عدّاد الأسبوع: ${k}/${per}، كمّلي هيك`, `Week counter: ${k}/${per}, keep it up`], [`صرتي بيومك ${k} من ${per}، الباقي أسهل`, `You're on day ${k} of ${per}, the rest is easier`]])) + " " + rndE()); } catch (e) {}
   if (facts.length) out.push(facts[Math.floor(Math.random() * facts.length)]);
   // ٣) جملة من المجموعة، ما بتتكرّر لحتى يخلصوا كلّن
   const seen = store.get("tamrini.proudSeen", []), free = PROUD_POOL.map((x, i) => i).filter(i => !seen.includes(i));
@@ -4200,7 +4217,7 @@ function sectBody(items) {
     m: [L("٢ · التمارين", "2 · Workout"), L("▶ ابدئي التمارين", "▶ Start the workout"), L("خلص الإحماء ✓ جسمك جاهز. خدي مي وجهّزي أوزانك.", "Warm-up done ✓ You're ready. Grab some water and your weights.")],
     c: [L("٣ · التمطيط", "3 · Stretch"), L("▶ ابدئي التمطيط", "▶ Start stretching"), L("خلصت التمارين ✓ هلّق منرخّي العضل اللي اشتغلت.", "Workout done ✓ Now let's relax the muscles you worked.")] }[sc];
   return `<div class="pl-main pl-sect">
-      ${sc === "c" && hasMain && mainDone ? proudBox() : ""}
+
       <span class="pl-pill">${T[0]}</span>
       <p class="sect-why">${T[2]}</p>
       <div class="sect-list">${rest.map(({ x }) => `<div class="sect-row">${avatar(x.ex, { size: 40 })}<span><b>${esc(exN(x.ex))}</b><small class="muted">${x.ex.kind ? `${mmss(hS(x))}${x.ex.uni ? L(" · لكل جهة", " · each side") : ""}` : `${sS(x.ex)} ${L("مجموعات", "sets")}`}</small></span></div>`).join("")}</div>
