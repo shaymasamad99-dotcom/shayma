@@ -404,7 +404,7 @@ button.cal-d { border: 0; padding: 0; font: inherit; cursor: pointer; }
 .pw-list { display: flex; flex-direction: column; gap: 10px; } .pw-day { display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
 .pw-w { display: flex; flex-direction: column; gap: 2px; } .pw-w .ov-list { margin-top: 4px; }
 .proud { display: flex; flex-direction: column; gap: 4px; align-items: center; text-align: center; padding: 14px 12px; border-radius: 20px; background: linear-gradient(135deg, rgb(255 111 160 / .22), rgb(180 140 255 / .18)); border: 1px solid #FF8FB5; }
-.proud b { font-family: var(--display); font-size: 1.1rem; line-height: 1.4; } .proud b:first-child { font-size: 1.25rem; color: #FF6FA0; }
+.proud { gap: 8px; } .proud b { font-family: var(--display); font-size: .98rem; font-weight: 600; line-height: 1.5; } .proud b:first-child { font-size: 1.08rem; color: #FF6FA0; }
 .pl-sect { gap: 12px; } .sect-why { margin: 0; text-align: center; font-size: .92rem; line-height: 1.6; }
 .sect-list { width: 100%; display: flex; flex-direction: column; gap: 6px; max-height: 42vh; overflow: auto; }
 .sect-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 14px; background: var(--soft); text-align: start; } .sect-row span { display: flex; flex-direction: column; min-width: 0; } .sect-row b { font-size: .9rem; }
@@ -4031,8 +4031,47 @@ function confetti(n) {
 // ٣ أقسام: إحماء ← تمارين ← تمطيط. بين قسم وقسم منوقّف ومنستنّى «ابدئي»
 const secOf = (it) => !it ? "" : it.ex.kind === "warm" ? "w" : it.ex.kind ? "c" : "m";
 function toSect(prev) { const nit = sesItems()[ses.idx]; if (prev && nit && secOf(nit) !== secOf(prev)) { ses.phase = "sect"; ses.until = 0; } }
-const PROUD = ["Shushy is proud of you 💖", "You are doing this for you ✨", "Better you, bravooo! 🎉"];
-const proudBox = () => `<div class="proud" role="status">${PROUD.map(t => `<b dir="ltr">${t}</b>`).join("")}</div>`;
+// تشجيع جديد كل مرّة، ومبني عالتمرين اللي عملتيه فعلاً (العضلات، المجموعات، الأوزان، أسبوعك)
+const PROUD_POOL = [
+  ["Shushy is proud of you 💖", "Shushy is proud of you 💖"], ["You are doing this for you ✨", "You are doing this for you ✨"], ["Better you, bravooo! 🎉", "Better you, bravooo! 🎉"],
+  ["كل تمرين بتعمليه هو وعد وفيتي فيه لحالك 🤍", "Every workout is a promise you kept to yourself 🤍"],
+  ["ما في حدا جبرك، إنتِ اخترتي حالك اليوم 💪", "Nobody made you. You chose yourself today 💪"],
+  ["القوّة ما بتجي بيوم، بتجي من أيام متل اليوم 🌱", "Strength isn't built in a day, it's built from days like today 🌱"],
+  ["جسمك عم يتغيّر حتى لو بعد ما بيّن بالمراية 🪞", "Your body is changing even before the mirror shows it 🪞"],
+  ["الاستمرار أهم من الكمال، وإنتِ مستمرّة ✨", "Consistency beats perfection, and you're consistent ✨"],
+  ["نسخة الشهر الجاي منك رح تشكرك على اليوم 💌", "Next month's you will thank you for today 💌"],
+  ["اليوم كان صعب؟ هيدا يعني إنّك عم تقوي 🔥", "Felt hard today? That means you're getting stronger 🔥"],
+  ["خلّصتي، وهيدا أصعب جزء: إنّك تبلّشي 👟", "You finished, and the hardest part was starting 👟"],
+  ["عضلاتك هلّق عم تتصلّح وتكبر، ريّحيها وطعميها 🍽️", "Your muscles are rebuilding now: rest and feed them 🍽️"],
+  ["إنتِ أقوى من كل عذر كان ممكن يوقّفك 💥", "You're stronger than every excuse that could have stopped you 💥"],
+  ["فخورة فيكِ، وبتستاهلي تكوني فخورة بحالك كمان 🌸", "Proud of you, and you deserve to be proud of yourself too 🌸"],
+  ["خطوة صغيرة كل مرّة، وعم توصلي 🎯", "One small step at a time, and you're getting there 🎯"],
+  ["ما بتتمرّني لتعاقبي جسمك، بتتمرّني لأنّك بتحبّيه 💗", "You don't train to punish your body, you train because you love it 💗"],
+  ["هيك بتنبنى الثقة: تمرين ورا تمرين 👑", "This is how confidence is built: one workout after another 👑"],
+];
+const GRP = { glutes: ["أردافك", "your glutes", "🍑"], quads: ["فخادك", "your thighs", "🦵"], hamstrings: ["ورا فخادك", "your hamstrings", "🦵"], calves: ["سمانتك", "your calves", "🦵"], chest: ["صدرك", "your chest", "💪"], back: ["ضهرك", "your back", "🦋"], shoulders: ["كتافك", "your shoulders", "💪"], biceps: ["زنودك", "your arms", "💪"], triceps: ["ورا إيديك", "the backs of your arms", "💪"], abs: ["بطنك وخصرك", "your core", "🔥"] };
+function proudLines() {
+  if (ses.proud) return ses.proud;
+  const items = sesItems(), done = items.filter((it, i) => !it.ex.kind && (ses.fin.includes(i) || (ses.by || {})[i] > 0));
+  const cnt = {}; done.forEach(it => { cnt[it.ex.m] = (cnt[it.ex.m] || 0) + 1; });
+  const top = Object.entries(cnt).sort((a, b) => b[1] - a[1]).map(x => x[0]).filter(m => GRP[m]).slice(0, 2), out = [];
+  // ١) شو اشتغل اليوم بالزبط
+  if (top.length) { const g = top.map(m => GRP[m]); out.push(L(`${g.map(x => x[0]).join(" و")} اشتغلوا منيح اليوم: ${done.length === 1 ? "تمرين واحد" : `${done.length} تمارين`}${ses.sets ? ` و${ses.sets} مجموعات` : ""} ${g[0][2]}`, `${g.map(x => x[1]).join(" and ")} worked hard today: ${done.length} exercise${done.length > 1 ? "s" : ""}${ses.sets ? `, ${ses.sets} sets` : ""} ${g[0][2]}`)); }
+  // ٢) رقم حقيقي من تقدّمك
+  const facts = [], prev = hist.find(h => h.at !== ses.started && h.t && ses.title && L(h.t.ar, h.t.en) === L(ses.title.ar || ses.title, ses.title.en || ses.title) && h.sets);
+  if (ses.prs) facts.push(L(`رفعتي وزن أتقل من قبل ${ses.prs > 1 ? `بـ${ses.prs} تمارين` : "بتمرين"}! هيدا تقدّم حقيقي 🏆`, `You lifted heavier than before on ${ses.prs} exercise${ses.prs > 1 ? "s" : ""}! Real progress 🏆`));
+  if (prev && ses.sets > prev.sets) facts.push(L(`عملتي ${ses.sets - prev.sets} مجموعات أكتر من آخر مرّة بنفس التمرين 📈`, `${ses.sets - prev.sets} more sets than last time on this workout 📈`));
+  if (ses.easy) facts.push(L("كنتي تعبانة اليوم وجيتي عالرغم من هيك، هيدي القوّة الحقيقية 🤍", "You were tired today and still showed up. That's real strength 🤍"));
+  try { const today = ymd(TODAY), n = trainDates().length + (trainDates().includes(today) ? 0 : 1), k = n % perWeek(), per = perWeek();
+    facts.push(k === 0 ? L(`خلّصتي أيام أسبوعك التدريبي كلّها (${per} من ${per}) 🎉`, `That completes your training week (${per} of ${per}) 🎉`) : L(`هيدا يومك ${k} من ${per} بهالأسبوع التدريبي، ${per - k === 1 ? "باقي يوم واحد" : `باقي ${per - k} أيام`} 💪`, `Day ${k} of ${per} this training week, ${per - k} to go 💪`)); } catch (e) {}
+  if (facts.length) out.push(facts[Math.floor(Math.random() * facts.length)]);
+  // ٣) جملة من المجموعة، ما بتتكرّر لحتى يخلصوا كلّن
+  let seen = store.get("tamrini.proudSeen", []); if (seen.length >= PROUD_POOL.length) seen = [];
+  const free = PROUD_POOL.map((x, i) => i).filter(i => !seen.includes(i)), pick = free[Math.floor(Math.random() * free.length)];
+  store.set("tamrini.proudSeen", [...seen, pick]); out.push(L(...PROUD_POOL[pick]));
+  ses.proud = out; saveSes(); return out;
+}
+const proudBox = () => `<div class="proud" role="status">${proudLines().map(t => `<b>${esc(t)}</b>`).join("")}</div>`;
 function sectBody(items) {
   const it = items[ses.idx], sc = secOf(it), rest = items.map((x, i) => ({ x, i })).filter(({ x, i }) => i >= ses.idx && secOf(x) === sc && !ses.fin.includes(i));
   const sec = rest.reduce((a, { x }) => a + (x.ex.kind ? hS(x) * (x.ex.uni ? 2 : 1) : 0), 0), hasMain = items.some(x => !x.ex.kind), mainDone = items.some((x, i) => !x.ex.kind && ses.fin.includes(i));
