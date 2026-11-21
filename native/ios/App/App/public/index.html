@@ -1600,7 +1600,7 @@ const PAT = {
   "back:h": ["db-row", "db-chestrow", "m-cablerow", "superman"],
   "shoulders:press": ["db-shpress", "m-shpress", "db-arnold"],
   "shoulders:side": ["db-lateral", "db-seatedlat", "m-latmachine", "m-cablelateral", "db-front"],
-  "shoulders:rear": ["db-reardelt", "m-revpec", "m-facepull", "m-facepull-seat"],
+  "shoulders:rear": ["m-facepull", "m-facepull-seat", "db-reardelt", "m-revpec"],
   "glutes:thrust": ["db-hipthrust", "m-hipthrust", "glute-bridge", "sl-bridge", "m-pullthrough", "frog-pump"],
   "glutes:uni": ["db-bulgarian", "db-revlunge", "db-curtsy", "db-sumo"],
   "glutes:iso": ["m-abduction", "m-kickback", "m-glutekick", "donkey-kick", "fire-hydrant", "clamshell"],
@@ -1618,7 +1618,7 @@ const PKGS = {
     { id: "full-home", ar: "بالبيت", en: "At home", subAr: "بلا معدات", subEn: "No equipment", eq: "body", slots: ["quads", "chest:press", "glutes:thrust", "back:h", "glutes:iso", "triceps", "abs:flex", "abs:hold"] },
   ],
   upper: [
-    { id: "upper-balanced", ar: "متوازن", en: "Balanced", subAr: "صدر، ظهر، كتاف وإيدين", subEn: "Chest, back, shoulders & arms", slots: ["chest:press", "back:v", "shoulders:press", "back:h", "shoulders:side", "biceps", "triceps", "abs:hold"] },
+    { id: "upper-balanced", ar: "متوازن", en: "Balanced", subAr: "صدر، ظهر، كتاف وإيدين", subEn: "Chest, back, shoulders & arms", slots: ["chest:press", "back:v", "shoulders:press", "back:h", "shoulders:side", "shoulders:rear", "biceps", "triceps", "abs:hold"] },
     { id: "upper-back", ar: "ظهر وكتاف", en: "Back & shoulders", subAr: "وقفة أحلى وظهر أقوى", subEn: "Better posture, stronger back", slots: ["back:v", "chest:press", "back:h", "shoulders:side", "shoulders:rear", "biceps", "abs:rot"] },
     { id: "upper-arms", ar: "صدر وإيدين", en: "Chest & arms", subAr: "شد الإيدين والصدر", subEn: "Toned arms and chest", slots: ["chest:press", "back:v", "chest:fly", "back:h", "triceps", "biceps", "abs:flex"] },
     { id: "upper-home", ar: "بالبيت", en: "At home", subAr: "بلا معدات", subEn: "No equipment", eq: "body", slots: ["chest:press", "back:h", "triceps", "chest:press", "abs:flex", "abs:hold", "abs:rot"] },
@@ -1942,7 +1942,7 @@ function buildWorkout(k, day, ov) {
   const items = slots.map((slot, i) => {
     const m = slot.split(":")[0], pat = PAT[slot];
     const all = candidates(m, eq), byPat = pat ? all.filter(x => pat.includes(x.id)) : all;
-    const base = byPat.length ? byPat : all;
+    const base = byPat.length ? (slot === "shoulders:rear" ? byPat.sort((x, y) => pat.indexOf(x.id) - pat.indexOf(y.id)) : byPat) : all;   // الكتف الخلفي: الفيس بول أوّل (أحسن شي للوقفة)
     const free = base.filter(x => !used.has(x.id)), pool = free.length ? free : base;
     const picked = EX.find(x => x.id === dp[`${pk.id}-${i}`]) || EX.find(x => x.id === picks[`${pk.id}-${i}`]);
     const ex = picked && !used.has(picked.id) ? picked : pool[k % pool.length];
@@ -2042,14 +2042,14 @@ const BODY_MAP = [
   { id: "shoulders", ic: "shoulders", ar: "الكتاف", en: "Shoulders", aboutAr: "بيرفعوا إيدك لقدّام، عالجنب ولورا. كتاف قوية = وقفة أحلى وخصر بيبيّن أنحف.", aboutEn: "They lift your arms forward, sideways and back. Strong shoulders mean better posture and a slimmer-looking waist.", parts: [
     ["front", "الكتف الأمامي", "Front delts", "بيرفع إيدك لقدّام وبيدفع لفوق.", "Lifts the arm forward and presses overhead.", ["db-shpress", "m-shpress", "db-arnold", "db-front"], "sh-front"],
     ["side", "الكتف الجانبي", "Side delts", "بيعطي عرض للكتاف وشكل مدوّر.", "Gives the shoulders width and a rounded shape.", ["db-lateral", "db-seatedlat", "m-latmachine", "m-cablelateral"], "sh-side"],
-    ["rear", "الكتف الخلفي", "Rear delts", "بيسحب الإيد لورا، ومهم للوقفة المستقيمة.", "Pulls the arm back; key for upright posture.", ["db-reardelt", "m-revpec", "m-facepull"], "sh-rear"],
-    ["cuff", "الكفة المدوّرة", "Rotator cuff", "أربع عضلات صغيرة بتثبّت مفصل الكتف وبتدوّرو. بتحمي الكتف من الإصابات.", "Four small muscles that steady and rotate the shoulder joint and protect it from injury.", ["db-extrot", "m-facepull"], null]] },
+    ["rear", "الكتف الخلفي", "Rear delts", "بيسحب الإيد لورا، ومهم للوقفة المستقيمة.", "Pulls the arm back; key for upright posture.", ["m-facepull", "m-facepull-seat", "db-reardelt", "m-revpec"], "sh-rear"],
+    ["cuff", "الكفة المدوّرة", "Rotator cuff", "أربع عضلات صغيرة بتثبّت مفصل الكتف وبتدوّرو. بتحمي الكتف من الإصابات.", "Four small muscles that steady and rotate the shoulder joint and protect it from injury.", ["db-extrot", "m-facepull", "m-facepull-seat"], null]] },
   { id: "chest", ic: "chest", ar: "الصدر", en: "Chest", aboutAr: "بيدفع إيديكي لقدّام وبيجمعهن. بيرفع الصدر وبيدعمو.", aboutEn: "Pushes the arms forward and brings them together; lifts and supports the chest.", parts: [
     ["upper", "أعلى الصدر", "Upper chest", "تحت الترقوة، بيشتغل بالدفع المايل لفوق.", "Below the collarbone; works in incline pressing.", ["db-incline", "incline-pushup"], "chest-upper"],
     ["mid", "وسط الصدر", "Mid chest", "أكبر جزء، بيشتغل بالضغط والفتح.", "The biggest part; works in presses and flyes.", ["db-bench", "m-chestpress", "pushup", "db-fly", "m-pecdeck"], "chest-mid"],
     ["lower", "أسفل الصدر", "Lower chest", "بيشتغل لما تجمعي إيديكي لقدّام ولتحت.", "Works when bringing the arms forward and down.", ["m-crossover", "db-pullover"], "chest-lower"]] },
   { id: "back", ic: "back", ar: "الضهر", en: "Back", aboutAr: "بيسحب، وبيثبّت العمود الفقري، وبيعطي شكل V. ضهر قوي = وجع أقل ووقفة أحلى.", aboutEn: "Pulls, stabilises the spine and creates a V shape. A strong back means less pain and better posture.", parts: [
-    ["traps", "العضلة شبه المنحرفة (الترابيز)", "Trapezius (traps)", "أعلى الضهر والرقبة. بترفع لوح الكتف وبتثبّتو، ووسطها بيرجّع الكتاف لورا.", "Upper back and neck. Lifts and steadies the shoulder blades; the middle part pulls the shoulders back.", ["m-facepull", "db-chestrow", "m-cablerow", "m-revpec"], "back-traps"],
+    ["traps", "العضلة شبه المنحرفة (الترابيز)", "Trapezius (traps)", "أعلى الضهر والرقبة. بترفع لوح الكتف وبتثبّتو، ووسطها بيرجّع الكتاف لورا.", "Upper back and neck. Lifts and steadies the shoulder blades; the middle part pulls the shoulders back.", ["m-facepull", "m-facepull-seat", "db-chestrow", "m-cablerow", "m-revpec"], "back-traps"],
     ["rear", "الدالية الخلفية", "Rear delts", "الجزء الخلفي من الكتف. بتسحب الإيد لورا، ومهمّة للوقفة المستقيمة.", "The back of the shoulder. Pulls the arm back and keeps you standing tall.", ["db-reardelt", "m-revpec", "m-facepull"], "back-rear"],
     ["mid", "المعيّنات (وسط الضهر)", "Rhomboids (mid back)", "بين لوحَي الكتف. بتجمعهن لجوّا وبتصلّح الوقفة المحنية.", "Between the shoulder blades. Squeezes them together and fixes a rounded posture.", ["db-chestrow", "m-cablerow", "db-row", "m-revpec"], "back-mid"],
     ["lats", "الظهر العريضة (اللاتس)", "Latissimus dorsi (lats)", "أكبر عضلة بالضهر. بتسحب الإيد لتحت ولورا، وبتعطي شكل V.", "The biggest back muscle. Pulls the arm down and back and creates the V shape.", ["m-pulldown", "m-assistpull", "db-row", "m-straightarm", "db-pullover"], "back-lats"]] },
