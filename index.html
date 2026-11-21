@@ -401,6 +401,8 @@ button.cal-d { border: 0; padding: 0; font: inherit; cursor: pointer; }
 .wk-arr { width: 34px; height: 34px; margin: 0; flex: none; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--accent); font-size: 1.2rem; line-height: 1; display: grid; place-items: center; cursor: pointer; } .wk-arr:disabled { opacity: .3; }
 .wkstrip.past .wk-h { align-items: center; } .wkstrip.past .wk-h span { flex: 1; }
 .old-wk { align-self: flex-start; margin: 0; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--accent); background: var(--soft); color: var(--accent); font-weight: 700; font-size: .82rem; cursor: pointer; }
+.legal-note { margin: 4px 0 0; font-size: .78rem; line-height: 1.6; color: var(--muted); text-align: center; }
+.legal-links { margin: 0; text-align: center; font-size: .82rem; } .legal-links a { color: var(--accent); }
 .tw-line { margin: 0; font-size: .8rem; line-height: 1.5; color: var(--muted); }
 .pw-list { display: flex; flex-direction: column; gap: 10px; } .pw-day { display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
 .pw-w { display: flex; flex-direction: column; gap: 2px; } .pw-w .ov-list { margin-top: 4px; }
@@ -3319,7 +3321,9 @@ function renderMe() {
       ${remindCard()}
       ${suppCard()}
       ${settingsBlock()}
-      ${authUser ? authBlock() : ""}`;
+      ${authUser ? authBlock() : ""}
+      <p class="legal-note">⚠️ ${L("التطبيق للمعلومة والتمرين العام، ومش بديل عن الطبيب. استشيري طبيب قبل ما تبلّشي، ووقّفي إذا حسّيتي بوجع غير طبيعي.", "This app offers general fitness guidance, not medical advice. Check with a doctor before starting, and stop if you feel unusual pain.")}</p>
+      <p class="legal-links"><a href="privacy.html" target="_blank" rel="noopener">${L("الخصوصية", "Privacy")}</a> · <a href="terms.html" target="_blank" rel="noopener">${L("الشروط والتنبيه الصحّي", "Terms & health notice")}</a></p>`;
   }
   draft ||= JSON.parse(JSON.stringify(profile));
   const d = draft;
