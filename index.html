@@ -412,7 +412,7 @@ button.cal-d { border: 0; padding: 0; font: inherit; cursor: pointer; }
 .pw-list { display: flex; flex-direction: column; gap: 10px; } .pw-day { display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
 .pw-w { display: flex; flex-direction: column; gap: 2px; } .pw-w .ov-list { margin-top: 4px; }
 .proud { display: flex; flex-direction: column; gap: 4px; align-items: center; text-align: center; padding: 14px 12px; border-radius: 20px; background: linear-gradient(135deg, rgb(255 111 160 / .22), rgb(180 140 255 / .18)); border: 1px solid #FF8FB5; }
-.proud { gap: 8px; } .proud b { font-family: var(--display); font-size: .98rem; font-weight: 600; line-height: 1.5; } .proud b:first-child { font-size: 1.08rem; color: #FF6FA0; }
+.proud { gap: 8px; } .proud b { font-family: var(--display); font-size: .98rem; font-weight: 600; line-height: 1.5; } .proud b:first-child { font-size: 1.08rem; color: #FF6FA0; } .proud .proud-sig { margin-top: 4px; font-size: 1.15rem; color: #FF6FA0; letter-spacing: .01em; }
 .pl-sect { gap: 12px; } .sect-why { margin: 0; text-align: center; font-size: .92rem; line-height: 1.6; }
 .sect-list { width: 100%; display: flex; flex-direction: column; gap: 6px; max-height: 42vh; overflow: auto; }
 .sect-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 14px; background: var(--soft); text-align: start; } .sect-row span { display: flex; flex-direction: column; min-width: 0; } .sect-row b { font-size: .9rem; }
@@ -4100,7 +4100,7 @@ const CHEERS_EN = ["Queen! 🔥", "So strong! 💪", "Keep it up! ✨", "Beautif
 let cheerT = 0, cheerI = Math.floor(Math.random() * 10);
 // تشجيع جديد دايماً: ١٢ بداية × ٢٠ جملة = ٢٤٠ تركيبة، ما بتتكرّر لحتى يخلصوا كلّن (محفوظ عالجهاز)
 const CH_A = [["يا بطلة", "Queen"], ["قوية", "So strong"], ["برافو", "Bravo"], ["يا سلام", "Wow"], ["ولا أحلى", "Beautiful"], ["شو هالقوّة", "What power"], ["كمّلي هيك", "Keep going"], ["فخورة فيكِ", "So proud of you"], ["يا عيني عليكِ", "Look at you"], ["هيك بدنا", "That's it"], ["واو", "Wow"], ["إنتِ نار", "You're on fire"]];
-const CH_B = [["كل تكرار عم يبنيكِ أقوى", "every rep builds a stronger you"], ["جسمك عم يتعلّم يقوى", "your body is learning to be strong"], ["هالمجموعة عملتيها وما حدا بياخدها منك", "that set is done and it's yours"], ["التعب هلّق، والنتيجة جايي", "the effort is now, the result is coming"], ["عم تقربي من هدفك خطوة خطوة", "step by step toward your goal"], ["الحركة الصح هي القوّة الحقيقية", "good form is real strength"], ["خدي نفس وكمّلي بنفس الطاقة", "breathe and keep that energy"], ["اليوم أقوى من مبارح", "stronger than yesterday"], ["عضلاتك عم تشكرك", "your muscles thank you"], ["ثابتة ومركّزة متل المحترفات", "steady and focused like a pro"], ["كل نقطة عرق إلها قيمة", "every drop of sweat counts"], ["إنتِ عم تعملي هالشي لإلك", "you're doing this for you"], ["شوي شوي الصعب بيصير سهل", "little by little, hard gets easy"], ["كل مجموعة بتقرّبك من الشكل اللي بتحبّيه", "every set brings you closer to the body you love"], ["إرادتك أتقل من أي وزن", "your will is heavier than any weight"], ["ما في حدا ندم إنّو خلّص تمرينو", "nobody regrets finishing a workout"], ["قلبك وعضلاتك عم يقووا سوا", "heart and muscles getting stronger together"], ["حركة نظيفة يعني نتيجة أسرع", "clean reps mean faster results"], ["شوشي فخورة فيكِ", "Shushy is proud of you"], ["Better you كل يوم", "a better you every day"]];
+const CH_B = [["كل تكرار عم يبنيكِ أقوى", "every rep builds a stronger you"], ["جسمك عم يتعلّم يقوى", "your body is learning to be strong"], ["هالمجموعة عملتيها وما حدا بياخدها منك", "that set is done and it's yours"], ["التعب هلّق، والنتيجة جايي", "the effort is now, the result is coming"], ["عم تقربي من هدفك خطوة خطوة", "step by step toward your goal"], ["الحركة الصح هي القوّة الحقيقية", "good form is real strength"], ["خدي نفس وكمّلي بنفس الطاقة", "breathe and keep that energy"], ["اليوم أقوى من مبارح", "stronger than yesterday"], ["عضلاتك عم تشكرك", "your muscles thank you"], ["ثابتة ومركّزة متل المحترفات", "steady and focused like a pro"], ["كل نقطة عرق إلها قيمة", "every drop of sweat counts"], ["إنتِ عم تعملي هالشي لإلك", "you're doing this for you"], ["شوي شوي الصعب بيصير سهل", "little by little, hard gets easy"], ["كل مجموعة بتقرّبك من الشكل اللي بتحبّيه", "every set brings you closer to the body you love"], ["إرادتك أتقل من أي وزن", "your will is heavier than any weight"], ["ما في حدا ندم إنّو خلّص تمرينو", "nobody regrets finishing a workout"], ["قلبك وعضلاتك عم يقووا سوا", "heart and muscles getting stronger together"], ["حركة نظيفة يعني نتيجة أسرع", "clean reps mean faster results"], ["كل يوم بتتمرّني فيه هو هدية لجسمك", "every workout is a gift to your body"], ["Better you كل يوم", "a better you every day"]];
 const CH_E = ["🔥", "💪", "✨", "🌸", "💖", "⚡", "🎯", "👏", "🌟", "🍑"];
 function freshLine() {
   let seen = []; try { seen = store.get("tamrini.cheerSeen", []); } catch (e) {}
@@ -4147,7 +4147,7 @@ function upNext(items, n) {
   return `<div class="upnext" aria-live="polite"><span class="un-pic">${cvidOf(it.ex.id) ? `<video src="${cvidOf(it.ex.id)}.mp4" poster="${cvidOf(it.ex.id)}.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video>` : libMedia(it.ex)}</span><b>${sec ? L("بعدها: قسم جديد", "Then: new section") : L("الجاية", "Up next")}</b><small>${esc(exN(it.ex))}</small></div>`;
 }
 const PROUD_POOL = [
-  ["Shushy is proud of you, {n} 💖", "Shushy is proud of you, {n} 💖"], ["You are doing this for you, {n} ✨", "You are doing this for you, {n} ✨"], ["Better you, {n}, bravooo! 🎉", "Better you, {n}, bravooo! 🎉"],
+  ["You are doing this for you, {n} ✨", "You are doing this for you, {n} ✨"], ["Better you, {n}, bravooo! 🎉", "Better you, {n}, bravooo! 🎉"],
   ["{n}، إنتِ أقوى مما بتفكّري 💕", "{n}, you're stronger than you think 💕"], ["كل يوم بتصيري أحلى وأقوى يا {n} 🌷", "Every day you get stronger and more beautiful, {n} 🌷"],
   ["كل تمرين بتعمليه هو وعد وفيتي فيه لحالك 🤍", "Every workout is a promise you kept to yourself 🤍"],
   ["ما في حدا جبرك، إنتِ اخترتي حالك اليوم 💪", "Nobody made you. You chose yourself today 💪"],
@@ -4190,7 +4190,9 @@ function proudLines() {
   if (nm) { const o = L(...OPEN[Math.floor(Math.random() * OPEN.length)]).split("{n}").join(nm); if (out.length > 1) out[0] = `${o} ${out[0]}`; else out.unshift(o); }
   ses.proud = out.map(fill); saveSes(); return ses.proud;
 }
-const proudBox = () => `<div class="proud" role="status">${proudLines().map(t => `<b>${esc(t)}</b>`).join("")}</div>`;
+// الجملة الوحيدة اللي بتتكرّر بآخر كل تمرين (طلبها هي)
+const PROUD_SIG = "Shushy is proud of you 🌸🤍";
+const proudBox = () => `<div class="proud" role="status">${proudLines().map(t => `<b>${esc(t)}</b>`).join("")}<b class="proud-sig" dir="ltr">${PROUD_SIG}</b></div>`;
 function sectBody(items) {
   const it = items[ses.idx], sc = secOf(it), rest = items.map((x, i) => ({ x, i })).filter(({ x, i }) => i >= ses.idx && secOf(x) === sc && !ses.fin.includes(i));
   const sec = rest.reduce((a, { x }) => a + (x.ex.kind ? hS(x) * (x.ex.uni ? 2 : 1) : 0), 0), hasMain = items.some(x => !x.ex.kind), mainDone = items.some((x, i) => !x.ex.kind && ses.fin.includes(i));
