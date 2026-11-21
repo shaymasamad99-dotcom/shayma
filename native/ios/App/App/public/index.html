@@ -4098,9 +4098,21 @@ function endSession() { if (updPending) setTimeout(() => location.reload(), 300)
 const CHEERS = ["يا بطلة! 🔥", "قوية! 💪", "كمّلي هيك! ✨", "ولا أحلى! 🌸", "فخورة فيكِ! 💖", "عم تكسّري الدني! ⚡", "جسمك عم يشكرك 🙏", "خطوة خطوة لهدفك 🎯", "شو هالقوة! 💥", "برافو عليكِ! 👏"];
 const CHEERS_EN = ["Queen! 🔥", "So strong! 💪", "Keep it up! ✨", "Beautiful! 🌸", "Proud of you! 💖", "Crushing it! ⚡", "Your body thanks you 🙏", "Step by step 🎯", "What power! 💥", "Well done! 👏"];
 let cheerT = 0, cheerI = Math.floor(Math.random() * 10);
+// تشجيع جديد دايماً: ١٢ بداية × ٢٠ جملة = ٢٤٠ تركيبة، ما بتتكرّر لحتى يخلصوا كلّن (محفوظ عالجهاز)
+const CH_A = [["يا بطلة", "Queen"], ["قوية", "So strong"], ["برافو", "Bravo"], ["يا سلام", "Wow"], ["ولا أحلى", "Beautiful"], ["شو هالقوّة", "What power"], ["كمّلي هيك", "Keep going"], ["فخورة فيكِ", "So proud of you"], ["يا عيني عليكِ", "Look at you"], ["هيك بدنا", "That's it"], ["واو", "Wow"], ["إنتِ نار", "You're on fire"]];
+const CH_B = [["كل تكرار عم يبنيكِ أقوى", "every rep builds a stronger you"], ["جسمك عم يتعلّم يقوى", "your body is learning to be strong"], ["هالمجموعة عملتيها وما حدا بياخدها منك", "that set is done and it's yours"], ["التعب هلّق، والنتيجة جايي", "the effort is now, the result is coming"], ["عم تقربي من هدفك خطوة خطوة", "step by step toward your goal"], ["الحركة الصح هي القوّة الحقيقية", "good form is real strength"], ["خدي نفس وكمّلي بنفس الطاقة", "breathe and keep that energy"], ["اليوم أقوى من مبارح", "stronger than yesterday"], ["عضلاتك عم تشكرك", "your muscles thank you"], ["ثابتة ومركّزة متل المحترفات", "steady and focused like a pro"], ["كل نقطة عرق إلها قيمة", "every drop of sweat counts"], ["إنتِ عم تعملي هالشي لإلك", "you're doing this for you"], ["شوي شوي الصعب بيصير سهل", "little by little, hard gets easy"], ["كل مجموعة بتقرّبك من الشكل اللي بتحبّيه", "every set brings you closer to the body you love"], ["إرادتك أتقل من أي وزن", "your will is heavier than any weight"], ["ما في حدا ندم إنّو خلّص تمرينو", "nobody regrets finishing a workout"], ["قلبك وعضلاتك عم يقووا سوا", "heart and muscles getting stronger together"], ["حركة نظيفة يعني نتيجة أسرع", "clean reps mean faster results"], ["شوشي فخورة فيكِ", "Shushy is proud of you"], ["Better you كل يوم", "a better you every day"]];
+const CH_E = ["🔥", "💪", "✨", "🌸", "💖", "⚡", "🎯", "👏", "🌟", "🍑"];
+function freshLine() {
+  let seen = []; try { seen = store.get("tamrini.cheerSeen", []); } catch (e) {}
+  const N = CH_A.length * CH_B.length; if (seen.length >= N) seen = [];
+  let k; do { k = Math.floor(Math.random() * N); } while (seen.includes(k));
+  try { store.set("tamrini.cheerSeen", [...seen, k]); } catch (e) {}
+  const a = CH_A[Math.floor(k / CH_B.length)], b = CH_B[k % CH_B.length], e = CH_E[Math.floor(Math.random() * CH_E.length)];
+  return L(`${a[0]}! ${b[0]} ${e}`, `${a[1]}! ${b[1][0].toUpperCase() + b[1].slice(1)} ${e}`);
+}
 function cheer(level, text) {
   try {
-    const t = text || (cheerI = (cheerI + 1) % CHEERS.length, L(CHEERS[cheerI], CHEERS_EN[cheerI]));
+    const t = text || freshLine();
     let el = document.getElementById("cheer"); if (!el) { el = document.createElement("div"); el.id = "cheer"; el.setAttribute("role", "status"); document.body.appendChild(el); }
     if (soundMode !== "off") { sfx(level >= 3 ? "party" : level === 2 ? "ex" : "set"); if (level < 3) fxSkip = true; }
     el.textContent = t; el.classList.remove("show"); void el.offsetWidth; el.classList.add("show");
@@ -4169,9 +4181,9 @@ function proudLines() {
     facts.push(k === 0 ? L(`خلّصتي أيام أسبوعك التدريبي كلّها (${per} من ${per}) 🎉`, `That completes your training week (${per} of ${per}) 🎉`) : L(`هيدا يومك ${k} من ${per} بهالأسبوع التدريبي، ${per - k === 1 ? "باقي يوم واحد" : `باقي ${per - k} أيام`} 💪`, `Day ${k} of ${per} this training week, ${per - k} to go 💪`)); } catch (e) {}
   if (facts.length) out.push(facts[Math.floor(Math.random() * facts.length)]);
   // ٣) جملة من المجموعة، ما بتتكرّر لحتى يخلصوا كلّن
-  let seen = store.get("tamrini.proudSeen", []); if (seen.length >= PROUD_POOL.length) seen = [];
-  const free = PROUD_POOL.map((x, i) => i).filter(i => !seen.includes(i)), pick = free[Math.floor(Math.random() * free.length)];
-  store.set("tamrini.proudSeen", [...seen, pick]); out.push(L(...PROUD_POOL[pick]));
+  const seen = store.get("tamrini.proudSeen", []), free = PROUD_POOL.map((x, i) => i).filter(i => !seen.includes(i));
+  if (free.length) { const pick = free[Math.floor(Math.random() * free.length)]; store.set("tamrini.proudSeen", [...seen, pick]); out.push(L(...PROUD_POOL[pick])); }
+  else out.push(freshLine());      // خلصوا الجمل: منركّب جملة جديدة ما انقالت قبل
   // اسمها بكل مرّة، بلمسة حلوة
   const nm = (myName() || "").split(/\s+/)[0], fill = (t) => nm ? t.split("{n}").join(nm) : t.replace(/ ?يا \{n\}/g, "").replace(/,? ?\{n\}،? ?/g, " ").replace(/\s+([,،!])/g, "$1").trim();
   const OPEN = [["برافو يا {n}! 💖", "Bravo, {n}! 💖"], ["{n} يا قمر،", "{n}, you star,"], ["يا {n} يا بطلة،", "{n}, champion,"], ["شو هالقوّة يا {n}! 🔥", "What strength, {n}! 🔥"], ["{n} حبيبتي،", "{n}, love,"], ["يا عيني عليكِ يا {n}! ✨", "Look at you, {n}! ✨"], ["{n}، فخورة فيكِ!", "{n}, so proud of you!"]];
@@ -4218,7 +4230,7 @@ function finishSet() {
     setEntry(ses.date, it.ex.id, { done: true });
     if (!ses.fin.includes(ses.idx)) ses.fin.push(ses.idx);
     const nx = nextUndone(ses.idx);
-    if (nx >= 0 && !items[nx].ex.kind) cheer(2, L(`✓ ${exN(it.ex)} خلص! ${CHEERS[(cheerI = (cheerI + 1) % CHEERS.length)]}`, `✓ ${exN(it.ex)} done! ${CHEERS_EN[cheerI]}`));
+    if (nx >= 0 && !items[nx].ex.kind) cheer(2, `✓ ${exN(it.ex)} ${L("خلص!", "done!")} ${freshLine()}`);
     if (nx < 0) { ses.phase = "done"; saveHist(); try { wake?.release(); } catch {} }
     else { ses.idx = nx; ses.set = 1; ses.showHow = false; if (items[nx].ex.kind) { ses.phase = "work"; ses.until = 0; toSect(it); } else { ses.phase = "rest"; ses.until = Date.now() + restFor(ses.key) * 1000; } }
   }
