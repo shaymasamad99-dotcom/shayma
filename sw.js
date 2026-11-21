@@ -1,5 +1,5 @@
 // Shushy's Fit: بيخلّي التطبيق يفتح بلا نت. الصفحة بتتحدّث من النت أول (إذا في)، والباقي من الذاكرة.
-const CACHE = "shushy-v1";
+const CACHE = "shushy-v2";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png"];
 
 self.addEventListener("install", (e) => {
@@ -12,10 +12,12 @@ self.addEventListener("fetch", (e) => {
   const req = e.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
+  // version.json: دايماً من النت ليوصل التحديث دغري
+  if (/version\.json$/.test(url.pathname)) return;
   // YouTube وغيرو: دايماً من النت
   if (/youtube|ytimg|googlevideo/.test(url.hostname)) return;
   if (req.mode === "navigate") {
-    e.respondWith(fetch(req).then((res) => { const copy = res.clone(); caches.open(CACHE).then((c) => c.put("./index.html", copy)); return res; })
+    e.respondWith(fetch(req.url, { cache: "no-store", credentials: "same-origin" }).then((res) => { const copy = res.clone(); caches.open(CACHE).then((c) => c.put("./index.html", copy)); return res; })
       .catch(() => caches.match("./index.html")));
     return;
   }
