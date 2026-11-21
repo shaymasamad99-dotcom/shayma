@@ -403,6 +403,9 @@ button.cal-d { border: 0; padding: 0; font: inherit; cursor: pointer; }
 .old-wk { align-self: flex-start; margin: 0; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--accent); background: var(--soft); color: var(--accent); font-weight: 700; font-size: .82rem; cursor: pointer; }
 .legal-note { margin: 4px 0 0; font-size: .78rem; line-height: 1.6; color: var(--muted); text-align: center; }
 .legal-links { margin: 0; text-align: center; font-size: .82rem; } .legal-links a { color: var(--accent); }
+.upnext { position: fixed; z-index: 6; top: calc(150px + env(safe-area-inset-top, 0px)); inset-inline-end: 12px; width: 112px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 8px; border-radius: 18px; background: var(--surface); border: 1px solid var(--accent); box-shadow: 0 10px 26px rgb(0 0 0 / .35); text-align: center; opacity: 0; transform: translateY(-8px) scale(.96); pointer-events: none; transition: opacity .3s, transform .3s; }
+.upnext.show { opacity: 1; transform: none; }
+.upnext b { font-size: .8rem; color: var(--accent); } .upnext small { font-size: .72rem; line-height: 1.3; color: var(--ink); } .un-side { font-size: 1.8rem; line-height: 1.2; }
 .tw-line { margin: 0; font-size: .8rem; line-height: 1.5; color: var(--muted); }
 .pw-list { display: flex; flex-direction: column; gap: 10px; } .pw-day { display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
 .pw-w { display: flex; flex-direction: column; gap: 2px; } .pw-w .ov-list { margin-top: 4px; }
@@ -4004,7 +4007,7 @@ function skipCurrent() {
   }
   const nx = nextUndone(ses.idx);
   if (nx < 0) { ses.phase = "done"; saveHist(); try { wake?.release(); } catch {} }
-  else { ses.idx = nx; ses.set = 1; ses.phase = "work"; ses.until = 0; ses.paused = 0; ses.showHow = false; toSect(it); }
+  else { ses.idx = nx; ses.set = 1; ses.phase = "work"; ses.until = 0; ses.paused = 0; ses.showHow = false; toSect(it); if (ses.phase !== "sect") startItem(); }
   ses.swap = false; saveSes(); renderPlay(); if (typeof ses.key === "number") render();
 }
 function startSession(key) {
@@ -4104,8 +4107,17 @@ function confetti(n) {
 }
 // ٣ أقسام: إحماء ← تمارين ← تمطيط. بين قسم وقسم منوقّف ومنستنّى «ابدئي»
 const secOf = (it) => !it ? "" : it.ex.kind === "warm" ? "w" : it.ex.kind ? "c" : "m";
+// جوّا القسم الحركات بتمشي لحالها: الحركة اللي بوقت بتبلّش دغري (الإحماء، التمطيط، والبلانك بعد الراحة)
+function startItem() { const it = sesItems()[ses.idx]; if (it && (it.isTime || it.ex.kind)) { ses.phase = "hold"; ses.until = Date.now() + hS(it) * 1000; } else { ses.phase = "work"; ses.until = 0; } ses.paused = 0; }
 function toSect(prev) { const nit = sesItems()[ses.idx]; if (prev && nit && secOf(nit) !== secOf(prev)) { ses.phase = "sect"; ses.until = 0; } }
 // تشجيع جديد كل مرّة، ومبني عالتمرين اللي عملتيه فعلاً (العضلات، المجموعات، الأوزان، أسبوعك)
+// «الجاية»: بآخر ١٠ ثواني بيطلع عالجنب شو الحركة اللي بعدها
+function upNext(items, n) {
+  if (ses.set < n) return `<div class="upnext" aria-live="polite"><span class="un-side">⇄</span><b>${L("الجهة التانية", "Other side")}</b></div>`;
+  const nx = nextUndone(ses.idx); if (nx < 0) return `<div class="upnext" aria-live="polite"><span class="un-side">🏁</span><b>${L("آخر حركة!", "Last one!")}</b></div>`;
+  const it = items[nx], sec = secOf(it) !== secOf(items[ses.idx]);
+  return `<div class="upnext" aria-live="polite">${avatar(it.ex, { size: 74 })}<b>${sec ? L("بعدها: قسم جديد", "Then: new section") : L("الجاية", "Up next")}</b><small>${esc(exN(it.ex))}</small></div>`;
+}
 const PROUD_POOL = [
   ["Shushy is proud of you, {n} 💖", "Shushy is proud of you, {n} 💖"], ["You are doing this for you, {n} ✨", "You are doing this for you, {n} ✨"], ["Better you, {n}, bravooo! 🎉", "Better you, {n}, bravooo! 🎉"],
   ["{n}، إنتِ أقوى مما بتفكّري 💕", "{n}, you're stronger than you think 💕"], ["كل يوم بتصيري أحلى وأقوى يا {n} 🌷", "Every day you get stronger and more beautiful, {n} 🌷"],
@@ -4182,7 +4194,7 @@ function finishSet() {
     const nx = nextUndone(ses.idx);
     if (nx < 0) { ses.phase = "done"; saveHist(); try { wake?.release(); } catch {} }
     else { const nit = items[nx]; ses.idx = nx; ses.set = 1; ses.showHow = false;
-      ses.phase = "work"; ses.until = 0; toSect(it); }
+      ses.phase = "work"; ses.until = 0; toSect(it); if (ses.phase !== "sect") startItem(); }
   }
   else {
     const e = entry(ses.date, it.ex.id) || {}, before = Math.max(0, ...weightsOf(it.ex.id).filter(x => x.d < ses.date).map(x => x.w));
@@ -4196,7 +4208,7 @@ function finishSet() {
   }
   saveSes(); renderPlay();
 }
-function afterRest() { actTick(); ses.phase = "work"; ses.until = 0; ses.paused = 0; saveSes(); renderPlay(); }
+function afterRest() { actTick(); startItem(); saveSes(); renderPlay(); }
 
 // نقاط المجموعات: المليانة خلصت، اللي عليها حلقة هي الحالية
 const setDots = (n, done) => n > 1 ? `<div class="set-dots" role="img" aria-label="${L(`المجموعة ${Math.min(n, done + 1)} من ${n}`, `Set ${Math.min(n, done + 1)} of ${n}`)}">${Array.from({ length: n }, (_, i) => `<i class="${i < done ? "f" : i === done ? "c" : ""}"></i>`).join("")}<b>${L(`${Math.min(n, done + 1)} من ${n}`, `${Math.min(n, done + 1)} of ${n}`)}</b></div>` : "";
@@ -4350,6 +4362,7 @@ function renderPlayInner() {
           ${mv ? `<span class="pl-pill">${kindTxt}${n > 1 ? L(` · الجهة ${ses.set} من ${n}`, ` · side ${ses.set} of ${n}`) : ""}</span>` : setDots(n, ses.set - 1)}
           <h2 class="pl-name">${esc(exN(ex))}</h2>
           ${bigRing(Math.min(1, left / hold), mmss(Math.ceil(left)), uni ? L("اثبتي · وبعدين بدّلي الجهة", "Hold · then switch sides") : L("اثبتي، فيكِ!", "Hold it, you've got this!"), demoCircle(ex, "in-ring"))}
+          ${upNext(items, n)}
           ${plHow(ex)}
         </div>
         <div class="pl-actions">${plCtrl("hold")}</div>`;
@@ -4400,6 +4413,7 @@ setInterval(() => {
   if (left <= 0) { beep(); ses.phase === "rest" ? afterRest() : finishSet(); return; }
   const tot = ses.phase === "rest" ? restFor(ses.key) : hS(sesItems()[ses.idx]);
   const t = $play.querySelector(".pl-time"); if (t) t.textContent = mmss(Math.ceil(left));
+  const un = $play.querySelector(".upnext"); if (un) un.classList.toggle("show", ses.phase === "hold" && left <= 10);
   voiceTick(left, tot);
   const v = $play.querySelector(".pl-ring .val"); if (v) v.setAttribute("stroke-dashoffset", (100 * (1 - Math.min(1, left / tot))).toFixed(2));
 }, 250);
@@ -4442,7 +4456,7 @@ if (t.dataset.fcat || t.dataset.fq || t.dataset.fadd || t.dataset.frecent || t.d
   else if (a === "skip") { if (ses.swap) skipCurrent(); else { ses.askSkip = true; renderPlay(); } }      // تخطّي: بنسألها قبل، لتما ينحسب غلط
   else if (a === "skipyes") { ses.askSkip = false; skipCurrent(); }
   else if (a === "skipno") { ses.askSkip = false; renderPlay(); }
-  else if (a === "sectgo") { actTick(); ses.phase = "work"; ses.until = 0; saveSes(); renderPlay(); }
+  else if (a === "sectgo") { actTick(); startItem(); saveSes(); renderPlay(); }
   else if (a === "swap") { ses.swap = true; saveSes(); renderPlay(); }
   else if (a === "swapx") { ses.swap = false; saveSes(); renderPlay(); }
   else if (a === "swapto") swapTo(t.dataset.id);
