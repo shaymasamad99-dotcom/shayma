@@ -3193,9 +3193,9 @@ function settingsBlock() {
       <div class="field"><span class="lbl">${L("شكل التطبيق", "Appearance")}</span>
         <div class="seg">${[["auto",L("تلقائي","Auto")],["light",L("فاتح","Light")],["dark",L("غامق","Dark")]].map(([k,l]) => `<button type="button" data-theme-set="${k}" aria-pressed="${theme===k}">${l}</button>`).join("")}</div></div>
       <div class="field reset-box"><span class="lbl">${L("سجل التمارين", "Workout history")}</span>
-        ${resetAsk ? `<div class="auth-del"><p class="small">${L("أكيدة؟ رح ينمسح كل التمارين اللي علّمتيها، سجل الحصص، الأوزان، النشاطات (سباحة وتمطيط)، والإنجازات. بروفايلك وجدولك وأكلك بيضلّوا. ما فينا نرجّع اللي انمسح.", "Are you sure? This erases every workout you've marked, your session log, weights, activities (swim & stretch) and achievements. Your profile, plan and food stay. This can't be undone.")}</p>
+        ${resetAsk ? `<div class="auth-del"><p class="small">${L("أكيدة؟ رح ينمسح كل التمارين اللي علّمتيها، سجل الحصص، الأوزان، النشاطات (سباحة وتمطيط)، والإنجازات. وبترجعي للأسبوع ١ (تأسيس) من أوّل وجديد. بروفايلك وهدفك وأكلك بيضلّوا. ما فينا نرجّع اللي انمسح.", "Are you sure? This erases every workout you've marked, your session log, weights, activities (swim & stretch) and achievements. You restart at week 1 (Foundation). Your profile, goal and food stay. This can't be undone.")}</p>
           <div class="auth-row"><button type="button" class="ghost" data-reset="no">${L("لا", "No")}</button><button type="button" class="save danger" data-reset="yes">${L("إيه، صفّري", "Yes, reset")}</button></div></div>`
-        : `<button type="button" class="ghost danger-ghost" data-reset="ask">${L("صفّري سجل التمارين", "Reset workout history")}</button>${resetDone ? `<p class="auth-ok" role="status">✓ ${L("صفّرنا سجل التمارين.", "Workout history reset.")}</p>` : ""}<span class="note">${L("مفيد إذا جرّبتي تمارين وما بدّك ياها تنحسب.", "Handy if you tried things out and don't want them counted.")}</span>`}</div>
+        : `<button type="button" class="ghost danger-ghost" data-reset="ask">${L("صفّري سجل التمارين وابدئي من الأسبوع ١", "Reset history & restart at week 1")}</button>${resetDone ? `<p class="auth-ok" role="status">✓ ${L("صفّرنا السجل، ورجعتي للأسبوع ١: تأسيس 🌱", "History reset. You're back to week 1: Foundation 🌱")}</p>` : ""}<span class="note">${L("مفيد إذا جرّبتي تمارين وما بدّك ياها تنحسب.", "Handy if you tried things out and don't want them counted.")}</span>`}</div>
     ` : ""}</section>`;
 }
 function progCardHtml() {
@@ -5321,6 +5321,8 @@ if (ds.food) {
     else if (ds.reset === "yes") {
       log = {}; hist = []; acts = {}; badges = {};
       store.set("tamrini.log", log); store.set("tamrini.hist", hist); store.set("tamrini.acts", acts); store.set("tamrini.badges", badges);
+      // بداية جديدة: البرنامج بيرجع للأسبوع ١ (تأسيس) والجدول من أوّل وجديد
+      profile.start = weekKey(); store.set("tamrini.profile", profile); adj = {}; store.set("tamrini.adj", adj); freshWeek(); selDay = todayIdx; wkOff = 0;
       resetAsk = false; resetDone = true;
     }
     render(); return;
