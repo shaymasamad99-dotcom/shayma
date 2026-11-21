@@ -6,6 +6,7 @@ Single-file workout app (`index.html`) for Shayma. These notes let a new session
 - Reply **only in Lebanese Arabic, feminine, short**. She has complained several times when replies came in English. Tool-call descriptions may be English.
 - She is not a developer: no jargon, say what changed and what she should do next.
 - Never ask her to paste a secret in chat. Never spend money without her explicit OK; after any spend, say what it cost and what is left.
+- **Publish without asking** when a change is done (merge + artifact + confirm it is live). She dislikes being asked to wait or to do steps.
 - She cares most about **correct technique**, especially **foot/leg position**, and about image quality.
 
 ## Where things live
@@ -28,7 +29,7 @@ Cartoon girl: brown hair in a high bun, pink sports bra, purple leggings, white 
 - `shushy-prompts.txt` — 26 exercises still needing a video (two images each: start and end).
 - `shushy-prompts-2.txt` — 27 more exercises needing a video.
 - `shushy-still-prompts.txt` — 29 image-only exercises (**all done**).
-Known pending: `m-preacher` needs a corrected pair (same machine in both images). `rev-wrist` has no video (optional).
+Known pending: `db-bench` video lowers the dumbbells to the shoulders/neck; it must go to mid-chest with the dumbbells ACROSS the body (end-on from the side). She is sending new start/end images. `m-preacher` needs a corrected pair (same machine in both images). `rev-wrist` has no video (optional).
 
 ## Getting her images
 - Zip uploads land in `/root/.claude/uploads/<session>/`. Extract into a new empty folder and read with `python3 -I`.
