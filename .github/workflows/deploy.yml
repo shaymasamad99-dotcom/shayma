@@ -21,7 +21,7 @@ jobs:
           { printf '<!doctype html>\n<html lang="ar" dir="rtl">\n'; sed -E "s/const APP_V = \"[0-9]+\"/const APP_V = \"$V\"/" index.html; } > dist/index.html
           printf '{"v":"%s"}\n' "$V" > dist/version.json
           cp sw.js manifest.webmanifest privacy.html terms.html dist/
-          cp -r icons a dist/
+          cp -r icons a v dist/      # v/: الفيديوهات الجديدة (VNEW) بتنزل مع الموقع نفسو
           grep -q "const APP_V = \"$V\"" dist/index.html
           du -sh dist
       - name: Deploy
