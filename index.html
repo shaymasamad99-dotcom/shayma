@@ -3404,9 +3404,20 @@ function renderMe() {
 }
 
 let lastTab = null, navStack = [];
+// شبكة أمان: إذا صار خطأ ووقفت الصفحة، منطلّع زر يرجّعها بدل ما تعلق
+window.addEventListener("error", (ev) => { try { if (!$app.innerHTML.trim() || /render|innerHTML/.test(String(ev.message))) showFixBar(); } catch {} });
+window.addEventListener("unhandledrejection", () => {});
+function showFixBar() {
+  if (document.getElementById("fixbar")) return;
+  const el = document.createElement("div"); el.id = "fixbar"; el.className = "newver show"; el.setAttribute("role", "alert");
+  el.innerHTML = `<span>${L("في شي علق 😅", "Something got stuck 😅")}</span><button type="button">${L("صلّحي", "Fix")}</button>`;
+  el.querySelector("button").onclick = () => { try { if (ses && ses.phase === "done") { ses = null; saveSes(); } } catch {} location.reload(); };
+  document.body.appendChild(el);
+}
 let renderJump = false;      // بتصير true لمّا نحنا بدنا نطلع لفوق (scrollTo 0) بعد الرسم
 const _scrollTo = window.scrollTo.bind(window); window.scrollTo = (...a) => { if (a[0] === 0 && a[1] === 0) renderJump = true; _scrollTo(...a); };
-function render() {
+function render() { try { renderInner(); } catch (err) { console.error(err); showFixBar(); } }
+function renderInner() {
   gender = "f";                       // التطبيق للبنات بس
   hideTip();
   if (typeof renderSheet === "function" && sheet) setTimeout(renderSheet, 0);
@@ -4062,7 +4073,7 @@ function overviewRows(sm, tap, noSkip) {
     ${(noSkip ? [] : sm.sk || []).map(id => { const ex = anyEx(id); return ex ? `<div class="ov-row skipped">${avatar(ex)}<span class="sinfo"><b>${esc(exN(ex))}</b><small>${L("تخطّيتيه", "Skipped")}</small></span></div>` : ""; }).join("")}
 </div>`;
 }
-function endSession() { try { speechSynthesis.cancel(); } catch {} voiceLast = ""; if (ses && ses.phase !== "done" && (ses.sets || ses.fin.length)) saveHist(); ses = null; saveSes(); try { wake?.release(); } catch {} wake = null; renderPlay(); render(); }
+function endSession() { if (updPending) setTimeout(() => location.reload(), 300); try { speechSynthesis.cancel(); } catch {} voiceLast = ""; if (ses && ses.phase !== "done" && (ses.sets || ses.fin.length)) saveHist(); ses = null; saveSes(); try { wake?.release(); } catch {} wake = null; renderPlay(); render(); }
 
 // جمل تحفيز وكونفتي: بعد كل مجموعة جملة، بعد كل تمرين كونفتي صغير، وبالآخر كونفتي كبير
 const CHEERS = ["يا بطلة! 🔥", "قوية! 💪", "كمّلي هيك! ✨", "ولا أحلى! 🌸", "فخورة فيكِ! 💖", "عم تكسّري الدني! ⚡", "جسمك عم يشكرك 🙏", "خطوة خطوة لهدفك 🎯", "شو هالقوة! 💥", "برافو عليكِ! 👏"];
@@ -4260,7 +4271,8 @@ function plWeight(ex) {
 }
 
 const pauseBtn = () => `<button class="ghost pl-pause${ses.paused ? " on" : ""}" data-pl="pause" aria-label="${ses.paused ? L("كمّلي", "Resume") : L("وقفة", "Pause")}">${ses.paused ? `▶ ${L("كمّلي", "Resume")}` : `⏸ ${L("وقفة", "Pause")}`}</button>`;
-function renderPlay() {
+function renderPlay() { try { renderPlayInner(); } catch (err) { console.error(err); showFixBar(); } }
+function renderPlayInner() {
   try { voiceCue(); } catch {}
   if (!ses) { $play.hidden = true; $play.innerHTML = ""; document.body.classList.remove("playing"); return; }
   $play.hidden = false; document.body.classList.add("playing");
@@ -5131,13 +5143,16 @@ const demoCircle = (ex, cls = "") => cvidOf(ex.id) ? `<div class="demo-c vid ${c
 let vidOpen = null;
 // تطبيق عالموبايل (PWA): بس عالموقع (مش جوّا claude.ai)
 // نسخة جديدة؟ التطبيق عالشاشة الرئيسية بيضل مفتوح بالذاكرة، فمنفحص version.json كل ما ترجعي عليه
-const APP_V = "20261119125353";
-let newVerShown = false;
+const APP_V = "20261121190819";
+let newVerShown = false, updPending = false;
 async function checkNewVersion() {
   if (newVerShown || !/^https?:$/.test(location.protocol) || /claude|anthropic/i.test(location.hostname) || (window.claude && typeof window.claude.use === "function")) return;
   try {
     const j = await (await fetch("version.json?t=" + Date.now(), { cache: "no-store" })).json();
     if (j && j.v && String(j.v) !== APP_V) {
+      // التحديث بيوصل لحالو: إذا مش بنص تمرين منحدّث دغري، وإلّا بس يخلص التمرين
+      if (!ses || ses.phase === "done") { location.reload(); return; }
+      updPending = true; return;
       newVerShown = true;
       const el = document.createElement("div"); el.className = "newver"; el.setAttribute("role", "status");
       el.innerHTML = `<span>✨ ${L("في نسخة جديدة من التطبيق", "A new version is available")}</span><button type="button">${L("حدّثي", "Refresh")}</button>`;
@@ -5147,7 +5162,8 @@ async function checkNewVersion() {
   } catch {}
 }
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkNewVersion(); });
-setTimeout(checkNewVersion, 4000); setInterval(checkNewVersion, 30 * 60e3);
+setTimeout(checkNewVersion, 2500); setInterval(checkNewVersion, 3 * 60e3);
+window.addEventListener("focus", checkNewVersion); window.addEventListener("online", checkNewVersion);
 if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol) && !/claude|anthropic/i.test(location.hostname) && !(window.claude && typeof window.claude.use === "function"))
   window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 const canEmbed = () => /^https?:$/.test(location.protocol) && !(window.claude && typeof window.claude.use === "function") && !/claude|anthropic/i.test(location.hostname);
