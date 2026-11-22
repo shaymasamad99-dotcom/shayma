@@ -728,7 +728,8 @@ body.gated .tabs, body.gated .startbar { display: none; }
 .rdone .rd-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 14px; background: var(--soft); }
 .rdone .rd-row small { color: var(--muted); white-space: nowrap; } .rdone .rd-row.one { justify-content: space-around; } .rdone .rd-row.one small { color: var(--ink); font-weight: 600; font-size: .85rem; } .rdone .rd-tot { margin: 0 0 6px; font-weight: 700; color: var(--accent); font-size: .9rem; }
 .rdone .tc-addact { color: var(--ink); border-color: var(--accent); background: transparent; } .rdone .tc-addact b { color: var(--accent); } .rdone .tc-addact small { color: var(--muted); }
-.restday .rest-hero { width: 100%; max-height: 340px; object-fit: cover; object-position: 50% 32%; border-radius: 18px; display: block; }
+.restday .rest-hero, .swimday .rest-hero { width: 100%; max-height: 340px; object-fit: cover; object-position: 50% 32%; border-radius: 18px; display: block; }
+.rest-hero.swim { object-position: 50% 50%; } .rest-hero.walk { object-position: 50% 18%; }
 .pkgs .pkg { flex: 0 0 auto; min-width: 128px; max-width: 170px; text-align: start; border: 1px solid var(--line); background: var(--surface); border-radius: 16px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; color: var(--ink); scroll-snap-align: start; }
 .pkgs .pkg small { color: var(--muted); font-size: .74rem; line-height: 1.35; }
 .pkgs .pkg[aria-pressed="true"] { border-color: var(--accent); background: var(--soft); box-shadow: inset 0 0 0 1px var(--accent); }
@@ -2996,7 +2997,7 @@ function dayDetail() {
     html += `<section class="checkin swimday">
         <span class="eyebrow">${L(`يوم سباحة · الأسبوع ${progWeek()} · ${phaseName()}`, `Swim day · Week ${progWeek()} · ${phaseName()}`)}</span>
         <h2>${dayN(selDay)}: ${L(`سباحة ${swimMin()} دقيقة`, `Swim ${swimMin()} min`)}</h2>
-        ${WAVES}
+        ${gender !== "m" ? `<img class="rest-hero swim" src="a/swim.webp" alt="${L("بنت مرتاحة بالمسبح", "Girl relaxing in the pool")}">` : WAVES}
         <p class="muted small">${swimTip()}</p>
         ${swum ? `<div class="banner ok"><span>${L("✓ برافو! سجّلتي سباحة هاليوم.", "✓ Great! Swim logged for today.")}</span></div>` : canLog ? `<button class="save" data-plan="swim">${L("✓ سبحت، سجّليها", "✓ I swam, log it")}</button>` : `<p class="note">${L(`بتسجّليها يوم ${DAYS[selDay]}.`, `You can log it on ${DAYS_EN[selDay]}.`)}</p>`}
         ${actList}
@@ -3022,7 +3023,7 @@ function dayDetail() {
   } else if (!day) {
     const nx = pullFrom(selDay);
     html += `<section class="checkin restday">
-        ${gender !== "m" ? `<img class="rest-hero" src="a/rest.webp" alt="${L("بنت مرتاحة عالكنباية مع كاسة شاي", "Girl relaxing on the sofa with a cup of tea")}">` : ""}
+        ${gender !== "m" ? (dayActs.some(a => a.t === "swim") ? `<img class="rest-hero swim" src="a/swim.webp" alt="${L("بنت مرتاحة بالمسبح", "Girl relaxing in the pool")}">` : dayActs.some(a => a.t === "walk") ? `<img class="rest-hero walk" src="a/walk.webp" alt="${L("بنت عم تمشي مع قنينة مي", "Girl walking with a water bottle")}">` : `<img class="rest-hero" src="a/rest.webp" alt="${L("بنت مرتاحة عالكنباية مع كاسة شاي", "Girl relaxing on the sofa with a cup of tea")}">`) : ""}
         <h2>${dayN(selDay)}: ${L("يوم راحة", "Rest day")}</h2>
         <p class="muted small">${L("العضل بيكبر وقت الراحة. مشي خفيف أو تمطيط بيكفّي، أو سجّلي أي نشاط.", "Muscles grow while you rest. A light walk or stretching is enough, or log any activity.")}</p>
         ${actList}
