@@ -3538,7 +3538,7 @@ function histBlock() {
   if (!hist.length) return "";
   return `<section class="group"><h3 class="sec">${L("سجل تماريني", "My workout log")}</h3><div class="srows">${hist.slice(0, 20).map((h, i) => {
     const dt = new Date(h.at), open = histOpen === i;
-    return `<button class="srow" data-hist="${i}" aria-expanded="${open}"><span class="sdate"><small>${L(DAYS[(dt.getDay() + 1) % 7], DAYS_EN[(dt.getDay() + 1) % 7].slice(0, 3))}</small><b>${dt.getDate()}</b></span><span class="sinfo"><b>${esc(L(h.t.ar, h.t.en))}</b><small>${h.full === false ? `<span class="unfin">◐ ${L("ما كمّلتيه", "Not finished")}</span> · ` : ""}${h.min} ${L("د", "min")} · ${h.rows.length} ${L("تمارين", "exercises")} · ${h.sets} ${L("مجموعات", "sets")}${h.prs ? L(` · ${h.prs} رقم قياسي`, ` · ${h.prs} PR`) : ""}${histKcal(h) ? ` · 🔥 ~${histKcal(h)} ${L("سعرة", "kcal")}` : ""}${h.mood != null ? ` · ${["😫", "😕", "😐", "🙂", "🤩"][h.mood]}` : ""}${h.diff ? ` · ${{ easy: L("هيّن", "Easy"), mid: L("متوسط", "Medium"), hard: L("صعب", "Hard") }[h.diff]}` : ""}</small></span><span class="chev" aria-hidden="true">${open ? "⌄" : "‹"}</span></button>${open ? `<div class="ov-in">${overviewRows(h, false, true)}</div>` : ""}`;
+    return `<button class="srow" data-hist="${i}" aria-expanded="${open}"><span class="sdate"><small>${L(DAYS[(dt.getDay() + 1) % 7], DAYS_EN[(dt.getDay() + 1) % 7].slice(0, 3))}</small><b>${dt.getDate()}</b></span><span class="sinfo"><b>${esc(L(h.t.ar, h.t.en))}</b><small>${h.full === false ? `<span class="unfin">◐ ${L("ما كمّلتيه", "Not finished")}</span> · ` : ""}${h.easy ? `🤍 ${L("يوم خفيف", "Easy day")} · ` : ""}${h.min} ${L("د", "min")} · ${h.rows.length} ${L("تمارين", "exercises")} · ${h.sets} ${L("مجموعات", "sets")}${h.prs ? L(` · ${h.prs} رقم قياسي`, ` · ${h.prs} PR`) : ""}${histKcal(h) ? ` · 🔥 ~${histKcal(h)} ${L("سعرة", "kcal")}` : ""}${h.mood != null ? ` · ${["😫", "😕", "😐", "🙂", "🤩"][h.mood]}` : ""}${h.diff ? ` · ${{ easy: L("هيّن", "Easy"), mid: L("متوسط", "Medium"), hard: L("صعب", "Hard") }[h.diff]}` : ""}</small></span><span class="chev" aria-hidden="true">${open ? "⌄" : "‹"}</span></button>${open ? `<div class="ov-in">${overviewRows(h, false, true)}</div>` : ""}`;
   }).join("")}</div></section>`;
 }
 /* ===================== قياساتي وصور التقدّم ===================== */
@@ -3975,7 +3975,13 @@ const sesW = (ex) => { const w = suggestW(ex); return w && ses && ses.easy ? rou
 const CHECKQ = [["sleep", "كيف نمتي مبارح؟", "How did you sleep?", [["منيح", "Well"], ["وسط", "OK"], ["قليل", "Badly"]]],
   ["energy", "كيف طاقتك هلّق؟", "Energy right now?", [["عالية", "High"], ["عادية", "Normal"], ["تعبانة", "Low"]]],
   ["sore", "في وجع أو تعب بالعضل؟", "Any soreness?", [["لا", "No"], ["شوي", "A little"], ["كتير", "A lot"]]]];
-const hS = (it) => it.ex.kind ? (it.h || it.ex.sec) : holdFor(ses.key, it.ex);
+// يوم استثنائي (نوم قليل، وجع، أو تعب): مجموعة أقل، تكرار أقل، ثبات أقصر، ووزن أخف
+const easyCk = (ck) => { const v = Object.values(ck || {}); return v.reduce((x, y) => x + y, 0) >= 3 || ck.sleep === 2 || ck.sore === 2 || ck.energy === 2; };
+const hS = (it) => it.ex.kind ? (it.h || it.ex.sec) : (ses && ses.easy ? Math.max(15, Math.round(holdFor(ses.key, it.ex) * 0.75 / 5) * 5) : holdFor(ses.key, it.ex));
+function sesReps() {
+  const r = GOALS[profile.goal].reps; if (!ses || !ses.easy) return r;
+  return String(r).replace(/(\d+)–(\d+)/, (_, a, b) => { const lo = Math.max(4, Math.round(a * 0.75)), hi = Math.max(lo + 1, Math.round(b * 0.75)); return `${lo}–${hi}`; });
+}
 function nextUndone(from) {
   const items = sesItems();
   for (let k = 1; k <= items.length; k++) {
@@ -4071,7 +4077,7 @@ function sesSummary() {
   items.forEach((it, i) => { if (it.ex.kind) return; const sets = (ses.by || {})[i] || 0; if (!sets && !ses.fin.includes(i)) return; const e = entry(ses.date, it.ex.id) || {}; rows.push({ id: it.ex.id, s: sets || sS(it.ex), w: e.w || null }); });
   const moves = items.filter((it, i) => it.ex.kind && ses.fin.includes(i)).length;
   const sk = items.filter((it, i) => !it.ex.kind && (ses.skip || []).includes(i) && !ses.fin.includes(i) && !((ses.by || {})[i] > 0)).map(it => it.ex.id);
-  return { kcal: sesKcal(), sk, d: ses.date, at: ses.started, min: sesMin(), t: typeof ses.title === "string" ? { ar: ses.title, en: ses.title } : ses.title, rows, moves, sets: ses.sets, prs: ses.prs };
+  return { easy: !!ses.easy, kcal: sesKcal(), sk, d: ses.date, at: ses.started, min: sesMin(), t: typeof ses.title === "string" ? { ar: ses.title, en: ses.title } : ses.title, rows, moves, sets: ses.sets, prs: ses.prs };
 }
 function saveHist() {
   if (!ses || ses.saved) return; const sm = sesSummary(); if (!sm.rows.length && !sm.moves) return;
@@ -4341,7 +4347,7 @@ function renderPlayInner() {
   let body;
   if (ses.phase === "check") {
     const done = CHECKQ.every(([q]) => ses.ck[q] != null), score = Object.values(ses.ck).reduce((a, b) => a + b, 0);
-    const verdict = !done ? "" : score >= 4 ? L("يوم خفيف: مجموعة أقل بكل تمرين وأوزان أخف شوي. الأهم إنّك جيتي!", "Easy day: one set fewer and slightly lighter weights. Showing up is what counts!")
+    const verdict = !done ? "" : easyCk(ses.ck) ? L(`يوم استثنائي 🤍 منخفّف اليوم: مجموعة أقل، تكرار أقل (${GOALS[profile.goal].reps} بيصير ${(() => { const e = ses.easy; ses.easy = true; const t = sesReps(); ses.easy = e; return t; })()})، ثبات أقصر، وأوزان أخف ١٠٪. الأهم إنّك جيتي!`, "Exceptional day 🤍 We go lighter today: one set fewer, fewer reps, shorter holds and 10% lighter weights. Showing up is what counts!")
       : score <= 1 ? L("حالتك ممتازة! ركّزي تقربي من آخر رقم بالتكرار.", "You're in great shape! Aim for the top of the rep range.") : L("تمام، منمشي عالبرنامج متل ما هو.", "Good, we'll follow the plan as is.");
     body = `<div class="pl-main pl-check">
         <span class="pl-pill">${L("قبل ما نبلّش", "Before we start")}</span>
@@ -4400,7 +4406,7 @@ function renderPlayInner() {
           <span class="pl-pill">${L("راحة", "Rest")}</span>
           ${ses.set > 1 && !mv ? setDots(n, ses.set - 1) : ""}
           ${bigRing(Math.min(1, left / tot), mmss(Math.ceil(left)), L("خدي نفس واشربي مي", "Breathe and sip some water"))}
-          <div class="pl-next">${avatar(ex)}<span><b>${nextTxt}</b><small class="muted">${it.isTime ? `${mmss(hold)} ${L("ثبات", "hold")}` : `${rng(g.reps)} ${L("تكرار", "reps")}`}${uni ? L(" · لكل جهة", " · each side") : ""}</small></span></div>
+          <div class="pl-next">${avatar(ex)}<span><b>${nextTxt}</b><small class="muted">${it.isTime ? `${mmss(hold)} ${L("ثبات", "hold")}` : `${rng(sesReps())} ${L("تكرار", "reps")}`}${uni ? L(" · لكل جهة", " · each side") : ""}</small></span></div>
         </div>
         <div class="pl-actions">${plCtrl("rest")}</div>`;
     } else if (ses.phase === "hold") {
@@ -4420,7 +4426,7 @@ function renderPlayInner() {
             <h2 class="pl-name">${esc(exN(ex))}</h2>
             ${mv ? `<span class="pl-pill">${kindTxt}${n > 1 ? L(` · الجهة ${ses.set} من ${n}`, ` · side ${ses.set} of ${n}`) : ""}</span>` : setDots(n, ses.set - 1)}
           </div>
-          <div class="pl-target"><b>${it.isTime ? mmss(hold) : rng(g.reps)}</b><span>${mv ? (ex.kind === "warm" ? L("بإيقاع مريح", "easy pace") : L("ثبات وتنفّس", "hold & breathe")) : it.isTime ? L("ثبات", "hold") : L("تكرار", "reps")}${uni ? L(" · لكل جهة", " · each side") : ""}</span></div>
+          <div class="pl-target"><b>${it.isTime ? mmss(hold) : rng(sesReps())}</b><span>${mv ? (ex.kind === "warm" ? L("بإيقاع مريح", "easy pace") : L("ثبات وتنفّس", "hold & breathe")) : it.isTime ? L("ثبات", "hold") : L("تكرار", "reps")}${uni ? L(" · لكل جهة", " · each side") : ""}</span></div>
           ${plWeight(ex)}
           ${plHow(ex)}
         </div>
@@ -4483,7 +4489,7 @@ if (t.dataset.fcat || t.dataset.fq || t.dataset.fadd || t.dataset.frecent || t.d
   if (a === "voice") { soundMode = soundMode === "off" ? "chime" : "off"; voiceOn = soundMode !== "off"; store.set("tamrini.sound", soundMode); try { speechSynthesis.cancel(); } catch {} if (voiceOn) sfx("go"); renderPlay(); return; }
   if (a === "ck") { ses.ck[t.dataset.q] = +t.dataset.v; saveSes(); renderPlay(); return; }
   if (a === "ckgo" || a === "ckskip") {
-    if (a === "ckgo") { const sc = Object.values(ses.ck).reduce((x, y) => x + y, 0); ses.easy = sc >= 4; }
+    if (a === "ckgo") ses.easy = easyCk(ses.ck);
     ses.phase = secOf(sesItems()[ses.idx]) === "w" ? "sect" : "work"; saveSes(); renderPlay(); return;
   }
   if (a === "set") finishSet();
