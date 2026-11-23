@@ -1240,6 +1240,20 @@ i.refimg { display: block; width: 100%; height: 100%; min-height: 60px; backgrou
 @keyframes gateDraw { to { stroke-dashoffset: 0; } }
 @keyframes gateFill { to { fill: var(--accent); stroke-width: 0; } }
 @media (prefers-reduced-motion: reduce) { .gate-brand.anim .gate-img, .gate-brand.anim .gate-word text { animation: none; fill: var(--accent); stroke-width: 0; } }
+
+/* Intro (onboarding) */
+.intro { width: 100%; min-width: 0; min-height: 92vh; display: flex; flex-direction: column; gap: 18px; max-width: 460px; margin: 0 auto; padding-top: 8px; }
+.intro-skip { align-self: flex-end; color: var(--muted); font-weight: 600; }
+.intro-track { width: 100%; min-width: 0; display: flex; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; flex: 1; }
+.intro-track::-webkit-scrollbar { display: none; }
+.intro-slide { flex: 0 0 100%; scroll-snap-align: start; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 0 8px; }
+.intro-pic { width: min(78vw, 330px); aspect-ratio: 1; border-radius: 40px; overflow: hidden; background: #81C3FC; box-shadow: 0 18px 44px rgb(224 122 144 / .25); }
+.intro-pic img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
+.intro-slide h2 { font-size: 1.6rem; color: var(--accent-2); margin-top: 10px; }
+.intro-slide p { margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.7; max-width: 320px; }
+.intro-dots { display: flex; justify-content: center; gap: 8px; } .intro-dots i { width: 8px; height: 8px; border-radius: 999px; background: var(--line); transition: width .3s, background .3s; } .intro-dots i.on { width: 26px; background: var(--accent); }
+.intro-next { margin: 0 0 18px; min-height: 54px; border-radius: 22px; background: var(--btn); color: #fff; border: 0; font-size: 1.05rem; font-weight: 700; }
+.intro-again { margin-top: 6px; font-size: .85rem; }
 /* Theme: blush (2026-11) */
 /* Cycle section keeps its original colours */
 .card.cyc-card { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -3437,7 +3451,7 @@ function schedDayView() {
 function renderMe() {
   if (profile.saved && !meEdit) {
     const g = GOALS[profile.goal], nm = (profile.name || "").trim();
-    return `<header class="hdr"><div><span class="eyebrow">${L("حسابي", "My account")}</span><h1>${nm ? L(`أهلا ${esc(nm)}`, `Hi ${esc(nm)}`) : L("حسابي", "Account")}</h1></div><button class="lang-btn" data-lang="${L("en", "ar")}" lang="${L("en", "ar")}">${L("English", "العربية")}</button></header>
+    return `<header class="hdr"><div><span class="eyebrow">${L("حسابي", "My account")}</span><h1>${nm ? L(`أهلا ${esc(nm)}`, `Hi ${esc(nm)}`) : L("حسابي", "Account")}</h1></div><button class="lang-btn" data-lang="${L("en", "ar")}" lang="${L("en", "ar")}">${L("English", "العربية")}</button></header><button type="button" class="linkbtn intro-again" data-intro-show="1">🎬 ${L("شوفي مقدّمة التطبيق", "See the app intro")}</button>
       ${authUser ? "" : authBlock()}
       ${justSaved ? `<div class="banner ok"><span>${L("✓ جهز جدولك! عملناه حسب هدفك وأيامك. فيكِ تبلّشي من «اليوم».", "✓ Your schedule is ready, built from your goal and days. Start from “Today”.")}</span><button data-tab="plan">${L("ابدئي", "Start")}</button></div>` : ""}
       <section class="acct">
@@ -5508,6 +5522,8 @@ document.addEventListener("click", (e) => {
   if (ds.swapwhy) { bldToast({ lvl: "no", title: L("✋ ما بينفع هالمرة", "✋ Not this time"), msg: flipWhy(+ds.swapwhy) }); return; }
   if (ds.swapday) { const ch = flipDay(+ds.swapday); render(); if (ch && ch.length) bldToast({ lvl: "great", title: L("✓ تم التبديل", "✓ Swapped"), msg: flipMsg(ch) }); return; }
   if (ds.goday) { selDay = schedDay = +ds.goday; tab = "sched"; open = null; altOpen = null; actOpen = false; justSaved = false; render(); window.scrollTo(0, 0); return; }
+  if (ds.introShow) { introForce = true; render(); window.scrollTo(0, 0); return; }
+  if (ds.intro) { if (ds.intro === "next") { const t = document.getElementById("intro-track"); if (t) t.scrollBy({ left: (getComputedStyle(t).direction === "rtl" ? -1 : 1) * t.clientWidth, behavior: "smooth" }); return; } store.set("tamrini.intro", 1); introForce = false; render(); window.scrollTo(0, 0); return; }
   if (ds.lang) { lang = ds.lang; store.set("tamrini.lang", lang); applyLang(); render(); if (ses) renderPlay(); return; }
   if (ds.soundset) { soundMode = ds.soundset; voiceOn = soundMode !== "off"; store.set("tamrini.sound", soundMode); if (soundMode === "chime") sfx("ex"); if (soundMode === "voice" && !sayKeys(["hello"], true, true)) say(L("أهلا! هيك رح ساعدك وقت التمرين.", "Hi! This is how I'll guide your workouts."), true, true); render(); return; }
   if (ds.fxtest) { const m0 = soundMode; soundMode = "chime"; sfx("party"); soundMode = "off"; cheer(3, L("🎉 هيك بتطلع الأصوات!", "🎉 This is how it sounds!")); soundMode = m0; return; }
@@ -5865,10 +5881,36 @@ else if (kind === "up") {
 // شاشة الدخول أوّل ما ينفتح التطبيق (مش جوّا claude.ai)
 // شعار التطبيق بأول شاشة
 const gateBrand = (anim) => `<div class="gate-brand${anim ? " anim" : ""}"><img class="gate-img" src="icons/forme-logo-hd.webp?v=1" alt="For Me" width="210" height="210" decoding="async"><svg class="gate-word" viewBox="0 0 360 120" role="img" aria-label="For Me" dir="ltr"><text x="180" y="84" text-anchor="middle">For Me</text></svg></div>`;
+// مقدّمة التطبيق: ٣ شاشات بتنعرض مرّة وحدة قبل التسجيل (وفيكِ تشوفيها من حسابي)
+let introForce = false;
+const INTRO = [
+  ["v/c-db-hipthrust.jpg", "جدول على قدّك", "A plan made for you", "قوليلنا هدفك وأيامك، ومنعملك خطة علمية بتكبر معك أسبوع بأسبوع.", "Tell us your goal and days, and get a science-based plan that grows with you week by week."],
+  ["v/c-db-curtsy.jpg", "الحركة الصح", "The right form", "كل تمرين مع فيديو وخطوات واضحة، لتتمرّني صح ومن دون إصابات.", "Every exercise has a video and clear steps, so you train right and stay injury-free."],
+  ["a/walk.webp", "شوفي تقدّمك", "See your progress", "أيامك وأوزانك وسباحتك ومشيك، كلّن بينحسبوا بمكان واحد.", "Your days, weights, swims and walks, all counted in one place."],
+];
+function introHtml() {
+  return `<section class="intro" aria-label="${L("مقدّمة", "Intro")}">
+    <button type="button" class="linkbtn intro-skip" data-intro="done">${L("تخطّي", "Skip")}</button>
+    <div class="intro-track" id="intro-track">${INTRO.map(([img, ta, te, da, de], i) => `<div class="intro-slide" data-i="${i}">
+      <div class="intro-pic"><img src="${img}" alt="" loading="${i ? "lazy" : "eager"}"></div>
+      <h2>${L(ta, te)}</h2><p>${L(da, de)}</p></div>`).join("")}</div>
+    <div class="intro-dots" aria-hidden="true">${INTRO.map((_, i) => `<i class="${i ? "" : "on"}"></i>`).join("")}</div>
+    <button type="button" class="save intro-next" data-intro="next">${L("التالي", "Next")}</button>
+  </section>`;
+}
+function introIdx() { const t = document.getElementById("intro-track"); return t ? Math.round(Math.abs(t.scrollLeft) / t.clientWidth) : 0; }
+function introSync() {
+  const i = introIdx(), last = i >= INTRO.length - 1;
+  document.querySelectorAll(".intro-dots i").forEach((d, k) => d.classList.toggle("on", k === i));
+  const b = document.querySelector(".intro-next"); if (b) { b.textContent = last ? L("يلا نبلّش 🌸", "Let's start 🌸") : L("التالي", "Next"); b.dataset.intro = last ? "done" : "next"; }
+}
+document.addEventListener("scroll", (e) => { if (e.target && e.target.id === "intro-track") introSync(); }, true);
 function authGate() {
+  if (introForce) return introHtml();
   if (!fbOn() || (authUser && !authUser.claude) || (window.claude && typeof window.claude.use === "function")) return "";
   if (authUser && authUser.claude) return "";
   if (!authReady) return `<section class="gate">${gateBrand(true)}<p class="muted">${L("لحظة…", "One moment…")}</p></section>`;
+  if (!authUser && !store.get("tamrini.intro", 0)) return introHtml();
   auth.open = true; if (auth.mode === "del") auth.mode = "in";
   return `<section class="gate">${gateBrand()}<p class="muted gate-sub">${L("فوتي بإيميلك لتنحفظ تمارينك وتلاقيها عأي جهاز.", "Sign in with your email to save your workouts on every device.")}</p>${authBlock()}
     <div class="gate-lang">${[["ar","العربية"],["en","English"]].map(([k,l]) => `<button type="button" class="linkbtn" data-lang="${k}" lang="${k}">${l}</button>`).join(" · ")}</div></section>`;
