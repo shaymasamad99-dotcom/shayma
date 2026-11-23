@@ -1219,7 +1219,7 @@ i.refimg { display: block; width: 100%; height: 100%; min-height: 60px; backgrou
 
 /* Today header: compact (2026-11) */
 .top-hdr { justify-content: flex-start; align-items: center; gap: 12px; }
-.top-hdr { justify-content: space-between; } .top-hdr .brand-img { order: 2; width: 78px; height: 78px; border-radius: 22px; flex: none; box-shadow: 0 10px 24px rgb(224 122 144 / .28); }
+.top-hdr { justify-content: space-between; } .hdr-logo { order: 2; position: relative; flex: none; display: block; } .top-hdr .brand-img { display: block; width: 78px; height: 78px; border-radius: 22px; flex: none; box-shadow: 0 10px 24px rgb(224 122 144 / .28); }
 .top-hdr .hello { font-size: 1.55rem; margin: 0; line-height: 1.25; }
 .wkstrip { background: var(--surface); border-radius: 24px; padding: 14px 12px 12px; box-shadow: var(--shadow); gap: 10px; }
 .wkstrip .wk-h { display: flex; align-items: center; gap: 8px; }
@@ -1301,6 +1301,13 @@ i.refimg { display: block; width: 100%; height: 100%; min-height: 60px; backgrou
 @keyframes gwTw { 0%, 100% { opacity: .2; transform: scale(.6); } 50% { opacity: 1; transform: scale(1.15); } }
 @keyframes gateGlow { 0%, 100% { box-shadow: 0 18px 44px rgb(224 122 144 / .28); } 50% { box-shadow: 0 18px 54px rgb(255 120 160 / .5); } }
 @media (prefers-reduced-motion: reduce) { .gate-wind { display: none; } }
+
+/* Today header logo: the wind moves for a few seconds after opening, then stops */
+.hdr-wind { position: absolute; inset: 0; pointer-events: none; animation: hdrWindOut 4.5s var(--d, 0ms) linear forwards; }
+.hdr-wind .gate-wind { display: block; }
+.hdr-wind .gw1, .hdr-wind .gw2, .hdr-wind .gw3, .hdr-wind .gsp path { animation-delay: var(--d, 0ms) !important; }
+@keyframes hdrWindOut { 0%, 75% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
+@media (prefers-reduced-motion: reduce) { .hdr-wind { display: none; } }
 /* Theme: blush (2026-11) */
 /* Cycle section keeps its original colours */
 .card.cyc-card { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -2968,7 +2975,8 @@ function renderPlan() {
   const g = GOALS[profile.goal];
   const day = buildDay(selDay);
   const MON = L(["كانون الثاني","شباط","آذار","نيسان","أيار","حزيران","تموز","آب","أيلول","تشرين الأول","تشرين الثاني","كانون الأول"], ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]);
-  let html = `<header class="hdr top-hdr"><img class="brand-img" src="icons/forme-logo-hd.webp?v=1" alt="For Me"><div>
+  const wEl = Date.now() - SPLASH_UNTIL, hdrWind = wEl < 4500 ? `<span class="hdr-wind" style="--d:${-Math.max(0, wEl)}ms">${GATE_WIND}</span>` : "";
+  let html = `<header class="hdr top-hdr"><span class="hdr-logo"><img class="brand-img" src="icons/forme-logo-hd.webp?v=1" alt="For Me">${hdrWind}</span><div>
       <span class="eyebrow">${dayN(todayIdx)} · ${TODAY.getDate()} ${MON[TODAY.getMonth()]}</span>
       <p class="hello">${myName() ? L(`هاي ${esc(myName())}`, `Hi ${esc(myName())}`) : L("أهلا", "Hi")} 🌸</p></div>
     </header>`;
