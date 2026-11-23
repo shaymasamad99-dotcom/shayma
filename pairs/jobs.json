@@ -1,1 +1,14 @@
-[]
+[
+ [
+  "band-walk",
+  "Cartoon girl doing a band lateral walk, front view, static camera. Mini band above the knees, half squat, hands together at the chest. She takes one side step to the right: the right foot steps out sideways, then the left foot follows, both feet stay on the ground, she stays low in the half squat the whole time. Smooth controlled walking.",
+  "jumping, hopping, both feet in the air, sliding, standing up, crossing feet, camera moving, mat moving, extra legs, morphing, blurry, band disappearing",
+  "loop forward then reverse (walks right, then back left)"
+ ],
+ [
+  "m-cablecrunch",
+  "Cartoon girl doing a kneeling cable crunch, side view, static camera. Kneeling facing the high pulley, rope held beside her head. Her hips stay HIGH directly above the knees and never move back. She curls the spine down, ribs toward pelvis, elbows toward the thighs, head down. Knees and hips fixed, machine does not move. Smooth controlled motion.",
+  "sitting back on heels, hips moving back, hips dropping, pulling with the arms, knees moving, camera moving, machine moving, extra limbs, morphing, blurry, rope disappearing",
+  "free HF Space; reject if hips sink back"
+ ]
+]
