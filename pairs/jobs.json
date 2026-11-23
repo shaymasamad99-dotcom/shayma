@@ -1,0 +1,52 @@
+[
+ [
+  "band-walk-a",
+  "Cartoon girl doing a band lateral walk, front view, static camera. Mini band above the knees, half squat, hands together at the chest. She steps her right foot out to the side, keeping the half squat and tension on the band, toes forward. Smooth controlled motion.",
+  "standing up straight, jumping, camera moving, mat moving, extra legs, morphing, blurry, band disappearing"
+ ],
+ [
+  "band-walk-b",
+  "Cartoon girl doing a band lateral walk, front view, static camera. Mini band above the knees, half squat, hands together at the chest. She brings her left foot in toward the right foot so she moves sideways to the right, staying in the half squat with tension on the band. Smooth controlled motion.",
+  "standing up straight, jumping, camera moving, mat moving, extra legs, morphing, blurry, band disappearing"
+ ],
+ [
+  "legraise",
+  "Cartoon girl doing a lying leg raise, side view, static camera. Lying on her back on the mat, lower back pressed into the mat, legs straight and together. She raises the straight legs up to vertical. Head and upper body stay still on the mat. Smooth controlled motion.",
+  "bending knees, lifting head, lifting upper body, arching back, camera moving, extra legs, morphing, blurry"
+ ],
+ [
+  "m-cablecrunch",
+  "Cartoon girl doing a kneeling cable crunch, side view, static camera. Kneeling facing the high pulley, rope held beside her head. She crunches down by curling the spine, ribs toward the pelvis, elbows toward the thighs. Hips stay in the same place, knees do not move, machine does not move. Smooth controlled motion.",
+  "sitting back on heels, hips moving back, pulling with arms, knees moving, camera moving, machine moving, extra limbs, morphing, blurry, rope disappearing"
+ ],
+ [
+  "bicycle",
+  "Cartoon girl doing a bicycle crunch, side view, static camera. Lying on her back with hands behind the head and shoulders lifted. She switches sides: one knee comes in toward the chest while the other leg extends straight, and the opposite elbow rotates toward the bent knee. Hips stay in the same place on the mat. Smooth controlled motion.",
+  "pulling the neck, legs touching the floor, hips moving, camera moving, mat moving, extra legs, extra arms, morphing, blurry"
+ ],
+ [
+  "rev-crunch",
+  "Cartoon girl doing a reverse crunch, side view, static camera. Lying on her back, arms flat by her sides, knees bent at 90 degrees. She curls the pelvis up so the hips lift slightly off the mat and the knees come toward the chest. Head and arms stay down. Smooth controlled motion.",
+  "lifting head, swinging legs, straight legs, camera moving, extra legs, morphing, blurry"
+ ],
+ [
+  "db-woodchop",
+  "Cartoon girl doing a dumbbell woodchop, front view, static camera. Holding one dumbbell with both hands high above one shoulder, she chops it diagonally down across her body to outside the opposite knee, rotating the torso and bending the knees, arms straight. Feet stay in place. Smooth controlled motion.",
+  "feet moving, camera moving, extra arms, extra dumbbells, morphing, blurry, dumbbell disappearing"
+ ],
+ [
+  "m-abcrunch",
+  "Cartoon girl on an ab crunch machine, side view, static camera. Seated, holding the chest pad handles, feet under the foot pads. She curls her torso forward by flexing the abs, ribs toward hips. Hips and feet stay in place, the machine does not move. Smooth controlled motion.",
+  "hips moving, feet moving, machine moving, machine changing shape, camera moving, extra limbs, morphing, blurry"
+ ],
+ [
+  "m-pushdown",
+  "Cartoon girl doing a standing cable triceps pushdown, side view, static camera. Standing facing the high pulley, elbows pinned at her sides. She straightens her arms down fully; the upper arms do not move, only the forearms. Feet and torso stay still, the machine does not move. Smooth controlled motion.",
+  "elbows moving forward, shoulders moving, leaning, kneeling, feet moving, camera moving, machine moving, extra arms, morphing, blurry, rope disappearing"
+ ],
+ [
+  "m-abduction",
+  "Cartoon girl on a seated hip abduction machine, front view, static camera. Back on the seat pad, pads on the outside of the knees. She pushes the knees wide apart against the pads, back stays on the pad. The machine frame does not change. Smooth controlled motion.",
+  "leaning forward, machine changing shape, camera moving, extra legs, morphing, blurry"
+ ]
+]
