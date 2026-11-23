@@ -408,6 +408,7 @@ button.cal-d { border: 0; padding: 0; font: inherit; cursor: pointer; }
 .un-pic { display: block; width: 108px; height: 108px; border-radius: 14px; overflow: hidden; background: #81C3FC; } .un-pic img, .un-pic svg, .un-pic video { width: 100%; height: 100%; object-fit: cover; display: block; }
 .upnext b { font-size: .8rem; color: var(--accent); } .upnext small { font-size: .72rem; line-height: 1.3; color: var(--ink); } .un-side { font-size: 1.8rem; line-height: 1.2; }
 .unfin { color: var(--warn); font-weight: 700; }
+.act-row { cursor: default; }
 .tw-line { margin: 0; font-size: .8rem; line-height: 1.5; color: var(--muted); }
 .pw-list { display: flex; flex-direction: column; gap: 10px; } .pw-day { display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
 .pw-w { display: flex; flex-direction: column; gap: 2px; } .pw-w .ov-list { margin-top: 4px; }
@@ -1661,6 +1662,9 @@ const W_START = {
 };
 // اقتراح أيام موزّعة عالأسبوع (السبت = 0)
 const SUGGEST_DAYS = { 1: [0], 2: [0, 3], 3: [0, 2, 4], 4: [0, 1, 3, 4], 5: [0, 1, 2, 4, 5], 6: [0, 1, 2, 3, 4, 5] };
+// يوم فيه نشاط (سباحة، مشي…) ١٥ دقيقة وأكتر بينحسب يوم حركة كامل
+const actMinOf = (k, t) => (acts[k] || []).filter(a => !t || a.t === t).reduce((x, a) => x + (+a.min || 0), 0);
+const actDay = (k) => actMinOf(k) >= 15;
 const ACT_IC = { swim: "🌊", walk: "👟", run: "🏃‍♀️", cycle: "🚴‍♀️", yoga: "🧘‍♀️", stretch: "🤸‍♀️" };
 const ACTS = { swim: { ar: "سباحة", en: "Swimming" }, walk: { ar: "مشي", en: "Walking" }, run: { ar: "ركض", en: "Running" }, cycle: { ar: "دراجة", en: "Cycling" }, yoga: { ar: "يوغا / بيلاتس", en: "Yoga / Pilates" }, stretch: { ar: "تمطيط", en: "Stretching" } };
 
@@ -2334,7 +2338,7 @@ let repOff = 0;
 function weekReport(off) {
   const days = [...Array(7).keys()].map(i => dateOfDay(i, off)).filter(d => d <= TODAY), keys = days.map(ymd);
   const st = weekStats(off), goal = profile.days.length;
-  const hs = hist.filter(h => keys.includes(h.d)), mins = hs.reduce((a, h) => a + (h.min || 0), 0), prs = hs.reduce((a, h) => a + (h.prs || 0), 0), kcal = keys.reduce((a, k) => a + dayKcal(k), 0);
+  const hs = hist.filter(h => keys.includes(h.d)), actM = keys.reduce((a, k) => a + actMinOf(k), 0), swimM = keys.reduce((a, k) => a + actMinOf(k, "swim"), 0), walkM = keys.reduce((a, k) => a + actMinOf(k, "walk"), 0), mins = hs.reduce((a, h) => a + (h.min || 0), 0) + actM, prs = hs.reduce((a, h) => a + (h.prs || 0), 0), kcal = keys.reduce((a, k) => a + dayKcal(k), 0);
   const fdays = keys.map(k => food[k]).filter(Boolean), pAvg = fdays.length ? Math.round(fdays.reduce((a, f) => a + (f.p || 0), 0) / fdays.length) : 0, wAvg = fdays.length ? r1(fdays.reduce((a, f) => a + (f.w || 0), 0) / fdays.length / 1000) : 0;
   const bw = body.filter(b => b.w && keys.includes(b.d)), prevW = body.filter(b => b.w && b.d < keys[0]).slice(-1)[0], wCh = bw.length && prevW ? r1(bw[bw.length - 1].w - prevW.w) : null;
   const tips = [];
@@ -2343,7 +2347,7 @@ function weekReport(off) {
   else tips.push(L("حقّقتي هدف الأيام كلّه. برافو! 🎉", "You hit every training day. Amazing! 🎉"));
   if (fdays.length && pAvg < proteinGoal() * 0.8) tips.push(L(`معدّل البروتين ${pAvg} غ من ${proteinGoal()} غ. زيدي بروتين بكل وجبة.`, `Protein averaged ${pAvg} g of ${proteinGoal()} g. Add protein to each meal.`));
   if (fdays.length && wAvg < waterGoal() * 0.8) tips.push(L("المي أقل من هدفك. حطّي قنينة حدّك.", "Water was below your goal. Keep a bottle nearby."));
-  return { kcal, st, goal, mins, prs, pAvg, wAvg, wCh, tips, fdays: fdays.length };
+  return { kcal, st, goal, mins, prs, pAvg, wAvg, wCh, tips, fdays: fdays.length, swimM, walkM };
 }
 function reportCard() {
   const r = weekReport(repOff);
@@ -2354,7 +2358,9 @@ function reportCard() {
       ${tile("💪", `${r.st.days}/${r.goal}`, L("أيام تمرين", "Training days"))}
       ${tile("✅", r.st.ex, L("تمارين", "Exercises"))}
       ${tile("🔥", r.kcal ? `~${r.kcal}` : "–", L("سعرة محروقة", "kcal burned"))}
-      ${tile("⏱️", `${r.mins}`, L("دقيقة", "Minutes"))}
+      ${tile("⏱️", `${r.mins}`, L("دقيقة حركة", "Active minutes"))}
+      ${r.swimM ? tile("🏊‍♀️", `${r.swimM}`, L("دقيقة سباحة", "Swim minutes")) : ""}
+      ${r.walkM ? tile("🚶‍♀️", `${r.walkM}`, L("دقيقة مشي", "Walk minutes")) : ""}
       ${tile("🏆", r.prs, L("أرقام جديدة", "New bests"))}
       ${tile("🥚", r.fdays ? `${r.pAvg}` : "–", L("بروتين/يوم (غ)", "Protein/day (g)"))}
       ${tile("⚖️", r.wCh == null ? "–" : `${r.wCh > 0 ? "+" : ""}${r.wCh}`, L("تغيّر الوزن (كغ)", "Weight change (kg)"))}
@@ -2366,7 +2372,7 @@ let calOff = 0;
 const dayIdxOf = (d) => (Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(dateOfDay(0).getFullYear(), dateOfDay(0).getMonth(), dateOfDay(0).getDate())) / 864e5) % 7 + 7) % 7;
 function actLevel(k) {
   const d = log[k] || {}, n = Object.values(d).filter(e => e.done).length;
-  if (n && dayDoneKey(k)) return 3; if (n || (acts[k] || []).length) return 2; return 0;
+  if ((n && dayDoneKey(k)) || actDay(k)) return 3; if (n || (acts[k] || []).length) return 2; return 0;
 }
 function dayStreak() {
   let n = 0; const d = new Date(TODAY);
@@ -2777,7 +2783,7 @@ const hadWorkout = (i) => hist.some(h => h.d === ymd(dateOfDay(i)) && h.rows && 
 function dayStatus(i) {
   const day = buildDay(i);
   const d = ymd(dateOfDay(i)), full = dayDoneKey(d), started = dayStartedKey(d);      // تمرين مكتمل بينحسب؛ اللي طلعتي منو بالنص «◐»
-  if (!day) return full || (isSwimDay(i) && actsOf(d).some(a => a.t === "swim")) ? "full" : started ? "part" : "";
+  if (!day) return full || actDay(d) || (isSwimDay(i) && actsOf(d).some(a => a.t === "swim")) ? "full" : started || actsOf(d).length ? "part" : "";
   const n = day.items.filter(it => (entry(d, it.ex.id) || {}).done).length, sk = day.items.filter(it => (entry(d, it.ex.id) || {}).skip).length;
   if (n + sk >= day.items.length && n) return "full";
   return full ? "full" : n || started ? "part" : "";      // اللي تخطّيتيه ما بيوقّف اليوم
@@ -2835,7 +2841,7 @@ function renderPlan() {
       <div class="wk-days">${[...Array(7).keys()].map(i => {
         const d = buildDay(i), stt0 = dayStatus(i), sw = !d && isSwimDay(i);
         const did = !d && Object.values(log[ymd(dateOfDay(i))] || {}).some(e => e.done);      // تمرين من «صمّمي تمرينك» أو روتين بيوم راحة
-        const stt = stt0, swd = (acts[ymd(dateOfDay(i))] || []).some(a => a.t === "swim"), mk = stt === "full" ? "🏆" : swd ? "🌊" : stt === "part" ? "◐" : d ? "●" : sw ? "〰" : "";
+        const stt = stt0, swd = (acts[ymd(dateOfDay(i))] || []).some(a => a.t === "swim"), actT = (acts[ymd(dateOfDay(i))] || [])[0], mk = stt === "full" && !dayDoneKey(ymd(dateOfDay(i))) && actT ? (actT.t === "swim" ? "🏊‍♀️" : actT.t === "walk" ? "🚶‍♀️" : ACT_IC[actT.t] || "✨") : stt === "full" ? "🏆" : swd ? "🌊" : stt === "part" ? "◐" : d ? "●" : sw ? "〰" : "";
         return `<button class="wd ${d || sw ? "tr" : "rs"} ${stt}${swd && stt !== "full" ? " swimd" : ""}${i === selDay ? " sel" : ""}${i === todayIdx ? " now" : ""}" data-day="${i}" aria-pressed="${i === selDay}" aria-label="${dayN(i)}: ${d ? d.typeName : sw ? L("سباحة", "Swim") : L("راحة", "Rest")}"><span>${i === todayIdx ? L("اليوم", "Today") : WD_SHORT(i)}</span><i aria-hidden="true">${mk}</i></button>`;
       }).join("")}</div>
     </section>`;
@@ -3024,8 +3030,11 @@ function dayDetail() {
     const nx = pullFrom(selDay);
     html += `<section class="checkin restday">
         ${gender !== "m" ? (dayActs.some(a => a.t === "swim") ? `<img class="rest-hero swim" src="a/swim.webp" alt="${L("بنت مرتاحة بالمسبح", "Girl relaxing in the pool")}">` : dayActs.some(a => a.t === "walk") ? `<img class="rest-hero walk" src="a/walk.webp" alt="${L("بنت عم تمشي مع قنينة مي", "Girl walking with a water bottle")}">` : `<img class="rest-hero" src="a/rest.webp" alt="${L("بنت مرتاحة عالكنباية مع كاسة شاي", "Girl relaxing on the sofa with a cup of tea")}">`) : ""}
-        <h2>${dayN(selDay)}: ${L("يوم راحة", "Rest day")}</h2>
-        <p class="muted small">${L("العضل بيكبر وقت الراحة. مشي خفيف أو تمطيط بيكفّي، أو سجّلي أي نشاط.", "Muscles grow while you rest. A light walk or stretching is enough, or log any activity.")}</p>
+        ${(() => { const a0 = dayActs[0]; if (!a0) return `<h2>${dayN(selDay)}: ${L("يوم راحة", "Rest day")}</h2>
+        <p class="muted small">${L("العضل بيكبر وقت الراحة. مشي خفيف أو تمطيط بيكفّي، أو سجّلي أي نشاط.", "Muscles grow while you rest. A light walk or stretching is enough, or log any activity.")}</p>`;
+          const nm = a0.t === "swim" ? L("يوم سباحة", "Swim day") : a0.t === "walk" ? L("يوم مشي", "Walk day") : L(`يوم ${ACTS[a0.t].ar}`, `${ACTS[a0.t].en} day`), mn = actMinOf(dStr);
+          return `<h2>${dayN(selDay)}: ${nm} ${a0.t === "swim" ? "🏊‍♀️" : a0.t === "walk" ? "🚶‍♀️" : ACT_IC[a0.t] || "✨"}</h2>
+        <p class="muted small">${L(`برافو! ${mn} دقيقة حركة اليوم، وانحسبوا بتقدّمك وبأيام أسبوعك.`, `Well done! ${mn} active minutes today, counted in your progress and your week.`)}</p>`; })()}
         ${actList}
         ${future ? `<div class="ci-btns">
           ${nx >= 0 && !(log[dStr] && Object.keys(log[dStr]).length) ? `<button class="ci on" data-plan="pull"><b>${L("بدّي اتمرّن اليوم", "I want to train today")}</b><small>${L("منجيبلك تمرين من جدولك لليوم، ومنظبّط باقي الأسبوع لحالو", "We bring a workout from your plan to today and rebalance the week")}</small></button>`
@@ -3535,9 +3544,18 @@ function weightChart(ex, pts, fmt = fmtW) {
     <details class="tbl"><summary>${L("شوفي الأرقام كجدول", "Show as table")}</summary><table><thead><tr><th>${L("التاريخ", "Date")}</th><th>${L("الوزن", "Weight")}</th></tr></thead><tbody>${table}</tbody></table></details>`;
 }
 
+function actRows() {
+  const since = ymd(new Date(TODAY.getTime() - 60 * 864e5));
+  return Object.keys(acts).filter(k => k >= since && (acts[k] || []).length).map(k => ({ d: k, at: parseD(k).getTime() + 12 * 3600e3, list: acts[k] }));
+}
+function actRowHtml(r) {
+  const dt = parseD(r.d), mn = r.list.reduce((a, x) => a + (+x.min || 0), 0);
+  return `<div class="srow act-row"><span class="sdate"><small>${L(DAYS[(dt.getDay() + 1) % 7], DAYS_EN[(dt.getDay() + 1) % 7].slice(0, 3))}</small><b>${dt.getDate()}</b></span><span class="sinfo"><b>${r.list.map(a => `${a.t === "swim" ? "🏊‍♀️" : a.t === "walk" ? "🚶‍♀️" : ACT_IC[a.t] || "✨"} ${L(ACTS[a.t].ar, ACTS[a.t].en)}`).join(" + ")}</b><small>${mn} ${L("د", "min")}${r.list.length > 1 ? " · " + r.list.map(a => `${L(ACTS[a.t].ar, ACTS[a.t].en)} ${a.min} ${L("د", "min")}`).join("، ") : ""}</small></span></div>`;
+}
 function histBlock() {
-  if (!hist.length) return "";
-  return `<section class="group"><h3 class="sec">${L("سجل تماريني", "My workout log")}</h3><div class="srows">${hist.slice(0, 20).map((h, i) => {
+  if (!hist.length && !actRows().length) return "";
+  return `<section class="group"><h3 class="sec">${L("سجل تماريني", "My workout log")}</h3><div class="srows">${[...hist.map((h, i) => ({ h, i, at: h.at })), ...actRows().map(r => ({ r, at: r.at }))].sort((a, b) => b.at - a.at).slice(0, 25).map(({ h, i, r }) => {
+    if (r) return actRowHtml(r);
     const dt = new Date(h.at), open = histOpen === i;
     return `<button class="srow" data-hist="${i}" aria-expanded="${open}"><span class="sdate"><small>${L(DAYS[(dt.getDay() + 1) % 7], DAYS_EN[(dt.getDay() + 1) % 7].slice(0, 3))}</small><b>${dt.getDate()}</b></span><span class="sinfo"><b>${esc(L(h.t.ar, h.t.en))}</b><small>${h.full === false ? `<span class="unfin">◐ ${L("ما كمّلتيه", "Not finished")}</span> · ` : ""}${h.easy ? `🤍 ${L("يوم خفيف", "Easy day")} · ` : ""}${h.min} ${L("د", "min")} · ${h.rows.length} ${L("تمارين", "exercises")} · ${h.sets} ${L("مجموعات", "sets")}${h.prs ? L(` · ${h.prs} رقم قياسي`, ` · ${h.prs} PR`) : ""}${histKcal(h) ? ` · 🔥 ~${histKcal(h)} ${L("سعرة", "kcal")}` : ""}${h.mood != null ? ` · ${["😫", "😕", "😐", "🙂", "🤩"][h.mood]}` : ""}${h.diff ? ` · ${{ easy: L("هيّن", "Easy"), mid: L("متوسط", "Medium"), hard: L("صعب", "Hard") }[h.diff]}` : ""}</small></span><span class="chev" aria-hidden="true">${open ? "⌄" : "‹"}</span></button>${open ? `<div class="ov-in">${overviewRows(h, false, true)}</div>` : ""}`;
   }).join("")}</div></section>`;
