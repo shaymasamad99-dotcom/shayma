@@ -2597,6 +2597,7 @@ function renderBody() {
   const head = (t, sub, back) => `<header class="hdr sday">${back ? `<button class="back" data-bodyback="1">${L("› رجوع", "‹ Back")}</button>` : ""}<div><span class="eyebrow">${sub}</span><h1>${t}</h1></div></header>`;
   if (!bodyArea) return `${head(L("عضلاتي", "Know your body"), L("اكبسي على منطقة لتعرفي أجزاءها وتمارينها", "Tap an area to see its parts and exercises"), false)}
     <button class="bld-card" data-bld="open"><span class="bld-ic" aria-hidden="true">🛠️</span><span class="sinfo"><b>${L("صمّمي تمرينك بنفسك", "Build your own workout")}</b><small>${build.ids.length ? L(`${build.ids.length} تمارين محفوظة · كمّلي`, `${build.ids.length} saved · continue`) : L("اختاري العضلات والتمارين، ونحنا منقلّك إذا الاختيار مدروس", "Pick muscles and exercises; we'll check every choice")}</small></span><span class="chev" aria-hidden="true">‹</span></button>
+    <section class="group body-rt"><h3 class="sec">${L("روتينات جاهزة", "Ready routines")}</h3><div class="carousel">${ROUTINES.map(routineCard).join("")}</div></section>
     <div class="body-find"><button class="search sbtn" data-gosearch="1">🔍 ${L("دوّري على تمرين…", "Search for an exercise…")}</button><button class="all-ex" data-tab="lib"><span aria-hidden="true">📚</span>${L("كل التمارين", "All exercises")}</button></div>
     ${[[L("💪 الجزء العلوي", "💪 Upper body"), BODY_UP], [L("🍑 الجزء السفلي", "🍑 Lower body"), BODY_LOW]].map(([h, ids]) => `<h3 class="sec body-half">${h}</h3><div class="bgrid">${BODY_MAP.filter(a => ids.includes(a.id)).map(a => `<button class="barea" data-barea="${a.id}"><span class="av big" style="--c:${MCOL[a.ic]}">${a.img ? `<i class="refimg" style="background-image:var(--bp-${a.img})" aria-hidden="true"></i>` : bodyIcon(a.ic, true)}</span><b>${L(a.ar, a.en)}</b><small>${a.parts.length} ${L("أجزاء", "parts")}</small></button>`).join("")}</div>`).join("")}
 `;
@@ -3198,8 +3199,6 @@ function renderLib() {
       ${AREA_ORDER.map(m => `<button class="mtile" data-larea="${m}" aria-pressed="${lib.area === m}"><span class="mt-img" style="background-image:var(--rf-${m})"></span><small>${shortM(m)}</small></button>`).join("")}
     </div>
     <div class="chips">${[["all",L("كل المعدات","All equipment")],["db",eqN("db")],["machine",eqN("machine")],["body",eqN("body")]].map(([k,l]) => `<button class="chip" data-leq="${k}" aria-pressed="${lib.eq===k}">${l}</button>`).join("")}</div>`;
-  if (!q && !lib.area && lib.eq === "all") html += `<section class="group"><h3 class="sec">${L("روتينات جاهزة", "Ready routines")}</h3>
-        <div class="carousel">${ROUTINES.map(routineCard).join("")}</div></section>`;
   const pool = q ? [...browse, ...MOVES.filter(m => MUSCLES[m.m])] : browse;
   const match = pool.filter(ex => {
     const M = MUSCLES[ex.m];
@@ -5424,10 +5423,10 @@ document.addEventListener("click", (e) => {
   }
   if (ds.larea) { lib.area = ds.larea === "all" ? null : ds.larea; lib.routine = null; open = null; render(); const t2 = document.querySelector('.mtile[aria-pressed="true"]'); if (t2) t2.scrollIntoView({ inline: "center", block: "nearest" }); return; }
   if (ds.area) { lib.area = ds.area; lib.q = ""; if (ds.aeq) lib.eq = ds.aeq; open = null; render(); window.scrollTo(0, 0); return; }
-  if (ds.routine) { lib.routine = ds.routine; open = null; render(); window.scrollTo(0, 0); return; }
-  if (ds.libback) { lib.area = null; lib.routine = null; lib.eq = "all"; open = null; render(); window.scrollTo(0, 0); return; }
+  if (ds.routine) { if (tab !== "lib") { navStack.push({ tab, y: window.scrollY }); tab = "lib"; lib.rtFrom = 1; } lib.routine = ds.routine; open = null; render(); window.scrollTo(0, 0); return; }
+  if (ds.libback) { if (lib.routine && lib.rtFrom) { lib.routine = null; lib.rtFrom = 0; const p = navStack.pop(); if (p) { tab = p.tab; open = null; render(); window.scrollTo(0, p.y); return; } } lib.area = null; lib.routine = null; lib.eq = "all"; open = null; render(); window.scrollTo(0, 0); return; }
   if (ds.navback) { const p = navStack.pop(); if (p) { tab = p.tab; open = null; render(); window.scrollTo(0, p.y); } return; }
-  if (ds.tab) { wkOff = 0; if (e.target.closest(".tabs")) navStack = []; else if (ds.tab !== tab) navStack.push({ tab, y: window.scrollY }); if (ds.tab === "lib" && tab === "lib") { lib = { q: "", part: "all", eq: "all", area: null, routine: null }; }
+  if (ds.tab) { wkOff = 0; if (lib.rtFrom) { lib.routine = null; lib.rtFrom = 0; } if (e.target.closest(".tabs")) navStack = []; else if (ds.tab !== tab) navStack.push({ tab, y: window.scrollY }); if (ds.tab === "lib" && tab === "lib") { lib = { q: "", part: "all", eq: "all", area: null, routine: null }; }
     tab = ds.tab; open = null; schedDay = null; if (tab === "prog") loadPhotos(); if (tab === "me") { draft = null; meEdit = false; } if (tab !== "sched") justSaved = false; render(); window.scrollTo(0,0); return; }
   if (ds.start) { startSession(ds.start); return; }
   if (ds.adj) {
