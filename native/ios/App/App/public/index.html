@@ -4877,7 +4877,7 @@ const patOf = (exId) => { const p = patOf0(exId), ex = anyEx(exId); return p ===
 // صور صغيرة للإحماء والتمطيط (لقطة الحركة نفسها، من الموقع نفسو لتحمّل بسرعة وبلا نت)
 const TH = new Set(["w-march", "w-armcircles", "w-shoulderrolls", "w-hipcircles", "w-legswings", "w-squat", "w-catcow", "w-bridge", "s-neck", "s-shoulder", "s-triceps", "s-biceps", "s-chest", "s-child", "s-catcow", "s-cobra", "s-side", "s-twist", "s-hipflexor", "s-figure4", "s-pigeon", "s-butterfly", "s-hamseated", "s-hamstand", "s-quad", "s-calf", "s-fold"]);
 function demoStatic(ex) {
-  if (gender !== "m" && TH.has(ex.id) && !FIXV.has(ex.id)) return `<img class="demo-st art-st" src="a/th-${ex.id}.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover">`;
+  if (gender !== "m" && TH.has(ex.id) && !FIXV.has(ex.id)) { const fb = cvidOf(ex.id); return `<img class="demo-st art-st" src="a/th-${ex.id}.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"${fb ? ` onerror="this.onerror=null;this.src='${fb}.jpg'"` : ""}>`; }
   if (FIXV.has(ex.id)) return bodyIcon(ex.m, false, ex.id);
   if (cvidOf(ex.id)) return `<img class="demo-st art-st" src="${cvidOf(ex.id)}.jpg" alt="" aria-hidden="true" style="width:100%;height:100%;object-fit:cover;object-position:50% 70%">`;   // صورة الفيديو الجديد قبل الرسمة القديمة
   if (artOf(ex.id)) return `<img class="demo-st art-st" src="${artOf(ex.id)}-1.webp" alt="" aria-hidden="true">`;
