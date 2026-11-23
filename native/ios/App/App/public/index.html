@@ -3530,7 +3530,7 @@ function schedDayView() {
 function renderMe() {
   if (profile.saved && !meEdit) {
     const g = GOALS[profile.goal], nm = (profile.name || "").trim();
-    return `<header class="hdr"><div><span class="eyebrow">${L("حسابي", "My account")}</span><h1>${nm ? L(`أهلا ${esc(nm)}`, `Hi ${esc(nm)}`) : L("حسابي", "Account")}</h1></div><button class="lang-btn" data-lang="${L("en", "ar")}" lang="${L("en", "ar")}">${L("English", "العربية")}</button></header><button type="button" class="linkbtn intro-again" data-intro-show="1">🎬 ${L("شوفي مقدّمة التطبيق", "See the app intro")}</button>
+    return `<header class="hdr"><div><span class="eyebrow">${L("حسابي", "My account")}</span><h1>${nm ? L(`أهلا ${esc(nm)}`, `Hi ${esc(nm)}`) : L("حسابي", "Account")}</h1></div><button class="lang-btn" data-lang="${L("en", "ar")}" lang="${L("en", "ar")}">${L("English", "العربية")}</button></header>
       ${authUser ? "" : authBlock()}
       ${justSaved ? `<div class="banner ok"><span>${L("✓ جهز جدولك! عملناه حسب هدفك وأيامك. فيكِ تبلّشي من «اليوم».", "✓ Your schedule is ready, built from your goal and days. Start from “Today”.")}</span><button data-tab="plan">${L("ابدئي", "Start")}</button></div>` : ""}
       <section class="acct">
@@ -6001,7 +6001,6 @@ function authGate() {
   if (!fbOn() || (authUser && !authUser.claude) || (window.claude && typeof window.claude.use === "function")) return "";
   if (authUser && authUser.claude) return "";
   if (!authReady) return `<section class="gate">${gateBrand(true)}<p class="muted">${L("لحظة…", "One moment…")}</p></section>`;
-  if (!authUser && !store.get("tamrini.intro", 0)) return introHtml();
   auth.open = true; if (auth.mode === "del") auth.mode = "in";
   return `<section class="gate">${gateBrand()}<p class="muted gate-sub">${L("فوتي بإيميلك لتنحفظ تمارينك وتلاقيها عأي جهاز.", "Sign in with your email to save your workouts on every device.")}</p>${authBlock()}
     <div class="gate-lang">${[["ar","العربية"],["en","English"]].map(([k,l]) => `<button type="button" class="linkbtn" data-lang="${k}" lang="${k}">${l}</button>`).join(" · ")}</div></section>`;
