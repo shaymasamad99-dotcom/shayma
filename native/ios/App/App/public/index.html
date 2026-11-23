@@ -1268,6 +1268,15 @@ i.refimg { display: block; width: 100%; height: 100%; min-height: 60px; backgrou
 .rt-thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; }
 .rt-thumbs img, .rt-thumbs i { width: 100%; aspect-ratio: 1; border-radius: 14px; object-fit: cover; object-position: 50% 60%; background: #81C3FC; box-shadow: 0 2px 6px rgb(160 90 100 / .15); display: block; }
 .rt-thumbs i { display: grid; place-items: center; font-style: normal; font-weight: 700; color: var(--accent-2); background: rgb(255 255 255 / .75); }
+
+/* Stretch areas + quick picks (her mockup) */
+.str-h { font-family: var(--body); font-size: 1.25rem; font-weight: 700; color: #6E2A3F; letter-spacing: 0; margin-bottom: 6px; }
+.areas { gap: 12px; }
+.area { border: 0; border-radius: 24px; padding: 16px 6px 14px; gap: 10px; background: var(--surface); box-shadow: 0 2px 6px rgb(160 90 100 / .05), 0 12px 28px rgb(160 90 100 / .09); }
+.ar-pic { width: 92px; height: 92px; border-radius: 50%; overflow: hidden; background: #F9DCE3; display: block; }
+.ar-pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.area b { font-family: var(--body); font-size: .96rem; font-weight: 700; color: #6E2A3F; }
+.str-p .rt-thumbs img { background: #F9DCE3; }
 /* Theme: blush (2026-11) */
 /* Cycle section keeps its original colours */
 .card.cyc-card { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -3326,11 +3335,11 @@ function renderStretch() {
   const items = stretchItems(), total = Math.round(items.reduce((a, it) => a + it.h * (it.ex.uni ? 2 : 1), 0) / 60);
   const same = (a) => a.length === strSel.areas.length && a.every(x => strSel.areas.includes(x)), curP = STR_PRESETS.find(pr => same(presetAreas(pr)));
   return `<header style="display:flex;flex-direction:column;gap:4px"><span class="eyebrow">${L("اختاري الأماكن اللي بدّك تمطّيها", "Pick the areas you want to stretch")}</span><h1>${L("تمطيط", "Stretch")}</h1></header>
-    <section class="group"><h3 class="sec">${L("جاهزين", "Quick picks")}</h3>
-      <div class="carousel">${STR_PRESETS.map(pr => [pr[0], pr[1], pr[2], presetAreas(pr)]).map(([k, ar, en, areas]) => `<button class="rcard sm str-p${same(areas) ? " sel" : ""}" data-strp="${k}" aria-pressed="${same(areas)}">${same(areas) ? `<span class="str-on">✓ ${L("مختارة", "Selected")}</span>` : ""}<b class="rc-t">${L(ar, en)}</b><small>${areas.slice(0, 4).map(a => L(...STRETCH_AREAS[a])).join(L("، ", ", "))}</small><div class="bubbles">${areas.slice(0, 4).map(a => `<span class="mv-av sm" style="--c:${MCOL[anyEx(AREA_PIC[a]).m]}">${demoStatic(anyEx(AREA_PIC[a]))}</span>`).join("")}</div></button>`).join("")}</div></section>
-    <section class="group"><h3 class="sec">${L("حسب المنطقة", "By area")}</h3><p class="small muted" style="margin:-4px 0 8px">${L("اضغطي على منطقة لتري تمارين الإطالة الخاصة بها.", "Tap an area to see the stretches made for it.")}</p>
-      <div class="areas">${Object.entries(STRETCH_AREAS).map(([k, [ar, en]]) => { const mv = anyEx(AREA_PIC[k]); return `<button class="area" data-strarea="${k}"><span class="mv-av big" style="--c:${MCOL[mv.m]}">${demoStatic(mv)}</span><b>${L(ar, en)}</b></button>`; }).join("")}
-        <button class="area" data-strp="all"><span class="mv-av big" style="--c:var(--soft)">${demoStatic(anyEx("s-fold"))}</span><b>${L("كل الجسم", "Full body")}</b></button></div></section>
+    <section class="group"><h3 class="sec str-h">${L("جاهزين", "Quick picks")}</h3>
+      <div class="carousel">${STR_PRESETS.map(pr => [pr[0], pr[1], pr[2], presetAreas(pr)]).map(([k, ar, en, areas]) => `<button class="rcard sm str-p${same(areas) ? " sel" : ""}" data-strp="${k}" aria-pressed="${same(areas)}">${same(areas) ? `<span class="str-on">✓ ${L("مختارة", "Selected")}</span>` : ""}<b class="rc-t">${L(ar, en)}</b><small>${areas.slice(0, 4).map(a => L(...STRETCH_AREAS[a])).join(L("، ", ", "))}</small><span class="rt-thumbs">${areas.slice(0, areas.length > 4 ? 3 : 4).map(a => `<img src="a/area-${a}.webp" alt="" loading="lazy" decoding="async">`).join("")}${areas.length > 4 ? `<i dir="ltr">+${areas.length - 3}</i>` : ""}</span></button>`).join("")}</div></section>
+    <section class="group"><h3 class="sec str-h">${L("حسب المنطقة", "By area")}</h3><p class="small muted" style="margin:-4px 0 8px">${L("اضغطي على منطقة لتري تمارين الإطالة الخاصة بها.", "Tap an area to see the stretches made for it.")}</p>
+      <div class="areas">${Object.entries(STRETCH_AREAS).map(([k, [ar, en]]) => { const mv = anyEx(AREA_PIC[k]); return `<button class="area" data-strarea="${k}"><span class="ar-pic"><img src="a/area-${k}.webp" alt="" loading="lazy" decoding="async"></span><b>${L(ar, en)}</b></button>`; }).join("")}
+        <button class="area" data-strp="all"><span class="ar-pic"><img src="a/area-all.webp" alt="" loading="lazy" decoding="async"></span><b>${L("كل الجسم", "Full body")}</b></button></div></section>
     <div class="field"><span class="lbl">${L("قدّيش وقت؟", "How long?")}</span>
       <div class="seg">${[5, 10, 15, 20].map(m => `<button data-strm="${m}" aria-pressed="${strSel.min === m}">${m} ${L("د", "min")}</button>`).join("")}</div></div>
     <section class="routine">
