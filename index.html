@@ -1286,6 +1286,21 @@ i.refimg { display: block; width: 100%; height: 100%; min-height: 60px; backgrou
 @media (prefers-reduced-motion: reduce) { .cal-wave { animation: none; } }
 .cal-d em { font-size: .8rem !important; bottom: 2px !important; }
 .cal-key .cal-d.swim .cal-wave { height: 50%; }
+
+/* Splash: wind ribbon + sparkles moving around the logo */
+.gate-logo-w { position: relative; display: block; width: 210px; height: 210px; }
+.gate-wind { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.gate-wind .gw1 { stroke-dasharray: 120 400; animation: gwSpin 2.4s linear infinite; }
+.gate-wind .gw2 { stroke-dasharray: 46 474; stroke-opacity: .9; animation: gwSpin 2.4s linear infinite; }
+.gate-wind .gw3 { stroke-dasharray: 60 200; stroke-opacity: .8; animation: gwSweep 2.4s ease-in-out infinite; }
+.gate-wind .gsp path { fill: #fff; transform-box: fill-box; transform-origin: center; animation: gwTw 1.6s ease-in-out infinite; }
+.gate-wind .gsp .d2 { animation-delay: .5s; } .gate-wind .gsp .d3 { animation-delay: 1s; }
+.gate-brand.anim .gate-img { animation: gateIn .9s cubic-bezier(.2,.8,.2,1) both, gateGlow 2.4s 1s ease-in-out infinite; }
+@keyframes gwSpin { from { stroke-dashoffset: 520; } to { stroke-dashoffset: 0; } }
+@keyframes gwSweep { 0% { stroke-dashoffset: 260; opacity: 0; } 30% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes gwTw { 0%, 100% { opacity: .2; transform: scale(.6); } 50% { opacity: 1; transform: scale(1.15); } }
+@keyframes gateGlow { 0%, 100% { box-shadow: 0 18px 44px rgb(224 122 144 / .28); } 50% { box-shadow: 0 18px 54px rgb(255 120 160 / .5); } }
+@media (prefers-reduced-motion: reduce) { .gate-wind { display: none; } }
 /* Theme: blush (2026-11) */
 /* Cycle section keeps its original colours */
 .card.cyc-card { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -5924,7 +5939,11 @@ else if (kind === "up") {
 }
 // شاشة الدخول أوّل ما ينفتح التطبيق (مش جوّا claude.ai)
 // شعار التطبيق بأول شاشة
-const gateBrand = (anim) => `<div class="gate-brand${anim ? " anim" : ""}"><img class="gate-img" src="icons/forme-logo-hd.webp?v=1" alt="For Me" width="210" height="210" decoding="async"><svg class="gate-word" viewBox="0 0 360 120" role="img" aria-label="For Me" dir="ltr"><text x="180" y="84" text-anchor="middle">For Me</text></svg></div>`;
+const GATE_WIND = `<svg class="gate-wind" viewBox="0 0 210 210" aria-hidden="true"><defs><linearGradient id="gw" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".55" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#FFE3EC" stop-opacity="0"/></linearGradient><filter id="gwb"><feGaussianBlur stdDeviation="1.6"/></filter></defs>
+  <g transform="rotate(-18 105 112)"><ellipse class="gw1" cx="105" cy="118" rx="78" ry="22" fill="none" stroke="url(#gw)" stroke-width="5" stroke-linecap="round" filter="url(#gwb)"/><ellipse class="gw2" cx="105" cy="118" rx="78" ry="22" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>
+  <g transform="rotate(14 105 70)"><path class="gw3" d="M40 78 C80 40 150 30 182 52" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></g>
+  <g class="gsp"><path d="M168 40l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/><path class="d2" d="M44 132l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/><path class="d3" d="M150 150l1.6 4 4 1.6-4 1.6-1.6 4-1.6-4-4-1.6 4-1.6z"/></g></svg>`;
+const gateBrand = (anim) => `<div class="gate-brand${anim ? " anim" : ""}"><span class="gate-logo-w"><img class="gate-img" src="icons/forme-logo-hd.webp?v=1" alt="For Me" width="210" height="210" decoding="async">${anim ? GATE_WIND : ""}</span><svg class="gate-word" viewBox="0 0 360 120" role="img" aria-label="For Me" dir="ltr"><text x="180" y="84" text-anchor="middle">For Me</text></svg></div>`;
 // مقدّمة التطبيق: ٣ شاشات بتنعرض مرّة وحدة قبل التسجيل (وفيكِ تشوفيها من حسابي)
 let introForce = false;
 const INTRO = [
@@ -5949,8 +5968,11 @@ function introSync() {
   const b = document.querySelector(".intro-next"); if (b) { b.textContent = last ? L("يلا نبلّش 🌸", "Let's start 🌸") : L("التالي", "Next"); b.dataset.intro = last ? "done" : "next"; }
 }
 document.addEventListener("scroll", (e) => { if (e.target && e.target.id === "intro-track") introSync(); }, true);
+const SPLASH_UNTIL = Date.now() + 3200;   // شاشة الانتظار بتضل شوي أوّل ما ينفتح التطبيق
+setTimeout(() => { try { render(); } catch (e) {} }, 3300);
 function authGate() {
   if (introForce) return introHtml();
+  if (Date.now() < SPLASH_UNTIL && fbOn() && !(window.claude && typeof window.claude.use === "function")) return `<section class="gate">${gateBrand(true)}</section>`;
   if (!fbOn() || (authUser && !authUser.claude) || (window.claude && typeof window.claude.use === "function")) return "";
   if (authUser && authUser.claude) return "";
   if (!authReady) return `<section class="gate">${gateBrand(true)}<p class="muted">${L("لحظة…", "One moment…")}</p></section>`;
