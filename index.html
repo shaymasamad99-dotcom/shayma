@@ -5,9 +5,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="For Me">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="manifest" href="manifest.webmanifest?v=5">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=6">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=6">
+<link rel="manifest" href="manifest.webmanifest?v=6">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=7">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=7">
 <title>For Me</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2893,7 +2893,7 @@ function renderPlan() {
   const g = GOALS[profile.goal];
   const day = buildDay(selDay);
   const MON = L(["كانون الثاني","شباط","آذار","نيسان","أيار","حزيران","تموز","آب","أيلول","تشرين الأول","تشرين الثاني","كانون الأول"], ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]);
-  let html = `<header class="hdr top-hdr"><img class="brand-img" src="icons/forme-logo.jpg" alt="For Me"><div>
+  let html = `<header class="hdr top-hdr"><img class="brand-img" src="icons/forme-logo.jpg?v=7" alt="For Me"><div>
       <span class="eyebrow">${dayN(todayIdx)} · ${TODAY.getDate()} ${MON[TODAY.getMonth()]}</span>
       <p class="hello">${myName() ? L(`هاي ${esc(myName())}`, `Hi ${esc(myName())}`) : L("أهلا", "Hi")} 🌸</p></div>
     </header>`;
@@ -5852,7 +5852,7 @@ else if (kind === "up") {
 }
 // شاشة الدخول أوّل ما ينفتح التطبيق (مش جوّا claude.ai)
 // شعار التطبيق بأول شاشة
-const gateBrand = () => `<div class="gate-brand"><img class="gate-img" src="icons/forme-logo.jpg" alt="For Me"><div class="gate-logo" dir="ltr">For <b>Me</b></div></div>`;
+const gateBrand = () => `<div class="gate-brand"><img class="gate-img" src="icons/forme-logo.jpg?v=7" alt="For Me"><div class="gate-logo" dir="ltr">For <b>Me</b></div></div>`;
 function authGate() {
   if (!fbOn() || (authUser && !authUser.claude) || (window.claude && typeof window.claude.use === "function")) return "";
   if (authUser && authUser.claude) return "";
