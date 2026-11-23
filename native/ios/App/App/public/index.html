@@ -1263,6 +1263,11 @@ i.refimg { display: block; width: 100%; height: 100%; min-height: 60px; backgrou
 .barea .av { width: 86px; height: 86px; }
 .barea b { font-family: var(--body); font-size: .96rem; font-weight: 700; color: #6E2A3F; line-height: 1.3; text-align: center; }
 .barea .bpill { color: #A8456A; background: var(--soft); border-radius: 999px; padding: 3px 14px; font-size: .78rem; font-weight: 600; }
+
+/* Ready-routine cards: real exercise thumbnails */
+.rt-thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; }
+.rt-thumbs img, .rt-thumbs i { width: 100%; aspect-ratio: 1; border-radius: 14px; object-fit: cover; object-position: 50% 60%; background: #81C3FC; box-shadow: 0 2px 6px rgb(160 90 100 / .15); display: block; }
+.rt-thumbs i { display: grid; place-items: center; font-style: normal; font-weight: 700; color: var(--accent-2); background: rgb(255 255 255 / .75); }
 /* Theme: blush (2026-11) */
 /* Cycle section keeps its original colours */
 .card.cyc-card { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -3216,8 +3221,15 @@ function routineCard(r) {
   return `<button class="rcard sm" data-routine="${r.id}">
       <span class="eyebrow">${routineMin(`r-${r.id}`, items)} ${L("دقيقة", "min")} · ${items.length} ${L("تمارين", "exercises")}</span>
       <b class="rc-t">${rN(r)}</b><small>${rSub(r)}</small>
-      ${bubbles(items, 7, .72)}
+      ${rtThumbs(items)}
     </button>`;
+}
+// صور التمارين نفسها (شوشي) بدل صور العضلة المكرّرة
+function rtThumbs(items) {
+  const pic = (ex) => { const v = cvidOf(ex.id), a = artOf(ex.id); return v ? `${v}.jpg` : a ? `${a}-1.webp` : null; };
+  const withPic = items.filter(it => pic(it.ex)), show = withPic.slice(0, items.length > 4 ? 3 : 4), more = items.length - show.length;
+  if (!show.length) return bubbles(items, 7, .72);
+  return `<span class="rt-thumbs">${show.map(it => `<img src="${pic(it.ex)}" alt="" loading="lazy" decoding="async">`).join("")}${more > 0 ? `<i dir="ltr">+${more}</i>` : ""}</span>`;
 }
 function renderRoutine(r) {
   const key = `r-${r.id}`, items = routineItems(r), est = routineMin(key, items), g = GOALS[profile.goal];
