@@ -1219,7 +1219,7 @@ i.refimg { display: block; width: 100%; height: 100%; min-height: 60px; backgrou
 
 /* Today header: compact (2026-11) */
 .top-hdr { justify-content: flex-start; align-items: center; gap: 12px; }
-.top-hdr .brand-img { width: 46px; height: 46px; border-radius: 14px; flex: none; }
+.top-hdr { justify-content: space-between; } .top-hdr .brand-img { order: 2; width: 78px; height: 78px; border-radius: 22px; flex: none; box-shadow: 0 10px 24px rgb(224 122 144 / .28); }
 .top-hdr .hello { font-size: 1.55rem; margin: 0; line-height: 1.25; }
 .wkstrip { background: var(--surface); border-radius: 24px; padding: 14px 12px 12px; box-shadow: var(--shadow); gap: 10px; }
 .wkstrip .wk-h { display: flex; align-items: center; gap: 8px; }
@@ -2942,7 +2942,7 @@ function renderPlan() {
   const g = GOALS[profile.goal];
   const day = buildDay(selDay);
   const MON = L(["كانون الثاني","شباط","آذار","نيسان","أيار","حزيران","تموز","آب","أيلول","تشرين الأول","تشرين الثاني","كانون الأول"], ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]);
-  let html = `<header class="hdr top-hdr"><img class="brand-img" src="icons/forme-logo.jpg?v=7" alt="For Me"><div>
+  let html = `<header class="hdr top-hdr"><img class="brand-img" src="icons/forme-logo-hd.webp?v=1" alt="For Me"><div>
       <span class="eyebrow">${dayN(todayIdx)} · ${TODAY.getDate()} ${MON[TODAY.getMonth()]}</span>
       <p class="hello">${myName() ? L(`هاي ${esc(myName())}`, `Hi ${esc(myName())}`) : L("أهلا", "Hi")} 🌸</p></div>
     </header>`;
