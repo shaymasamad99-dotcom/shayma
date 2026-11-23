@@ -29,6 +29,7 @@ Cartoon girl: brown hair in a high bun, pink sports bra, purple leggings, white 
 - `shushy-prompts.txt` — 26 exercises still needing a video (two images each: start and end).
 - `shushy-prompts-2.txt` — 27 more exercises needing a video.
 - `shushy-still-prompts.txt` — 29 image-only exercises (**all done**).
+Videos with wrong form are listed in `FIXV` (hidden; the muscle picture + written steps show instead). New start/end prompts for them are in `shushy-prompts-fix.txt`; when she sends a pair, make the video, then remove the id from `FIXV`. Workout order: `orderItems()` (priority/compound first, core last).
 Known pending: `db-bench` video lowers the dumbbells to the shoulders/neck; it must go to mid-chest with the dumbbells ACROSS the body (end-on from the side). She is sending new start/end images. `m-preacher` needs a corrected pair (same machine in both images). `rev-wrist` has no video (optional).
 
 ## Getting her images
