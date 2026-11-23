@@ -12,7 +12,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600&family=Playfair+Display:wght@500;600&family=Noto+Naskh+Arabic:wght@500;600;700&family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600&family=Playfair+Display:wght@500;600&family=Noto+Naskh+Arabic:wght@500;600;700&family=El+Messiri:wght@500;600;700&family=Dancing+Script:wght@700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <style>
 /* Layout: one narrow column, app-style — bottom tab bar, week strip, expandable exercise rows */
 :root {
@@ -1228,6 +1228,18 @@ i.refimg { display: block; width: 100%; height: 100%; min-height: 60px; backgrou
 .wk-past svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
 .wk-bar { height: 6px; border-radius: 999px; background: var(--soft); overflow: hidden; } .wk-bar i { display: block; height: 100%; border-radius: inherit; background: var(--btn); }
 .wkstrip .tw-line { font-size: .76rem; text-align: center; }
+
+/* Splash / sign-in brand */
+.gate > p.muted { text-align: center; }
+.gate-img { width: 210px; height: 210px; border-radius: 48px; object-fit: cover; box-shadow: 0 18px 44px rgb(224 122 144 / .28), 0 2px 8px rgb(224 122 144 / .15); }
+.gate-word { width: 280px; height: auto; overflow: visible; margin-top: -4px; }
+.gate-word text { font-family: "Dancing Script", "Playfair Display", cursive; font-size: 92px; font-weight: 700; fill: var(--accent); stroke: var(--accent); stroke-width: 0; }
+.gate-brand.anim .gate-img { animation: gateIn .9s cubic-bezier(.2,.8,.2,1) both; }
+.gate-brand.anim .gate-word text { fill: transparent; stroke-width: 1.4; stroke-dasharray: 900; stroke-dashoffset: 900; animation: gateDraw 2.2s .35s ease-in-out forwards, gateFill .8s 2s ease forwards; }
+@keyframes gateIn { from { opacity: 0; transform: scale(.86) translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes gateDraw { to { stroke-dashoffset: 0; } }
+@keyframes gateFill { to { fill: var(--accent); stroke-width: 0; } }
+@media (prefers-reduced-motion: reduce) { .gate-brand.anim .gate-img, .gate-brand.anim .gate-word text { animation: none; fill: var(--accent); stroke-width: 0; } }
 /* Theme: blush (2026-11) */
 /* Cycle section keeps its original colours */
 .card.cyc-card { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -5852,11 +5864,11 @@ else if (kind === "up") {
 }
 // شاشة الدخول أوّل ما ينفتح التطبيق (مش جوّا claude.ai)
 // شعار التطبيق بأول شاشة
-const gateBrand = () => `<div class="gate-brand"><img class="gate-img" src="icons/forme-logo.jpg?v=7" alt="For Me"><div class="gate-logo" dir="ltr">For <b>Me</b></div></div>`;
+const gateBrand = (anim) => `<div class="gate-brand${anim ? " anim" : ""}"><img class="gate-img" src="icons/forme-logo-hd.webp?v=1" alt="For Me" width="210" height="210" decoding="async"><svg class="gate-word" viewBox="0 0 360 120" role="img" aria-label="For Me" dir="ltr"><text x="180" y="84" text-anchor="middle">For Me</text></svg></div>`;
 function authGate() {
   if (!fbOn() || (authUser && !authUser.claude) || (window.claude && typeof window.claude.use === "function")) return "";
   if (authUser && authUser.claude) return "";
-  if (!authReady) return `<section class="gate">${gateBrand()}<p class="muted">${L("لحظة…", "One moment…")}</p></section>`;
+  if (!authReady) return `<section class="gate">${gateBrand(true)}<p class="muted">${L("لحظة…", "One moment…")}</p></section>`;
   auth.open = true; if (auth.mode === "del") auth.mode = "in";
   return `<section class="gate">${gateBrand()}<p class="muted gate-sub">${L("فوتي بإيميلك لتنحفظ تمارينك وتلاقيها عأي جهاز.", "Sign in with your email to save your workouts on every device.")}</p>${authBlock()}
     <div class="gate-lang">${[["ar","العربية"],["en","English"]].map(([k,l]) => `<button type="button" class="linkbtn" data-lang="${k}" lang="${k}">${l}</button>`).join(" · ")}</div></section>`;
