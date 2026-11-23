@@ -1216,6 +1216,18 @@ form { display: flex; flex-direction: column; gap: 18px; }
 i.refimg { display: block; width: 100%; height: 100%; min-height: 60px; background-size: cover; background-position: center; border-radius: inherit; }
 .fixv-note { margin: 8px 0 0; padding: 10px 12px; border-radius: 14px; background: var(--soft); font-size: .85rem; line-height: 1.55; text-align: center; }
 .sh-art.fixv { display: grid; place-items: center; } .sh-art.fixv .refimg { display: block; width: 180px; height: 180px; border-radius: 50%; background-size: cover; background-position: center; }
+
+/* Today header: compact (2026-11) */
+.top-hdr { justify-content: flex-start; align-items: center; gap: 12px; }
+.top-hdr .brand-img { width: 46px; height: 46px; border-radius: 14px; flex: none; }
+.top-hdr .hello { font-size: 1.55rem; margin: 0; line-height: 1.25; }
+.wkstrip { background: var(--surface); border-radius: 24px; padding: 14px 12px 12px; box-shadow: var(--shadow); gap: 10px; }
+.wkstrip .wk-h { display: flex; align-items: center; gap: 8px; }
+.wkstrip .wk-h b { font-size: 1.02rem; } .wk-n { color: var(--muted); font-size: .88rem; flex: 1; }
+.wk-past { display: inline-flex; align-items: center; gap: 5px; margin: 0; padding: 6px 10px; border: 0; border-radius: 999px; background: var(--soft); color: var(--accent-2); font: inherit; font-size: .78rem; font-weight: 600; cursor: pointer; }
+.wk-past svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
+.wk-bar { height: 6px; border-radius: 999px; background: var(--soft); overflow: hidden; } .wk-bar i { display: block; height: 100%; border-radius: inherit; background: var(--btn); }
+.wkstrip .tw-line { font-size: .76rem; text-align: center; }
 /* Theme: blush (2026-11) */
 /* Cycle section keeps its original colours */
 .card.cyc-card { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -2880,25 +2892,25 @@ function pastWeek(off, firstOff) {
 function renderPlan() {
   const g = GOALS[profile.goal];
   const day = buildDay(selDay);
-  let html = `<p class="brand" dir="ltr" aria-label="For Me"><img class="brand-img" src="icons/forme-logo.jpg" alt="" aria-hidden="true"><span>For <b>Me</b></span></p><header class="hdr"><div>
-      <p class="hello">${myName() ? L(`هاي ${esc(myName())}`, `Hi ${esc(myName())}`) : L("أهلا", "Hi")} 👋</p>
-      <span class="eyebrow">${dayN(todayIdx)}</span></div>
-      <button class="lang-btn" data-lang="${L("en", "ar")}" lang="${L("en", "ar")}">${L("English", "العربية")}</button>
+  const MON = L(["كانون الثاني","شباط","آذار","نيسان","أيار","حزيران","تموز","آب","أيلول","تشرين الأول","تشرين الثاني","كانون الأول"], ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]);
+  let html = `<header class="hdr top-hdr"><img class="brand-img" src="icons/forme-logo.jpg" alt="For Me"><div>
+      <span class="eyebrow">${dayN(todayIdx)} · ${TODAY.getDate()} ${MON[TODAY.getMonth()]}</span>
+      <p class="hello">${myName() ? L(`هاي ${esc(myName())}`, `Hi ${esc(myName())}`) : L("أهلا", "Hi")} 🌸</p></div>
     </header>`;
   if (!profile.saved) html += `<div class="banner"><span>${L("هيدا برنامج مثال. عبّي عمرك ووزنك وهدفك ليتظبط إلك.", "This is a sample plan. Add your age, weight and goal to tailor it.")}</span><button data-tab="me">${L("اعمليلي جدولي", "Build my schedule")}</button></div>`;
   const ws = weekStats(), goalDays = profile.days.length;
   const firstOff = firstWkOff();
   if (wkOff < 0) return html + pastWeek(Math.max(wkOff, firstOff), firstOff);
   html += `<section class="wkstrip" aria-label="${L("أيام هالأسبوع", "This week")}">
-      <div class="wk-h"><button class="wk-arr" data-wkoff="-1" ${firstOff < 0 ? "" : "disabled"} aria-label="${L("الأسبوع اللي قبل", "Previous week")}">${L("›", "‹")}</button><b>${L("هالأسبوع", "This week")}</b><span>${ws.days >= goalDays ? L("✓ حققتي هدفك", "✓ Goal reached") : L(`${ws.days} من ${goalDays} أيام`, `${ws.days} of ${goalDays} days`)}</span>${isMovedWeek() ? `<button class="linkbtn" data-plan="reset">${L("رجّعي الجدول", "Reset")}</button>` : ""}</div>
-      ${firstOff < 0 ? `<button class="old-wk" data-wkoff="-1">📅 ${L("شوفي الأسابيع اللي فاتت", "See past weeks")}</button>` : ""}
-      <p class="tw-line">${L(`📈 الأسبوع التدريبي ${progWeek()}: ${weekDaysDone()} من ${perWeek()} أيام. بتنتقلي للأسبوع الجاي بس تخلّصي ${perWeek()} أيام تمرين، مهما أخدوا وقت.`, `📈 Training week ${progWeek()}: ${weekDaysDone()} of ${perWeek()} days. You move on after ${perWeek()} workout days, however long they take.`)}</p>
+      <div class="wk-h"><b>${L("هالأسبوع", "This week")}</b><span class="wk-n">${ws.days >= goalDays ? L("✓ حققتي هدفك", "✓ Goal reached") : L(`${ws.days} من ${goalDays} أيام`, `${ws.days} of ${goalDays} days`)}</span>${isMovedWeek() ? `<button class="linkbtn" data-plan="reset">${L("رجّعي الجدول", "Reset")}</button>` : ""}${firstOff < 0 ? `<button class="wk-past" data-wkoff="-1" aria-label="${L("الأسابيع اللي فاتت", "Past weeks")}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>${L("اللي فاتوا", "Past")}</button>` : ""}</div>
+      <div class="wk-bar" aria-hidden="true"><i style="width:${Math.min(100, Math.round(ws.days / Math.max(1, goalDays) * 100))}%"></i></div>
       <div class="wk-days">${[...Array(7).keys()].map(i => {
         const d = buildDay(i), stt0 = dayStatus(i), sw = !d && isSwimDay(i);
         const did = !d && Object.values(log[ymd(dateOfDay(i))] || {}).some(e => e.done);      // تمرين من «صمّمي تمرينك» أو روتين بيوم راحة
         const stt = stt0, swd = (acts[ymd(dateOfDay(i))] || []).some(a => a.t === "swim"), actT = (acts[ymd(dateOfDay(i))] || [])[0], mk = stt === "full" && !dayDoneKey(ymd(dateOfDay(i))) && actT ? (actT.t === "swim" ? "🏊‍♀️" : actT.t === "walk" ? "🚶‍♀️" : ACT_IC[actT.t] || "✨") : stt === "full" ? "🏆" : swd ? "🌊" : stt === "part" ? "◐" : d ? "●" : sw ? "〰" : "";
         return `<button class="wd ${d || sw ? "tr" : "rs"} ${stt}${swd && stt !== "full" ? " swimd" : ""}${i === selDay ? " sel" : ""}${i === todayIdx ? " now" : ""}" data-day="${i}" aria-pressed="${i === selDay}" aria-label="${dayN(i)}: ${d ? d.typeName : sw ? L("سباحة", "Swim") : L("راحة", "Rest")}"><span>${i === todayIdx ? L("اليوم", "Today") : WD_SHORT(i)}</span><i aria-hidden="true">${mk}</i></button>`;
       }).join("")}</div>
+          <p class="tw-line">${L(`📈 الأسبوع التدريبي ${progWeek()} · بتنتقلي للي بعدو بعد ${perWeek()} أيام تمرين`, `📈 Training week ${progWeek()} · next one after ${perWeek()} workout days`)}</p>
     </section>`;
   // خلّصتي أسبوعك؟ منفرجيكِ شو جايي: الأسبوع الجاي محسوب حسب مرحلتك (تأسيس ← تكرار ← وزن ← خفيف)
   const tds = trainDates();
@@ -3413,7 +3425,7 @@ function schedDayView() {
 function renderMe() {
   if (profile.saved && !meEdit) {
     const g = GOALS[profile.goal], nm = (profile.name || "").trim();
-    return `<header class="hdr"><div><span class="eyebrow">${L("حسابي", "My account")}</span><h1>${nm ? L(`أهلا ${esc(nm)}`, `Hi ${esc(nm)}`) : L("حسابي", "Account")}</h1></div></header>
+    return `<header class="hdr"><div><span class="eyebrow">${L("حسابي", "My account")}</span><h1>${nm ? L(`أهلا ${esc(nm)}`, `Hi ${esc(nm)}`) : L("حسابي", "Account")}</h1></div><button class="lang-btn" data-lang="${L("en", "ar")}" lang="${L("en", "ar")}">${L("English", "العربية")}</button></header>
       ${authUser ? "" : authBlock()}
       ${justSaved ? `<div class="banner ok"><span>${L("✓ جهز جدولك! عملناه حسب هدفك وأيامك. فيكِ تبلّشي من «اليوم».", "✓ Your schedule is ready, built from your goal and days. Start from “Today”.")}</span><button data-tab="plan">${L("ابدئي", "Start")}</button></div>` : ""}
       <section class="acct">
