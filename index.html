@@ -1254,6 +1254,15 @@ i.refimg { display: block; width: 100%; height: 100%; min-height: 60px; backgrou
 .intro-dots { display: flex; justify-content: center; gap: 8px; } .intro-dots i { width: 8px; height: 8px; border-radius: 999px; background: var(--line); transition: width .3s, background .3s; } .intro-dots i.on { width: 26px; background: var(--accent); }
 .intro-next { margin: 0 0 18px; min-height: 54px; border-radius: 22px; background: var(--btn); color: #fff; border: 0; font-size: 1.05rem; font-weight: 700; }
 .intro-again { margin-top: 6px; font-size: .85rem; }
+
+/* My muscles grid (her mockup) */
+.body-half { display: flex; align-items: center; gap: 10px; margin: 22px 0 10px; font-family: var(--body); font-size: 1.3rem; font-weight: 700; color: #6E2A3F; letter-spacing: 0; }
+.bh-ic { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 14px; background: var(--soft); font-size: 1.35rem; }
+.bgrid { gap: 12px; }
+.barea { border: 0; border-radius: 24px; padding: 16px 6px 14px; gap: 8px; background: var(--surface); box-shadow: 0 2px 6px rgb(160 90 100 / .05), 0 12px 28px rgb(160 90 100 / .09); }
+.barea .av { width: 86px; height: 86px; }
+.barea b { font-family: var(--body); font-size: .96rem; font-weight: 700; color: #6E2A3F; line-height: 1.3; text-align: center; }
+.barea .bpill { color: #A8456A; background: var(--soft); border-radius: 999px; padding: 3px 14px; font-size: .78rem; font-weight: 600; }
 /* Theme: blush (2026-11) */
 /* Cycle section keeps its original colours */
 .card.cyc-card { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -2655,7 +2664,7 @@ function renderBody() {
     <button class="bld-card" data-bld="open"><span class="bld-ic" aria-hidden="true">🛠️</span><span class="sinfo"><b>${L("صمّمي تمرينك بنفسك", "Build your own workout")}</b><small>${build.ids.length ? L(`${build.ids.length} تمارين محفوظة · كمّلي`, `${build.ids.length} saved · continue`) : L("اختاري العضلات والتمارين، ونحنا منقلّك إذا الاختيار مدروس", "Pick muscles and exercises; we'll check every choice")}</small></span><span class="chev" aria-hidden="true">‹</span></button>
     <section class="group body-rt"><h3 class="sec">${L("روتينات جاهزة", "Ready routines")}</h3><div class="carousel">${ROUTINES.map(routineCard).join("")}</div></section>
     <div class="body-find"><button class="search sbtn" data-gosearch="1">🔍 ${L("دوّري على تمرين…", "Search for an exercise…")}</button><button class="all-ex" data-tab="lib"><span aria-hidden="true">📚</span>${L("كل التمارين", "All exercises")}</button></div>
-    ${[[L("💪 الجزء العلوي", "💪 Upper body"), BODY_UP], [L("🍑 الجزء السفلي", "🍑 Lower body"), BODY_LOW]].map(([h, ids]) => `<h3 class="sec body-half">${h}</h3><div class="bgrid">${BODY_MAP.filter(a => ids.includes(a.id)).map(a => `<button class="barea" data-barea="${a.id}"><span class="av big" style="--c:${MCOL[a.ic]}">${a.img ? `<i class="refimg" style="background-image:var(--bp-${a.img})" aria-hidden="true"></i>` : bodyIcon(a.ic, true)}</span><b>${L(a.ar, a.en)}</b><small>${a.parts.length} ${L("أجزاء", "parts")}</small></button>`).join("")}</div>`).join("")}
+    ${[["💪", L("الجزء العلوي", "Upper body"), BODY_UP], ["🍑", L("الجزء السفلي", "Lower body"), BODY_LOW]].map(([ic, h, ids]) => `<h3 class="body-half"><span class="bh-ic" aria-hidden="true">${ic}</span>${h}</h3><div class="bgrid">${BODY_MAP.filter(a => ids.includes(a.id)).map(a => `<button class="barea" data-barea="${a.id}"><span class="av big" style="--c:${MCOL[a.ic]}">${a.img ? `<i class="refimg" style="background-image:var(--bp-${a.img})" aria-hidden="true"></i>` : bodyIcon(a.ic, true)}</span><b>${L(a.ar, a.en)}</b><small class="bpill">${a.parts.length} ${L("أجزاء", "parts")}</small></button>`).join("")}</div>`).join("")}
 `;
   const a = BODY_MAP.find(x => x.id === bodyArea);
   return `${head(L(a.ar, a.en), L("عضلاتي", "Know your body"), true)}
