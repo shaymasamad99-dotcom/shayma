@@ -3011,7 +3011,9 @@ function renderPlan() {
   const g = GOALS[profile.goal];
   const day = buildDay(selDay);
   const MON = L(["كانون الثاني","شباط","آذار","نيسان","أيار","حزيران","تموز","آب","أيلول","تشرين الأول","تشرين الثاني","كانون الأول"], ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]);
-  const wEl = Date.now() - SPLASH_UNTIL, hdrWind = wEl < 4500 ? `<span class="hdr-wind" style="--d:${-Math.max(0, wEl)}ms">${GATE_WIND}</span>` : "";
+  const wEl = Date.now() - SPLASH_UNTIL, windDay = store.get("tamrini.windDay", "");
+  if (wEl < 4500 && windDay !== ymd(TODAY)) { if (!window._windT) window._windT = setTimeout(() => store.set("tamrini.windDay", ymd(TODAY)), 4500); } 
+  const hdrWind = wEl < 4500 && windDay !== ymd(TODAY) ? `<span class="hdr-wind" style="--d:${-Math.max(0, wEl)}ms">${GATE_WIND}</span>` : "";
   let html = `<header class="hdr top-hdr"><span class="hdr-logo"><img class="brand-img" src="icons/forme-logo-hd.webp?v=1" alt="For Me">${hdrWind}</span><div>
       <span class="eyebrow">${dayN(todayIdx)} · ${TODAY.getDate()} ${MON[TODAY.getMonth()]}</span>
       <p class="hello">${myName() ? L(`هاي ${esc(myName())}`, `Hi ${esc(myName())}`) : L("أهلا", "Hi")} 🌸</p></div>
