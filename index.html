@@ -1402,6 +1402,11 @@ body.gated:has(.intro) { background: linear-gradient(180deg, #FDF1F3 0%, #FBE2E8
 
 .bld-th { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .bld-reset { border: 0; border-radius: 999px; padding: 7px 14px; background: var(--soft); color: var(--accent-2); font: inherit; font-size: .85rem; font-weight: 700; }
+
+.fixv-ph { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: linear-gradient(160deg, #FBE6EE, #F6D3DF); color: #6E2A3F; text-align: center; padding: 10px; }
+.fixv-ph .fx-ic { width: 64px; height: 64px; border-radius: 50%; overflow: hidden; display: block; box-shadow: 0 0 0 3px #fff; position: relative; }
+.fixv-ph .fx-ic .refimg { position: absolute; inset: 0; }
+.fixv-ph b { font-size: .85rem; } .fixv-ph small { font-size: .72rem; opacity: .75; }
 /* Theme: blush (2026-11) */
 /* Cycle section keeps its original colours */
 .card.cyc-card { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -3429,6 +3434,7 @@ function renderRoutine(r) {
   return html;
 }
 function libMedia(ex) {
+  if (FIXV.has(ex.id) && gender !== "m") return `<span class="fixv-ph"><span class="fx-ic">${bodyIcon(ex.m, false, ex.id)}</span><b>🛠️ ${L("فيديو جديد قريباً", "New video soon")}</b><small>${L("عم نصلّح الحركة", "Fixing the form")}</small></span>`;
   const v = cvidOf(ex.id), a = artOf(ex.id);
   if (v) return `<img src="${v}.jpg" loading="lazy" decoding="async" alt="">`;
   if (a) return `<img src="${a}-1.webp" loading="lazy" decoding="async" alt="">`;
