@@ -1373,6 +1373,15 @@ body.gated:has(.intro) { background: linear-gradient(180deg, #FDF1F3 0%, #FBE2E8
 .acct-stats2 .t5::after { display: none; } .acct-stats2 .t5 b { font-family: var(--body); font-size: 1.15rem; flex: 1; text-align: start; } .acct-stats2 .t5 span { padding-inline-start: 14px; border-inline-start: 1px solid rgb(224 122 144 / .25); }
 .acct-edit { display: flex; align-items: center; gap: 10px; justify-content: center; width: 100%; margin: 16px 0 0; min-height: 58px; border-radius: 24px; background: linear-gradient(180deg, #D27B95, #A8456A); box-shadow: 0 14px 28px rgb(168 69 106 / .3), inset 0 1px 0 rgb(255 255 255 / .35); position: relative; }
 .acct-edit .ai { stroke: #fff; width: 22px; height: 22px; } .acct-edit i { position: absolute; inset-inline-end: 22px; font-style: normal; font-size: 1.4rem; opacity: .9; }
+
+.av-pick { margin: 0 0 14px; padding: 14px; border-radius: 24px; background: rgb(255 255 255 / .7); box-shadow: 0 8px 22px rgb(160 90 100 / .1); display: flex; flex-direction: column; gap: 12px; }
+.av-pick > b { color: #6E2A3F; }
+.av-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; max-height: 300px; overflow-y: auto; padding: 2px; }
+.av-opt { padding: 0; border: 0; background: none; aspect-ratio: 1; border-radius: 50%; overflow: hidden; box-shadow: 0 2px 6px rgb(160 90 100 / .15); }
+.av-opt img { width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.1); }
+.av-opt.on { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--accent); }
+.av-more { display: flex; gap: 8px; flex-wrap: wrap; } .av-more .ghost { margin: 0; cursor: pointer; }
+.acct-av2 { border: 0; }
 /* Theme: blush (2026-11) */
 /* Cycle section keeps its original colours */
 .card.cyc-card { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -3149,7 +3158,7 @@ document.addEventListener("change", (e) => {
   r.onload = () => { const im = new Image(); im.onload = () => {
     const S = 256, c = document.createElement("canvas"); c.width = c.height = S; const g = c.getContext("2d"), m = Math.min(im.width, im.height);
     g.drawImage(im, (im.width - m) / 2, (im.height - m) / 2, m, m, 0, 0, S, S);
-    profile.avatar = c.toDataURL("image/jpeg", .85); store.set("tamrini.profile", profile); render();
+    profile.avatar = c.toDataURL("image/jpeg", .85); store.set("tamrini.profile", profile); avPick = false; render();
   }; im.src = r.result; };
   r.readAsDataURL(t.files[0]);
 });
@@ -3592,6 +3601,7 @@ function schedDayView() {
     <div class="chips daypick">${DAYS.map((_, i) => `<button class="chip" data-goday="${i}" aria-pressed="${i === selDay}">${dayShort(i)}</button>`).join("")}</div>
     ${dayDetail()}`;
 }
+let avPick = false; const AV_N = 39;
 function renderMe() {
   if (profile.saved && !meEdit) {
     const g = GOALS[profile.goal], nm = (profile.name || "").trim();
@@ -3600,10 +3610,12 @@ function renderMe() {
       ${justSaved ? `<div class="banner ok"><span>${L("✓ جهز جدولك! عملناه حسب هدفك وأيامك. فيكِ تبلّشي من «اليوم».", "✓ Your schedule is ready, built from your goal and days. Start from “Today”.")}</span><button data-tab="plan">${L("ابدئي", "Start")}</button></div>` : ""}
       <section class="acct acct2">
         <div class="acct-hero">
-          <label class="acct-av2" aria-label="${L("غيّري صورتك", "Change your photo")}">${profile.avatar ? `<img src="${profile.avatar}" alt="">` : `<i>${(nm || myName()) ? esc((nm || myName())[0].toUpperCase()) : "♀"}</i>`}<span class="av-cam" aria-hidden="true">📷</span><input type="file" accept="image/*" data-avatar="1" hidden></label>
+          <button type="button" class="acct-av2" data-av-pick="1" aria-expanded="${avPick}" aria-label="${L("غيّري صورتك", "Change your picture")}">${profile.avatar ? `<img src="${profile.avatar}" alt="">` : `<i>${(nm || myName()) ? esc((nm || myName())[0].toUpperCase()) : "♀"}</i>`}<span class="av-cam" aria-hidden="true">✏️</span></button>
           <div class="acct-hi"><b>${(nm || myName()) ? esc(nm || myName()) : L("إنتِ", "You")}</b>
             <span class="acct-tags"><i>🎯 ${goalTitle()}</i><i>💪 ${lvN(profile.level)}</i><i>📅 ${profile.days.length} ${L("أيام", "days")}</i></span></div>
         </div>
+        ${avPick ? `<div class="av-pick"><b>${L("اختاري شوشي تبعك 🌸", "Pick your Shushy 🌸")}</b><div class="av-grid">${Array.from({ length: AV_N }, (_, i) => { const src = `a/av/av-${String(i + 1).padStart(2, "0")}.webp`; return `<button type="button" class="av-opt${profile.avatar === src ? " on" : ""}" data-av-set="${src}"><img src="${src}" alt="" loading="lazy"></button>`; }).join("")}</div>
+          <div class="av-more"><label class="ghost">📷 ${L("صورتي من الموبايل", "My own photo")}<input type="file" accept="image/*" data-avatar="1" hidden></label>${profile.avatar ? `<button type="button" class="ghost" data-av-set="">${L("بلا صورة", "No picture")}</button>` : ""}</div></div>` : ""}
         <div class="acct-wins">
           <div><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12h19M6 8v8M3.5 9.5v5M18 8v8M20.5 9.5v5"/></svg><b>${hist.length}</b><span>${L("تمرين خلّصتي", "workouts done")}</span></div>
           <div><svg class="ai fire" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="fg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E0557A"/><stop offset="1" stop-color="#F7A3B5"/></linearGradient></defs><path d="M12 2.5c1 3.2 4.8 5 4.8 10a4.8 4.8 0 0 1-9.6 0c0-2.2 1-3.6 2.2-4.8.2 1.8 1 2.8 2.1 3.1-.6-3 .3-5.8.5-8.3z" fill="url(#fg)" stroke="none"/></svg><b>${dayStreak()}</b><span>${L("يوم ورا بعض", "day streak")}</span></div>
@@ -5692,6 +5704,8 @@ document.addEventListener("click", (e) => {
   if (ds.swapwhy) { bldToast({ lvl: "no", title: L("✋ ما بينفع هالمرة", "✋ Not this time"), msg: flipWhy(+ds.swapwhy) }); return; }
   if (ds.swapday) { const ch = flipDay(+ds.swapday); render(); if (ch && ch.length) bldToast({ lvl: "great", title: L("✓ تم التبديل", "✓ Swapped"), msg: flipMsg(ch) }); return; }
   if (ds.goday) { selDay = schedDay = +ds.goday; tab = "sched"; open = null; altOpen = null; actOpen = false; justSaved = false; render(); window.scrollTo(0, 0); return; }
+  if (ds.avPick) { avPick = !avPick; render(); return; }
+  if (ds.avSet !== undefined) { if (ds.avSet) profile.avatar = ds.avSet; else delete profile.avatar; store.set("tamrini.profile", profile); avPick = false; render(); return; }
   if (ds.introShow) { introForce = true; render(); window.scrollTo(0, 0); return; }
   if (ds.intro) { if (ds.intro === "next") { const t = document.getElementById("intro-track"); if (t) t.scrollBy({ left: (getComputedStyle(t).direction === "rtl" ? -1 : 1) * t.clientWidth, behavior: "smooth" }); return; } store.set("tamrini.intro", 1); introForce = false; render(); window.scrollTo(0, 0); return; }
   if (ds.lang) { lang = ds.lang; store.set("tamrini.lang", lang); applyLang(); render(); if (ses) renderPlay(); return; }
