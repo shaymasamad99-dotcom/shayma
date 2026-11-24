@@ -5755,7 +5755,13 @@ document.addEventListener("click", (e) => {
   if (ds.goday) { selDay = schedDay = +ds.goday; tab = "sched"; open = null; altOpen = null; actOpen = false; justSaved = false; render(); window.scrollTo(0, 0); return; }
   if (ds.dayreset) { if (ds.dayreset === "ask") dayResetAsk = true; else if (ds.dayreset === "yes") { resetDay(ymd(dateOfDay(selDay))); dayResetAsk = false; try { bldToast({ lvl: "great", title: L("✓ تصفّر اليوم", "✓ Day reset"), msg: L("بلّشي من جديد 🌸", "Start fresh 🌸") }); } catch {} } else dayResetAsk = false; render(); return; }
   if (ds.avPick) { avPick = !avPick; avSel = null; render(); return; }
-  if (ds.avSet !== undefined) { avSel = ds.avSet; render(); return; }      // بس تختار: بتبيّن، وما بتنحط لحد ما تكبسي ✓
+  if (ds.avSet !== undefined) {      // بس نعلّم الاختيار ونبدّل الصورة الكبيرة، بلا ما نرسم الصفحة من جديد (لتضلّ اللائحة مكانها)
+    avSel = ds.avSet;
+    document.querySelectorAll(".av-opt").forEach(b => b.classList.toggle("on", b.dataset.avSet === avSel));
+    const big = document.querySelector(".acct-av2"); if (big) { const fall = big.querySelector("i"), img = big.querySelector("img");
+      if (avSel) { if (img) img.src = avSel; else { if (fall) fall.remove(); big.insertAdjacentHTML("afterbegin", `<img src="${avSel}" alt="">`); } } else if (img) img.remove(); }
+    const ok = document.querySelector("[data-av-ok]"); if (ok) ok.disabled = false;
+    return; }      // بس تختار: بتبيّن، وما بتنحط لحد ما تكبسي ✓
   if (ds.avOk) { if (avSel === null) return; if (avSel) profile.avatar = avSel; else delete profile.avatar; store.set("tamrini.profile", profile); avSel = null; avPick = false; avDone(); return; }
   if (ds.avCancel) { avSel = null; avPick = false; render(); return; }
   if (ds.introShow) { introForce = true; render(); window.scrollTo(0, 0); return; }
