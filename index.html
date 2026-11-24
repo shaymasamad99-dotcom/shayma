@@ -1344,6 +1344,35 @@ body.gated:has(.intro) { background: linear-gradient(180deg, #FDF1F3 0%, #FBE2E8
 .acct-stats2 span { font-size: .75rem; color: var(--muted); }
 .acct-stats2 .t1 { background: #FDE8EE; } .acct-stats2 .t2 { background: #F8EEDF; } .acct-stats2 .t3 { background: #E6F4EE; } .acct-stats2 .t4 { background: #EEEAFB; } .acct-stats2 .t5 { background: #E7F2FD; }
 .acct-edit { display: block; width: calc(100% - 32px); margin: 0 16px 16px; min-height: 50px; border: 0; border-radius: 18px; background: var(--btn); color: #fff; font: inherit; font-weight: 700; font-size: 1rem; box-shadow: 0 10px 22px rgb(224 122 144 / .28); }
+
+.acct-av2 { position: relative; cursor: pointer; }
+.acct-av2 img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+.av-cam { position: absolute; bottom: -2px; inset-inline-start: -2px; width: 28px; height: 28px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: .85rem; box-shadow: 0 3px 8px rgb(160 90 100 / .25); }
+
+/* Account v3: her mockup */
+.acct2 { background: transparent !important; box-shadow: none !important; border: 0 !important; }
+.acct-hero { background: none; padding: 8px 4px 16px; }
+.acct-hero::after { display: none; }
+.acct-av2 { width: 96px; height: 96px; padding: 5px; background: rgb(255 255 255 / .7); box-shadow: 0 0 0 1px rgb(224 122 144 / .25), 0 14px 30px rgb(217 96 127 / .28); }
+.acct-av2 i { background: radial-gradient(circle at 35% 30%, #F2A3B8, #C4627A 75%); font-size: 2.6rem; }
+.acct-hi > b { font-size: 1.7rem; }
+.acct-tags i { background: rgb(255 255 255 / .75); box-shadow: 0 3px 10px rgb(160 90 100 / .1); padding: 5px 12px; font-size: .8rem; }
+.ai { width: 26px; height: 26px; fill: none; stroke: #C4627A; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.acct-wins { border: 0; border-radius: 24px; background: rgb(255 255 255 / .6); box-shadow: 0 0 0 1px rgb(255 255 255 / .9) inset, 0 8px 24px rgb(160 90 100 / .1); margin: 0 0 14px; }
+.acct-wins div { gap: 2px; padding: 16px 4px; } .acct-wins div + div { border-color: rgb(224 122 144 / .2); }
+.acct-wins b, .acct-stats2 b { font-variant-numeric: lining-nums; font-family: "Playfair Display", serif; color: #5E2A3A; font-weight: 700; }
+.acct-wins b { font-size: 1.7rem; line-height: 1.2; }
+.acct-stats2 { padding: 0; gap: 12px; }
+.acct-stats2 div { overflow: hidden; border-radius: 24px; padding: 16px; align-items: flex-start; text-align: start; gap: 2px; box-shadow: 0 0 0 1px rgb(255 255 255 / .9) inset, 0 8px 22px rgb(160 90 100 / .09); }
+.acct-stats2 div::after { content: ""; position: absolute; inset: auto -10% -45% -10%; height: 70%; border-radius: 50%; background: rgb(255 255 255 / .35); pointer-events: none; }
+.acct-stats2 b { font-size: 1.9rem; line-height: 1.15; }
+.acct-stats2 span { font-size: .85rem; color: #6E2A3F; opacity: .8; }
+.acct-stats2 .t1 { background: linear-gradient(160deg, #FBE6EE, #F6D3DF); } .acct-stats2 .t2 { background: linear-gradient(160deg, #FBF1E6, #F4E2D4); }
+.acct-stats2 .t3 { background: linear-gradient(160deg, #EEF6EF, #DCECE0); } .acct-stats2 .t4 { background: linear-gradient(160deg, #F1ECFA, #E3DBF4); }
+.acct-stats2 .t5 { background: rgb(255 255 255 / .6); flex-direction: row; align-items: center; justify-content: flex-start; gap: 14px; }
+.acct-stats2 .t5::after { display: none; } .acct-stats2 .t5 b { font-family: var(--body); font-size: 1.15rem; flex: 1; text-align: start; } .acct-stats2 .t5 span { padding-inline-start: 14px; border-inline-start: 1px solid rgb(224 122 144 / .25); }
+.acct-edit { display: flex; align-items: center; gap: 10px; justify-content: center; width: 100%; margin: 16px 0 0; min-height: 58px; border-radius: 24px; background: linear-gradient(180deg, #D27B95, #A8456A); box-shadow: 0 14px 28px rgb(168 69 106 / .3), inset 0 1px 0 rgb(255 255 255 / .35); position: relative; }
+.acct-edit .ai { stroke: #fff; width: 22px; height: 22px; } .acct-edit i { position: absolute; inset-inline-end: 22px; font-style: normal; font-size: 1.4rem; opacity: .9; }
 /* Theme: blush (2026-11) */
 /* Cycle section keeps its original colours */
 .card.cyc-card { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -3113,6 +3142,17 @@ function suppIcs() {
   return `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//For Me//AR\r\nCALSCALE:GREGORIAN\r\n${ev.join("\r\n")}\r\nEND:VCALENDAR\r\n`;
 }
 document.addEventListener("toggle", (e) => { if (e.target && e.target.id === "supp-d") suppOpen = e.target.open; }, true);
+// صورة البروفايل: بتنصغّر لـ ٢٥٦ بكسل مربّع وبتنحفظ مع البروفايل (وبتطلع على كل أجهزتك)
+document.addEventListener("change", (e) => {
+  const t = e.target; if (!t || !t.dataset || !t.dataset.avatar || !t.files || !t.files[0]) return;
+  const r = new FileReader();
+  r.onload = () => { const im = new Image(); im.onload = () => {
+    const S = 256, c = document.createElement("canvas"); c.width = c.height = S; const g = c.getContext("2d"), m = Math.min(im.width, im.height);
+    g.drawImage(im, (im.width - m) / 2, (im.height - m) / 2, m, m, 0, 0, S, S);
+    profile.avatar = c.toDataURL("image/jpeg", .85); store.set("tamrini.profile", profile); render();
+  }; im.src = r.result; };
+  r.readAsDataURL(t.files[0]);
+});
 document.addEventListener("change", (e) => {
   const t = e.target, d = t && t.dataset; if (!d) return;
   if (d.suppT !== undefined) { const x = supps.list[+d.suppT]; if (x) { x.t = t.value || "09:00"; saveSupps(); } return; }
@@ -3560,23 +3600,23 @@ function renderMe() {
       ${justSaved ? `<div class="banner ok"><span>${L("✓ جهز جدولك! عملناه حسب هدفك وأيامك. فيكِ تبلّشي من «اليوم».", "✓ Your schedule is ready, built from your goal and days. Start from “Today”.")}</span><button data-tab="plan">${L("ابدئي", "Start")}</button></div>` : ""}
       <section class="acct acct2">
         <div class="acct-hero">
-          <span class="acct-av2" aria-hidden="true"><i>${nm ? esc(nm[0].toUpperCase()) : "♀"}</i></span>
-          <div class="acct-hi"><b>${nm ? esc(nm) : L("إنتِ", "You")}</b>
+          <label class="acct-av2" aria-label="${L("غيّري صورتك", "Change your photo")}">${profile.avatar ? `<img src="${profile.avatar}" alt="">` : `<i>${(nm || myName()) ? esc((nm || myName())[0].toUpperCase()) : "♀"}</i>`}<span class="av-cam" aria-hidden="true">📷</span><input type="file" accept="image/*" data-avatar="1" hidden></label>
+          <div class="acct-hi"><b>${(nm || myName()) ? esc(nm || myName()) : L("إنتِ", "You")}</b>
             <span class="acct-tags"><i>🎯 ${goalTitle()}</i><i>💪 ${lvN(profile.level)}</i><i>📅 ${profile.days.length} ${L("أيام", "days")}</i></span></div>
         </div>
         <div class="acct-wins">
-          <div><b>${hist.length}</b><span>${L("تمرين خلّصتي", "workouts done")}</span></div>
-          <div><b>🔥 ${dayStreak()}</b><span>${L("يوم ورا بعض", "day streak")}</span></div>
-          <div><b>${progWeek()}</b><span>${L("الأسبوع التدريبي", "training week")}</span></div>
+          <div><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12h19M6 8v8M3.5 9.5v5M18 8v8M20.5 9.5v5"/></svg><b>${hist.length}</b><span>${L("تمرين خلّصتي", "workouts done")}</span></div>
+          <div><svg class="ai fire" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="fg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E0557A"/><stop offset="1" stop-color="#F7A3B5"/></linearGradient></defs><path d="M12 2.5c1 3.2 4.8 5 4.8 10a4.8 4.8 0 0 1-9.6 0c0-2.2 1-3.6 2.2-4.8.2 1.8 1 2.8 2.1 3.1-.6-3 .3-5.8.5-8.3z" fill="url(#fg)" stroke="none"/></svg><b>${dayStreak()}</b><span>${L("يوم ورا بعض", "day streak")}</span></div>
+          <div><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><b>${progWeek()}</b><span>${L("الأسبوع التدريبي", "training week")}</span></div>
         </div>
         <div class="acct-stats2">
-          <div class="t1"><em>🎂</em><b>${profile.age}</b><span>${L("العمر", "Age")}</span></div>
-          <div class="t2"><em>⚖️</em><b>${profile.weight}<small> ${L("كغ", "kg")}</small></b><span>${L("الوزن", "Weight")}</span></div>
-          <div class="t3"><em>📏</em><b>${profile.height ? profile.height : "–"}<small> ${L("سم", "cm")}</small></b><span>${L("الطول", "Height")}</span></div>
-          <div class="t4"><em>💗</em><b>${bmiInfo() ? bmiInfo().b : "–"}</b><span>${bmiInfo() ? L(`مؤشر الكتلة · ${bmiInfo().c}`, `BMI · ${bmiInfo().c}`) : L("زيدي طولك", "Add height")}</span></div>
-          <div class="t5 wide"><em>🏋️‍♀️</em><b>${eqOptN(profile.eq)}</b><span>${L("المعدات", "Equipment")}</span></div>
+          <div class="t1"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20.5h16v-7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2z"/><path d="M4 15.5c1.5 1.2 3 1.2 4 0s2.5-1.2 4 0 2.5 1.2 4 0 2.5-1.2 4 0M8 11.5V8.5M12 11.5V8.5M16 11.5V8.5M8 6.5v-.3M12 6.5v-.3M16 6.5v-.3"/></svg><b>${profile.age}</b><span>${L("العمر", "Age")}</span></div>
+          <div class="t2"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8 9.5a4 4 0 0 1 8 0zM12 9.5l1.6-2.2"/></svg><b>${profile.weight}<small> ${L("كغ", "kg")}</small></b><span>${L("الوزن", "Weight")}</span></div>
+          <div class="t3"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="10" cy="11" rx="6.5" ry="4.5"/><path d="M3.5 11v3.5c0 2.5 2.9 4.5 6.5 4.5h10.5V15.5H16.5"/><circle cx="10" cy="11" r="1.6"/></svg><b>${profile.height ? profile.height : "–"}<small> ${L("سم", "cm")}</small></b><span>${L("الطول", "Height")}</span></div>
+          <div class="t4"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5S3.5 15.5 3.5 9.3A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 8.5 1.9c0 6.2-8.5 11.2-8.5 11.2z"/><path d="M5.5 12h3l1.5-2.5 2 5 1.5-3h5"/></svg><b>${bmiInfo() ? bmiInfo().b : "–"}</b><span>${bmiInfo() ? L(`مؤشر الكتلة · ${bmiInfo().c}`, `BMI · ${bmiInfo().c}`) : L("زيدي طولك", "Add height")}</span></div>
+          <div class="t5 wide"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 16.5l9-9M5 14l5 5M3.2 15.8l5 5M14 5l5 5M15.8 3.2l5 5"/></svg><b>${eqOptN(profile.eq)}</b><span>${L("المعدات", "Equipment")}</span></div>
         </div>
-        <button class="acct-edit" data-me-edit="1">✏️ ${L("عدّلي بياناتي وهدفي", "Edit my details & goal")}</button>
+        <button class="acct-edit" data-me-edit="1"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 4.5l4 4L9 19l-5 1 1-5z"/></svg><span>${L("عدّلي بياناتي وهدفي", "Edit my details & goal")}</span><i aria-hidden="true">${L("‹", "›")}</i></button>
       </section>
       <button class="slink" data-tab="sched"><span class="sl-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 14h3M8 17.5h6"/></svg></span><span class="sinfo"><b>${L("جدولي", "My schedule")}</b><small>${L("أيامك وتمارين كل يوم بالترتيب", "Your days and each day's exercises in order")}</small></span><span class="chev" aria-hidden="true">‹</span></button>
       ${cycleCard()}
