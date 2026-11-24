@@ -3235,7 +3235,9 @@ function dayTools(day, dk) {
   return h;
 }
 function dayDetail() {
-  const g = GOALS[profile.goal], day = buildDay(selDay);
+  const g = GOALS[profile.goal]; let day = buildDay(selDay);
+  // يوم تمرين فات وما تمرّنتي فيه بس سجّلتي نشاط (سباحة/مشي): بينعرض كيوم سباحة/مشي، مش كتمرين ناقص
+  { const k0 = ymd(dateOfDay(selDay)); if (day && dateOfDay(selDay) < TODAY && actDay(k0) && !day.items.some(it => (entry(k0, it.ex.id) || {}).done)) day = null; }
   let html = "";
   if (planMsg) { html += `<div class="banner ok" role="status"><span>${planMsg}</span></div>`; planMsg = ""; }
   const dStr = ymd(dateOfDay(selDay)), canLog = dateOfDay(selDay) <= TODAY, future = dateOfDay(selDay) >= TODAY;
