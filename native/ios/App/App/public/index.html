@@ -1386,6 +1386,10 @@ body.gated:has(.intro) { background: linear-gradient(180deg, #FDF1F3 0%, #FBE2E8
 .acct-av2.glow { animation: avGlow 1.8s ease-out 1; }
 .acct-av2.glow::after { content: "✦"; position: absolute; top: -6px; inset-inline-end: 6px; color: #fff; font-size: 1.3rem; text-shadow: 0 0 10px #F7A3C2; animation: gwTw 1s ease-in-out 2; }
 @keyframes avGlow { 0% { box-shadow: 0 0 0 0 rgb(240 103 154 / .7), 0 14px 30px rgb(217 96 127 / .28); transform: scale(1); } 30% { box-shadow: 0 0 0 14px rgb(240 103 154 / 0), 0 0 40px 10px rgb(255 160 190 / .9); transform: scale(1.08); } 100% { box-shadow: 0 0 0 1px rgb(224 122 144 / .25), 0 14px 30px rgb(217 96 127 / .28); transform: scale(1); } }
+
+.av-act { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; } .av-act .ghost { margin: 0; justify-content: center; }
+.av-ok { min-height: 48px; border: 0; border-radius: 18px; background: var(--btn); color: #fff; font: inherit; font-weight: 800; font-size: 1rem; box-shadow: 0 8px 18px rgb(224 122 144 / .3); }
+.av-ok:disabled { opacity: .45; box-shadow: none; }
 /* Theme: blush (2026-11) */
 /* Cycle section keeps its original colours */
 .card.cyc-card { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -3162,7 +3166,7 @@ document.addEventListener("change", (e) => {
   r.onload = () => { const im = new Image(); im.onload = () => {
     const S = 256, c = document.createElement("canvas"); c.width = c.height = S; const g = c.getContext("2d"), m = Math.min(im.width, im.height);
     g.drawImage(im, (im.width - m) / 2, (im.height - m) / 2, m, m, 0, 0, S, S);
-    profile.avatar = c.toDataURL("image/jpeg", .85); store.set("tamrini.profile", profile); avPick = false; avDone();
+    avSel = c.toDataURL("image/jpeg", .85); render();
   }; im.src = r.result; };
   r.readAsDataURL(t.files[0]);
 });
@@ -3605,7 +3609,7 @@ function schedDayView() {
     <div class="chips daypick">${DAYS.map((_, i) => `<button class="chip" data-goday="${i}" aria-pressed="${i === selDay}">${dayShort(i)}</button>`).join("")}</div>
     ${dayDetail()}`;
 }
-let avPick = false, avGlowT = 0; const AV_N = 39;
+let avPick = false, avGlowT = 0, avSel = null; const AV_N = 39;
 // بعد ما تختاري صورة: «تم ✓» والدايرة بتلمع شوي
 function avDone() {
   avGlowT = Date.now(); render(); window.scrollTo({ top: 0, behavior: "smooth" });
@@ -3619,12 +3623,13 @@ function renderMe() {
       ${justSaved ? `<div class="banner ok"><span>${L("✓ جهز جدولك! عملناه حسب هدفك وأيامك. فيكِ تبلّشي من «اليوم».", "✓ Your schedule is ready, built from your goal and days. Start from “Today”.")}</span><button data-tab="plan">${L("ابدئي", "Start")}</button></div>` : ""}
       <section class="acct acct2">
         <div class="acct-hero">
-          <button type="button" class="acct-av2${Date.now() - avGlowT < 2500 ? " glow" : ""}" data-av-pick="1" aria-expanded="${avPick}" aria-label="${L("غيّري صورتك", "Change your picture")}">${profile.avatar ? `<img src="${profile.avatar}${profile.avatar.startsWith("a/av/") ? "?v=2" : ""}" alt="">` : `<i>${(nm || myName()) ? esc((nm || myName())[0].toUpperCase()) : "♀"}</i>`}<span class="av-cam" aria-hidden="true">✏️</span></button>
+          <button type="button" class="acct-av2${Date.now() - avGlowT < 2500 ? " glow" : ""}" data-av-pick="1" aria-expanded="${avPick}" aria-label="${L("غيّري صورتك", "Change your picture")}">${(avPick && avSel !== null ? avSel : profile.avatar) ? `<img src="${(avPick && avSel !== null ? avSel : profile.avatar)}${(avPick && avSel !== null ? avSel : profile.avatar).startsWith("a/av/") ? "?v=2" : ""}" alt="">` : `<i>${(nm || myName()) ? esc((nm || myName())[0].toUpperCase()) : "♀"}</i>`}<span class="av-cam" aria-hidden="true">✏️</span></button>
           <div class="acct-hi"><b>${(nm || myName()) ? esc(nm || myName()) : L("إنتِ", "You")}</b>
             <span class="acct-tags"><i>🎯 ${goalTitle()}</i><i>💪 ${lvN(profile.level)}</i><i>📅 ${profile.days.length} ${L("أيام", "days")}</i></span></div>
         </div>
-        ${avPick ? `<div class="av-pick"><b>${L("اختاري شوشي تبعك 🌸", "Pick your Shushy 🌸")}</b><div class="av-grid">${Array.from({ length: AV_N }, (_, i) => { const src = `a/av/av-${String(i + 1).padStart(2, "0")}.webp`; return `<button type="button" class="av-opt${profile.avatar === src ? " on" : ""}" data-av-set="${src}"><img src="${src}?v=2" alt="" loading="lazy"></button>`; }).join("")}</div>
-          <div class="av-more"><label class="ghost">📷 ${L("صورتي من الموبايل", "My own photo")}<input type="file" accept="image/*" data-avatar="1" hidden></label>${profile.avatar ? `<button type="button" class="ghost" data-av-set="">${L("بلا صورة", "No picture")}</button>` : ""}</div></div>` : ""}
+        ${avPick ? `<div class="av-pick"><b>${L("اختاري شوشي تبعك 🌸", "Pick your Shushy 🌸")}</b><div class="av-grid">${Array.from({ length: AV_N }, (_, i) => { const src = `a/av/av-${String(i + 1).padStart(2, "0")}.webp`; return `<button type="button" class="av-opt${(avSel !== null ? avSel : profile.avatar) === src ? " on" : ""}" data-av-set="${src}"><img src="${src}?v=2" alt="" loading="lazy"></button>`; }).join("")}</div>
+          <div class="av-more"><label class="ghost">📷 ${L("صورتي من الموبايل", "My own photo")}<input type="file" accept="image/*" data-avatar="1" hidden></label>${profile.avatar ? `<button type="button" class="ghost" data-av-set="">${L("بلا صورة", "No picture")}</button>` : ""}</div>
+          <div class="av-act"><button type="button" class="ghost" data-av-cancel="1">${L("إلغاء", "Cancel")}</button><button type="button" class="av-ok" data-av-ok="1" ${avSel === null ? "disabled" : ""}>✓ ${L("حطّيها", "Use it")}</button></div></div>` : ""}
         <div class="acct-wins">
           <div><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12h19M6 8v8M3.5 9.5v5M18 8v8M20.5 9.5v5"/></svg><b>${hist.length}</b><span>${L("تمرين خلّصتي", "workouts done")}</span></div>
           <div><svg class="ai fire" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="fg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E0557A"/><stop offset="1" stop-color="#F7A3B5"/></linearGradient></defs><path d="M12 2.5c1 3.2 4.8 5 4.8 10a4.8 4.8 0 0 1-9.6 0c0-2.2 1-3.6 2.2-4.8.2 1.8 1 2.8 2.1 3.1-.6-3 .3-5.8.5-8.3z" fill="url(#fg)" stroke="none"/></svg><b>${dayStreak()}</b><span>${L("يوم ورا بعض", "day streak")}</span></div>
@@ -5713,8 +5718,10 @@ document.addEventListener("click", (e) => {
   if (ds.swapwhy) { bldToast({ lvl: "no", title: L("✋ ما بينفع هالمرة", "✋ Not this time"), msg: flipWhy(+ds.swapwhy) }); return; }
   if (ds.swapday) { const ch = flipDay(+ds.swapday); render(); if (ch && ch.length) bldToast({ lvl: "great", title: L("✓ تم التبديل", "✓ Swapped"), msg: flipMsg(ch) }); return; }
   if (ds.goday) { selDay = schedDay = +ds.goday; tab = "sched"; open = null; altOpen = null; actOpen = false; justSaved = false; render(); window.scrollTo(0, 0); return; }
-  if (ds.avPick) { avPick = !avPick; render(); return; }
-  if (ds.avSet !== undefined) { if (ds.avSet) profile.avatar = ds.avSet; else delete profile.avatar; store.set("tamrini.profile", profile); avPick = false; avDone(); return; }
+  if (ds.avPick) { avPick = !avPick; avSel = null; render(); return; }
+  if (ds.avSet !== undefined) { avSel = ds.avSet; render(); return; }      // بس تختار: بتبيّن، وما بتنحط لحد ما تكبسي ✓
+  if (ds.avOk) { if (avSel === null) return; if (avSel) profile.avatar = avSel; else delete profile.avatar; store.set("tamrini.profile", profile); avSel = null; avPick = false; avDone(); return; }
+  if (ds.avCancel) { avSel = null; avPick = false; render(); return; }
   if (ds.introShow) { introForce = true; render(); window.scrollTo(0, 0); return; }
   if (ds.intro) { if (ds.intro === "next") { const t = document.getElementById("intro-track"); if (t) t.scrollBy({ left: (getComputedStyle(t).direction === "rtl" ? -1 : 1) * t.clientWidth, behavior: "smooth" }); return; } store.set("tamrini.intro", 1); introForce = false; render(); window.scrollTo(0, 0); return; }
   if (ds.lang) { lang = ds.lang; store.set("tamrini.lang", lang); applyLang(); render(); if (ses) renderPlay(); return; }
