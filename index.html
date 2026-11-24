@@ -736,8 +736,8 @@ body.gated .tabs, body.gated .startbar { display: none; }
 .rdone .rd-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 14px; background: var(--soft); }
 .rdone .rd-row small { color: var(--muted); white-space: nowrap; } .rdone .rd-row.one { justify-content: space-around; } .rdone .rd-row.one small { color: var(--ink); font-weight: 600; font-size: .85rem; } .rdone .rd-tot { margin: 0 0 6px; font-weight: 700; color: var(--accent); font-size: .9rem; }
 .rdone .tc-addact { color: var(--ink); border-color: var(--accent); background: transparent; } .rdone .tc-addact b { color: var(--accent); } .rdone .tc-addact small { color: var(--muted); }
-.restday .rest-hero, .swimday .rest-hero { width: 100%; max-height: 340px; object-fit: cover; object-position: 50% 32%; border-radius: 18px; display: block; }
-.rest-hero.swim { object-position: 50% 50%; } .rest-hero.walk { object-position: 50% 18%; }
+.restday .rest-hero, .swimday .rest-hero, .combo .rest-hero { width: 100%; max-height: 340px; object-fit: cover; object-position: 50% 32%; border-radius: 18px; display: block; }
+.rest-hero.swim { object-position: 50% 50%; } .tc-swim { width: 100%; max-height: 220px; object-fit: cover; border-radius: 18px; display: block; } .rest-hero.walk { object-position: 50% 18%; }
 .pkgs .pkg { flex: 0 0 auto; min-width: 128px; max-width: 170px; text-align: start; border: 1px solid var(--line); background: var(--surface); border-radius: 16px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; color: var(--ink); scroll-snap-align: start; }
 .pkgs .pkg small { color: var(--muted); font-size: .74rem; line-height: 1.35; }
 .pkgs .pkg[aria-pressed="true"] { border-color: var(--accent); background: var(--soft); box-shadow: inset 0 0 0 1px var(--accent); }
@@ -1376,7 +1376,9 @@ body.gated:has(.intro) { background: linear-gradient(180deg, #FDF1F3 0%, #FBE2E8
 
 .av-pick { margin: 0 0 14px; padding: 14px; border-radius: 24px; background: rgb(255 255 255 / .7); box-shadow: 0 8px 22px rgb(160 90 100 / .1); display: flex; flex-direction: column; gap: 12px; }
 .av-pick > b { color: #6E2A3F; }
-.av-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-auto-rows: min-content; align-content: start; gap: 10px; max-height: 320px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 4px; }
+.av-scroll { max-height: 360px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 4px; display: flex; flex-direction: column; gap: 8px; }
+.av-sec { font-size: .82rem; font-weight: 700; color: var(--accent-2); margin-top: 4px; }
+.av-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-auto-rows: min-content; align-content: start; gap: 10px; }
 .av-opt { position: relative; display: block; width: 100%; height: 0; padding: 0 0 100% 0; border: 0; background: none; border-radius: 50%; overflow: hidden; box-shadow: 0 2px 6px rgb(160 90 100 / .15); flex: none; }
 .av-opt img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .av-opt.on { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--accent); }
@@ -3261,6 +3263,7 @@ function dayDetail() {
     const hs0 = hist.filter(h => h.d === dStr && h.rows && h.rows.length), ticked = Object.keys(log[dStr] || {}).filter(id => log[dStr][id].done && anyEx(id));
     const hs = hs0.length ? hs0 : [{ d: dStr, min: 0, rows: ticked.map(id => ({ id, s: 0 })), t: { ar: "تمرين", en: "Workout" } }], kc = hs.reduce((a, h) => a + histKcal(h), 0), mn = hs.reduce((a, h) => a + (+h.min || 0), 0);
     html += `<section class="checkin restday rdone">
+        ${gender !== "m" && dayActs.some(a => a.t === "swim") ? `<img class="rest-hero swim" src="a/swim.webp" alt="${L("بنت مرتاحة بالمسبح", "Girl relaxing in the pool")}">` : ""}
         <div class="rd-hero"><span aria-hidden="true">${dayDoneKey(dStr) ? "🏆" : "◐"}</span><b>${dayDoneKey(dStr) ? L("خلّصتي تمرين اليوم!", "Workout done!") : L("بلّشتي تمرين وما كمّلتيه", "Workout started, not finished")}</b><em class="rd-what">${esc(hs.map(h => h.t ? L(h.t.ar, h.t.en) : L("تمرين", "Workout")).join(" + "))}</em><small>${L(CHEERS[TODAY.getDate() % CHEERS.length], CHEERS_EN[TODAY.getDate() % CHEERS_EN.length])}</small></div>
         ${(() => { const mu = tgtTop(hs.flatMap(h => h.rows.map(r => anyEx(r.id))).filter(x => x && !x.kind), 4); return mu.length ? `<div class="mchips rd-mus">${mu.map(k => `<span>${rgPic(k, "md")}${rgN(k).replace(/\s*\(.*\)\s*/, "")}</span>`).join("")}</div>` : ""; })()}
         <h2>${dayN(selDay)}: ${L("تمرّنتي اليوم", "You trained today")} 💪</h2>
@@ -3309,6 +3312,7 @@ ${canLog ? `<button class="ci" data-plan="act" aria-expanded="${actOpen}"><b>�
         ${future && !nDone && canLog ? `<div class="tc-links"><button class="tc-opt" data-plan="post"><span aria-hidden="true">🗓️</span><b>${L("مش اليوم", "Not today")}</b><small>${L("أجّليه لبكرا", "Move it")}</small></button><button class="tc-opt" data-plan="act" aria-expanded="${actOpen}"><span aria-hidden="true">🏃‍♀️</span><b>${L("نشاط تاني", "Other activity")}</b><small>${L("مشي، ركض، سباحة…", "Walk, run, swim…")}</small></button>${day.extra ? `<button class="tc-opt" data-plan="unextra"><span aria-hidden="true">✕</span><b>${L("شيليه", "Remove it")}</b></button>` : ""}</div>` : ""}
         ${selDay === todayIdx && canLog && (nDone || hadWorkout(selDay)) ? `<button type="button" class="tc-addact" data-plan="act" aria-expanded="${actOpen}"><b>＋</b> ${L("زيدي نشاط كمان", "Add another activity")}<small>${L("مشي، سباحة، ركض…", "Walk, swim, run…")}</small></button>` : ""}
         ${actOpen ? actForm() : ""}
+        ${gender !== "m" && dayActs.some(a => a.t === "swim") ? `<img class="rest-hero swim tc-swim" src="a/swim.webp" alt="${L("بنت مرتاحة بالمسبح", "Girl relaxing in the pool")}">` : ""}
         ${actList}
         ${day.extra && nDone && !hadWorkout(selDay) ? `<button type="button" class="tc-rmx" data-plan="unextra">✕ ${L("شيلي التمرين الإضافي", "Remove the extra workout")}</button>` : ""}
       </section>
@@ -3341,7 +3345,7 @@ ${canLog ? `<button class="ci" data-plan="act" aria-expanded="${actOpen}"><b>�
       html += `<section class="checkin swimday combo">
         <span class="eyebrow">${L("٤ · سباحة بعد التمرين", "4 · Swim after the workout")}</span>
         <h2>${L(`سباحة خفيفة ${comboSwim()} دقيقة`, `Easy swim ${comboSwim()} min`)}</h2>
-        ${WAVES}
+        ${gender !== "m" ? `<img class="rest-hero swim" src="a/swim.webp" alt="${L("بنت مرتاحة بالمسبح", "Girl relaxing in the pool")}">` : WAVES}
         <p class="muted small">${L("خلّصي التمرين أول، وبعدين سبحي بهدوء. السباحة الخفيفة بتريّح العضل وبتزيد الحرق. إذا في تعب، قصّريها.", "Finish the workout first, then swim at an easy pace. It loosens the muscles and adds to the burn. Shorten it if you're tired.")}</p>
         ${swum ? `<div class="banner ok"><span>${L("✓ برافو! سجّلتي السباحة.", "✓ Great! Swim logged.")}</span></div>` : canLog ? `<button class="save" data-plan="swimc">${L("✓ سبحت، سجّليها", "✓ I swam, log it")}</button>` : `<p class="note">${L(`بتسجّليها يوم ${DAYS[selDay]}.`, `You can log it on ${DAYS_EN[selDay]}.`)}</p>`}
       </section>`;
@@ -3609,7 +3613,8 @@ function schedDayView() {
     <div class="chips daypick">${DAYS.map((_, i) => `<button class="chip" data-goday="${i}" aria-pressed="${i === selDay}">${dayShort(i)}</button>`).join("")}</div>
     ${dayDetail()}`;
 }
-let avPick = false, avGlowT = 0, avSel = null; const AV_N = 39;
+let avPick = false, avGlowT = 0, avSel = null;
+const AV_REG = ["a/av2/av-01.webp", "a/av2/av-02.webp", "a/av2/av-03.webp", "a/av2/av-04.webp", "a/av2/av-05.webp", "a/av2/av-06.webp", "a/av2/av-07.webp", "a/av2/av-08.webp", "a/av2/av-09.webp", "a/av2/av-10.webp", "a/av2/av-11.webp", "a/av2/av-12.webp", "a/av2/av-13.webp", "a/av2/av-14.webp", "a/av2/av-15.webp", "a/av2/av-16.webp", "a/av2/av-17.webp", "a/av2/av-18.webp", "a/av2/av-19.webp", "a/av2/av-20.webp", "a/av2/av-21.webp", "a/av2/av-22.webp", "a/av2/av-23.webp", "a/av2/av-24.webp", "a/av2/av-25.webp", "a/av2/av-26.webp", "a/av2/av-27.webp", "a/av2/av-28.webp", "a/av2/av-29.webp", "a/av2/av-30.webp", "a/av2/av-31.webp", "a/av2/av-32.webp"], AV_HIJ = ["a/av2/hj-01.webp", "a/av2/hj-02.webp", "a/av2/hj-03.webp", "a/av2/hj-04.webp", "a/av2/hj-05.webp", "a/av2/hj-06.webp", "a/av2/hj-07.webp", "a/av2/hj-08.webp", "a/av2/hj-09.webp"];
 // بعد ما تختاري صورة: «تم ✓» والدايرة بتلمع شوي
 function avDone() {
   avGlowT = Date.now(); render(); window.scrollTo({ top: 0, behavior: "smooth" });
@@ -3627,7 +3632,7 @@ function renderMe() {
           <div class="acct-hi"><b>${(nm || myName()) ? esc(nm || myName()) : L("إنتِ", "You")}</b>
             <span class="acct-tags"><i>🎯 ${goalTitle()}</i><i>💪 ${lvN(profile.level)}</i><i>📅 ${profile.days.length} ${L("أيام", "days")}</i></span></div>
         </div>
-        ${avPick ? `<div class="av-pick"><b>${L("اختاري شوشي تبعك 🌸", "Pick your Shushy 🌸")}</b><div class="av-grid">${Array.from({ length: AV_N }, (_, i) => { const src = `a/av/av-${String(i + 1).padStart(2, "0")}.webp`; return `<button type="button" class="av-opt${(avSel !== null ? avSel : profile.avatar) === src ? " on" : ""}" data-av-set="${src}"><img src="${src}?v=2" alt="" loading="lazy"></button>`; }).join("")}</div>
+        ${avPick ? `<div class="av-pick"><b>${L("اختاري شوشي تبعك 🌸", "Pick your Shushy 🌸")}</b><div class="av-scroll">${[[L("بنات", "Girls"), AV_REG], [L("محجّبات", "Hijabis"), AV_HIJ]].map(([h, list]) => `<span class="av-sec">${h}</span><div class="av-grid">${list.map(src => `<button type="button" class="av-opt${(avSel !== null ? avSel : profile.avatar) === src ? " on" : ""}" data-av-set="${src}"><img src="${src}" alt="" loading="lazy"></button>`).join("")}</div>`).join("")}</div>
           <div class="av-more"><label class="ghost">📷 ${L("صورتي من الموبايل", "My own photo")}<input type="file" accept="image/*" data-avatar="1" hidden></label>${profile.avatar ? `<button type="button" class="ghost" data-av-set="">${L("بلا صورة", "No picture")}</button>` : ""}</div>
           <div class="av-act"><button type="button" class="ghost" data-av-cancel="1">${L("إلغاء", "Cancel")}</button><button type="button" class="av-ok" data-av-ok="1" ${avSel === null ? "disabled" : ""}>✓ ${L("حطّيها", "Use it")}</button></div></div>` : ""}
         <div class="acct-wins">
