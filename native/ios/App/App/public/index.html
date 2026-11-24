@@ -1318,7 +1318,7 @@ body.gated:has(.intro) { background: linear-gradient(180deg, #FDF1F3 0%, #FBE2E8
 @media (prefers-reduced-motion: reduce) { .gate-wind { display: none; } }
 
 /* Today header logo: the wind moves for a few seconds after opening, then stops */
-.hdr-wind { position: absolute; inset: 0; pointer-events: none; animation: hdrWindOut 4.5s var(--d, 0ms) linear forwards; }
+.hdr-wind { position: absolute; inset: 0; pointer-events: none; }
 .hdr-wind .gate-wind { display: block; }
 .hdr-wind .gw1, .hdr-wind .gw2, .hdr-wind .gw3, .hdr-wind .gsp path { animation-delay: var(--d, 0ms) !important; }
 @keyframes hdrWindOut { 0%, 75% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
@@ -3066,9 +3066,8 @@ function renderPlan() {
   const g = GOALS[profile.goal];
   const day = buildDay(selDay);
   const MON = L(["كانون الثاني","شباط","آذار","نيسان","أيار","حزيران","تموز","آب","أيلول","تشرين الأول","تشرين الثاني","كانون الأول"], ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]);
-  const wEl = Date.now() - SPLASH_UNTIL, windDay = store.get("tamrini.windDay", "");
-  if (wEl < 4500 && windDay !== ymd(TODAY)) { if (!window._windT) window._windT = setTimeout(() => store.set("tamrini.windDay", ymd(TODAY)), 4500); } 
-  const hdrWind = wEl < 4500 && windDay !== ymd(TODAY) ? `<span class="hdr-wind" style="--d:${-Math.max(0, wEl)}ms">${GATE_WIND}</span>` : "";
+  // اللوغو بصفحة اليوم: الريح بتضل تلفّ (بنفس الإيقاع حتى لو انرسمت الصفحة من جديد)
+  const hdrWind = `<span class="hdr-wind" style="--d:${-((Date.now() - SPLASH_UNTIL) % 2400 + 2400) % 2400}ms">${GATE_WIND}</span>`;
   let html = `<header class="hdr top-hdr"><span class="hdr-logo"><img class="brand-img" src="icons/forme-logo-hd.webp?v=1" alt="For Me">${hdrWind}</span><div>
       <span class="eyebrow">${dayN(todayIdx)} · ${TODAY.getDate()} ${MON[TODAY.getMonth()]}</span>
       <p class="hello">${myName() ? L(`هاي ${esc(myName())}`, `Hi ${esc(myName())}`) : L("أهلا", "Hi")} 🌸</p></div>
