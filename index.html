@@ -1392,6 +1392,13 @@ body.gated:has(.intro) { background: linear-gradient(180deg, #FDF1F3 0%, #FBE2E8
 .av-act { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; } .av-act .ghost { margin: 0; justify-content: center; }
 .av-ok { min-height: 48px; border: 0; border-radius: 18px; background: var(--btn); color: #fff; font: inherit; font-weight: 800; font-size: 1rem; box-shadow: 0 8px 18px rgb(224 122 144 / .3); }
 .av-ok:disabled { opacity: .45; box-shadow: none; }
+
+.day-reset-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 100%; margin: 6px 0 0; padding: 12px; border: 1.5px dashed rgb(224 122 144 / .45); border-radius: 20px; background: transparent; color: var(--accent-2); font: inherit; font-weight: 700; }
+.day-reset-btn small { font-weight: 500; color: var(--muted); font-size: .78rem; }
+.day-reset.ask { display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: 20px; background: var(--surface); box-shadow: var(--shadow); text-align: center; }
+.day-reset.ask small { color: var(--muted); }
+.dr-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; } .dr-btns .ghost { margin: 0; justify-content: center; }
+.dr-yes { border: 0; border-radius: 999px; min-height: 44px; background: #C94F6D; color: #fff; font: inherit; font-weight: 700; }
 /* Theme: blush (2026-11) */
 /* Cycle section keeps its original colours */
 .card.cyc-card { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -3091,7 +3098,29 @@ function renderPlan() {
       <button class="linkbtn" data-tab="sched">${L("شوفي خطتي ‹", "See my plan ›")}</button></section>`;
   }
   html += dayDetail();
+  html += dayResetBlock();
   return html;
+}
+// زر بآخر صفحة اليوم: بيمسح كل شي انسجّل بهاليوم (تمرين، نشاط، فيتامينات، خطوات، أكل) وبيرجّعو من الأوّل
+let dayResetAsk = false;
+function dayResetBlock() {
+  const dt = dateOfDay(selDay); if (dt > TODAY) return "";
+  const k = ymd(dt), has = (log[k] && Object.keys(log[k]).length) || (acts[k] || []).length || (suppLog[k] || []).length || +steps[k] || (food[k] && (food[k].meals || []).length) || hist.some(h => h.d === k);
+  if (!has) return "";
+  const nm = k === ymd(TODAY) ? L("اليوم", "today") : dayN(selDay);
+  return dayResetAsk ? `<section class="day-reset ask"><b>${L(`أكيد بدّك تمسحي كل شي سجّلتيه ${nm}؟`, `Erase everything you logged ${nm}?`)}</b><small>${L("التمرين، النشاط، الفيتامينات، الخطوات والأكل. ما فينا نرجّعهن.", "Workout, activities, vitamins, steps and food. This can't be undone.")}</small>
+      <div class="dr-btns"><button type="button" class="ghost" data-dayreset="no">${L("لا", "No")}</button><button type="button" class="dr-yes" data-dayreset="yes">${L("إيه، امسحي", "Yes, erase")}</button></div></section>`
+    : `<button type="button" class="day-reset-btn" data-dayreset="ask">🔄 ${L(`صفّري ${nm}`, `Reset ${nm}`)}<small>${L("امسحي كل شي سجّلتيه وابدئي من جديد", "Erase what you logged and start fresh")}</small></button>`;
+}
+function resetDay(k) {
+  delete log[k]; store.set("tamrini.log", log);
+  delete acts[k]; store.set("tamrini.acts", acts);
+  delete suppLog[k]; store.set("tamrini.suppLog", suppLog);
+  delete steps[k]; store.set("tamrini.steps", steps);
+  if (food[k]) { food = { ...food }; delete food[k]; store.set("tamrini.food", food); }
+  hist = hist.filter(h => h.d !== k); store.set("tamrini.hist", hist);
+  [["dayAdd", dayAdd], ["dayOrd", dayOrd], ["dayCool", dayCool], ["dayPicks", dayPicks]].forEach(([n, o]) => { if (o && o[k]) { delete o[k]; store.set("tamrini." + n, o); } });
+  try { if (ses && ses.date === k) { ses = null; saveSes(); } } catch {}
 }
 let dtOpen = null, dtPart = "upper", dtM = null, stepsOpen = false, drag = null;
 document.addEventListener("pointerdown", (e) => {
@@ -5725,6 +5754,7 @@ document.addEventListener("click", (e) => {
   if (ds.swapwhy) { bldToast({ lvl: "no", title: L("✋ ما بينفع هالمرة", "✋ Not this time"), msg: flipWhy(+ds.swapwhy) }); return; }
   if (ds.swapday) { const ch = flipDay(+ds.swapday); render(); if (ch && ch.length) bldToast({ lvl: "great", title: L("✓ تم التبديل", "✓ Swapped"), msg: flipMsg(ch) }); return; }
   if (ds.goday) { selDay = schedDay = +ds.goday; tab = "sched"; open = null; altOpen = null; actOpen = false; justSaved = false; render(); window.scrollTo(0, 0); return; }
+  if (ds.dayreset) { if (ds.dayreset === "ask") dayResetAsk = true; else if (ds.dayreset === "yes") { resetDay(ymd(dateOfDay(selDay))); dayResetAsk = false; try { bldToast({ lvl: "great", title: L("✓ تصفّر اليوم", "✓ Day reset"), msg: L("بلّشي من جديد 🌸", "Start fresh 🌸") }); } catch {} } else dayResetAsk = false; render(); return; }
   if (ds.avPick) { avPick = !avPick; avSel = null; render(); return; }
   if (ds.avSet !== undefined) { avSel = ds.avSet; render(); return; }      // بس تختار: بتبيّن، وما بتنحط لحد ما تكبسي ✓
   if (ds.avOk) { if (avSel === null) return; if (avSel) profile.avatar = avSel; else delete profile.avatar; store.set("tamrini.profile", profile); avSel = null; avPick = false; avDone(); return; }
