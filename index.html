@@ -3085,10 +3085,12 @@ function suppTodayItems() {
   return it;
 }
 function suppTodayCard() {
+  const dt = dateOfDay(selDay); if (dt > TODAY) return "";   // يوم جاي: ما في شي نعلّم عليه بعد
+  const dk = ymd(dt), past = dk !== ymd(TODAY);
   const it = suppTodayItems(); if (!it.length) return "";
-  const got = suppLog[ymd(TODAY)] || [], all = it.every(x => got.includes(x.k));
-  return `<section class="supp-today${all ? " all" : ""}"><div class="sp-h"><b>💊 ${L("ذكّريني اليوم", "Today's reminders")}</b>${all ? `<small>${L("✓ أخدتي كل شي، برافو!", "✓ All taken, well done!")}</small>` : `<small>${L("كبسي لمّا تاخديها", "Tap when taken")}</small>`}</div>
-    <div class="sp-list">${it.map(x => { const on = got.includes(x.k); return `<button type="button" class="sp-it${on ? " on" : ""}" data-supp-take="${esc(x.k)}" aria-pressed="${on}"><span class="sp-ck" aria-hidden="true">${on ? "✓" : ""}</span><span>${x.ic} <b>${esc(x.n)}</b><small>${x.sub}</small></span></button>`; }).join("")}</div></section>`;
+  const got = suppLog[dk] || [], all = it.every(x => got.includes(x.k));
+  return `<section class="supp-today${all ? " all" : ""}"><div class="sp-h"><b>💊 ${past ? L(`فيتاميناتك ${dayN(selDay)}`, `Vitamins on ${dayN(selDay)}`) : L("ذكّريني اليوم", "Today's reminders")}</b>${all ? `<small>${L("✓ أخدتي كل شي، برافو!", "✓ All taken, well done!")}</small>` : `<small>${L("كبسي لمّا تاخديها", "Tap when taken")}</small>`}</div>
+    <div class="sp-list">${it.map(x => { const on = got.includes(x.k); return `<button type="button" class="sp-it${on ? " on" : ""}" data-supp-take="${esc(x.k)}" data-supp-day="${dk}" aria-pressed="${on}"><span class="sp-ck" aria-hidden="true">${on ? "✓" : ""}</span><span>${x.ic} <b>${esc(x.n)}</b><small>${x.sub}</small></span></button>`; }).join("")}</div></section>`;
 }
 function suppCard() {
   const have = new Set(supps.list.map(x => x.id).filter(Boolean));
@@ -3119,7 +3121,7 @@ document.addEventListener("change", (e) => {
 document.addEventListener("click", (e) => {
   const b = e.target.closest && e.target.closest("[data-supp-take],[data-supp-add],[data-supp-addc],[data-supp-rm],[data-supp-ics]"); if (!b) return;
   const d = b.dataset;
-  if (d.suppTake) { const k = ymd(TODAY), a = suppLog[k] ||= [], j = a.indexOf(d.suppTake); if (j >= 0) a.splice(j, 1); else { a.push(d.suppTake); try { sfx("ex"); } catch {} }
+  if (d.suppTake) { const k = d.suppDay && d.suppDay <= ymd(TODAY) ? d.suppDay : ymd(TODAY), a = suppLog[k] ||= [], j = a.indexOf(d.suppTake); if (j >= 0) a.splice(j, 1); else { a.push(d.suppTake); try { sfx("ex"); } catch {} }
     Object.keys(suppLog).sort().slice(0, -30).forEach(x => delete suppLog[x]); store.set("tamrini.suppLog", suppLog);
     const it = suppTodayItems(); if (j < 0 && it.every(x => a.includes(x.k))) { try { cheer(2, L("💊 برافو! أخدتي كل شي اليوم", "💊 Great! All taken today")); } catch {} }
     render(); return; }
