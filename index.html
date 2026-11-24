@@ -1399,6 +1399,9 @@ body.gated:has(.intro) { background: linear-gradient(180deg, #FDF1F3 0%, #FBE2E8
 .day-reset.ask small { color: var(--muted); }
 .dr-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; } .dr-btns .ghost { margin: 0; justify-content: center; }
 .dr-yes { border: 0; border-radius: 999px; min-height: 44px; background: #C94F6D; color: #fff; font: inherit; font-weight: 700; }
+
+.bld-th { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.bld-reset { border: 0; border-radius: 999px; padding: 7px 14px; background: var(--soft); color: var(--accent-2); font: inherit; font-size: .85rem; font-weight: 700; }
 /* Theme: blush (2026-11) */
 /* Cycle section keeps its original colours */
 .card.cyc-card { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -2763,7 +2766,7 @@ function renderBuilder() {
     <p class="muted small">${L("اختاري العضلة والتمارين، ونحنا منقلّك إذا الاختيار ممتاز أو لا. الترتيب والوقت محسوبين لحالهن.", "Pick muscles and exercises; we'll tell you if each choice is great or not. Order and time are handled for you.")}</p>
     <div class="field"><span class="lbl">${L("قدّيش وقت عندك؟", "How much time?")}</span><div class="seg">${[30, 45, 60, 75].map(m => `<button data-bldmin="${m}" aria-pressed="${build.min === m}">${m} ${L("د", "min")}</button>`).join("")}</div></div>
     <section class="bld-sum">
-      <div class="bld-time"><b>${t}<em> / ${build.min} ${L("د", "min")}</em></b><div class="bar"><i style="width:${pct}%;${t > build.min ? "background:#E8A86A" : ""}"></i></div></div>
+      <div class="bld-time"><div class="bld-th"><b>${t}<em> / ${build.min} ${L("د", "min")}</em></b>${ex.length ? `<button type="button" class="bld-reset" data-bld="clear">🔄 ${L("من جديد", "Start over")}</button>` : ""}</div><div class="bar"><i style="width:${pct}%;${t > build.min ? "background:#E8A86A" : ""}"></i></div></div>
       ${ex.length ? `<div class="bld-list">${ex.map((e, i) => `<div class="bld-row">${avatar(e, { size: 40 })}<span class="sinfo"><b>${i + 1}. ${esc(exN(e))}</b><small class="muted">${tgtShort(e)}${isCompound(e) ? L(" · مركّب", " · compound") : ""}</small></span><button class="linkbtn" data-bldrm="${e.id}" aria-label="${L("شيلي", "Remove")}">✕</button></div>`).join("")}</div>${tgtSummary(ex)}` : `<p class="empty">${L("بعد ما زدتي ولا تمرين. اختاري عضلة من تحت.", "No exercises yet. Pick a muscle below.")}</p>`}
       ${rv.tips.length ? `<div class="bld-review"><b>${L("تقييم التمرين", "Workout check")}: ${rv.score}</b><ul>${rv.tips.map(([ic, tx]) => `<li><span>${ic}</span>${tx}</li>`).join("")}</ul></div>` : ""}
     </section>
@@ -2772,7 +2775,7 @@ function renderBuilder() {
     ${bldMsg ? (setTimeout(bldToast, 0, bldMsg), bldMsg = null, "") : ""}
     ${bldM ? `<div class="list">${list.map(e => { const inIt = build.ids.includes(e.id); return `<div class="ex"><div class="ex-row">${avatar(e, { attrs: `data-sheet="${e.id}" data-sctx="lib" aria-label="${esc(exN(e))}"` })}<button class="ex-head" data-sheet="${e.id}" data-sctx="lib"><span class="ex-main"><b>${esc(exN(e))}</b><span class="ex-meta">${tgtShort(e)} · ${eqN(e.eq)}</span></span></button><button class="${inIt ? "ghost" : "save"} bld-add" data-${inIt ? "bldrm" : "bldadd"}="${e.id}">${inIt ? "✓" : "+"}</button></div></div>`; }).join("")}</div>` : ""}
     ${ex.length ? `<div class="startbar"><button class="start" data-bld="start">▶ ${L("ابدئي تمريني", "Start my workout")}<small>${t} ${L("د", "min")}</small></button></div>` : ""}
-    ${ex.length ? `<button class="linkbtn danger" data-bld="clear">${L("امسحي وابدئي من جديد", "Clear and start over")}</button>` : ""}`;
+`;
 }
 let bldToastT = 0;
 function bldToast(m) {
