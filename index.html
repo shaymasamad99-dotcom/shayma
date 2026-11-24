@@ -1281,7 +1281,7 @@ body.gated:has(.intro) { background: linear-gradient(180deg, #FDF1F3 0%, #FBE2E8
 
 /* Ready-routine cards: real exercise thumbnails */
 .rt-thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; }
-.rt-thumbs img, .rt-thumbs i { width: 100%; aspect-ratio: 1; border-radius: 14px; object-fit: cover; object-position: 50% 60%; background: #81C3FC; box-shadow: 0 2px 6px rgb(160 90 100 / .15); display: block; }
+.rt-thumbs img, .rt-thumbs i { width: 100%; aspect-ratio: 1; border-radius: 14px; object-fit: cover; object-position: 50% 60%; background: #F9DCE3; box-shadow: 0 2px 6px rgb(160 90 100 / .15); display: block; }
 .rt-thumbs i { display: grid; place-items: center; font-style: normal; font-weight: 700; color: var(--accent-2); background: rgb(255 255 255 / .75); }
 
 /* Stretch areas + quick picks (her mockup) */
@@ -3307,10 +3307,10 @@ function routineCard(r) {
 }
 // صور التمارين نفسها (شوشي) بدل صور العضلة المكرّرة
 function rtThumbs(items) {
-  const pic = (ex) => { const v = cvidOf(ex.id), a = artOf(ex.id); return v ? `${v}.jpg` : a ? `${a}-1.webp` : null; };
+  const pic = (ex) => { const v = cvidOf(ex.id), a = artOf(ex.id); return v && TH.has(ex.id) ? `a/th-${ex.id}.webp` : v ? `${v}.jpg` : a ? `${a}-1.webp` : null; };
   const withPic = items.filter(it => pic(it.ex)), show = withPic.slice(0, items.length > 4 ? 3 : 4), more = items.length - show.length;
   if (!show.length) return bubbles(items, 7, .72);
-  return `<span class="rt-thumbs">${show.map(it => `<img src="${pic(it.ex)}" alt="" loading="lazy" decoding="async">`).join("")}${more > 0 ? `<i dir="ltr">+${more}</i>` : ""}</span>`;
+  return `<span class="rt-thumbs">${show.map(it => { const fb = cvidOf(it.ex.id); return `<img src="${pic(it.ex)}" alt="" loading="lazy" decoding="async"${fb ? ` onerror="this.onerror=null;this.src='${fb}.jpg'"` : ""}>`; }).join("")}${more > 0 ? `<i dir="ltr">+${more}</i>` : ""}</span>`;
 }
 function renderRoutine(r) {
   const key = `r-${r.id}`, items = routineItems(r), est = routineMin(key, items), g = GOALS[profile.goal];
@@ -4341,8 +4341,25 @@ function cheer(level, text) {
     if (soundMode !== "off") { sfx(level >= 3 ? "party" : level === 2 ? "ex" : "set"); if (level < 3) fxSkip = true; }
     el.textContent = t; el.classList.remove("show"); void el.offsetWidth; el.classList.add("show");
     clearTimeout(cheerT); cheerT = setTimeout(() => el.classList.remove("show"), level >= 3 ? 3200 : 1800);
-    if (level >= 2 && !matchMedia("(prefers-reduced-motion: reduce)").matches) confetti(level >= 3 ? 160 : 50);
+    if (level >= 2 && !matchMedia("(prefers-reduced-motion: reduce)").matches) (level >= 3 ? rainConfetti() : confetti(50));
   } catch {}
+}
+// بآخر التمرين: مطر كونفتي كتير ناعم من فوق على كل الشاشة (زهري، دهبي وأبيض)
+function rainConfetti() {
+  const c = document.createElement("canvas"), dpr = Math.min(2, devicePixelRatio || 1), W = innerWidth, H = innerHeight;
+  c.className = "confetti"; c.width = W * dpr; c.height = H * dpr; document.body.appendChild(c);
+  const g = c.getContext("2d"); g.scale(dpr, dpr);
+  const cols = ["#F7A3C2", "#E07A90", "#F2C14E", "#FFFFFF", "#FBD3DF", "#FFD86B", "#EE6A96"];
+  const ps = Array.from({ length: 300 }, () => ({ x: Math.random() * W, y: -Math.random() * H * 1.1 - 10, vy: 1.8 + Math.random() * 2, f: Math.random() * 6, r: Math.random() * 6, w: 6 + Math.random() * 7, h: 4 + Math.random() * 4, round: Math.random() < .25, c: cols[Math.floor(Math.random() * cols.length)] }));
+  const t0 = performance.now(), DUR = 5;
+  (function tick(t) {
+    const k = (t - t0) / 1000; g.clearRect(0, 0, W, H);
+    ps.forEach(p => { p.y += p.vy; p.f += .06; p.x += Math.sin(p.f) * .9; p.r += .05; const fl = Math.abs(Math.cos(p.f));
+      g.save(); g.globalAlpha = Math.max(0, Math.min(1, (DUR - k) / 1)); g.translate(p.x, p.y); g.rotate(p.r); g.fillStyle = p.c;
+      if (p.round) { g.beginPath(); g.arc(0, 0, p.h * .55, 0, 6.28); g.fill(); } else g.fillRect(-p.w / 2, -p.h / 2 * fl, p.w, p.h * fl + .5);
+      g.restore(); });
+    if (k < DUR) requestAnimationFrame(tick); else c.remove();
+  })(t0);
 }
 function confetti(n) {
   const c = document.createElement("canvas"), dpr = Math.min(2, devicePixelRatio || 1), W = innerWidth, H = innerHeight;
@@ -4942,7 +4959,7 @@ const patOf0 = (exId) => DEMO_OF[exId] || (typeof MOVES !== "undefined" && (MOVE
 // سكوات بلا وزن: الإيدين ممدودين لقدّام ليبيّنوا واضحين (مش عالوجّ)
 const patOf = (exId) => { const p = patOf0(exId), ex = anyEx(exId); return p === "squat" && ex && ex.eq === "body" ? "squatbw" : p; };
 // صور صغيرة للإحماء والتمطيط (لقطة الحركة نفسها، من الموقع نفسو لتحمّل بسرعة وبلا نت)
-const TH = new Set(["w-march", "w-armcircles", "w-shoulderrolls", "w-hipcircles", "w-legswings", "w-squat", "w-catcow", "w-bridge", "s-neck", "s-shoulder", "s-triceps", "s-biceps", "s-chest", "s-child", "s-catcow", "s-cobra", "s-side", "s-twist", "s-hipflexor", "s-figure4", "s-pigeon", "s-butterfly", "s-hamseated", "s-hamstand", "s-quad", "s-calf", "s-fold"]);
+const TH = new Set(["w-march", "w-armcircles", "w-shoulderrolls", "w-hipcircles", "w-legswings", "w-squat", "w-catcow", "w-bridge", "s-neck", "s-shoulder", "s-triceps", "s-biceps", "s-chest", "s-child", "s-catcow", "s-cobra", "s-side", "s-twist", "s-hipflexor", "s-figure4", "s-pigeon", "s-butterfly", "s-hamseated", "s-hamstand", "s-quad", "s-calf", "s-fold", "db-hipthrust", "db-bulgarian", "m-pullthrough", "m-abduction", "m-glutekick", "frog-pump", "glute-bridge", "bw-squat", "sl-bridge", "donkey-kick", "fire-hydrant", "clamshell", "crunch", "bicycle", "rev-crunch", "heel-taps", "side-plank", "m-pallof", "m-woodchop", "goblet", "db-lunge", "db-calf", "db-slcalf", "m-standingcalf", "m-calf", "m-legpress", "m-hack", "m-legext", "m-lyingcurl", "db-rdl", "db-bench", "db-row", "db-shpress", "db-lateral", "db-curl", "db-overhead", "incline-pushup", "superman", "mountain"]);
 function demoStatic(ex) {
   if (gender !== "m" && TH.has(ex.id) && !FIXV.has(ex.id)) { const fb = cvidOf(ex.id); return `<img class="demo-st art-st" src="a/th-${ex.id}.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"${fb ? ` onerror="this.onerror=null;this.src='${fb}.jpg'"` : ""}>`; }
   if (FIXV.has(ex.id)) return bodyIcon(ex.m, false, ex.id);
