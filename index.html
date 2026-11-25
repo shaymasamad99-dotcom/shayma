@@ -5548,7 +5548,7 @@ const CVA = { "s-catcow": "w-catcow", "w-squat": "bw-squat", "w-bridge": "glute-
 const MEDIA = /(^|\.)shushy-fit\.pages\.dev$/.test(location.hostname) ? "https://39065da5.shushy-fit.pages.dev/" : "";
 const VNEW = new Set(["legraise", "m-cablecrunch", "bicycle", "rev-crunch", "db-woodchop", "m-abcrunch", "m-pushdown", "m-abduction", "band-walk", "db-sumo", "m-hipthrust", "m-cableabd", "db-curtsy", "db-hipthrust", "s-biceps", "db-bench", "m-facepull-seat", "m-facepull", "m-straightarm"]);   // فيديوهات تجدّدت: بتنزل مع الموقع نفسو
 // فيديوهات حركتها غلط: مخبّاية لحد ما ينعمل فيديو جديد مظبوط (بتطلع صورة العضلة والخطوات المكتوبة)
-const FIXV = new Set(["m-kickback", "m-preacher", "bench-dips", "db-reardelt", "m-captain", "m-abcrunch", "m-cablecrunch", "band-walk"]);
+const FIXV = new Set(["m-kickback", "m-preacher", "bench-dips", "db-reardelt", "m-captain", "m-abcrunch"]);
 const cvidOf = (id) => gender !== "m" && !FIXV.has(id) && CVID.has(id) ? `${VNEW.has(CVA[id] || id) ? "" : MEDIA}v/c-${CVA[id] || id}` : null;
 const cvidTag = (id, cls = "") => `<video class="clip art-vid ${cls}" src="${cvidOf(id)}.mp4" poster="${cvidOf(id)}.jpg" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>`;
 const artOf = (id) => gender !== "m" && !FIXV.has(id) && ART[id] ? `a/${ART[id]}` : null;
